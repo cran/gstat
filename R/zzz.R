@@ -1,10 +1,9 @@
 ### NAMESPACE VERSION:
-.onLoad <-
-function(lib, pkg) {
-	# remove the require() call for 2.0.0:
-	require(lattice)
 
-	.Call("gstat_init", as.integer(1), PACKAGE = "gstat")
+.onLoad <- function(lib, pkg) {
+	# remove the require() call for 2.0.0:
+	# require(lattice)
+	.Call("gstat_init", as.integer(1))
 }
 
 ### pre-NAMESPACE VERSION:

@@ -9,7 +9,7 @@ and optionally a set of Matern models with varying smoothness.
 }
 \usage{
 show.vgms(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
-    models = as.character(vgm()[c(1:16)]), nugget = 0, kappa.range = 0.5,
+    models = as.character(vgm()$short[c(1:17)]), nugget = 0, kappa.range = 0.5,
 	plot = TRUE)
 }
 \arguments{
@@ -50,6 +50,8 @@ show.vgms()
 show.vgms(models = c("Exp", "Mat", "Gau"), nugget = 0.1)
 # show a set of Matern models with different smoothness:
 show.vgms(kappa.range = c(.1, .2, .5, 1, 2, 5, 10), max = 10)
+# show a set of Exponential class models with different shape parameter:
+show.vgms(kappa.range = c(.05, .1, .2, .5, 1, 1.5, 1.8, 1.9, 2), models = "Exc", max = 10)
 }
 
 \keyword{dplot}

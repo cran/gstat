@@ -12,7 +12,7 @@ get.contr               Calculate contrasts from multivariable
 gstat                   Create gstat objects, or subset it
 image                   Image Gridded Coordinates in Data Frame
 krige                   Simple, Ordinary or Universal, global or
-                        local, Point or Block Kriging
+                        local, Point or Block Kriging, or simulation.
 krige.cv                (co)kriging cross validation, n-fold or
                         leave-one-out
 makegrid                make regular grid with square cells and round
@@ -31,6 +31,8 @@ ncp.grid                Grid for the NCP, the Dutch part of the North
 ossfim                  Kriging standard errors as function of grid
                         spacing and block size
 oxford                  Oxford soil samples
+pcb                     PCB138 measurements in sediment at the NCP,
+                        the Dutch part of the North Sea
 plot.gstatVariogram     Plot a Sample Variogram
 plot.pointPairs         Plot a point pairs, identified from a
                         variogram cloud

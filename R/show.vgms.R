@@ -1,6 +1,6 @@
 "show.vgms" <-
 function(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
-	models = as.character(vgm()[c(1:16)]), nugget = 0, kappa.range = 0.5,
+	models = as.character(vgm()$short[c(1:17)]), nugget = 0, kappa.range = 0.5,
 	plot = TRUE) 
 {
 
@@ -8,15 +8,17 @@ function(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
 	# print(models)
 	i = 0
 	if (length(kappa.range) > 1) { # loop over kappa values for Matern model:
+		if (missing(models))
+			models = "Mat"
 		data = matrix(NA, n * length(kappa.range), 2)
 		v.level = rep("", n * length(kappa.range))
 		for (kappa in kappa.range) {
-			v = vgm(sill, "Mat", range, nugget = nugget, kappa = kappa)
+			v = vgm(sill, models, range, nugget = nugget, kappa = kappa)
 			x = variogram.line(v, 0, 1, 0)
 			data[(i*n+1), ] = as.matrix(x)
 			x = variogram.line(v, max, n - 1, min)
 			data[(i*n+2):((i+1)*n), ] = as.matrix(x)
-			m.name = paste("vgm(", sill, ",\"Mat\",", range, sep = "")
+			m.name = paste("vgm(", sill, ",\"", models, "\",", range, sep = "")
 			if (nugget > 0)
 				m.name = paste(m.name, ",nugget=", nugget, sep = "")
 			m.name = paste(m.name, ",kappa=", kappa, ")", sep = "")

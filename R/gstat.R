@@ -3,21 +3,21 @@
 }
 
 try.coordinates <- function(data) {
-	ret = try(cc <- coordinates(data), silent = TRUE)
-	if (inherits(ret, "try-error"))
-		stop("coordinates could not be derived from data; please supply them")
-	else cc
+	if (is(data, "SpatialPoints"))
+		coordinates(data)
+	else
+		NULL
 }
 
 has.coordinates <- function(data) {
-	!inherits(try(coordinates(data), silent = TRUE), "try-error")
+	is(data, "SpatialPoints")
 }
 
 try.gridparameters <- function(data) {
 	ret = try(grd <- gridparameters(data), silent = TRUE)
 	if (!inherits(ret, "try-error"))
-		grd
-	else numeric(0)
+		return(grd)
+	numeric(0)
 }
 
 "gstat" <-

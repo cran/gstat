@@ -2213,7 +2213,11 @@ UTM (value 1).  Change the value \"proj\" in file \"WIND\" to either \
 				G_program_name(), G_program_name());
 
 	/* Obtain the mapset name for the chosen site_lists file d->fname */
+	/*
+	 * EJP, 01/18/05; grass 6.0beta1
 	if ((site_mapset = G_find_file("site_lists", d->fname, "")) == NULL)
+	*/
+	if ((site_mapset = G_find_sites(d->fname, "")) == NULL)
 		/*
 		G_fatal_error("%s: Site_list file: <%s> does not exist.",
 				G_program_name(), d->fname);
@@ -2369,7 +2373,10 @@ UTM (value 1).  Change the value \"proj\" in file \"WIND\" to either \
 	printlog("gstat/grass: %d sites read successfully.\n", d->n_list);
 	d->type = data_types[DATA_GRASS];
 	G_site_free_struct(site);
+	/* EJP, 01/18/05, grass 6.0beta1
 	fclose(fd);
+	*/
+	G_sites_close(fd);
 	return d;
 }
 #endif

@@ -51,7 +51,7 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
         if (missing(scales)) 
             scales = list(y = list(relation = "free"))
 		else
-			if (scales$relation == "same")
+			if (!is.null(scales$relation) && scales$relation == "same")
 				ylim.set = TRUE
     	if (length(unique(x$dir.hor)) > 1) { # multiv.; directional groups
 			if (ylim.set) {
@@ -90,15 +90,15 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 }
 
 "plot.variogramMap" <-
-function(x, np = FALSE, skip, ...) {
+function(x, np = FALSE, skip, threshold, ...) {
 	x = x$map
-	if (! inherits(x, "SpatialDataFrameGrid"))
-		stop("x should be of class SpatialDataFrameGrid")
+	if (!is(x, "SpatialGridDataFrame"))
+		stop("x should be of class, or extend, SpatialGridDataFrame")
 	if (np)
 		start = 2 
 	else
 		start = 1 
-	idx = seq(start, length(names(x@data))-length(x@coord.names), by=2)
+	idx = seq(start, NCOL(x@data), by=2)
 	n = floor(sqrt(length(idx) * 2))
     if (missing(skip)) {
         skip = NULL
@@ -106,6 +106,9 @@ function(x, np = FALSE, skip, ...) {
             for (col in 1:n)
                 skip = c(skip, row < col)
     }
+	if (!(missing(threshold)))
+		x = x[x@data[,2] >= threshold, ]
+
 	levelplot(values ~ dx + dy | ind, as.data.frame(stack(x, select = idx)),
-		asp = mapasp(x), layout = c(n,n), skip = skip, ...)
+		asp = mapasp(x), layout = c(n, n), skip = skip, ...)
 }

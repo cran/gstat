@@ -10,17 +10,20 @@ Image gridded data, held in a data frame, keeping the
 right aspect ratio for axes, and the right cell shape
 }
 \usage{
-image.data.frame(x, zcol = 3, xcol = 1, ycol = 2, ...)
-xyz2img(xyz, zcol = 3, xcol = 1, ycol = 2)
+image.data.frame(x, zcol = 3, xcol = 1, ycol = 2, asp = 1, ...)
+xyz2img(xyz, zcol = 3, xcol = 1, ycol = 2, tolerance = 10 * .Machine$double.eps)
 }
 \arguments{
 \item{x}{ data frame (or matrix) with x-coordinate,
 y-coordinate, and z-coordinate in its columns }
-\item{zcol}{ column number of z-variable }
-\item{xcol}{ column number of x-coordinate }
-\item{ycol}{ column number of y-coordinate }
+\item{zcol}{ column number or name of z-variable }
+\item{xcol}{ column number or name of x-coordinate }
+\item{ycol}{ column number or name of y-coordinate }
+\item{asp}{ aspect ratio for the x and y axes }
 \item{...}{ arguments, passed to image.default }
 \item{xyz}{data frame (same as \code{x})}
+\item{tolerance}{ maximum allowed deviation for coordinats from being
+exactly on a regularly spaced grid }
 }
 \value{
 \link{image.data.frame} plots an image from gridded data, organized
@@ -70,6 +73,7 @@ ratio <- length(unique(x$x))/length(unique(x$y))
 par(pin = c(oldpin[2]*ratio,oldpin[2]))
 image(x, main="Exactly square cells, using par(pin)")
 par(pin = oldpin)
+library(lattice)
 levelplot(var1.var~x+y, x, aspect = mapasp(x), main = "kriging variance")
 }
 

@@ -1,3 +1,3 @@
 /* automatically generated from makefile: make version */
-#define VERSION    "2.4.3 (04 January 2004)"
-#define LASTMOD    "Sun Jan  4 20:16:07 CET 2004"
+#define VERSION    "2.4.4 (18 January 2005)"
+#define LASTMOD    "Tue Jan 18 11:13:34 CET 2005"

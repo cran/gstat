@@ -11,7 +11,7 @@ Creates a variogram plot
 plot.gstatVariogram(x, model = NULL, ylim, xlim, xlab = "distance", 
 	ylab = "semivariance", multipanel = TRUE, plot.numbers = FALSE, 
 	scales, ids = x$id, group.id = TRUE, skip, layout, ...)
-plot.variogramMap(x, np = FALSE, skip, ...)
+plot.variogramMap(x, np = FALSE, skip, threshold, ...)
 }
 \arguments{
 \item{x}{ object of class "gstatVariogram", obtained from the function 
@@ -30,7 +30,8 @@ graph, using color, colored lines and symbols to distinguish them }
 \item{plot.numbers}{ logical; if TRUE, plot number of point pairs next to
 each plotted semivariance symbol }
 \item{scales}{ optional argument that will be passed to \code{xyplot} in
-case of the plotting of variograms and cross variograms }
+case of the plotting of variograms and cross variograms; use the value
+\code{list(relation = "same")} if y-axes need to share scales }
 \item{ids}{ ids of the data variables and variable pairs }
 \item{group.id}{ logical; control for directional multivariate variograms:
 if TRUE, panels divide direction and colors indicate variables
@@ -40,6 +41,8 @@ indicate direction}
 \item{layout}{ integer vector; can be used to set panel layout: c(ncol,nrow) }
 \item{np}{ logical; if TRUE, plot number of point pairs, if FALSE plot
 semivariances }
+\item{threshold}{semivariogram map values based on fewer point pairs
+than threshold will not be plotted}
 \item{\dots}{ any arguments that will be passed to the panel plotting functions
 (such as \code{auto.key} in examples below) }
 }
@@ -79,12 +82,13 @@ v = variogram(g, alpha=c(0,45,90,135))
 plot(v, group.id = FALSE, auto.key = TRUE) # id and id pairs panels
 plot(v, group.id = TRUE, auto.key = TRUE)  # direction panels
 
-#if (require(sp)) {
-#  plot(variogram(g, cutoff=1000, width=100, map=TRUE),
-#  	main = "(cross) semivariance maps")
-#  plot(variogram(g, cutoff=1000, width=100, map=TRUE), np=TRUE,
-#  	main = "number of point pairs")
-#}
+if (require(sp)) {
+  plot(variogram(g, cutoff=1000, width=100, map=TRUE),
+  	main = "(cross) semivariance maps")
+  plot(variogram(g, cutoff=1000, width=100, map=TRUE), np=TRUE,
+  	main = "number of point pairs")
+}
+
 }
 
 \keyword{dplot}

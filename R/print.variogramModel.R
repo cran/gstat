@@ -1,18 +1,28 @@
-"print.variogramModel" <-
+"print.variogramModel" =
 function (x, ...) 
 {
-    df <- data.frame(x)
-	if (!any(df[, "model"] == "Mat"))
-		df$kappa <- NULL
+    df = data.frame(x)
+	shape.models = c("Mat", "Exc", "Cau")
+	if (!any(match(df[, "model"], shape.models, nomatch=0)))
+		df$kappa = NULL
     if (!any(df[, "anis2"] != 1))  {
-		df$anis2 <- NULL
-		df$ang2 <- NULL
-		df$ang3 <- NULL
+		df$anis2 = NULL
+		df$ang2 = NULL
+		df$ang3 = NULL
 		if (!any(df[, "anis1"] != 1))  {
-			df$anis1 <- NULL
-			df$ang1 <- NULL
+			df$anis1 = NULL
+			df$ang1 = NULL
 		}
 	} 
-    print(df, ...)
+	if (any(match(df[, "model"], "Tab", nomatch=0))) {
+		df$maxdist = df$range
+		df$range = NULL
+    	print(df, ...)
+		cat("covariance table:\n")
+		tab = attr(x, "table")
+		idx = round(seq(1, length(tab), length=6))
+		print(tab[idx])
+	} else
+    	print(df, ...)
 	invisible(x)
 }

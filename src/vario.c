@@ -77,6 +77,10 @@ const V_MODEL v_models[] = { /* the variogram model ``data base'': */
 		"Gau(a,x) = 1 - exp(-((x/a)**2))",
 		"Gau(a,x) = exp(-((x/a)**2))",
 		fn_gaussian, da_fn_gaussian },
+	{	EXCLASS, "Exc", "Exclass (Exponential class)", 
+		"# Exponential class model not supported by gnuplot",
+		"# Exponential class model not supported by gnuplot",
+		fn_exclass, NULL },
 #ifdef USING_R
 	{	MATERN, "Mat", "Mat (Matern)", 
 		"# Matern model not supported by gnuplot",
@@ -166,6 +170,7 @@ VARIOGRAM *init_variogram(VARIOGRAM *v) {
 	v->min_val = 0.0;
 	vgm_init_block_values(v);
 	v->part = (VGM_MODEL *) emalloc(INIT_N_VGMM * sizeof(VGM_MODEL));
+	v->table = NULL;
 	for (i = 0; i < INIT_N_VGMM; i++)
 		init_variogram_part(&(v->part[i]), NRANGEPARS);
 	v->max_n_models = INIT_N_VGMM;
@@ -238,9 +243,20 @@ void free_variogram(VARIOGRAM *v) {
 		}
 		efree(v->ev);
 	}
-	for (i = 0; i < v->max_n_models; i++)
+	for (i = 0; i < v->max_n_models; i++) {
 		efree(v->part[i].range);
+		if (v->part[i].tm_range != NULL)
+			efree(v->part[i].tm_range);
+	}
+	/* EJPXX
+	if (v->descr)
+		efree(v->descr);
+	*/
 	efree(v->part);
+	if (v->table) {
+		efree(v->table->values);
+		efree(v->table);
+	}
 	efree(v);
 }
 
@@ -340,6 +356,7 @@ void update_variogram(VARIOGRAM *vp) {
 		if (p->model == BESSEL || p->model == GAUSSIAN ||
 				p->model == EXPONENTIAL || p->model == LOGARITHMIC ||
 				p->model == POWER || p->model == PERIODIC ||
+				p->model == EXCLASS ||
 #ifdef USING_R
 				p->model == MATERN ||
 #endif
@@ -376,6 +393,15 @@ void update_variogram(VARIOGRAM *vp) {
 			vp->n_fit++;
 		if (p->model == MERROR)
 			vp->measurement_error += p->sill;
+	}
+	if (vp->table != NULL) {
+		vp->sum_sills = vp->table->values[0];
+		vp->max_val = vp->table->values[0];
+		vp->min_val = vp->table->values[0];
+		for (i = 1; i < vp->table->n; i++) {
+			vp->max_val = MAX(vp->max_val, vp->table->values[i]);
+			vp->min_val = MIN(vp->min_val, vp->table->values[i]);
+		}
 	}
 	return;
 }
@@ -422,6 +448,9 @@ double get_semivariance(const VARIOGRAM *vp, double dx, double dy, double dz) {
 	int i;
 	double sv = 0.0, dist = 0.0;
 
+	if (vp->table != NULL)
+		return(SEM_TABLE_VALUE(vp->table, 
+				transform_norm(vp->table->tm_range, dx, dy, dz)));
 	if (! vp->isotropic) {
 		for (i = 0; i < vp->n_models; i++)
 			sv += vp->part[i].sill * vp->part[i].fnct(
@@ -450,6 +479,9 @@ double get_covariance(const VARIOGRAM *vp, double dx, double dy, double dz) {
 			vp->descr);
 		warning = 1;
 	}
+	if (vp->table != NULL)
+		return(COV_TABLE_VALUE(vp->table, 
+				transform_norm(vp->table->tm_range, dx, dy, dz)));
 	if (! vp->isotropic) {
 		for (i = 0; i < vp->n_models; i++)
 			ctmp += vp->part[i].sill * (1.0 - vp->part[i].fnct(
@@ -740,7 +772,9 @@ int push_variogram_model(VARIOGRAM *v, VGM_MODEL part) {
 	} else if (part.range[0] == 0.0) 
 		ErrMsg(ER_RANGE, "range must be positive");
 	if (part.model == POWER && part.range[0] > 2.0)
-		ErrMsg(ER_RANGE, "power model can not exceed 2.0");
+		ErrMsg(ER_RANGE, "power model range (parameter) cannot exceed 2.0");
+	if (part.model == EXCLASS && part.range[1] > 2.0)
+		ErrMsg(ER_RANGE, "exponentical class model shape parameter cannot exceed 2.0");
 
 	if (part.id < 0) {
 		where = v->n_models;
@@ -967,6 +1001,22 @@ void push_to_v(VARIOGRAM *v, const char *mod, double sill, double *range,
 	if (d != NULL && d[0] != -9999.0)
 		vm.tm_range = get_tm(d);
 	push_variogram_model(v, vm);
+}
+
+void push_to_v_table(VARIOGRAM *v, double maxdist, int length, double *values,
+			double *anis) {
+	int i;
+
+	v->table = (COV_TABLE *) emalloc(sizeof(COV_TABLE));
+	v->table->n = length;
+	v->table->maxdist = maxdist;
+	v->table->values = (double *) emalloc(length * sizeof(double));
+	for (i = 0; i < length; i++)
+		v->table->values[i] = values[i];
+	if (anis != NULL)
+		v->table->tm_range = get_tm(anis);
+	else
+		v->table->tm_range = NULL;
 }
 
 static ANIS_TM *get_tm(double anis[5]) {

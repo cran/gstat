@@ -6,5 +6,8 @@ range1D <- seq(from = 0, to = 1, length = 20)
 grid3D <- expand.grid(x = range1D, y = range1D, z = range1D)
 res3D <- krige(formula = v ~ 1, locations = ~ x + y + z, 
 	data = data3D, newdata = grid3D, model = vgm(1, "Exp", .2))
+
+library(lattice)
+
 levelplot(var1.pred ~ x + y | z, res3D)
 rm(n, data3D, range1D, grid3D, res3D)

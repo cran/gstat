@@ -2,11 +2,11 @@
 function (formula, locations, data)
 {
 	grid = numeric(0)
-    if (has.coordinates(locations)) {
+    if (has.coordinates(locations)) { # ignore data: locations arg has coords+data
         data = as.data.frame(locations)
 		grid = try.gridparameters(locations)
         locations = coordinates(locations)
-    } else if (has.coordinates(data)) {
+    } else if (has.coordinates(data)) { # ignore locations: data arg name was used
         locations = coordinates(data)
 		grid = try.gridparameters(data)
         data = as.data.frame(data)

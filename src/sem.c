@@ -35,6 +35,10 @@
 #include <time.h>
 #include <limits.h>
 
+#ifdef USING_R
+# include "R.h"
+#endif
+
 #include "defs.h"
 #include "read.h"
 #include "mapio.h"
@@ -225,6 +229,9 @@ static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev) {
 
 	for (i = 0; i < d->n_sel; i++) {
 		print_progress((i / divide_by) * (i - 1) / 2, total_steps);
+#ifdef USING_R
+		R_CheckUserInterrupt();
+#endif
 		/*
 		printlog("step: %u of %u\n", (i /divide_by) * (i - 1) / 2, total_steps);
 		*/
@@ -360,6 +367,9 @@ static SAMPLE_VGM *semivariogram_grid(DATA *d, SAMPLE_VGM *ev) {
 			} /* if this grid cell is non-NULL */
 		} /* for all cols */
 		print_progress(row + 1, d->grid->rows);
+#ifdef USING_R
+		R_CheckUserInterrupt();
+#endif
 	} /* for all rows */
 	efree(grid_ev.gi);
 	return ev;
@@ -374,6 +384,9 @@ static SAMPLE_VGM *covariogram(DATA *d, SAMPLE_VGM *ev) {
 	ev->evt = COVARIOGRAM;
 	ev = alloc_exp_variogram(d, NULL, ev);
 	for (i = 0; i < d->n_sel; i++) {
+#ifdef USING_R
+		R_CheckUserInterrupt();
+#endif
 		for (j = 0; j <= (ev->map != NULL ? d->n_sel-1 : i); j++) {
 			ddist = valid_distance(d->sel[i], d->sel[j], ev->cutoff, 1,
 				d, d, (GRIDMAP *) ev->map);
@@ -417,6 +430,9 @@ static SAMPLE_VGM *cross_variogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {
 	ev->evt = CROSSVARIOGRAM;
 	ev = alloc_exp_variogram(a, b, ev);
 	for (i = 0; i < a->n_sel; i++) {
+#ifdef USING_R
+		R_CheckUserInterrupt();
+#endif
 		for (j = 0; j < b->n_sel; j++) {
 			ddist = valid_distance(a->sel[i], b->sel[j], ev->cutoff,
 				gl_sym_ev || !ev->pseudo, a, b, (GRIDMAP *) ev->map); 
@@ -479,6 +495,9 @@ static SAMPLE_VGM *cross_covariogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {
 	ev->evt = CROSSCOVARIOGRAM;
 	ev = alloc_exp_variogram(a, b, ev);
 	for (i = 0; i < a->n_sel; i++) {      /* i -> a */
+#ifdef USING_R
+		R_CheckUserInterrupt();
+#endif
 		for (j = 0; j < b->n_sel; j++) {  /* j -> b */
 			ddist = valid_distance(a->sel[i], b->sel[j], ev->cutoff,
 				gl_sym_ev, a, b, (GRIDMAP *) ev->map); 

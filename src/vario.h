@@ -62,6 +62,7 @@ typedef enum {
 	EXPONENTIAL,
 	SPHERICAL, 
 	GAUSSIAN, 
+	EXCLASS,
 #ifdef USING_R
 	MATERN,
 #endif
@@ -96,11 +97,23 @@ typedef struct {
 } VGM_MODEL;
 
 typedef struct {
+	long n; /* length */
+	double maxdist, *values;
+	ANIS_TM *tm_range;
+} COV_TABLE;
+#define COV_TABLE_VALUE(tablep, dist) \
+	(dist >= tablep->maxdist ? tablep->values[tablep->n - 1] : \
+	tablep->values[(int) floor(tablep->n * (dist / tablep->maxdist))])
+#define SEM_TABLE_VALUE(tablep, dist) \
+	(tablep->values[0] - COV_TABLE_VALUE(tablep, dist))
+
+typedef struct {
 	char 	*descr, *fname, *fname2; /* descript. and sample variogram (maps) */
 	int 	n_models, max_n_models, n_fit, id, id1, id2,
 			block_semivariance_set, block_covariance_set, isotropic,
 			is_valid_covariance, fit_is_singular;
 	VGM_MODEL *part;			/* the basic models */
+	COV_TABLE *table;			/* covariance value table */
 	double	block_semivariance,	/* average within-block semivariance */
 			block_covariance,	/* average within-block covariance */
 			max_range,	/* maximum range: where sill is reached */
@@ -189,6 +202,8 @@ VGM_MODEL_TYPE model_shift(VGM_MODEL_TYPE now, int next);
 int get_n_variogram_models(void);
 void push_to_v(VARIOGRAM *v, const char *mod, double sill, double *range, 
 		int nrangepars, double *d, int fit_sill, int fit_range);
+void push_to_v_table(VARIOGRAM *v, double maxdist, int length, double *values,
+		double *anis);
 
 #if defined(__cplusplus)
 }

@@ -23,8 +23,9 @@ print.gstat(x, ...)
     \code{n} the number for this variable. If a cross variogram is entered,
     \code{id} should be a vector with the two \code{id} values , e.g. 
     \code{c("zn", "cd")}, further only supplying arguments \code{g} 
-    and \code{model}. Note that it is not advisable to use expressions, such
-	as \code{log(zinc)}, as identifiers }
+    and \code{model}. It is advisable not to use expressions, such
+	as \code{log(zinc)}, as identifiers, as this may lead to complications 
+	later on. }
   \item{formula}{ formula that defines the dependent variable as a linear
   model of independent variables; suppose the dependent variable has name
   \code{z}, for ordinary and simple kriging use the formula \code{z~1};
@@ -161,8 +162,10 @@ meuse.gstat <- gstat(id = "zinc", formula = zinc ~ 1, locations = ~ x + y,
 	data = meuse, nmax = 7, set = list(idp = .5))
 meuse.gstat
 z <- predict(meuse.gstat, meuse.grid)
+library(lattice) # for levelplot
 levelplot(zinc.pred~x+y, z, aspect = mapasp(z))
 # see demo(cokriging) and demo(examples) for further examples, 
 # and the manuals for predict.gstat and image
+
 }
 \keyword{ models }

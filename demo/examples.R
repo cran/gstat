@@ -21,6 +21,9 @@ plot(x, model = fit.variogram(x, model = v))
 ##
 data(meuse.grid)
 x <- krige(zinc ~ 1, ~ x + y, meuse, meuse.grid, model = NULL)
+
+library(lattice)
+
 levelplot(var1.pred ~ x + y, x, aspect = mapasp(x))
 
 ##

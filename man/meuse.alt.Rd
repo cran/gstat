@@ -16,10 +16,13 @@ This data set gives a point set with altitudes, digitized from the
 \usage{
 data(meuse.alt)
 }
-\references{ \url{http:/www.gstat.org/} }
+\references{ 
+\url{http:/www.gstat.org/} 
+}
 \seealso{\link{meuse}}
 \keyword{datasets}
 \examples{
 data(meuse.alt)
-xyplot(y~x, meuse.alt)
+library(lattice)
+xyplot(y~x, meuse.alt, aspect = "iso")
 }

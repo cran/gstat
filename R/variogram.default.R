@@ -3,7 +3,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     beta = 0, tol.hor = 90/length(alpha), tol.ver = 90/length(beta), 
     cressie = FALSE, dX = numeric(0), boundaries = numeric(0), 
     cloud = FALSE, trend.beta = NULL, debug.level = 1, cross = TRUE, 
-	grid, map = FALSE, ...) 
+	grid, map = FALSE, g = NULL, ...) 
 {
     id1 = id2 = 0
     ret = NULL
@@ -19,15 +19,14 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     if (cloud == TRUE) 
         width = 0
 	if (is.logical(map) && map == TRUE) {
-		# set up map:
-		dx = seq(-cutoff, cutoff, by = width)
-		map = data.frame(x = dx, y = dx)
-		map = data.frame(lapply(map, as.double))
 		require(sp)
-		coordinates(map) = c("x", "y")
-		gridded(map) = TRUE
+		cells.dim = length(seq(-cutoff, cutoff, by = width))
+		grid.topology = GridTopology(rep(-cutoff, 2), rep(width, 2), rep(cells.dim, 2))
+		map = SpatialGrid(grid = grid.topology)
 	}
-    .Call("gstat_init", as.integer(debug.level), PACKAGE = "gstat")
+    .Call("gstat_init", as.integer(debug.level))
+	if (!is.null(g) && !is.null(g$set))
+		gstat.load.set(g$set)
     id.names = NULL
     if (is.list(object) && is.list(locations)) {
         nvars = length(object)
@@ -49,15 +48,15 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 				as.double(locations[[i]]), as.double(Xloc), 
 				as.integer(1), as.double(t.beta), as.integer(-1),
 				as.integer(0), as.double(-1), as.integer(1), 
-				double(0), grd, as.integer(0)
-				, PACKAGE = "gstat"
-				)
+				double(0), grd, as.integer(0))
+			if (!is.null(g) && !is.null(g$model[[id.names[i]]])) 
+				load.variogram.model(g$model[[id.names[i]]], c(i - 1, i - 1))
         }
     } else 
 		stop("argument object and locations should be lists")
 
-	if (is(map, "SpatialDataFrameGrid"))
-		map = as.double(unlist(gridparameters(map)))
+	if (inherits(map, "SpatialGrid"))
+		map = as.double(unlist(gridparameters(as(map, "SpatialGrid"))))
 
     pos = 0
     ids = NULL
@@ -79,9 +78,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 				  		as.integer(c(id1 - 1, id2 - 1)), 
 						as.numeric(cutoff), as.numeric(width), 
                     	as.numeric(direction), as.integer(cressie), 
-                    	as.numeric(dX), as.numeric(boundaries), map
-						, PACKAGE = "gstat"
-						)
+                    	as.numeric(dX), as.numeric(boundaries), map)
 				  boundaries = numeric(0)
                   if (is.logical(map) && map == FALSE) {
                     np = ret.call[[1]]
@@ -116,7 +113,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
             }
         }
     }
-    .Call("gstat_exit", NULL, PACKAGE = "gstat")
+    .Call("gstat_exit", NULL)
 	if (is.logical(map) && map == FALSE) {
     	ret$id = factor(ids, levels = unique(ids))
 		attr(ret, "direct") = data.frame(id = unique(ids), is.direct = is.direct)
@@ -125,7 +122,6 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     	else 
 			class(ret) = c("gstatVariogram", "data.frame")
 	} else {
-		require(sp)
 		coordinates(ret) = c("dx", "dy")
 		gridded(ret) = TRUE
 		ret = list(map = ret)

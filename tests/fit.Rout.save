@@ -1,0 +1,31 @@
+
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 2.0.1  (2004-11-15), ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(gstat)
+> data(meuse)
+> v=variogram(log(zinc)~1,~x+y,meuse,cutoff=500,wi=100)
+> v$gamma=c(0.5,1,2,3,3)
+> fit.variogram(v, vgm(1, "Sph", 300, 0),warn.if.neg=TRUE)
+  model    psill    range
+1   Nug 0.000000    0.000
+2   Sph 7.874468 1567.017
+Warning message: 
+partial sill or nugget fixed at zero value in: fit.variogram(v, vgm(1, "Sph", 300, 0), warn.if.neg = TRUE) 
+> fit.variogram(v, vgm(1, "Sph", 300, 0),warn.if.neg=FALSE)
+  model    psill    range
+1   Nug 0.000000    0.000
+2   Sph 7.874468 1567.017
+> 

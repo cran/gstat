@@ -9,13 +9,13 @@ Generates a variogram model, or adds to an existing model.
 \code{print.variogramModel} prints the essence of a variogram  model.
 }
 \usage{
-vgm(psill, model, range, nugget, add.to, anis, kappa = 0.5)
+vgm(psill, model, range, nugget, add.to, anis, kappa = 0.5, ..., covtable)
 print.variogramModel(x, ...)
 }
 \arguments{
 \item{psill}{ (partial) sill of the variogram model component }
 \item{model}{ model type, e.g. "Exp", "Sph", "Gau", "Mat". Calling vgm() without
-a model argument returns the list with available models. }
+a model argument returns a data.frame with available models. }
 \item{range}{ range of the variogram model component }
 \item{kappa}{ smoothness parameter for the Matern class of variogram 
 models }
@@ -26,10 +26,16 @@ compontent to the model) }
 \item{x}{ a variogram model to print }
 \item{...}{ arguments that will be passed to \code{print}, e.g. \code{digits}
 (see examples) }
+\item{covtable}{ if model is \code{Tab}, instead of model parameters a covariance
+table can be passed here. See covtable.R in tests (experimental). }
 }
 \value{
-an object of class \code{variogramModel}, which extends data.frame Called
-without a model argument returns a character list with available models.
+an object of class \code{variogramModel}, which extends data.frame.
+
+When alled without a model argument, a data.frame with available models
+is returned, having two columns: short (abbreviated names, to be used
+as model argument: "Exp", "Sph" etc) and long (with some description).
+
 }
 \references{ 
 Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
@@ -68,7 +74,7 @@ between the major range and each of the two minor ranges.
 
 The implementation in gstat for 2D and 3D anisotropy was taken from
 the gslib (probably 1992) code.  I have seen a paper where it is argued
-that the 3D anisotropy code implemented in gslib (en then also in gstat)
+that the 3D anisotropy code implemented in gslib (and so in gstat)
 is in error, but I have not corrected anything afterwards.
 }
 \seealso{
@@ -78,6 +84,7 @@ is in error, but I have not corrected anything afterwards.
 \link{variogram} for the sample variogram.
 }
 \examples{
+vgm()
 vgm(10, "Exp", 300)
 x <- vgm(10, "Exp", 300)
 vgm(10, "Nug", 0)
