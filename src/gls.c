@@ -223,7 +223,9 @@ void gls(DATA **d /* pointer to DATA array */,
 	}
 
 	for (i = 0, global = 1; i < n_vars && global; i++)
-		global = (d[i]->sel == d[i]->list && d[i]->n_list == d[i]->n_original);
+		global = (d[i]->sel == d[i]->list 
+				&& d[i]->n_list == d[i]->n_original
+				&& d[i]->n_list == d[i]->n_sel);
 
 /*
  * global things: enter whenever (a) first time, (b) local selections or

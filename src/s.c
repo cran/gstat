@@ -131,8 +131,10 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		PROBLEM "dimensions do not match: locations %d and data %ld",
 			LENGTH(slocs), n ERROR;
 	dim = LENGTH(slocs) / n;
-	if (dim <= 0 || dim > 3)
-		PROBLEM "too many dimensions: %ld", dim ERROR;
+	if (dim <= 0)
+		PROBLEM "too few spatial dimensions: %ld", dim ERROR;
+	if (dim > 3)
+		PROBLEM "too many spatial dimensions: %ld", dim ERROR;
 	locs = NUMERIC_POINTER(slocs);
 
 	if (LENGTH(sw) == n)
@@ -307,13 +309,15 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 	nest = nvars + (nvars * (nvars + 1))/2;
 	n = INTEGER_POINTER(sn)[0];
 	if (n <= 0 || LENGTH(slocs) == 0 || LENGTH(sX) == 0)
-		ErrMsg(ER_IMPOSVAL, "empty newdata");
+		ErrMsg(ER_IMPOSVAL, "newdata empty or only NA's");
 	if (LENGTH(slocs) % n != 0)
 		PROBLEM "dimensions do not match: locations %d, nrows in X %ld",
 			LENGTH(slocs), n ERROR;
 	dim = LENGTH(slocs) / n;
-	if (dim <= 0 || dim > 3)
-		PROBLEM "too many dimensions: %ld", dim ERROR;
+	if (dim > 3)
+		PROBLEM "too many spatial dimensions: %ld", dim ERROR;
+	if (dim <= 0)
+		PROBLEM "too few spatial dimensions: %ld", dim ERROR;
 	locs = NUMERIC_POINTER(slocs);
 	if (LENGTH(sX) % n != 0)
 		PROBLEM "dimensions do not match: X %d and data %ld",
@@ -446,7 +450,7 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		get_est(d, get_method(), &current, est_all[i]);
 #ifdef USING_R
 # ifdef WIN32
-		R_ProcessEvents(); /* avoid terminal freeze */
+		R_ProcessEvents(); /* avoid terminal freeze in R/Win */
 # endif
 #endif
 	}
@@ -592,8 +596,7 @@ void Cgstat_load_variogram(int *ids, int *n_models,
 		logprint_variogram(vgm, 1); 
 }
 
-SEXP gstat_variogram_values(SEXP ids, SEXP pars)
-{
+SEXP gstat_variogram_values(SEXP ids, SEXP pars) {
 	double from, to, n, d, x = 1.0, y = 0.0, z = 0.0;
 	int i, id1, id2;
 	VARIOGRAM *vgm;
@@ -647,6 +650,21 @@ void Cgstat_get_variogram_models(char **names) {
 	for (i = 1; v_models[i].model != NOT_SP; i++)
 		names[i-1] = string_dup(v_models[i].name);
 }
+
+/* -- still trying...
+SEXP gstat_get_variogram_models(SEXP names) {
+	SEXP ret;
+	int i;
+	
+	ret = NEW_LIST(get_n_variogram_models());
+
+	for (i = 1; v_models[i].model != NOT_SP; i++) {
+		SET_VECTOR_ELT(ret, i - 1, NEW_CHARACTER(1));
+		SET_STRING_ELT(VECTOR_ELT(ret, i - 1), 0, 
+				COPY_TO_USER_STRING(string_dup(v_models[i].name)));
+	}
+}
+*/
 
 void Cload_gstat_command(char **commands, int *n, int *error) {
 	int i;

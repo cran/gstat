@@ -75,6 +75,9 @@
 /* Define if you have the netcdf library (-lnetcdf) for GMT map support  */
 #undef HAVE_LIBNETCDF
 
+/* Define if you want to link/include extdbase extension */
+#undef HAVE_EXT_DBASE
+
 /* Define if words are big endian */
 #undef WORDS_BIGENDIAN
 

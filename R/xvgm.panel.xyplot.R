@@ -2,7 +2,7 @@
 function (x, y, subscripts, type = "p", pch = plot.symbol$pch, 
     col, col.line = plot.line$col, col.symbol = plot.symbol$col, 
     lty = plot.line$lty, cex = plot.symbol$cex, ids, lwd = plot.line$lwd, 
-    model = model, labels, ...) 
+    model = model, labels, shift = 0.03, ...) 
 {
     x <- as.numeric(x)
     y <- as.numeric(y)
@@ -31,6 +31,6 @@ function (x, y, subscripts, type = "p", pch = plot.symbol$pch,
 		}
         }
         if (!is.null(labels)) 
-            ltext(x = x + 0.03 * max(x), y = y, labels = labels[subscripts])
+            ltext(x = x + shift * max(x), y = y, labels = labels[subscripts])
     }
 }

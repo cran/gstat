@@ -5,7 +5,7 @@
 Fit ranges and/or sills from a simple or nested variogram model 
 to a sample variogram }
 \usage{
-fit.variogram(object, model, fit.sills = T, fit.ranges = T,
+fit.variogram(object, model, fit.sills = TRUE, fit.ranges = TRUE,
 	fit.method = 7, print.SSE = FALSE, debug.level = 1)
 }
 \arguments{

@@ -2,7 +2,7 @@
 function (object, locations, X, cutoff, width = cutoff/15, alpha = 0, 
     beta = 0, tol.hor = 90/length(alpha), tol.ver = 90/length(beta), 
     cressie = FALSE, dX = numeric(0), boundaries = numeric(0), 
-    cloud = FALSE, trend.beta = NULL, debug.level = 1, ...) 
+    cloud = FALSE, trend.beta = NULL, debug.level = 1, cross = TRUE, ...) 
 {
     id1 = id2 = 0
     ret = NULL
@@ -51,13 +51,16 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
     }
     pos = 0
     ids = NULL
-    for (id1 in nvars:1) {
-        for (id2 in 1:id1) {
+	if (cross)
+		id.range = nvars:1
+	else
+		id.range = 1:nvars
+    for (id1 in id.range) {
+        for (id2 in ifelse(cross, 1, id1):id1) {
             if (is.null(id.names)) 
-                id = ifelse(id1 == id2, paste(id1), paste(id2, 
-                  ".", id1, sep = ""))
+                id = ifelse(id1 == id2, paste(id1), cross.name(id2, id1))
             else id = ifelse(id1 == id2, paste(id.names[id1]), 
-                paste(id.names[id2], ".", id.names[id1], sep = ""))
+                cross.name(id.names[id2], id.names[id1]))
             for (a in alpha) {
                 for (b in beta) {
                   direction = as.numeric(c(a, b, tol.hor, tol.ver))

@@ -1,11 +1,14 @@
-bpy.colors              blue-pink-yellow color scheme
+bpy.colors              blue-pink-yellow color scheme that prints well
+                        on black/white printers
 bubble                  Create a bubble plot of spatial data
 fit.lmc                 Fit a Linear Model of Coregionalization to a
                         Multivariable Sample Variogram
 fit.variogram           Fit a Variogram Model to a Sample Variogram
 fit.variogram.reml      REML Fit Direct Variogram Partial Sills to
                         Data
-gstat                   Creates gstat Objects
+get.contr               Calculate contrasts from multivariable
+                        predictions
+gstat                   Create gstat objects, or subset it
 image                   Image Gridded Coordinates in Data Frame
 krige                   Simple, Ordinary or Universal, global or
                         local, Point or Block Kriging

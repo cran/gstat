@@ -1,21 +1,29 @@
+"cross.name" <- function(id1, id2) {
+    paste(id1, id2, sep = ".")
+}
+
 "gstat" <-
 function (g, id, formula, locations, data = NULL, model = NULL, 
     beta, nmax = Inf, nmin = 0, maxdist = Inf, dummy = FALSE, set, 
-	fill.all = FALSE, variance = "identity", weights = NULL) 
+	fill.all = FALSE, fill.cross = TRUE, variance = "identity", weights = NULL) 
 {
 	if (fill.all) {
+	# fill all variogram models
 		if (missing(g) || is.null(model))
 			stop("fill.all assumes object g and model are supplied")
         g.names = names(g$data)
 		for (i in 1:length(g.names)) {
            	g$model[[paste(g.names[i])]] = model
-			for (j in (i+1):length(g.names))
-           		g$model[[paste(g.names[i], g.names[j], sep = ".")]] = model
+			if (fill.cross) {
+				for (j in (i+1):length(g.names))
+           			g$model[[cross.name(g.names[i], g.names[j])]] = model
+			}
 		}
         return(g)
 	} 
     if (!missing(g) && inherits(g, "gstat") && !missing(id) && 
         !missing(model) && missing(formula) && missing(locations)) {
+		# here, only direct or cross variogram model is defined
         g.names = names(g$data)
 		if (length(id) == 2) {
            	m1 = match(id[1], g.names)
@@ -24,8 +32,7 @@ function (g, id, formula, locations, data = NULL, model = NULL,
                	stop("first id does not match available data")
            	if (is.na(m1)) 
                	stop("second id does not match available data")
-           	nm = paste(g.names[min(m1, m2)], g.names[max(m1, 
-               	m2)], sep = ".")
+           	nm = cross.name(g.names[min(m1, m2)], g.names[max(m1, m2)])
         } else if (length(id) == 1) {
 			m1 = match(id, g.names)
         	if (is.na(m1)) 
@@ -36,6 +43,8 @@ function (g, id, formula, locations, data = NULL, model = NULL,
         g$model[[nm]] = model
         return(g)
     }
+#	if (missing(locations) && inherits(data, "spatial.data.frame"))
+#		locations = sp.formula(data)
     if (!inherits(formula, "formula"))
         stop("argument formula should be of class formula")
     if (!inherits(locations, "formula"))
@@ -67,3 +76,29 @@ function (g, id, formula, locations, data = NULL, model = NULL,
     class(g) = c("gstat", "list")
     g
 }
+
+"[.gstat" <- function(x, ids) { 
+	if (is.numeric(ids)) {
+		if (min(ids) < 1 || max(ids) > length(names(x$data)))
+			stop("selection index(es) out of bound")
+		ids = names(x$data)[ids]
+	} else if (any(is.na(match(ids, names(x$data)))))
+		stop("selected ids do not match those of gstat object")
+	g = list()
+	g$data = x$data[ids]
+	if (length(ids) > 1) {
+		ids.cross = NULL
+		for (i in 2:length(ids))
+			for (j in 1:(i-1))
+				ids.cross = c(ids.cross, cross.name(ids[j], ids[i]))
+		g$model = x$model[c(ids, ids.cross)]
+	} else
+		g$model = x$model[ids]
+	if (!is.null(x$set))
+		g$set = x$set
+    class(g) = c("gstat", "list")
+	g
+}
+
+# "[<-.gstat" <- function(x, ids) { 
+# }

@@ -1,18 +1,26 @@
 "plot.variogram" <-
 function (x, model = NULL, ylim, xlim, xlab = "distance", 
 	ylab = "semivariance", multipanel = TRUE, plot.numbers = FALSE, scales, 
-	ids = x$id, group.id = TRUE, ...) 
+	ids = x$id, group.id = TRUE, skip, ...) 
 {
-    if (missing(ylim) && min(x$gamma) >= 0) 
-        ylim = c(0, 1.04 * max(x$gamma))
+    if (missing(ylim)) {
+        ylim = c(min(0, 1.04 * min(x$gamma)), 1.04 * max(x$gamma))
+		ylim.set = FALSE
+	} else
+		ylim.set = TRUE
     if (missing(xlim)) 
         xlim = c(0, 1.04 * max(x$dist))
     labels = NULL
+	shift = 0.03
+	if (is.numeric(plot.numbers)) {
+		shift = plot.numbers
+		plot.numbers = TRUE
+	} 
     if (plot.numbers == TRUE) 
-        labels = as.character(x$np)
+       	labels = as.character(x$np)
     if (length(unique(x$dir.hor)) > 1 && group.id == TRUE) { # directional
         if (multipanel) {
-            if (length(levels(x$id)) > 1) { # multivariate directional:
+            if (length(levels(ids)) > 1) { # multivariate directional:
 				xyplot(gamma ~ dist | as.factor(dir.hor), data = x, 
 					type = c("p", "l"), xlim = xlim, ylim = ylim, xlab = xlab, 
 					ylab = ylab, groups = id, ...)
@@ -28,10 +36,13 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
                 ylab = ylab, pch = pch, ...)
         }
     } else if (length(unique(ids)) > 1) {
-        n = floor(sqrt(2 * length(unique(x$id))))
-        skip = NULL
-        for (row in n:1) for (col in 1:n) skip = c(skip, row < 
-            col)
+        n = floor(sqrt(2 * length(unique(ids))))
+		if (missing(skip)) {
+        	skip = NULL
+        	for (row in n:1) 
+				for (col in 1:n) 
+					skip = c(skip, row < col)
+		}
         if (missing(scales)) 
             scales = list(y = list(relation = "free"))
     	if (length(unique(x$dir.hor)) > 1 && group.id == FALSE) { # directional
@@ -40,11 +51,21 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 				ylab = ylab, groups = as.factor(dir.hor), 
 				layout = c(n, n), skip = skip, scales = scales, ...)
 		} else {
-        	xyplot(gamma ~ dist | id, data = x, xlim = xlim, 
-            	ylim = ylim, xlab = xlab, ylab = ylab, ids = ids, 
-            	panel = xvgm.panel.xyplot, labels = labels, scales = scales, 
-            	layout = c(n, n), skip = skip, prepanel = function(x, 
-                	y) list(ylim = c(min(0, y), max(0, y))), model = model, ...)
+			if (ylim.set) {
+        		xyplot(gamma ~ dist | id, data = x, xlim = xlim, 
+            		ylim = ylim, xlab = xlab, ylab = ylab, ids = ids, 
+            		panel= xvgm.panel.xyplot, labels = labels, scales = scales, 
+            		layout = c(n, n), skip = skip, prepanel = function(x, y) 
+					list(ylim = c(min(0, y), max(0, y))), model = model, 
+					shift = shift, ...)
+			} else {
+        		xyplot(gamma ~ dist | id, data = x, xlim = xlim, 
+            		xlab = xlab, ylab = ylab, ids = ids, 
+            		panel =xvgm.panel.xyplot, labels = labels, scales = scales, 
+            		layout = c(n, n), skip = skip, prepanel = function(x, 
+                		y) list(ylim = c(min(0, y), max(0, y))), 
+					model = model, shift = shift, ...)
+			}
 		}
     }
     else xyplot(gamma ~ dist, data = x, panel = vgm.panel.xyplot, 

@@ -17,8 +17,11 @@ and pooled variogram, and for irregular distance intervals.
 \usage{
 variogram(object, ...)
 variogram(formula, locations, data, ...)
-variogram(y, locations, X, cutoff, width, alpha, beta, tol.hor, 
-    tol.ver, cressie, dX, boundaries, cloud, trend.beta, debug.level, ...)
+variogram(y, locations, X, cutoff, width = cutoff/15, alpha = 0, beta = 0, 
+	tol.hor = 90/length(alpha), tol.ver = 90/length(beta), 
+	cressie = FALSE, dX = numeric(0), boundaries = numeric(0), 
+	cloud = FALSE, trend.beta = NULL, debug.level = 1, cross = TRUE, 
+	...)
 print.variogram(v, ...)
 print.variogram.cloud(v, ...)
 }
@@ -30,8 +33,8 @@ variable pairs defined in \code{object}}
 regressors, in case of absence of regressors, use e.g. \code{z~1}}
 \item{data}{data frame where the names in formula are to be found}
 \item{locations}{ spatial data locations.  For variogram.formula: a
-formula with only the coordinate variables in the right hand 
-(explanatory variable) side e.g. \code{~x+y}; see examples.
+formula with only the coordinate variables in the right hand (explanatory
+variable) side e.g. \code{~x+y}; see examples. 
 
 For variogram.default: a matrix, with the number of rows matching
 that of y, the number of columns should match the number of spatial
@@ -69,6 +72,8 @@ values should be strictly increasing }
 \item{trend.beta}{vector with trend coefficients, in case they are
 known. By default, trend coefficients are estimated from the data.}
 \item{debug.level}{ integer; set gstat internal debug level }
+\item{cross}{ logical; if FALSE, no cross variograms are calculated
+when object is of class \code{gstat} and has more than one variable }
 \item{v}{ object of class \code{variogram} or \code{variogram.cloud}
 to be printed}
 % \item{...}{arguments that get passed to \code{print}, e.g. digits}

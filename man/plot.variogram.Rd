@@ -8,8 +8,8 @@ Creates a variogram plot
 }
 \usage{
 plot.variogram(x, model = NULL, ylim, xlim, xlab = "distance", 
-	ylab = "semivariance", multipanel = TRUE, plot.numbers = FALSE, scales, 
-	ids = x$id, group.id = TRUE, ...)
+	ylab = "semivariance", multipanel = TRUE, plot.numbers = FALSE, 
+	scales, ids = x$id, group.id = TRUE, skip, ...)
 }
 \arguments{
 \item{x}{ object of class "variogram", obtained from the function 
@@ -34,6 +34,7 @@ case of the plotting of variograms and cross variograms }
 if TRUE, panels divide direction and colors indicate variables
 (ids), if FALSE panels divide variables/variable pairs and colors
 indicate direction}
+\item{skip}{ logical; can be used to arrange panels, see \link{xyplot}}
 \item{\dots}{ any arguments that will be passed to the panel plotting functions
 (such as \code{auto.key} in examples below) }
 }

@@ -15,7 +15,9 @@ krige.cv(formula, locations, data, model = NULL, beta = NULL, nmax = Inf,
   kriging, suppose \code{z} is linearly dependent on \code{x} and \code{y},
   use the formula \code{z~x+y}}
   \item{locations}{ formula with only independent variables that define the
-  spatial data locations (coordinates), e.g. \code{~x+y} }
+  spatial data locations (coordinates), e.g. \code{~x+y}; if \code{data}
+  is of class \code{spatial.data.frame}, this argument may be ignored, as
+  it can be derived from the data }
   \item{data}{ data frame; should contain the dependent variable, independent
   variables, and coordinates. }
   \item{model}{ variogram model of dependent variable (or its residuals), 
