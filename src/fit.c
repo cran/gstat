@@ -45,7 +45,6 @@
 #include "plot.h"
 #include "glvars.h"
 #include "reml.h"
-#include "lm_type.h"
 #include "lm.h"
 #include "fit.h"
 
@@ -160,7 +159,7 @@ static void wls_fit(VARIOGRAM *vp) {
 		print_progress(n_iter, gl_iter);
 		if (DEBUG_VGMFIT) 
 			printlog("%s: ", vp->descr);
-		if (fit_GaussNewton(vp, p, lm, n_iter, &bounded)) {
+		if ((vp->fit_is_singular = fit_GaussNewton(vp, p, lm, n_iter, &bounded))) {
 			pr_warning("singular model in variogram fit");
 			print_progress(gl_iter, gl_iter);
 			return;

@@ -26,7 +26,8 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
     .Call("gstat_exit", 0, PACKAGE = "gstat")
     model$psill = ret[[1]]
     model$range = ret[[2]]
+	attr(model, "singular") = as.logical(ret[[3]]);
     if (print.SSE) 
-        print(paste("SSErr: ", ret[[3]]))
+        print(paste("SSErr: ", ret[[4]]))
     model
 }

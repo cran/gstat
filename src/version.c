@@ -63,6 +63,8 @@ void	m_version()
 	printf("EJP: added prototypes to header files\n");
 	printf("EJP: removed note about machine.van in configure.[h|hin] \n");
 	printf("EJP: (seems to be missing)\n");
+	printf("EJP: meminfo.h: removed MEM_STAT_REG and mem_stat_free()\n");
+	printf("EJP: -- they caused many warnings\n");
 }
 
 /* $Log: version.c,v $

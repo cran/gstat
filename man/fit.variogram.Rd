@@ -2,9 +2,8 @@
 \alias{fit.variogram}
 \title{ Fit a Variogram Model to a Sample Variogram }
 \description{
-Fit a simple or nested variogram model to a sample variogram, allowing
-partial fixing of parameters
-}
+Fit ranges and/or sills from a simple or nested variogram model 
+to a sample variogram }
 \usage{
 fit.variogram(object, model, fit.sills = T, fit.ranges = T,
 	fit.method = 7, print.SSE = FALSE, debug.level = 1)
@@ -30,7 +29,10 @@ errors of the fitted model }
 \item{debug.level}{ integer; set gstat internal debug level }
 }
 \value{
-returns a fitted variogram model (of class \code{variogram.model})
+returns a fitted variogram model (of class \code{variogram.model}).
+This is a data.frame with a logical attribute "singular" that
+indicates whether the non-linear fit converged, or ended in a 
+singularity.
 }
 \references{ \url{http://www.gstat.org/} }
 \author{ Edzer J. Pebesma }

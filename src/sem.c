@@ -199,7 +199,7 @@ static SAMPLE_VGM *semivariogram(DATA *d, SAMPLE_VGM *ev) {
  */
 	ev->evt = SEMIVARIOGRAM;
 	ev = alloc_exp_variogram(d, NULL, ev);
-	if (d->grid != NULL)
+	if (d->grid != NULL && d->prob > 0.5 && d->every == 1)
 		ev = semivariogram_grid(d, ev);
 	else 
 		ev = semivariogram_list(d, ev);
@@ -255,12 +255,13 @@ static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev) {
 					if (! (ev->zero == ZERO_AVOID && ddist == 0.0)) {
 						if (gl_cressie)
 							gamma = sqrt(fabs(d->sel[i]->attr - d->sel[j]->attr));
-						else
+						else {
 							gamma = SQR(d->sel[i]->attr - d->sel[j]->attr);
 #ifdef ADJUST_VARIANCE
-						if (d->colnvariance)
-							gamma -= d->sel[i]->variance + d->sel[j]->variance;
+							if (d->colnvariance)
+								gamma -= d->sel[i]->variance + d->sel[j]->variance;
 #endif
+						}
 						uli = i; ulj = j;
 						push_to_cloud(ev, gamma / 2.0, ddist, TO_NH(uli,ulj));
 					}
@@ -289,11 +290,11 @@ static SAMPLE_VGM *semivariogram_grid(DATA *d, SAMPLE_VGM *ev) {
 	double gamma, ddist;
 	DPOINT a, b, *dpa = NULL, *dpb = NULL;
 
-	max_index = floor(ev->cutoff / SQUARECELLSIZE(d->grid));
+	max_index = (int) floor(ev->cutoff / SQUARECELLSIZE(d->grid));
 	grid_ev.gi = (grid_index *) emalloc(2 * (max_index + 1) * (max_index + 1)
 		* sizeof(grid_index));
 	grid_ev.n = 0;
-	a.x = a.y = a.z = 0;
+	a.x = a.y = a.z = b.z = 0.0;
 	/* setup the grid: */
 	for (row = 0; row <= max_index; row++) {
 		for (col = (row == 0 ? 1 : -max_index); col <= max_index; col++) {
@@ -593,9 +594,8 @@ void fill_cutoff_width(DATA *data /* pointer to DATA structure to derive
 	assert(v);
 
 	ev = v->ev;
-	if (get_n_masks() > 0) {
-		m = new_map();
-		m->is_write = 0;
+	if (get_n_masks() > 0 && get_method() != LSEM) {
+		m = new_map(READ_ONLY);
 		m->filename = get_mask_name(0);
 		if ((m = map_read(m)) == NULL)
 			ErrMsg(ER_READ, "cannot open map");

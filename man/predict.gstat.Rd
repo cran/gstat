@@ -7,7 +7,7 @@ cokriging, point- or block-kriging, and conditional simulation equivalents
 for each of the kriging methods.  }
 \usage{
 predict.gstat(object, newdata, block = numeric(0), nsim = 0, 
-	indicators = FALSE, BLUE = FALSE, debug.level = 1, ...)
+	indicators = FALSE, BLUE = FALSE, debug.level = 1, mask, ...)
 }
 \arguments{
 \item{object}{ object of class \code{gstat}, see \link{gstat} and
@@ -30,10 +30,16 @@ predict.gstat(object, newdata, block = numeric(0), nsim = 0,
 \item{BLUE}{ logical; if TRUE return the BLUE trend estimates only, 
 if FALSE return the BLUP predictions (kriging) }
 \item{debug.level}{ integer; set gstat internal debug level }
-\item{...}{ignored} } \details{ When a non-stationary (i.e., non-constant)
-mean is used, both for simulation and prediction purposes the variogram
-model defined should be that of the residual process, and not that of
-the raw observations.
+\item{mask}{ logical or numerical vector; pattern with valid values
+in newdata (marked as TRUE, non-zero, or non-NA); if mask is specified,
+the returned data frame will have the same number and order of rows 
+in newdata, and masked rows will be filled with NA's. }
+\item{...}{ (ignored; but necessary for the generic/method consistency) }
+}
+
+\details{ When a non-stationary (i.e., non-constant) mean is used, both
+for simulation and prediction purposes the variogram model defined should
+be that of the residual process, and not that of the raw observations.
 
 The algorirthm used by gstat for simulation random fields is the
 sequential simulation algorithm. This algorithm scales well to large or
@@ -74,8 +80,7 @@ columns of the conditional Gaussian or indicator simulations
 }
 
 \references{ 
- N.A.C. Cressie, 1993, Statistics for Spatial Data,
-Wiley. 
+N.A.C. Cressie, 1993, Statistics for Spatial Data, Wiley. 
 
 \url{http://www.gstat.org/}
 
@@ -85,7 +90,7 @@ For bucket PR quadtrees, excellent demos are found at
 \author{ Edzer J. Pebesma }
 \note{  }
 
-\seealso{ \link{gstat}, \link{krige} }
+\seealso{\link{gstat}, \link{krige}}
 
 \examples{
 # generate 5 conditional simulations
@@ -108,11 +113,11 @@ blue0$blue.res <- log(meuse$zinc) - blue0$log.zinc.pred
 bubble(blue0, zcol = "blue.res", main = "GLS residuals w.r.t. constant")
 
 # calculate generalised least squares residuals w.r.t. linear trend:
-m <- fit.variogram(variogram(log(zinc)~sqrt(dist),~x+y, meuse), 
+m <- fit.variogram(variogram(log(zinc)~sqrt(dist.m),~x+y, meuse), 
 	vgm(1, "Sph", 300, 1))
-g <- gstat(id = "log.zinc", formula = log(zinc)~sqrt(dist), locations = ~x+y, 
+g <- gstat(id = "log.zinc", formula = log(zinc)~sqrt(dist.m), locations = ~x+y, 
      model = m, data = meuse)
-blue1 <- predict(g, newdata = meuse, blue = TRUE)
+blue1 <- predict(g, newdata = meuse, BLUE = TRUE)
 blue1$blue.res <- log(meuse$zinc) - blue1$log.zinc.pred
 bubble(blue1, zcol = "blue.res", main = "GLS residuals w.r.t. linear trend")
 
@@ -126,8 +131,6 @@ yy <- predict(g.dummy, newdata = xy, nsim = 4)
 levelplot(sim1~x+y, yy, aspect = mapasp(yy))
 # show all four:
 levelplot(z~x+y|name, map.to.lev(yy, z=c(3:6)), aspect = mapasp(yy))
-
 }
-
 
 \keyword{ models }

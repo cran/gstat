@@ -40,13 +40,13 @@
 #include "debug.h"
 #include "select.h"
 #include "glvars.h"
-#include "lm_type.h"
 #include "lm.h"
 
 static void predict_lm(LM *lms, MAT *X0, double *est);
 static void create_lm(DATA **d, int nvars);
 static VEC *get_weights(DATA **d, VEC *weights, int nvars);
 static int get_colX_nr(DATA **d, int var, int x);
+static int zero_weights_count(LM *lm);
 static int contains_intercept(MAT *X);
 static int is_singular_silent(MAT *X, double cond_max, double *ce);
 
@@ -89,6 +89,42 @@ void pred_lm(DATA **data, int n_vars, DPOINT *where, double *est) {
 	return;
 }
 
+double *make_ols(DATA *d) {
+/* return value is allocated, but not freed */
+	int i, j, size;
+	double *est = NULL;
+	DATA **data;
+	LM *lm;
+
+	lm = (LM *) d->lm;
+	if (lm == NULL) {
+		data = get_gstat_data();
+		lm = (LM *) data[0]->lm;
+	}
+	select_at(d, NULL); /* where == NULL --> global selection */
+	/* return beta & Cov(beta) */
+	size = d->n_X * (1 + d->n_X);
+	est = (double *) emalloc(size * sizeof(double));
+	for (i = 0; i < size; i++)
+		set_mv_double(&(est[i]));
+	/* fill the LM stuff: */
+	create_lm(&d, 1);
+	if (DEBUG_FIT)
+		logprint_lm(d, d->lm);
+	lm = (LM *) d->lm;
+	if (lm->is_singular)
+		return est; /* all NA's */
+	for (i = 0; i < lm->beta->dim; i++) {
+		est[2 * i] = lm->beta->ve[i];
+		est[2 * i + 1] = lm->Cov->me[i][i];
+		for (j = 0; j < i; j++)
+			est[2 * lm->beta->dim + LTI2(i,j)] = lm->Cov->me[i][j];
+	}
+	free_lm(d->lm);
+	d->lm = NULL;
+	return est;
+}
+
 LM *init_lm(LM *lm) {
 	if (lm == NULL)
 		lm = (LM *) emalloc(sizeof(LM));
@@ -97,10 +133,10 @@ LM *init_lm(LM *lm) {
    	lm->beta = VNULL;
    	lm->Xty = VNULL;
    	lm->X = MNULL;
+   	lm->Cov = MNULL;
    	lm->Chol = MNULL;
    	lm->SSReg = lm->MSReg = DBL_MAX;
    	lm->SSErr = lm->MSErr = DBL_MAX;
-   	lm->no_variances = 0;
 	lm->is_singular = 0;
    	return lm;
 }
@@ -204,7 +240,7 @@ static void predict_lm(LM *lm, MAT *X0, double *est) {
 		col_X0 = get_col(X0, i, col_X0);
 		answer = CHsolve(lm->Chol, col_X0, answer);
 		est[2 * i + 1] = in_prod(col_X0, answer) * lm->MSErr;
-		if (max_block_dimension(0) == 0.0) /* pointwise prediction */
+		if (max_block_dimension(1) == 0.0) /* pointwise prediction */
 			est[2 * i + 1] += lm->MSErr;
 		for (j = 0; j < blup->dim; j++) {
 			if (j != i) {
@@ -328,7 +364,7 @@ static VEC *get_weights(DATA **d, VEC *weights, int nvars) {
 void logprint_lm(DATA *d, LM *lm) {
 	double SSTot;
 	char line[] = "-----------------------------------------------------------";
-	int i;
+	int i, coords = 0;
 
 	if (lm->dfReg <= 0)
 		return;
@@ -345,10 +381,15 @@ void logprint_lm(DATA *d, LM *lm) {
 			printlog("%g", lm->beta->ve[i]);
 			if (d->colX[i] > 0)
 				printlog(" [col %d]", d->colX[i]);
-			if (d->colX[i] < 0)
+			if (d->colX[i] < 0) {
 				printlog(" %s", POLY_NAME(d->colX[i]));
+				coords = 0;
+			}
 		}
-		printlog(" + e\n(Note: coefficients apply to coordinates that were transformed to [0,1])\n\n");
+		printlog(" + e\n");
+		if (coords)
+			printlog(
+"(Note: coordinate coefficients apply to normalized coordinates)\n\n");
 	}
 	printlog("Summary statistics (model %s intercept):\n",
 		lm->has_intercept ? "with" : "without");
@@ -376,7 +417,7 @@ LM *calc_lm(LM *lm) {
  * calculate Chol,Xty,beta,SSErr,SSReg,MSErr^...
  * ASSUMES lm->X, lm->y and optionally lm->weights to be filled!
  */
-	double y_mean = 0, w, cn;
+	double y_mean = 0, w, wt, cn;
 	int i, j, k;
 	static MAT *QR = MNULL;
 	static VEC *tmp = VNULL;
@@ -386,6 +427,10 @@ LM *calc_lm(LM *lm) {
 	if (lm->X->m != lm->y->dim) {
 		message("size: %d %d %d\n", lm->X->m, lm->y->dim, lm->X->n);
 		ErrMsg(ER_IMPOSVAL, "calc_lm: matrices wrong size");
+	}
+	if (lm->X->m < lm->X->n) {
+		lm->is_singular = 1;
+		return lm;
 	}
 /* 
  * allocate structures: 
@@ -416,12 +461,13 @@ LM *calc_lm(LM *lm) {
 		}
 	}
 /* 
- * create Chol = X'X (X'WX) and XtY = (y'X)' = X'y  (X'Wy)
+ * create Chol = X'X (or X'WX) and XtY = (y'X)' = X'y  (X'Wy)
  */
 	lm->Xty = vm_mlt(lm->X, lm->y, lm->Xty);
-	/* but use X = QR; X'X = (QR)'QR = R'Q'QR = R'R (= L L' , the Choleski)*/
+	/* but use X = QR; X'X = (QR)'QR = R'Q'QR = R'R (= L L', the Choleski)*/
 	QR = m_copy(lm->X, m_resize(QR, lm->X->m, lm->X->n));
 	QRfactor(QR, tmp);
+
 	if (lm->cn_max > 0.0) {
 		lm->is_singular = ((cn = QRcondest(QR)) > lm->cn_max);
 		if (DEBUG_COV) {
@@ -437,7 +483,6 @@ LM *calc_lm(LM *lm) {
 		}
 		if (lm->is_singular)
 			return lm;
-			/* ErrMsg(ER_IMPOSVAL, "singular matrix in calc_lm()"); */
 	}
 	/* not singular, solve for beta: */
 	QRsolve(QR, tmp, lm->y, lm->beta);
@@ -446,22 +491,19 @@ LM *calc_lm(LM *lm) {
 		v_logoutput(lm->beta);
 	}
 
-	if (lm->no_variances)
-		return lm;
-
 	/* after QRfactorizing X, R is in the upper triangle of QR */
-	/* form X'X, place it in Chol */
-	lm->Chol = m_resize(lm->Chol, lm->X->n, lm->X->n);
-	m_zero(lm->Chol);
+	/* form X'X, place it in Cov */
+	lm->Cov = m_resize(lm->Cov, lm->X->n, lm->X->n);
+	m_zero(lm->Cov);
 	for (i = 0; i < lm->X->n; i++) /* row */
 		for (j = 0; j <= i; j++) { /* col */
 			for (k = 0; k <= j; k++) /* k = MIN(i,j): R is upper triang. */
-				lm->Chol->me[i][j] += QR->me[k][i] * QR->me[k][j]; /* R */
-			lm->Chol->me[j][i] = lm->Chol->me[i][j]; /* symmetric */
+				lm->Cov->me[i][j] += QR->me[k][i] * QR->me[k][j]; /* R */
+			lm->Cov->me[j][i] = lm->Cov->me[i][j]; /* symmetric */
 		}
 	if (DEBUG_COV) {
 		printlog("#X'X is ");
-		m_logoutput(lm->Chol);
+		m_logoutput(lm->Cov);
 	}
 /*
  * estimate error variance:
@@ -469,7 +511,11 @@ LM *calc_lm(LM *lm) {
 	for (i = 0, lm->SSErr = 0.0; i < lm->X->m; i++) {
 		tmp = get_row(lm->X, i, tmp);
 		w = lm->y->ve[i] - in_prod(tmp, lm->beta); /* e^ = y - Xb^ */
-		lm->SSErr += w * w; /* weights were incorporated above */
+		if (lm->weights)
+			wt = lm->weights->ve[i];
+		else
+			wt = 1.0;
+		lm->SSErr += wt * w * w; /* weights were incorporated above */
 	}
 	if (DEBUG_COV)
 		printlog("#SSErr is %g\n", lm->SSErr);
@@ -481,7 +527,7 @@ LM *calc_lm(LM *lm) {
  * (weighted): see below
  */
 	tmp = v_resize(tmp, lm->X->n);
-	tmp = vm_mlt(lm->Chol, lm->beta, tmp);
+	tmp = vm_mlt(lm->Cov, lm->beta, tmp);
 	lm->SSReg = in_prod(lm->beta, tmp);
 	if (lm->has_intercept) {
 		for (i = 0, y_mean = 0.0; i < lm->y->dim; i++)
@@ -496,20 +542,35 @@ LM *calc_lm(LM *lm) {
 		lm->MSReg = lm->SSReg/lm->dfReg;
 	else
 		lm->MSReg = DBL_MAX;
- 	lm->dfE = lm->X->m - lm->X->n;
+ 	lm->dfE = lm->X->m - zero_weights_count(lm) - lm->X->n;
 	if (lm->dfE == 0)
 		lm->MSErr = DBL_MAX;
 	else
 		lm->MSErr = lm->SSErr/lm->dfE;
+	lm->Cov = m_inverse(lm->Cov, lm->Cov); /* (X'X)-1 */
+	/* next, multiply with sigma^2 */
+	sm_mlt(lm->MSErr, lm->Cov, lm->Cov); /* in situ mlt */
 /* 
- * fill lm->Chol with the Choleski factorization of X'X, held in R
+ * fill lm->Chol now with the Choleski factorization of X'X, held in R
  */
+	lm->Chol = m_resize(lm->Chol, lm->X->n, lm->X->n);
 	for (i = 0; i < lm->X->n; i++) {
 		lm->Chol->me[i][i] = QR->me[i][i];
 		for (j = i + 1; j < lm->X->n; j++)
 			lm->Chol->me[i][j] = lm->Chol->me[j][i] = QR->me[i][j];
 	}
 	return lm;
+}
+
+static int zero_weights_count(LM *lm) {
+	int i, n_zero = 0;
+
+	if (lm->weights == VNULL)
+		return 0;
+	for (i = 0; i < lm->weights->dim; i++)
+		if (lm->weights->ve[i] < gl_zero)
+			n_zero++;
+	return n_zero;
 }
 
 static int contains_intercept(MAT *X) {
@@ -572,39 +633,49 @@ double calc_mu(const DATA *d, const DPOINT *where) {
 
 /* modified from the meschach code: */
 static char    *format = "%14.9g ";
-void    m_logoutput(MAT *a)
+void m_logoutput(MAT * a)
 {
-     u_int      i, j, tmp;
-     
-     if ( a == (MAT *)NULL )
-     {  printlog("Matrix: NULL\n");   return;         }
-     printlog("Matrix: %d by %d\n",a->m,a->n);
-     if ( a->me == (Real **)NULL )
-     {  printlog("NULL\n");           return;         }
-     for ( i=0; i<a->m; i++ )   /* for each row... */
-     {
-	  printlog("row %u: ",i);
-	  for ( j=0, tmp=2; j<a->n; j++, tmp++ )
-	  {             /* for each col in row... */
-	       printlog(format,a->me[i][j]);
-	       if ( ! (tmp % 5) )       printlog("%s", "\n");
-	  }
-	  if ( tmp % 5 != 1 )   printlog("%s", "\n");
-     }
+	u_int i, j, tmp;
+
+	if (a == (MAT *) NULL) {
+		printlog("Matrix: NULL\n");
+		return;
+	}
+	printlog("Matrix: %d by %d\n", a->m, a->n);
+	if (a->me == (Real **) NULL) {
+		printlog("NULL\n");
+		return;
+	}
+	for (i = 0; i < a->m; i++) {	/* for each row... */
+		printlog("row %u: ", i);
+		/* for each col in row: */
+		for (j = 0, tmp = 2; j < a->n; j++, tmp++) {
+			printlog(format, a->me[i][j]);
+			if (!(tmp % 5))
+				printlog("%s", "\n");
+		}
+		if (tmp % 5 != 1)
+			printlog("%s", "\n");
+	}
 }
 
-void    v_logoutput(VEC *x)
+void v_logoutput(VEC * x)
 {
-     u_int      i, tmp;
-     
-     if ( x == (VEC *)NULL )
-     {  printlog("Vector: NULL\n");   return;         }
-     printlog("Vector: dim: %d\n",x->dim);
-     if ( x->ve == (Real *)NULL )
-     {  printlog("NULL\n");   return;         }
-     for ( i=0, tmp=0; i<x->dim; i++, tmp++ )
-     {
-	  printlog(format,x->ve[i]);
-	  if ( tmp % 5 == 4 )   printlog("%s", "\n");
-     }
+	u_int i, tmp;
+
+	if (x == (VEC *) NULL) {
+		printlog("Vector: NULL\n");
+		return;
+	}
+	printlog("Vector: dim: %d\n", x->dim);
+	if (x->ve == (Real *) NULL) {
+		printlog("NULL\n");
+		return;
+	}
+	for (i = 0, tmp = 0; i < x->dim; i++, tmp++) {
+		printlog(format, x->ve[i]);
+		if (tmp % 5 == 4)
+			printlog("%s", "\n");
+	}
+
 }

@@ -39,20 +39,12 @@ typedef struct {
 		*empty; /* pointer to empty elements (a stack), NULL if none left */
 	int blocks; /* size of memory block */
 	Q_ELEMENT **block; /* pointers to malloc'ed memory blocks */
-	int (
-#ifdef SPLUS6WIN32
-		__cdecl
-#endif
-		*cmp)(const Q_ELEMENT_WHAT *a, const Q_ELEMENT_WHAT *b);
+	int (CDECL *cmp)(const Q_ELEMENT_WHAT *a, const Q_ELEMENT_WHAT *b);
 	/* qsort-compatible element comparison function */
 } QUEUE;
 
 QUEUE *init_queue(QUEUE *q,
-	int (
-#ifdef SPLUS6WIN32
-		__cdecl
-#endif
-		*cmp)(const Q_ELEMENT_WHAT *a, const Q_ELEMENT_WHAT *b));
+	int (CDECL *cmp)(const Q_ELEMENT_WHAT *a, const Q_ELEMENT_WHAT *b));
 Q_ELEMENT_WHAT dequeue(QUEUE *q);
 void enqueue(QUEUE *q, Q_ELEMENT_WHAT *qpt, int n);
 void free_queue(QUEUE *q);

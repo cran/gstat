@@ -16,6 +16,8 @@ typedef enum {
 	XYP,  /* x and y coordinate of location */
 	POLY, /* point-in-polygon */
 	DIV, /* diversity, range */
+	SKEW, /* skewness, kurtosis */
+	LSEM, /* locally fitted semivariogram parameters */
 	TEST  /* does nothing really */
 } METHOD;
 
@@ -102,7 +104,7 @@ extern int gl_nblockdiscr, gl_seed, gl_n_uk, gl_dots, gl_cressie, gl_zero_est,
 	gl_order, gl_n_intervals, gl_gls_residuals, gl_asym_vgm,
 	gl_numbers, gl_nsim, gl_lhs, gl_n_marginals, gl_sparse, gl_rp,
 	gl_coincide, gl_nocheck, gl_spiral, gl_secure, gl_split,
-	gl_register_pairs, gl_plotweights, gl_mvbeta;
+	gl_register_pairs, gl_plotweights, gl_sim_beta, gl_rowwise;
 extern double gl_rho, gl_idp, gl_cutoff, gl_iwidth, gl_zmap, gl_gcv,
 	gl_quantile, gl_fit_limit, gl_fraction, gl_cn_max, gl_alpha,
 	gl_beta, gl_tol_hor, gl_tol_ver, *gl_bounds,

@@ -9,6 +9,12 @@
 
 #include "config.h"
 
+#ifdef SPLUS6WIN32
+# define CDECL __cdecl
+#else
+# define CDECL /* empty */
+#endif
+
 #ifdef DMALLOC
 #define efree free
 #define emalloc malloc

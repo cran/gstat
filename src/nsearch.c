@@ -107,11 +107,7 @@ static void logprint_qtree(QTREE_NODE *node, int depth);
 static BBOX bbox_from_grid(const GRIDMAP *gt, const DATA_GRIDMAP *dg);
 static BBOX bbox_from_data(DATA *d);
 static void qtree_zero_all_leaves(QTREE_NODE *node);
-static int 
-#ifdef SPLUS6WIN32
-	__cdecl
-#endif
-	node_cmp(const QUEUE_NODE *a, const QUEUE_NODE *b);
+static int CDECL node_cmp(const QUEUE_NODE *a, const QUEUE_NODE *b);
 void logprint_queue(QUEUE *queue);
 
 static void init_qtree(DATA *d) {
@@ -718,11 +714,7 @@ void logprint_queue(QUEUE *queue) {
 	}
 }
 
-static int 
-#ifdef SPLUS6WIN32
-	__cdecl
-#endif
-	node_cmp(const QUEUE_NODE *a, const QUEUE_NODE *b) {
+static int CDECL node_cmp(const QUEUE_NODE *a, const QUEUE_NODE *b) {
 /* ANSI qsort() conformant comparison function */
 
 	if (a->dist2 < b->dist2)

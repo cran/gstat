@@ -344,7 +344,7 @@ static char *bquote(char *command) {
  * substitute back-quoted string with result from shell command
  * uses pipe or temporary file 
  */
-	int size = 0, where = 0;
+	int size = 0; 
 	char *cp = NULL;
 	FILE *f;
 
@@ -363,6 +363,8 @@ static char *bquote(char *command) {
 	eremove(fn);
 #else
 #define STEP 1000
+	int where = 0;
+
 	f = epopen(command, "r");
 	do {
 		cp = (char *) erealloc(cp, where + STEP);

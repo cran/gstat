@@ -69,7 +69,9 @@ const DATA_TYPE data_types[] = {
 	{ DATA_GMT, "GMT netCDF format" },
 	{ DATA_SURFER_DSAA, "Surfer DSAA ascii grid" },
 	{ DATA_GSLIB, "GSLIB grid" },
-	{ DATA_GRASS, "GRASS site list" }
+	{ DATA_GRASS, "GRASS site list" },
+	{ DATA_GRASS_GRID, "GRASS raster" },
+	{ DATA_GDAL, "GDAL raster map" }
 }; 
 
 static int read_data_line(FILE *f, char *line, DATA *d, DPOINT *current,
@@ -201,17 +203,15 @@ DATA *read_gstat_data(DATA *d) {
 	} 
 #ifdef HAVE_LIBGIS
 	if (grass()) {
-		DUMP(d->fname); DUMP(": trying Grass sitelist ... ");
+		DUMP(d->fname); 
+		DUMP(": trying Grass site list/raster ... ");
 		if (read_grass_data(d)) {
-			DUMP("Yes\n");
+			DUMP("Yes; site list\n");
+		} else if (read_data_from_map(d)) {
+			DUMP("Yes; raster\n");
 		} else {
-			DUMP("No, trying grass raster map:\n");
-			if (! read_data_from_map(d)) {
-				DUMP("O.K.\n");
-			} else {
-				pr_warning("%s: ", d->fname);
-				ErrMsg(ER_IMPOSVAL, "cannot read data");
-			}
+			DUMP("no\n");
+			ErrMsg(ER_READ, d->fname);
 		}
 	} else
 #endif
@@ -806,11 +806,7 @@ static void transform_data(DATA *d) {
 			values[i].index = i; /* unique identifiers */
 		}
 		qsort((void *) values, (size_t) d->n_list, sizeof(Double_index),
-			(int 
-#ifdef SPLUS6WIN32
-__cdecl
-#endif
-			 (*)(const void *, const void *)) double_index_cmp);
+			(int CDECL (*)(const void *, const void *)) double_index_cmp);
 		for (i = 0; i < d->n_list; i += tie_length) { /* ignore ties: */
 			/* assume they're all ties, with min run length 1: */
 			tie_length = 1;
@@ -1082,7 +1078,7 @@ DATA *init_one_data(DATA *data) {
 	data->colny = 0;
 	data->colnz = 0;
 	data->colns = 0;
-      data->coln_id = 0;
+	data->coln_id = 0;
 	data->colnvariance = 0;
 	data->n_list = -1;
 	data->n_max = -1;
@@ -1277,7 +1273,7 @@ void push_point(DATA *d, const DPOINT *p) {
 				d->n_max = MAX_DATA;
 		} else {
 			d->n_max += MAX_DATA; /* or else: d->n_max *= 2; */
-			if (d->init_max > 0)
+			if (d->init_max > 0 && DEBUG_DUMP)
 				pr_warning("exceeding nmax, now %d", d->n_max);
 		}
 
@@ -1443,8 +1439,8 @@ static int read_data_from_map(DATA *d) {
 	unsigned int i, j, first_cell = 1;
 	GRIDMAP *m = NULL;
 
-    current.z = 0.0;
-    current.bitfield = 0;
+	current.z = 0.0;
+	current.bitfield = 0;
     
 	if (d->id == ID_OF_VALDATA && max_block_dimension(0) > 0.0)
 		SET_BLOCK(&current);
@@ -1452,9 +1448,8 @@ static int read_data_from_map(DATA *d) {
 		SET_POINT(&current);
 	current.X = (double *) emalloc(sizeof(double));
 	current.X[0] = 1.0;
-	m = new_map();
+	m = new_map(READ_ONLY);
 	m->filename = d->fname;
-	m->is_write = 0;
 	if (map_read(m) == NULL) {
 		map_free(m);
 		return 0;
@@ -1477,7 +1472,8 @@ static int read_data_from_map(DATA *d) {
 		case MT_GMT: d->type = data_types[DATA_GMT]; break;
 		case MT_SURFER: d->type = data_types[DATA_SURFER_DSAA]; break;
 		case MT_GSLIB: d->type = data_types[DATA_GSLIB]; break;
-		case MT_GRASS: d->type = data_types[DATA_GRASS]; break;
+		case MT_GRASS: d->type = data_types[DATA_GRASS_GRID]; break;
+		case MT_GDAL: d->type = data_types[DATA_GDAL]; break;
 		default:
 			ErrMsg(ER_IMPOSVAL, "m->type value not evaluated");
 	}
@@ -2095,17 +2091,30 @@ double data_block_diagonal(DATA *data) {
 	return sqrt(dx * dx + dy * dy + dz * dz);
 }
 
-D_VECTOR *push_to_vector(double d, D_VECTOR *v) {
+D_VECTOR *push_d_vector(double d, D_VECTOR *v) {
 	if (v == NULL) {
 		v = (D_VECTOR *) emalloc(sizeof(D_VECTOR));
-		v->size = 1;
-		v->val = (double *) emalloc(sizeof(double));
-	} else {
-		v->size++;
-		v->val = (double *) erealloc(v->val, v->size * sizeof(double));
+		v->size = v->max_size = 0;
+		v->val = NULL;
+	}
+	v->size++;
+	if (v->size > v->max_size) { /* (re)allocate */
+		if (v->val == NULL)
+			v->val = (double *) emalloc(v->size * sizeof(double));
+		else
+			v->val = (double *) erealloc(v->val, v->size * sizeof(double));
+		v->max_size = v->size;
 	}
 	v->val[v->size - 1] = d;
 	return v;
+}
+
+void free_d_vector(D_VECTOR *v) {
+	if (v != NULL) {
+		if (v->size > 0)
+			efree(v->val);
+		efree(v);
+	}
 }
 
 int intercept_only(const DATA *d) {
@@ -2115,6 +2124,14 @@ int intercept_only(const DATA *d) {
 
 double v_mu(double mu) {
 	return mu;
+}
+
+double v_mu2(double mu) {
+	return mu * mu;
+}
+
+double v_mu3(double mu) {
+	return mu * mu * mu;
 }
 
 double v_bin(double mu) {
@@ -2153,16 +2170,22 @@ UTM (value 1).  Change the value \"proj\" in file \"WIND\" to either \
 
 	/* Obtain the mapset name for the chosen site_lists file d->fname */
 	if ((site_mapset = G_find_file("site_lists", d->fname, "")) == NULL)
-		G_fatal_error("%s: Site_lists file: <%s> does not exist.",
+		/*
+		G_fatal_error("%s: Site_list file: <%s> does not exist.",
 				G_program_name(), d->fname);
+		*/
+		return NULL;
 
 	/* Get "mapset". */
 	vect_mapset = G_mapset();
 
 	/* Open site_lists file. */
 	if ((fd = G_fopen_sites_old(d->fname, site_mapset))== NULL)
+		/*
 		G_fatal_error("%s: Unable to open site_lists file <%s> in mapset <%s>",
 				G_program_name(), d->fname, site_mapset);
+		*/
+		return NULL;
 
 	if (G_site_describe(fd, &dims, &cat, &strs, &dbls) != 0)
 		G_fatal_error("%s: G_site_describe() failed to guess format!",

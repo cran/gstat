@@ -12,16 +12,11 @@ pl1 <- levelplot(var1.pred ~ x + y, lzn.kr, aspect = mapasp(lzn.kr),
 pl2 <- levelplot(sqrt(var1.var) ~ x + y, lzn.kr, aspect = mapasp(lzn.kr),
 	main = "ordinary kriging prediction error")
 
-# obtain ndist values in meuse.grid at data locations of meuse:
-# (inverse distance is fine, as the neighbourhood size is 1)
-x <- krige(ndist ~ 1, ~ x + y, meuse.grid, meuse, model = NULL, nmax = 1)
-meuse$ndist = x$var1.pred
-
 # universal kriging
-v <- variogram(log(zinc)~sqrt(ndist),~x+y, meuse)
+v <- variogram(log(zinc)~sqrt(dist),~x+y, meuse)
 m <- fit.variogram(v, vgm(1, "Exp", 300, 1))
 plot(v, model = m)
-lzn.kr <- krige(formula = log(zinc)~sqrt(ndist), locations = ~x+y, model = m, 
+lzn.kr <- krige(formula = log(zinc)~sqrt(dist), locations = ~x+y, model = m, 
 	data = meuse, newdata = meuse.grid)
 pl3 <- levelplot(var1.pred ~ x + y, lzn.kr, aspect = mapasp(lzn.kr),
 	main = "universal kriging prediction of log-zinc")

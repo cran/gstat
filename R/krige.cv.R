@@ -1,6 +1,7 @@
 "krige.cv" <-
-function (formula, locations, data, model = NULL, beta = NULL, nmax = Inf, 
-	maxdist = Inf, nfold = nrow(data), verbose = TRUE, ...)
+function (formula, locations, data = sys.frame(sys.parent()), 
+	model = NULL, beta = NULL, nmax = Inf, maxdist = Inf, 
+	nfold = nrow(data), verbose = TRUE, ...)
 {
 	nc = 2 + length(attr(terms(~x+y),"term.labels"))
 	ret = data.frame(matrix(NA, nrow(data), nc))

@@ -89,12 +89,8 @@
 #define DELTA_AB(_p,_a,_b,_r) (_p).x = (_a).x + (_r) * ((_b).x - (_a).x);\
 (_p).y = (_a).y + (_r) * ((_b).y - (_a).y);
 
-static char InPoly( PLOT_POINT q, POLYGON *Poly);
-static int 
-#ifdef SPLUS6WIN32
-	__cdecl
-#endif
-	dist_cmp(const DPOINT **ap, const DPOINT **bp);
+static char InPoly(PLOT_POINT q, POLYGON *Poly);
+static int CDECL dist_cmp(const DPOINT **ap, const DPOINT **bp);
 unsigned char line_of_sight(const PLOT_POINT data, const PLOT_POINT target,
                             const POLYGON *p_obj);
 static unsigned int segment_cross_check(PLOT_POINT p1, PLOT_POINT p2, PLOT_POINT p3, PLOT_POINT p4, double *r, double *s);
@@ -102,7 +98,6 @@ static unsigned int segment_parallel_check(PLOT_POINT a, PLOT_POINT b, PLOT_POIN
 static int segment_between_check(PLOT_POINT a, PLOT_POINT b, PLOT_POINT c);
 static unsigned int check_open_edges(const PLOT_POINT data, const int target_side,
                                      const PLOT_POINT target, const POLYGON *p_obj);
-static void setup_poly_minmax(POLYGON *pl);
 static void print_poly_log(POLYGON *edge);
 
 static const char *fname = NULL;
@@ -300,7 +295,7 @@ int point_in_polygon(PLOT_POINT point, POLYGON *pl)
         (point.y < pl->mbr.min.y) || (point.y > pl->mbr.max.y))
         return 0;
     else
-        return InPoly(point,pl) != 'o';
+        return InPoly(point, pl) != 'o';
     
 }
 
@@ -331,7 +326,7 @@ not removed.
 InPoly returns a char in {i,o,v,e}.  See above for definitions.
 */
 
-static char InPoly( PLOT_POINT q, POLYGON *Poly)
+static char InPoly(PLOT_POINT q, POLYGON *Poly)
 {
     int n = Poly->lines;
     PLOT_POINT *P=Poly->p;
@@ -533,11 +528,7 @@ void check_edges(DATA *d, const DPOINT *where) {
 		return;
     /* otherwise sort d->sel by dist2 (u.dist2 is smaller then BAD, so it comes out first:*/
     qsort(d->sel, (size_t) d->n_sel, sizeof(DPOINT *),
-          (int 
-#ifdef SPLUS6WIN32
-	__cdecl
-#endif
-	   (*)(const void *,const void *)) dist_cmp);
+          (int CDECL (*)(const void *,const void *)) dist_cmp);
     /* and set d->n_sel to the number of GOOD ones */
     d->n_sel -= culled;
     return;
@@ -770,11 +761,7 @@ static int segment_between_check(PLOT_POINT a, PLOT_POINT b, PLOT_POINT c) {
 
 */
 
-static int 
-#ifdef SPLUS6WIN32
-__cdecl
-#endif
-dist_cmp(const DPOINT **pa, const DPOINT **pb) {
+static int CDECL dist_cmp(const DPOINT **pa, const DPOINT **pb) {
 /* ANSI qsort() conformant dist_cmp */
 
 	if ( (*pa)->u.dist2 < (*pb)->u.dist2 )
@@ -794,7 +781,7 @@ static unsigned int check_open_edges(const PLOT_POINT data, const int target_sid
 }
 
 
-static void setup_poly_minmax(POLYGON *pl) {
+void setup_poly_minmax(POLYGON *pl) {
     int i, n=pl->lines;
     double minx,maxx,miny,maxy;
     

@@ -102,6 +102,8 @@ void init_userio(int use_stdio) {
 	error_prefix    = resize_strbuf(error_prefix, ERROR_BUFFER_SIZE);
 	error_message   = resize_strbuf(error_message, ERROR_BUFFER_SIZE);
 	warning_message = resize_strbuf(warning_message, ERROR_BUFFER_SIZE);
+	error_prefix->str[0] = error_message->str[0] = 
+			warning_message->str[0] = '\0';
 }
 
 /*
@@ -148,6 +150,7 @@ void gstat_error(char *fname, int line,
 	}
 
 	gstat_handler.error_handler(error_message->str, err_nr);
+	error_message->str[0] = '\0';
 	return;
 }
 
@@ -337,7 +340,7 @@ void default_progress(unsigned int current, unsigned int total) {
 /**************************** meschach error functions ****************/
 
 #define SING_ERR \
-"Read the manual (http://www.geog.uu.nl/gstat/manual)\n\
+"Read the manual at http://www.gstat.org/ ;\n\
 look for: Trouble shooting -> Error messages -> From meschach"
 
 #define MEM_ERR \

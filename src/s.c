@@ -56,6 +56,7 @@
 # define Rprintf printf
 #endif
 
+#include "defs.h"
 #include "data.h"
 #include "select.h"
 #include "utils.h"
@@ -70,6 +71,7 @@
 #include "msim.h"
 #include "random.h"
 #include "getest.h"
+#include "polygon.h"
 
 void no_progress(unsigned int current, unsigned int total);
 void s_gstat_error(const char *mess, int level);
@@ -94,6 +96,7 @@ SEXP gstat_init(SEXP s_debug_level) {
 	seed_is_in = 1;
 	set_rng_functions(s_r_uniform, s_r_normal, "S/R random number generator");
 	debug_level = INTEGER_POINTER(s_debug_level)[0];
+	gl_secure = 1;
 	return(s_debug_level);
 }
 
@@ -109,8 +112,8 @@ SEXP gstat_exit(SEXP x) {
 }
 
 SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
-			SEXP beta, SEXP nmax, SEXP maxdist, SEXP vfn) {
-	double *y, *locs, *X;
+			SEXP beta, SEXP nmax, SEXP maxdist, SEXP vfn, SEXP sw) {
+	double *y, *locs, *X, *w = NULL;
 	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
 	DATA **d;
@@ -131,6 +134,9 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	if (dim <= 0 || dim > 3)
 		PROBLEM "too many dimensions: %ld", dim ERROR;
 	locs = NUMERIC_POINTER(slocs);
+
+	if (LENGTH(sw) == n)
+		w = NUMERIC_POINTER(sw);
 
 	if (LENGTH(sX) % n != 0)
 		PROBLEM "dimensions do not match: X %d and data %ld",
@@ -162,15 +168,17 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		data_add_X(d[id], i + (has_int ? 0 : 1)); 
 	assert(d[id]->n_X == n_X);
 	for (i = 0; i < LENGTH(beta); i++) /* do nothing if beta is numeric(0) */
-		d[id]->beta = push_to_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
+		d[id]->beta = push_d_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
 	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
 		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
 	if (NUMERIC_POINTER(maxdist)[0] > 0.0)
 		d[id]->sel_rad = NUMERIC_POINTER(maxdist)[0];
 	switch(INTEGER_POINTER(vfn)[0]) {
-		case 1: /* d[id]->variance_fn = v_identity; */ break;
+		case 1: /* d[id]->variance_fn = v_identity; == leave NULL */ break;
 		case 2: d[id]->variance_fn = v_mu; break;
 		case 3: d[id]->variance_fn = v_bin; break;
+		case 4: d[id]->variance_fn = v_mu2; break;
+		case 5: d[id]->variance_fn = v_mu3; break;
 		default: PROBLEM "unknown variance function %d", 
 				 	INTEGER_POINTER(vfn)[0] ERROR;
 	}
@@ -180,6 +188,8 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	if (dim > 2)
 		d[id]->mode = d[id]->mode | Z_BIT_SET;
 	set_norm_fns(d[id]); /* so gstat can calculate distances */
+	if (w != NULL)
+		d[id]->colnvariance = 1; /* it is set */
 	SET_POINT(&current);
 	current.u.stratum = 0;
 	current.attr = current.x = current.y = current.z = 0.0;
@@ -205,6 +215,8 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		}
 		for (j = 0; j < n_X; j++)
 			current.X[j] = X[j * n + i];
+		if (w != 0)
+			current.variance = 1.0/(w[i]);
 		push_point(d[id], &current);
 	}
 	check_global_variables();
@@ -245,15 +257,17 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 	assert(d[id]->n_X == LENGTH(beta));
 	d[id]->dummy = 1;
 	for (i = 0; i < LENGTH(beta); i++)
-		d[id]->beta = push_to_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
+		d[id]->beta = push_d_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
 	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
 		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
 	if (NUMERIC_POINTER(maxdist)[0] > 0.0)
 		d[id]->sel_rad = NUMERIC_POINTER(maxdist)[0];
 	switch(INTEGER_POINTER(vfn)[0]) {
-		case 1: /* d[id]->variance_fn = v_identity; */ break;
+		case 1: /* d[id]->variance_fn = v_identity; -> leave NULL */ break;
 		case 2: d[id]->variance_fn = v_mu; break;
 		case 3: d[id]->variance_fn = v_bin; break;
+		case 4: d[id]->variance_fn = v_mu2; break;
+		case 5: d[id]->variance_fn = v_mu3; break;
 		default: PROBLEM "unknown variance function %d", 
 				 	INTEGER_POINTER(vfn)[0] ERROR;
 	}
@@ -289,7 +303,7 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 	if (n <= 0 || LENGTH(slocs) == 0 || LENGTH(sX) == 0)
 		ErrMsg(ER_IMPOSVAL, "empty newdata");
 	if (LENGTH(slocs) % n != 0)
-		PROBLEM "dimensions do not match: locations %d and data %ld",
+		PROBLEM "dimensions do not match: locations %d, nrows in X %ld",
 			LENGTH(slocs), n ERROR;
 	dim = LENGTH(slocs) / n;
 	if (dim <= 0 || dim > 3)
@@ -708,6 +722,7 @@ SEXP gstat_fit_variogram(SEXP fit, SEXP fit_sill, SEXP fit_range) {
 	SEXP sills;
 	SEXP ranges;
 	SEXP SSErr;
+	SEXP fit_is_singular;
 
 	vgm = get_vgm(LTI(0, 0));
 	vgm->ev->fit = INTEGER_POINTER(fit)[0];
@@ -721,18 +736,52 @@ SEXP gstat_fit_variogram(SEXP fit, SEXP fit_sill, SEXP fit_range) {
 	fit_variogram(vgm);
 	if (DEBUG_VGMFIT)
 		logprint_variogram(vgm, 1);
-	ret = NEW_LIST(3);
+
 	sills = NEW_NUMERIC(vgm->n_models);
 	ranges = NEW_NUMERIC(vgm->n_models);
-	SSErr = NEW_NUMERIC(1);
 	for (i = 0; i < vgm->n_models; i++) {
 		NUMERIC_POINTER(sills)[i] = vgm->part[i].sill;
 		NUMERIC_POINTER(ranges)[i] = vgm->part[i].range[0];
 	}
-	NUMERIC_POINTER(SSErr)[0] = vgm->SSErr;
+
+	ret = NEW_LIST(4);
 	SET_ELEMENT(ret, 0, sills);
 	SET_ELEMENT(ret, 1, ranges);
-	SET_ELEMENT(ret, 2, SSErr);
+
+	fit_is_singular = NEW_NUMERIC(1);
+	NUMERIC_POINTER(fit_is_singular)[0] = vgm->fit_is_singular;
+	SET_ELEMENT(ret, 2, fit_is_singular);
+
+	SSErr = NEW_NUMERIC(1);
+	NUMERIC_POINTER(SSErr)[0] = vgm->SSErr;
+	SET_ELEMENT(ret, 3, SSErr);
+
+	return(ret);
+}
+
+SEXP gstat_pip(SEXP px, SEXP py, SEXP polx, SEXP poly) {
+	int i, n;
+	PLOT_POINT p;
+	POLYGON pol;
+	SEXP ret;
+
+	pol.lines = LENGTH(polx); /* check later that first == last */
+	pol.p = (PLOT_POINT *) emalloc(pol.lines * sizeof(PLOT_POINT));
+	for (i = 0; i < LENGTH(polx); i++) {
+		pol.p[i].x = NUMERIC_POINTER(polx)[i];
+		pol.p[i].y = NUMERIC_POINTER(poly)[i];
+	}
+    pol.close = (pol.p[0].x == pol.p[pol.lines - 1].x && 
+			pol.p[0].y == pol.p[pol.lines - 1].y);
+	setup_poly_minmax(&pol);
+
+	ret = NEW_NUMERIC(LENGTH(px));
+	for (i = 0; i < LENGTH(px); i++) {
+		p.x = NUMERIC_POINTER(px)[i];
+		p.y = NUMERIC_POINTER(py)[i];
+		NUMERIC_POINTER(ret)[i] = point_in_polygon(p, &pol);
+	}
+	efree(pol.p);
 	return(ret);
 }
 
@@ -772,4 +821,3 @@ double s_r_normal(void) {
 #endif
 	return(r);
 }
-

@@ -71,7 +71,6 @@ int gl_gauss; /* gaussian quadr. block covariances ? */
 int gl_iter; /* max. n. iter for mivque estimates */
 int gl_jgraph; /* do jgraph plot in batch mode ? */
 int gl_lhs; /* apply Latin hypercube sampling to Gaussian simulations */
-int gl_mvbeta; /* estimate beta multivariable */
 int gl_nblockdiscr; /* block discrimination in each dimension */
 int gl_n_intervals; /* n variogram intervals */
 int gl_n_marginals; /* the n marginal distributions */
@@ -82,9 +81,11 @@ int gl_nocheck; /* do not check LMC/IC ? */
 int gl_order; /* do order relation correction */
 int gl_plotweights; /* plot kriging weights? */
 int gl_register_pairs; /* register sample variogram pairs? */
+int gl_rowwise; /* deal with raster maps row-wise, or as complete blocks? */
 int gl_rp; /* follow random path for gs/is? */
 int gl_secure; /* disallow system() and popen()? */
 int gl_seed; /* seed is set? */
+int gl_sim_beta; /* simulation mode for beta: 0 multiv GLS, 1 univ GLS, 2 OLS */
 int gl_spiral; /* do spiral search if possible? */
 int gl_split; /* see nsearch.c: was Q_SPLIT_AT */
 int gl_sym_ev; /* default symmetric ps.cr.v./cr.cv. ? */
@@ -132,7 +133,7 @@ const METHODS methods[] = { /* methods and codes */
 	{ UKR,      0, "uk" },   /* universal kriging */
 	{ SKR,      0, "sk" },  /* simple kriging */
 	{ IDW,      0,  "id" }, /* inverse distance interpolation */
-	{ MED,      0, "med" }, /* (local) sample median or quantile */
+	{ MED,      0, "med" }, /* (local) sample median or quantiles */
 	{ NRS,      0, "n$r" }, /* neighbourhood size */
 	{ LSLM,     0, "tr$end" },  /* uncorrelated (or weighted) linear model */
 	{ GSI,      1,  "gs" }, /* gaussian (conditional) simulation */
@@ -143,7 +144,9 @@ const METHODS methods[] = { /* methods and codes */
 	{ SPREAD,   0, "di$stance" }, /* distance to nearest sample */
 	{ XYP,      0, "xy" },  /* x and y coordinate of location */
 	{ POLY,     0, "point-in-polygon" }, /* point-in-polygon */
-	{ DIV,      0, "div" }, /* diversity and range */
+	{ DIV,      0, "div" }, /* diversity and modus */
+	{ SKEW,     0, "skew" }, /* skewness and kurtosis */
+	{ LSEM,     0, "lsem" }, /* locally fitted semivariogram parameters */
 	{ TEST,     0, "test" },  /* do-nothing? */
 	{ NSP,      0, NULL } /* terminating field */
 };
@@ -181,7 +184,6 @@ int init_global_variables(void) {
 	gl_iter            = DEF_iter;
 	gl_jgraph          = DEF_jgraph;
 	gl_lhs             = DEF_lhs;
-	gl_mvbeta          = DEF_mvbeta;
 	gl_nblockdiscr     = DEF_nblockdiscr;
 	gl_n_intervals     = DEF_intervals;
 	gl_n_marginals     = DEF_n_marginals;
@@ -192,9 +194,11 @@ int init_global_variables(void) {
 	gl_order           = DEF_order;
 	gl_plotweights     = DEF_plotweights;
 	gl_register_pairs  = DEF_pairs;
+	gl_rowwise         = DEF_rowwise;
 	gl_rp              = DEF_rp;
 	gl_secure          = DEF_secure;
 	gl_seed            = DEF_seed;
+	gl_sim_beta        = DEF_sim_beta;
 	gl_spiral          = DEF_spiral;
 	gl_split           = DEF_split;
 	gl_sym_ev          = DEF_sym_ev;
@@ -484,7 +488,13 @@ const char *method_string(METHOD i) {
 			sprintf(mstr, "point-in-polygon");
 			break;
 		case DIV:
-			sprintf(mstr, "within-neighbourhood diversity");
+			sprintf(mstr, "within-neighbourhood diversity and modus");
+			break;
+		case SKEW:
+			sprintf(mstr, "skewness and kurtosis");
+			break;
+		case LSEM:
+			sprintf(mstr, "locally fitted semivariogram parameters");
 			break;
 	}
 	return mstr;

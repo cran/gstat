@@ -109,7 +109,9 @@ typedef enum {
 	DATA_GMT,			/* GMT netCDF format */
 	DATA_SURFER_DSAA,	/* Surfer DSAA ascii grid */
 	DATA_GSLIB,			/* GSLIB ascii grid */
-	DATA_GRASS			/* GRASS site list */
+	DATA_GRASS,			/* GRASS site list */
+	DATA_GRASS_GRID,	/* GRASS raster */
+	DATA_GDAL 			/* GDAL raster */
 } DATA_TYPE_;
 
 typedef struct {
@@ -126,10 +128,12 @@ typedef struct {
 } MERGE_TABLE;
 
 typedef struct {
-	int size;
+	int size, max_size;
 	double *val;
 } D_VECTOR;
-D_VECTOR *push_to_vector(double d, D_VECTOR *v);
+
+D_VECTOR *push_d_vector(double d, D_VECTOR *v);
+void free_d_vector(D_VECTOR *v);
 
 typedef struct {		/* structure that holds data info and lists */
 	char *variable,		/* attr name, log(..) */
@@ -163,7 +167,7 @@ typedef struct {		/* structure that holds data info and lists */
 		colnvariance,	/* column that holds variance */
 		colnvalue,		/* column that holds attribute values */
 		colns,          /* column that holds u (if strata) */
-              coln_id,        /* column with ID */
+		coln_id,        /* column with ID */
 		sel_min,
 		sel_max,		/* min and max number for neighbourhood selection */
 		oct_max,		/* max # pts for each octant; 0: use no octant search */
@@ -278,6 +282,8 @@ void set_norm_fns(DATA *d);
 double data_block_diagonal(DATA *data);
 int intercept_only(const DATA *d);
 double v_mu(double mu);
+double v_mu2(double mu);
+double v_mu3(double mu);
 double v_bin(double mu);
 double v_identity(double mu);
 

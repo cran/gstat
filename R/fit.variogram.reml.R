@@ -17,10 +17,10 @@ function (formula, locations, data, model, debug.level = 1, set)
     ret = gstat.formula(formula, locations, data)
     ret$y <- residuals(lm(formula, data))
     .Call("gstat_new_data", as.vector(ret$y), as.vector(ret$locations),
-         as.vector(ret$X), as.integer(1), as.vector(numeric(0)),
-         as.integer(-1), as.numeric(-1), as.integer(1)
-	 , PACKAGE = "gstat"
-	 )
+		as.vector(ret$X), as.integer(1), as.vector(numeric(0)),
+		as.integer(-1), as.numeric(-1), as.integer(1), numeric(0)
+		, PACKAGE = "gstat"
+		)
     load.variogram.model(model)
     if (!missing(set))
     	gstat.load.set(set)

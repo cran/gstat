@@ -9,7 +9,8 @@ extern "C" {
 int calc_variogram(VARIOGRAM *v, const char *fname);
 void fill_cutoff_width(DATA *data, VARIOGRAM *v);
 int is_directional(VARIOGRAM *v);
-void fprint_header_vgm(FILE *f, const DATA *d1, const DATA *d2, const SAMPLE_VGM *ev);
+void fprint_header_vgm(FILE *f, const DATA *d1, const DATA *d2, 
+		const SAMPLE_VGM *ev);
 void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev);
 
 #if defined(__cplusplus)
