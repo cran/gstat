@@ -14,7 +14,7 @@ function (g, id, formula, locations, data = NULL, model = NULL,
 		}
         return(g)
 	} 
-    if (!missing(g) && class(g) == "gstat" && !missing(id) && 
+    if (!missing(g) && inherits(g, "gstat") && !missing(id) && 
         !missing(model) && missing(formula) && missing(locations)) {
         g.names = names(g$data)
 		if (length(id) == 2) {
@@ -36,9 +36,9 @@ function (g, id, formula, locations, data = NULL, model = NULL,
         g$model[[nm]] = model
         return(g)
     }
-    if (class(formula) != "formula") 
+    if (!inherits(formula, "formula"))
         stop("argument formula should be of class formula")
-    if (class(locations) != "formula") 
+    if (!inherits(locations, "formula"))
         stop("argument locations should be of class formula")
     if (missing(beta) || is.null(beta)) 
         beta = numeric(0)

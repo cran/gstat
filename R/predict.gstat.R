@@ -4,7 +4,7 @@ function (object, newdata, block = numeric(0), nsim = 0, debug.level = 1,
 {
     if (missing(object) || length(object$data) < 1) 
         stop("no data available")
-    if (class(object) != "gstat") 
+    if (!inherits(object, "gstat"))
         stop("first argument should be of class gstat")
     .Call("gstat_init", as.integer(debug.level), PACKAGE = "gstat")
     nvars = length(object$data)

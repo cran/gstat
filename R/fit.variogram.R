@@ -4,11 +4,11 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
 {
     if (missing(object)) 
         stop("nothing to fit to")
-	if (class(object) != "variogram")
+	if (!inherits(object, "variogram"))
 		stop("object should be of class variogram")
     if (missing(model)) 
         stop("no model to fit")
-    if (class(model) != "variogram.model") 
+    if (!inherits(model, "variogram.model"))
         stop("model should be of class variogram.model (use vgm)")
     if (length(fit.sills) < length(model$model)) 
         fit.sills = rep(fit.sills, length(model$model))

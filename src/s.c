@@ -31,6 +31,7 @@
  */
 
 #include "config.h" /* may define USING_R */
+# include "S.h" /* defines seed_in, also for R */
 
 #ifdef USING_R
 # include <R.h>
@@ -42,7 +43,6 @@
 # define RANDOUT seed_out((long *) NULL)
 # define S_EVALUATOR
 #else /* some S-Plus version; assuming >= 6 for now: */
-# include "S.h"
 # if (!defined(SPLUS_VERSION) || SPLUS_VERSION < 6000)
 #  error("no SPLUS_VERSION >= 6.0")
 # endif
@@ -57,9 +57,11 @@
 #endif
 
 #include "data.h"
+#include "select.h"
 #include "utils.h"
 #include "userio.h"
 #include "vario.h"
+#include "fit.h"
 #include "lex.h"
 #include "sem.h"
 #include "glvars.h"
@@ -67,6 +69,7 @@
 #include "mapio.h"
 #include "msim.h"
 #include "random.h"
+#include "getest.h"
 
 void no_progress(unsigned int current, unsigned int total);
 void s_gstat_error(const char *mess, int level);
@@ -121,26 +124,18 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	if (n == 0)
 		ErrMsg(ER_IMPOSVAL, "no data read");
 
-	if (LENGTH(slocs) % n == 0)
-		dim = LENGTH(slocs) / n;
-	else
-		PROBLEM
-			"dimensions do not match: locations %d and data %d",
-			LENGTH(slocs), n
-		ERROR;
+	if (LENGTH(slocs) % n != 0)
+		PROBLEM "dimensions do not match: locations %d and data %ld",
+			LENGTH(slocs), n ERROR;
+	dim = LENGTH(slocs) / n;
 	if (dim <= 0 || dim > 3)
-		PROBLEM
-			"too many dimensions: %d", dim
-		ERROR;
+		PROBLEM "too many dimensions: %ld", dim ERROR;
 	locs = NUMERIC_POINTER(slocs);
 
-	if (LENGTH(sX) % n == 0)
-		n_X = LENGTH(sX) / n;
-	else
-		PROBLEM
-			"dimensions do not match: X %d and data %d",
-			LENGTH(sX), n
-		ERROR;
+	if (LENGTH(sX) % n != 0)
+		PROBLEM "dimensions do not match: X %d and data %ld",
+			LENGTH(sX), n ERROR;
+	n_X = LENGTH(sX) / n;
 	X = NUMERIC_POINTER(sX);
 
 	assert(n_X > 0);
@@ -149,7 +144,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	current.bitfield = 0;
 
 	id = get_n_vars();
-	sprintf(name, "var%d", id);
+	sprintf(name, "var%ld", id);
 	which_identifier(name);
 	d = get_gstat_data();
 	d[id]->id = id;
@@ -272,7 +267,8 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 			SEXP nsim) {
 	double *locs, **est_all, *X;
-	long i, j, k, n, nvars, nest, dim, n_X, ncols_block, nrows_block, pos;
+	long i, j, k, n, nvars, nest, dim, n_X, ncols_block, 
+		nrows_block, pos;
 	DPOINT current, *bp = NULL;
 	DATA **d = NULL, *vd = NULL, *area = NULL;
 	SEXP ret;
@@ -288,25 +284,17 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 	n = INTEGER_POINTER(sn)[0];
 	if (n <= 0 || LENGTH(slocs) == 0 || LENGTH(sX) == 0)
 		ErrMsg(ER_IMPOSVAL, "empty newdata");
-	if (LENGTH(slocs) % n == 0)
-		dim = LENGTH(slocs) / n;
-	else
-		PROBLEM
-			"dimensions do not match: locations %d and data %d",
-			LENGTH(slocs), n
-		ERROR;
+	if (LENGTH(slocs) % n != 0)
+		PROBLEM "dimensions do not match: locations %d and data %ld",
+			LENGTH(slocs), n ERROR;
+	dim = LENGTH(slocs) / n;
 	if (dim <= 0 || dim > 3)
-		PROBLEM
-			"too many dimensions: %d", dim
-		ERROR;
+		PROBLEM "too many dimensions: %ld", dim ERROR;
 	locs = NUMERIC_POINTER(slocs);
-	if (LENGTH(sX) % n == 0)
-		n_X = LENGTH(sX) / n;
-	else
-		PROBLEM
-			"dimensions do not match: X %d and data %d",
-			LENGTH(sX), n
-		ERROR;
+	if (LENGTH(sX) % n != 0)
+		PROBLEM "dimensions do not match: X %d and data %ld",
+			LENGTH(sX), n ERROR;
+	n_X = LENGTH(sX) / n;
 
 	current.attr = current.x = current.y = current.z = 0.0;
 	current.bitfield = 0;
@@ -538,7 +526,6 @@ void Cgstat_load_variogram(int *ids, int *n_models,
 		char **model, double *sills, double *ranges, double *kappas,
 		double *anis_all) 
 {
-	char *vgm_model;
 	VARIOGRAM *vgm;
 	int i, n, id1, id2, max_id;
 	double anis[5] = {0.0, 0.0, 0.0, 1.0, 1.0}, rpars[2];
@@ -628,7 +615,7 @@ SEXP gstat_get_n_variogram_models(SEXP x) {
 }
 
 void Cgstat_get_variogram_models(char **names) {
-	int i, n;
+	int i;
 
 	for (i = 1; v_models[i].model != NOT_SP; i++)
 		names[i-1] = string_dup(v_models[i].name);

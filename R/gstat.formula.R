@@ -15,7 +15,7 @@ function (formula, locations, data)
         stop("no response variable present in formula")
     X = model.matrix(Terms, m)
 	has.intercept = attr(Terms, "intercept")
-    if (class(locations) != "formula") 
+    if (!inherits(locations, "formula"))
         stop("locations argument should be a formula, such as ~x+y")
     m = match.call(expand = FALSE)
     m$method = m$model = m$x = m$y = m$... = NULL

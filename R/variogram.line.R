@@ -4,7 +4,7 @@ function(object, maxdist, n=200, min=1.0e-6*maxdist, ids=c(0,0),
 {
 	if (missing(object))
 		stop("model is missing");
-	if (class(object) != "variogram.model")
+	if (!inherits(object, "variogram.model"))
 		stop("model should be of mode variogram.model (use function vgm)")
 	if (missing(maxdist))
 		stop("maxdist is missing");

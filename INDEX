@@ -1,3 +1,4 @@
+bubble                  Create a bubble plot of spatial data 
 fit.lmc                 Fit a Linear Model of Coregionalization to a
                         Multivariable Sample Variogram 
 fit.variogram           Fit a Variogram Model to a Sample Variogram 
@@ -6,6 +7,8 @@ gstat                   Creates gstat Objects
 image                   Image Gridded Coordinates in Data Frame 
 krige                   Simple, Ordinary or Universal, global or local,
                         Point or Block Kriging 
+krige.cv                kriging cross validation, n-fold or
+                        leave-one-out 
 map.to.lev              rearrange data frame for plotting with
                         levelplot 
 mapasp                  Calculate plot aspect ratio for geographic maps 
@@ -22,4 +25,3 @@ variogram               Calculate Sample or Residual Variogram or
                         Variogram Cloud 
 variogram.line          Semivariance Values For a Given Variogram Model 
 vgm                     Generate, or Add to Variogram Model 
-zerodist                find point pairs with equal spatial coordinates 

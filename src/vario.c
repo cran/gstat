@@ -287,7 +287,7 @@ const char *sprint_variogram(const VARIOGRAM *v, int verbose) {
 	for (i = 0; i < v->n_models; i++) {
 		sprintf(tmp, "# model: %d type: %s sill: %g range: %g\n", 
 			i, v_models[v->part[i].model].name_long, 
-			v->part[i].sill, v->part[i].range);
+			v->part[i].sill, v->part[i].range[0]);
 		strcat(s, tmp);
 		if (v->part[i].tm_range != NULL) {
 			sprintf(tmp, "# range anisotropy, rotation matrix:\n");
