@@ -4,11 +4,34 @@ useDynLib(gstat)
 ## and uncomment the following line:
 import(lattice)
 
-export(bpy.colors, bubble, cross.name, fit.lmc, fit.variogram,
-	fit.variogram.reml, get.contr, gstat, gstat.cv, "[.gstat",
-	krige, krige.cv, makegrid, map.to.lev, mapasp, ossfim,
-	point.in.polygon, predict.gstat, select.spatial, show.vgms,
-	variogram, variogram.line, vgm, xyz2img, zerodist)
+export(bpy.colors, 
+	bubble,
+	cross.name,
+	fit.lmc,
+	fit.variogram,
+	fit.variogram.reml,
+	get.contr,
+	gstat,
+	gstat.cv,
+	"[.gstat",
+	krige, 
+	krige.cv, 
+	makegrid, 
+	map.to.lev,
+	mapasp,
+	ossfim,
+	point.in.polygon,
+	predict.gstat,
+	select.spatial,
+	show.vgms,
+	variogram,
+	variogram.line,
+	vgm,
+	xyz2img,
+	zerodist
+	)
+
+# exportMethod(krige, variogram)
 
 S3method(image, data.frame)
 

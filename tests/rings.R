@@ -19,7 +19,10 @@ xx = krige(z~1, d, nd, model=vgm(1, "Exp", 1), block = bl,
 
 ring = cbind(c(0,bl[1],bl[1],0,0), c(0,0,bl[2],bl[2],0))
 r1 = SpatialRings(list(Srings(list(Sring(ring)), ID = "xx")))
-r1df = SpatialRingsDataFrame(r1, data.frame(a=1))
+a = data.frame(a = 1, b = 2)
+rownames(a) = "xx"
+r1df = SpatialRingsDataFrame(r1, a)
+
 g = gstat(formula=z~1, data=d, model=vgm(1, "Exp", 1))
 args = list(type = "regular", n=16, offset=c(0.5,0.5))
 yy = predict(g, r1df, block = bl, sps.args = args)
@@ -43,7 +46,10 @@ r1 = SpatialRings(list(
 	Srings(list(Sring(ring3)), ID = "x3"),
 	Srings(list(Sring(ring4)), ID = "x4"),
 	))
-r1df = SpatialRingsDataFrame(r1, data.frame(a=rep(1,5)))
+df = data.frame(a=rep(1,5), b= rep(1,5))
+rownames(df) = c("x0", "x1", "x2", "x3", "x4")
+r1df = SpatialRingsDataFrame(r1, df)
+
 yy = predict(g, r1, block = bl, sps.args = args)
 all.equal(as.data.frame(xx), as.data.frame(yy))
 
@@ -72,7 +78,10 @@ r1 = SpatialRings(list(
 	Srings(list(Sring(ring1)), ID = "x1"),
 	Srings(list(Sring(ring2)), ID = "x2"),
 	))
-r1df = SpatialRingsDataFrame(r1, data.frame(a=rep(1,3)))
+df = data.frame(a = rep(1,3), b = rep(1,3))
+rownames(df) = c("x0", "x1", "x2")
+r1df = SpatialRingsDataFrame(r1, df)
+
 args = list(type = "regular", n=16, offset=c(0.5,0.5))
 yy = predict(g, r1df, block = bl, sps.args = args)
 xx = rbind(as.data.frame(xx1), as.data.frame(xx2), as.data.frame(xx3))

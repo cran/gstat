@@ -36,8 +36,9 @@ function (data, gstat.object, X, ids = names(gstat.object$data))
 	if (any(is.na(pr.idx)) || any(is.na(cov.idx)))
 		stop("colunn names in data not matched")
 
-	res = data.frame(t(apply(data, 1, contr.fun, n = n, pr.idx = pr.idx, 
-		cov.idx = cov.idx, contr = X)))
+	res = data.frame(t(apply(as.data.frame(data), 1, 
+		contr.fun, n = n, pr.idx = pr.idx, cov.idx = cov.idx,
+		contr = X)))
 
 	col.names = NULL
     for (j in 1:NCOL(X))
@@ -53,6 +54,9 @@ function (data, gstat.object, X, ids = names(gstat.object$data))
 		}
 	}
     names(res) = col.names
-    row.names(res) = row.names(data)
+    if (is(data, "data.frame"))
+		row.names(res) = row.names(data)
+	if (is(data, "SpatialPoints"))
+		coordinates(res) = coordinates(data)
     return(res)
 }

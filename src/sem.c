@@ -563,10 +563,13 @@ static double valid_distance(DPOINT *a, DPOINT *b, double max,
 		/* allow only points for which 2-norm ||x_i-x_j|| < dX */
 		if (d1->n_X != d2->n_X)
 			ErrMsg(ER_IMPOSVAL, "valid_distance(): d1->n_X != d2->n_X");
-		for (i = 0, inprod = 0.0; i < d1->n_X; i++)
+		for (i = 0, inprod = 0.0; i < d1->n_X; i++) {
 			inprod += SQR(a->X[i] - b->X[i]);
+			/* printf("a->X[%d]: %g, b->X[%d]: %g", i, a->X[i], i, b->X[i]); */
+		}
 		if (inprod > dX2)
 			ddist = -1.0;
+		/* printf("dX2: %g, inprod: %g ddist: %g\n", dX2, inprod, ddist); */
 	}
 	/*
 	if (d1->coln_id > 0 && d2->coln_id > 0 && strcmp())

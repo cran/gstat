@@ -143,7 +143,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		coordinates(ret) = dimnames(raw$locations)[[2]]
 		gridded(ret) = gridded(newdata)
 	} else if (is(newdata, "SpatialRings"))
-		ret = SpatialRingsDataFrame(as(newdata, "SpatialRings"), ret)
+		ret = SpatialRingsDataFrame(as(newdata, "SpatialRings"), ret,
+			match.ID = FALSE)
 	return(ret)
 }
 
