@@ -1,3 +1,4 @@
+block		block kriging -- effect of block size and irregular blocks
 cokriging	fitting a linear model of coregionalization and cokriging
 cosimulation	fitting a linear model of coregionalization and cosimulation
 examples	how to do the original gstat example files in S

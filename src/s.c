@@ -30,6 +30,8 @@
  * - catch errors if no response is present in prediction
  */
 
+#include <time.h> /* for s_gstat_progress function */
+
 #include "config.h" /* may define USING_R */
 # include "S.h" /* defines seed_in, also for R */
 
@@ -870,7 +872,7 @@ SEXP gstat_fit_variogram(SEXP fit, SEXP fit_sill, SEXP fit_range) {
 }
 
 SEXP gstat_pip(SEXP px, SEXP py, SEXP polx, SEXP poly) {
-	int i, n;
+	int i;
 	PLOT_POINT p;
 	POLYGON pol;
 	SEXP ret;
