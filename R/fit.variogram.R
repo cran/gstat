@@ -6,6 +6,8 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
         stop("nothing to fit to")
 	if (!inherits(object, "gstatVariogram"))
 		stop("object should be of class variogram")
+	if (length(unique(object$id)) > 1)
+		stop("to use fit.variogram, variogram object should be univariable")
     if (missing(model)) 
         stop("no model to fit")
     if (!inherits(model, "variogramModel"))
@@ -27,6 +29,12 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
     model$psill = ret[[1]]
     model$range = ret[[2]]
 	attr(model, "singular") = as.logical(ret[[3]]);
+	direct = attr(object, "direct")
+	if (!is.null(direct)) {
+		id = unique(object$id)
+		if (direct[direct$id == id, "is.direct"] && any(model$psill < 0))
+			stop("partial sill fitted to direct variogram is negative")
+	}
     if (print.SSE) 
         print(paste("SSErr: ", ret[[4]]))
     model

@@ -49,7 +49,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 				as.double(locations[[i]]), as.double(Xloc), 
 				as.integer(1), as.double(t.beta), as.integer(-1),
 				as.integer(0), as.double(-1), as.integer(1), 
-				double(0), grd
+				double(0), grd, as.integer(0)
 				, PACKAGE = "gstat"
 				)
         }
@@ -61,6 +61,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 
     pos = 0
     ids = NULL
+	is.direct = NULL
 	if (cross)
 		id.range = nvars:1
 	else
@@ -91,6 +92,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
                       dir.a = rep(a, n.dir)
                       dir.b = rep(b, n.dir)
                       ids = c(ids, rep(id, n.dir))
+					  is.direct = c(is.direct, id1 == id2)
                       df = data.frame(np = np[sel], dist = dist[sel], 
                         gamma = gamma[sel], dir.hor = dir.a, dir.ver = dir.b)
                       if (pos > 0) 
@@ -116,6 +118,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     .Call("gstat_exit", NULL, PACKAGE = "gstat")
 	if (is.logical(map) && map == FALSE) {
     	ret$id = factor(ids, levels = unique(ids))
+		attr(ret, "direct") = data.frame(id = unique(ids), is.direct = is.direct)
     	if (cloud) 
         	class(ret) = c("variogramCloud", "data.frame")
     	else 

@@ -30,6 +30,8 @@ function (x, ...)
 				c("identity", "mu", "mu(1-mu)", "mu^2", "mu^3")[x$data[[n]]$vfn])
 		if (length(x$data[[n]]$beta) > 0)
 			cat(" beta =", x$data[[n]]$beta)
+		if (x$data[[n]]$degree > 0)
+			cat(" degree =", x$data[[n]]$degree)
         cat("\n")
     }
     xx.names = xx = NULL

@@ -79,12 +79,12 @@ v = variogram(g, alpha=c(0,45,90,135))
 plot(v, group.id = FALSE, auto.key = TRUE) # id and id pairs panels
 plot(v, group.id = TRUE, auto.key = TRUE)  # direction panels
 
-if (require(sp)) {
-  plot(variogram(g, cutoff=1000, width=100, map=TRUE),
-  	main = "(cross) semivariance maps")
-  plot(variogram(g, cutoff=1000, width=100, map=TRUE), np=TRUE,
-  	main = "number of point pairs")
-}
+#if (require(sp)) {
+#  plot(variogram(g, cutoff=1000, width=100, map=TRUE),
+#  	main = "(cross) semivariance maps")
+#  plot(variogram(g, cutoff=1000, width=100, map=TRUE), np=TRUE,
+#  	main = "number of point pairs")
+#}
 }
 
 \keyword{dplot}

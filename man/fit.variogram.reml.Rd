@@ -6,7 +6,7 @@ Fit Variogram Sills to Data, using REML (only for direct variograms;
 not for cross variograms)
 }
 \usage{
-fit.variogram.reml(formula, locations, data, model, debug.level = 1, set)
+fit.variogram.reml(formula, locations, data, model, debug.level = 1, set, degree = 0)
 }
 \arguments{
 \item{formula}{formula defining the response vector and (possible) 
@@ -20,6 +20,7 @@ are to be found}
 log likelyhood}
 \item{set}{additional options that can be set; use \code{set=list(iter=100)}
 to set the max. number of iterations to 100.  }
+\item{degree}{order of trend surface in the location, between 0 and 3}
 }
 
 \value{ an object of class "variogram.model"; see \link{fit.variogram} }

@@ -92,7 +92,6 @@ static int read_eas_header(FILE *infile, DATA *d, int ncols);
 static void calc_data_mean_std(DATA *d);
 static void correct_strata(DATA *d);
 static void field_error(char *fname, int line_nr, int fld, char *text);
-static void setup_polynomial_X(DATA *d);
 static int average_duplicates(DATA *d);
 static int read_data_from_map(DATA *d);
 static int read_idrisi_points(DATA *d);
@@ -855,7 +854,7 @@ static void transform_data(DATA *d) {
 	}
 }
 
-static void setup_polynomial_X(DATA *d) {
+void setup_polynomial_X(DATA *d) {
 
 	int i, j, degree;
 
@@ -881,7 +880,6 @@ void data_add_X(DATA *d, int col) {
 
 void calc_polynomials(DATA *d) {
 	int i, j, k, do_block;
-	static DATA *bl = NULL;
 
 #define CHECK_BITX if(!(d->mode & X_BIT_SET)) ErrMsg(ER_VARNOTSET,"x coordinate not set")
 #define CHECK_BITY if(!(d->mode & Y_BIT_SET)) ErrMsg(ER_VARNOTSET,"y coordinate not set")
@@ -908,16 +906,22 @@ void calc_polynomials(DATA *d) {
  	}
 	for (j = do_block = 0; !do_block && j < d->n_X; j++)
 		do_block = (d->colX[j] < -1);
-	for (i = 0; do_block && i < d->n_list; i++) {
-		bl = block_discr(bl, get_block_p(), d->list[i]);
+	for (i = 0; do_block && i < d->n_list; i++)
 		/* bl is a single point-list if IS_POINT(d->list[i]) */
-		for (j = 0; j < d->n_X; j++) {
-			if (d->colX[j] < -1)
-				/* do eventual block averaging here: */
-				for (k = 0, d->list[i]->X[j] = 0.0; k < bl->n_list; k++)
-					d->list[i]->X[j] += bl->list[k]->u.weight *
-							calc_polynomial(bl->list[k], d->colX[j]);
-		}
+		calc_polynomial_point(d, d->list[i]);
+}
+
+void calc_polynomial_point(DATA *d, DPOINT *pt) {
+	static DATA *bl = NULL;
+	int j, k;
+
+	bl = block_discr(bl, get_block_p(), pt);
+	for (j = 0; j < d->n_X; j++) {
+		if (d->colX[j] < -1)
+			/* do eventual block averaging here: */
+			for (k = 0, pt->X[j] = 0.0; k < bl->n_list; k++)
+				pt->X[j] += bl->list[k]->u.weight *
+						calc_polynomial(bl->list[k], d->colX[j]);
 	}
 }
 

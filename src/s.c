@@ -95,6 +95,7 @@ SEXP gstat_init(SEXP s_debug_level) {
 	set_gstat_log_handler(s_gstat_printlog);
 	setup_meschach_error_handler();
 	init_global_variables();
+	init_data_minmax();
 	RANDIN; /* load R/S seed into rng */
 	seed_is_in = 1;
 	set_rng_functions(s_r_uniform, s_r_normal, "S/R random number generator");
@@ -120,7 +121,7 @@ SEXP gstat_exit(SEXP x) {
 
 SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
 			SEXP beta, SEXP nmax, SEXP nmin, SEXP maxdist, 
-			SEXP vfn, SEXP sw, SEXP grid) {
+			SEXP vfn, SEXP sw, SEXP grid, SEXP degree) {
 	double *y, *locs, *X, *w = NULL;
 	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
@@ -207,6 +208,18 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		case 6: d[id]->grid = gstat_S_fillgrid(grid); break;
 		default: PROBLEM 
 			"length of grid topology %d unrecognized", LENGTH(grid) ERROR;
+	}
+	d[id]->polynomial_degree = INTEGER_POINTER(degree)[0];
+	if (d[id]->polynomial_degree < 0 || d[id]->polynomial_degree > 3)
+		PROBLEM "polynomial degree should be 0, 1, 2 or 3" ERROR
+	else if (d[id]->polynomial_degree > 0) { 
+		/* we're doing polynomials through degree: */
+		if (id > 0)
+			PROBLEM "polynomial degree will only work for a single variable" ERROR
+		if (n_X > 1)
+			PROBLEM "polynomial degree only works when no other predictors are given" 
+				ERROR
+		setup_polynomial_X(d[id]); /* standardized coordinate polynomials */
 	}
 
 	SET_POINT(&current);
@@ -422,6 +435,22 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 			vd->maxZ = MAX(vd->maxZ, locs[2 * n + i]);
 		}
 	}
+
+	/* fill, and standardize coordinate predictors from degree = x */
+	for (i = 0; i < nvars; i++) 
+		setup_data_minmax(d[i]);
+	setup_data_minmax(vd);
+	for (i = 0; i < nvars; i++) 
+		calc_polynomials(d[i]);
+	/* calc_polynomials(vd); */ /* still no data in fake vd */
+
+	vd->polynomial_degree = d[0]->polynomial_degree;
+	if (vd->polynomial_degree > 0) {
+		setup_polynomial_X(vd); /* standardized coordinate polynomials */
+		current.X = (double *) erealloc(current.X, vd->n_X * sizeof(double));
+	}
+
+
 	/* so far for the faking; now let's see what gstat makes out of this: */
 	if (INTEGER_POINTER(nsim)[0] == 0) {
 		if (INTEGER_POINTER(blue)[0] == 0) /* FALSE */
@@ -461,6 +490,9 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 			current.z = locs[2 * n + i];
 		for (j = 0; j < n_X; j++)
 			current.X[j] = X[j * n + i];
+		/* transform standardized coordinate polynomial here */
+		if (vd->polynomial_degree)
+			calc_polynomial_point(vd, &current);
 		for (j = 0; j < get_n_vars(); j++)
 			select_at(d[j], &current);
 		get_est(d, get_method(), &current, est_all[i]);
