@@ -879,7 +879,7 @@ void data_add_X(DATA *d, int col) {
 }
 
 void calc_polynomials(DATA *d) {
-	int i, j, k, do_block;
+	int i, j, do_block;
 
 #define CHECK_BITX if(!(d->mode & X_BIT_SET)) ErrMsg(ER_VARNOTSET,"x coordinate not set")
 #define CHECK_BITY if(!(d->mode & Y_BIT_SET)) ErrMsg(ER_VARNOTSET,"y coordinate not set")

@@ -46,9 +46,10 @@ na.action = na.pass, ...) }
  \item{block}{ block size; a vector with 1, 2 or 3 values containing
   the size of a rectangular in x-, y- and z-dimension respectively
   (0 if not set), or a data frame with 1, 2 or 3 columns, containing
-  the points that discretize the block in the x-, y- and z-dimension; 
-  the latter can be used to define irregular blocks. By default,
-  predictions or simulations refer to point support values. }
+  the points that discretize the block in the x-, y- and z-dimension
+  to define irregular blocks relative to (0,0) or (0,0,0)---see also the details 
+  section of \link{predict.gstat}. By default, predictions or simulations 
+  refer to the support of the data values. }
  \item{nsim}{ integer; if set to a non-zero value, conditional simulation
   is used instead of kriging interpolation. For this, sequential Gaussian
   or indicator simulation is used (depending on the value of 

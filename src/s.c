@@ -210,15 +210,16 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 			"length of grid topology %d unrecognized", LENGTH(grid) ERROR;
 	}
 	d[id]->polynomial_degree = INTEGER_POINTER(degree)[0];
-	if (d[id]->polynomial_degree < 0 || d[id]->polynomial_degree > 3)
-		PROBLEM "polynomial degree should be 0, 1, 2 or 3" ERROR
-	else if (d[id]->polynomial_degree > 0) { 
+	if (d[id]->polynomial_degree < 0 || d[id]->polynomial_degree > 3) {
+		PROBLEM "polynomial degree should be 0, 1, 2 or 3" ERROR;
+	}
+	if (d[id]->polynomial_degree > 0) { 
 		/* we're doing polynomials through degree: */
-		if (id > 0)
-			PROBLEM "polynomial degree will only work for a single variable" ERROR
-		if (n_X > 1)
-			PROBLEM "polynomial degree only works when no other predictors are given" 
-				ERROR
+		if (id > 0) {
+			PROBLEM "polynomial degree will only work for a single variable" ERROR;
+		} if (n_X > 1) {
+			PROBLEM "polynomial degree only works when no other predictors are given" ERROR;
+		}
 		setup_polynomial_X(d[id]); /* standardized coordinate polynomials */
 	}
 

@@ -19,9 +19,10 @@ predict.gstat(object, newdata, block = numeric(0), nsim = 0,
 \item{block}{ block size; a vector with 1, 2 or 3 values containing
   the size of a rectangular in x-, y- and z-dimension respectively
   (0 if not set), or a data frame with 1, 2 or 3 columns, containing
-  the points that discretize the block in the x-, y- and z-dimension; 
-  the latter can be used to define irregular blocks. By default,
-  predictions or simulations refer to point support values. }
+  the points that discretize the block in the x-, y- and z-dimension
+  to define irregular blocks relative to (0,0) or (0,0,0)---see also
+  the details section below. By default, predictions
+  or simulations refer to the support of the data values. }
 \item{nsim}{ integer; if set to a non-zero value, conditional simulation
   is used instead of kriging interpolation. For this, sequential Gaussian
   or indicator simulation is used (depending on the value of 
@@ -48,6 +49,15 @@ in coordinates and predictors are both dealt with. }
 for simulation and prediction purposes the variogram model defined should
 be that of the residual process, and not that of the raw observations.
 
+For irregular block kriging, coordinates should discretize the area
+relative to 0, (0,0) or (0,0,0); the coordinates in newdata should give
+the centroids around which the block should be located. So, suppose the
+block is discretized by points (3,3) (3,5) (5,5) and (5,3), we should
+pass point (4,4) in newdata and pass points (-1,-1) (-1,1) (1,1) (1,-1)
+to the block argument. Although passing the uncentered block and (0,0)
+as newdata may work for global neighbourhoods, neighbourhood selection
+is always done relative to the centroid values in newdata.
+
 The algorithm used by gstat for simulation random fields is the
 sequential simulation algorithm. This algorithm scales well to large or
 very large fields (e.g., more than $10^6$ nodes). Its power lies in using
@@ -73,12 +83,13 @@ compared to 1000 calls, each for simulating a single field.
 
 The random number generator used for generating simulations is the native
 random number generator of the environment (R, S); fixing randomness by
-setting seeds with \code{set.seed()} therefore works.
+setting the random number seed with \code{set.seed()} works.
 
-When mean coefficient are not supplied, they are generated as well from
-their conditional distribution (MVN, BLUE estimate and covariance);
-for a reference to the algorithm used see Abrahamsen and Benth,
-Math. Geol. 33(6), page 742 and leave out all constraints.
+When mean coefficient are not supplied, they are generated as well
+from their conditional distribution (assuming multivariate normal,
+using the generalized least squares BLUE estimate and its estimation
+covariance); for a reference to the algorithm used see Abrahamsen and
+Benth, Math. Geol. 33(6), page 742 and leave out all constraints.
 
 Memory requirements for sequential simulation: let n be the product of
 the number of variables, the number of simulation locations, and the

@@ -206,7 +206,7 @@ int init_global_variables(void) {
 	gl_sparse          = DEF_sparse;
 	gl_xvalid          = DEF_xvalid;
 	gl_zero_est        = DEF_zero_est;
-	gl_bounds      = DEF_bounds;
+	gl_bounds          = DEF_bounds;
 	gl_marginal_values = DEF_marginal_values;
 	gl_cutoff       = DEF_cutoff;
 	gl_fit_limit    = DEF_fit_limit;

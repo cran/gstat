@@ -24,6 +24,7 @@ mapasp                  Calculate plot aspect ratio for geographic
 meuse                   Meuse river data set
 meuse.all               Meuse river data set -- original, full data
                         set
+meuse.alt               Meuse river altitude data set
 meuse.grid              Prediction Grid for Meuse Data Set
 ncp.grid                Grid for the NCP, the Dutch part of the North
                         Sea

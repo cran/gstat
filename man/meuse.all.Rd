@@ -35,6 +35,9 @@ x 15 m.
 	\item{in.meuse155}{logical; indicates whether the sample is part of
 	the \code{meuse} (i.e., filtered) data set; in addition to the samples
 	in a pit, an sample (139) with outlying zinc content was removed }
+	\item{in.BMcD}{logical; indicates whether the sample is used as part
+	of the subset of 98 points in the various interpolation examples of
+	Burrough \& McDonnell}
   } 
 } 
 \usage{

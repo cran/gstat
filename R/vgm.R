@@ -1,9 +1,8 @@
 "vgm" <-
 function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5) {
 	add.to.df = function(x, y) {
-		nrx = nrow(x)
-		nry = nrow(y)
-		x[(nrx+1):(nrx+nry),] = y
+		x = rbind(y, x)
+		row.names(x) = 1:nrow(x)
 		return(x)
 	}
 	n = .Call("gstat_get_n_variogram_models", 0, PACKAGE = "gstat")[[1]];
