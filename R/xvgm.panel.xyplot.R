@@ -18,16 +18,17 @@ function (x, y, subscripts, type = "p", pch = plot.symbol$pch,
         plot.line <- trellis.par.get("plot.line")
         lpoints(x = x, y = y, cex = cex, col = col.symbol, pch = pch)
         if (!missing(model)) {
+		if (inherits(model, "gstat"))
+			m = model$model
+		else
 			m = model
-			if (!is.null(class(model)) && class(model) == "gstat")
-				m = model$model
-			if (!is.list(m))	
-				stop("model argument not of class list or gstat")
-			if (is.list(m) && !is.null(m[[id]])) {
-            	ret <- variogram.line(m[[id]], max(x))
-            	llines(x = ret$dist, y = ret$gamma, lty = lty, col = col.line, 
-            	    lwd = lwd)
-			}
+		if (!is.list(m))
+			stop("model argument not of class gstat or list")
+		if (is.list(m) && !is.null(m[[id]])) {
+			ret <- variogram.line(m[[id]], max(x))
+			llines(x = ret$dist, y = ret$gamma, lty = lty, col = col.line, 
+				lwd = lwd)
+		}
         }
         if (!is.null(labels)) 
             ltext(x = x + 0.03 * max(x), y = y, labels = labels)

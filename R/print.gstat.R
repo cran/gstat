@@ -1,7 +1,7 @@
 "print.gstat" <-
 function (x, ...) 
 {
-    if (missing(x) || class(x) != "gstat") 
+    if (missing(x) || !inherits(x, "gstat"))
         stop("wrong call")
     data.names <- names(x$data)
     if (length(data.names)) 

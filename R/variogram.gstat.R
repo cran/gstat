@@ -1,6 +1,6 @@
 "variogram.gstat" <-
 function (object, ...) {
-	if (class(object) != "gstat")
+	if (!inherits(object, "gstat"))
 		stop("first argument should be of class gstat")
 	y = list()
 	locations = list()

@@ -45,6 +45,7 @@
 #include "writecmd.h" /* printlog_glvars() */
 #include "glvars.h"
 #include "gls.h"
+#include "block.h"
 #include "polygon.h"
 /* 
  * this module contains all global variables, along with some 
