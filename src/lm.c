@@ -204,7 +204,7 @@ static void predict_lm(LM *lm, MAT *X0, double *est) {
 		col_X0 = get_col(X0, i, col_X0);
 		answer = CHsolve(lm->Chol, col_X0, answer);
 		est[2 * i + 1] = in_prod(col_X0, answer) * lm->MSErr;
-		if (max_block_dimension() == 0.0) /* pointwise prediction */
+		if (max_block_dimension(0) == 0.0) /* pointwise prediction */
 			est[2 * i + 1] += lm->MSErr;
 		for (j = 0; j < blup->dim; j++) {
 			if (j != i) {

@@ -39,7 +39,6 @@ extern "C" {
 #endif
 
 int init_global_variables(void);
-void create_data_area(void);
 const char *get_outfile_namei(int i);
 const char **get_outfile_name(void);
 int dump_all(void);
@@ -62,7 +61,7 @@ METHOD get_default_method(void);
 METHOD get_method(void);
 void set_mode(void);
 MODE get_mode(void);
-double max_block_dimension(void);
+double max_block_dimension(int reset);
 int n_variograms_set(void);
 int decide_on_coincide(void);
 int remove_id(const int id);
@@ -76,6 +75,7 @@ VARIOGRAM *get_vgm(int i);
 DATA **get_gstat_data(void);
 DATA *get_dataval(void);
 DATA *get_data_area(void);
+DATA *create_data_area(void);
 DPOINT *get_block_p(void);
 void setup_valdata_X(DATA *d);
 #endif

@@ -24,23 +24,13 @@ if test "$am_cv_prog_cc_stdc" != no; then
   AC_DEFINE(ANSI_C)
 fi
 
-if test xx"$LEXYACC" != xx; then
- rm -f ./src/lex.c ./src/parse.c ./src/parse.h
-fi
-
-AC_PROG_LEX
-AC_PROG_YACC
-
-dnl Checks for header files.
-AC_CHECK_HEADERS(stat.h unistd.h getopt.h)
-
 # check for <sys/time.h>, for gettimeofday function
 AC_HEADER_TIME
 
 dnl Checks for library functions:
 AC_FUNC_MEMCMP
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(strstr strtod strtol popen drand48 tempnam gettimeofday asprintf vasprintf mkstemp)
+AC_CHECK_FUNCS(strstr strtod strtol popen drand48 tempnam gettimeofday mkstemp)
 
 dnl Add getopt.o to LIBOBJS if getopt is not found in a default lib:
 AC_REPLACE_FUNCS(getopt)
@@ -54,6 +44,7 @@ AC_SUBST(DEBUG_FLAG)
 AC_SUBST(MESCHACH_TARGET)
 
 AC_DEFINE(SPARSE)
+AC_DEFINE(USING_R)
 
 # from here on; modified to work on src/meschach subdir by EJP:
 # configure.in copyright (C) Brook Milligan and David Stewart, 1993

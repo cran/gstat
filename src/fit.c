@@ -272,7 +272,7 @@ static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, int iter,
 			start->ve[i] = vp->part[model].sill;
 		} else {
 			model = fit->ive[i] - vp->n_models;
-			start->ve[i] = vp->part[model].range;
+			start->ve[i] = vp->part[model].range[0];
 		}
 	}
 
@@ -347,7 +347,7 @@ static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, int iter,
 			vp->part[model].sill = start->ve[i] + lm->beta->ve[i];
 		} else {
 			model = fit->ive[i] - vp->n_models;;
-			vp->part[model].range = start->ve[i] + lm->beta->ve[i];
+			vp->part[model].range[0] = start->ve[i] + lm->beta->ve[i];
 		}
 	}
 	iv_free(fit);
@@ -460,7 +460,7 @@ static void write_fx(FILE *f, VARIOGRAM *v) {
  		if (v->part[i].fit_sill)
  			fprintf(f, "c%d = %g; ", i, v->part[i].sill);
  		if (v->part[i].fit_range)
- 			fprintf(f, "a%d = %g; ", i, v->part[i].range);
+ 			fprintf(f, "a%d = %g; ", i, v->part[i].range[0]);
  	}
 /*
  * f(x) = ...
@@ -534,7 +534,7 @@ static void get_values(const char *fname, VARIOGRAM *v) {
 			if (s[0] == 'c')
 				read_double(cp, &(v->part[nr].sill));
 			else
-				read_double(cp, &(v->part[nr].range));
+				read_double(cp, &(v->part[nr].range[0]));
 		} else
 			break; /* while-loop */
 	}
@@ -557,7 +557,7 @@ static void correct_for_anisotropy(VARIOGRAM *v) {
  
  	for (i = 0; i < v->n_models; i++) {
  		if (v->part[i].fit_range && v->part[i].tm_range)
- 			v->part[i].range /= relative_norm(v->part[i].tm_range,
+ 			v->part[i].range[0] /= relative_norm(v->part[i].tm_range,
  				v->ev->direction.x, v->ev->direction.y, v->ev->direction.z);
  	}
 	return;

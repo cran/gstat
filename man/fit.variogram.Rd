@@ -20,9 +20,9 @@ fitted or fixed.  }
 (excluding that of the nugget component) should be fitted; or logical
 vector: determines for each range parameter whether it should be fitted
 or fixed.  }
-\item{fit.method}{ fitting method, used by gstat. This method uses
+\item{fit.method}{ fitting method, used by gstat. The default method uses
 weights $N_h/h^2$ with $N_h$ the number of point pairs and $h$ the
-distance. This is not supported by theory, but by practice. 
+distance. This criterion is not supported by theory, but by practice. 
 For other values of \code{fit.method}, see table 4.2 in the gstat
 manual. }
 \item{print.SSE}{ logical; if TRUE, print the (weighted) sum of squared

@@ -61,6 +61,9 @@ typedef enum {
 	EXPONENTIAL,
 	SPHERICAL, 
 	GAUSSIAN, 
+#ifdef USING_R
+	MATERN,
+#endif
 	CIRCULAR,
 	LINEAR, 
 	BESSEL, 
@@ -77,17 +80,17 @@ typedef enum {
 typedef struct {
 	VGM_MODEL_TYPE model;
 	const char *name, *name_long, *v_gnuplot, *c_gnuplot;
-	double (*fn)(double h, double r), /* variogram value at h of basic model */
-		(*da_fn)(double h, double r); /* it's derivative to the range parm. */
+	double (*fn)(double h, double *r), /* variogram value at h of basic model */
+		(*da_fn)(double h, double *r); /* it's derivative to the range parm. */
 } V_MODEL;
 extern const V_MODEL v_models[];
 
 typedef struct {
 	VGM_MODEL_TYPE model;
 	int fit_sill, fit_range, id;
-	double range, sill,
-	(*fnct)(double h, double r), /* (partial) unit variogram function */
-	(*da_fnct)(double h, double r); /* (partial) derivative to range of unit variogram */
+	double *range, sill,
+	(*fnct)(double h, double *r), /* (partial) unit variogram function */
+	(*da_fnct)(double h, double *r); /* (partial) derivative to range of unit variogram */
 	ANIS_TM *tm_range;
 } VGM_MODEL;
 
@@ -148,6 +151,8 @@ typedef struct {
 #define PARTHASNORANGE(m) (m->model == NUGGET || m->model == INTERCEPT || \
 	(m->model == LINEAR && m->range == 0.0))
 
+#define NRANGEPARS 2 /* number of range parameters in variogram models */
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -159,7 +164,6 @@ extern const char *c_model_gnuplot[];
 VARIOGRAM *init_variogram(VARIOGRAM *v);
 SAMPLE_VGM *init_ev(void);
 void vgm_init_block_values(VARIOGRAM *v);
-void init_variogram_part(VGM_MODEL *v);
 void free_variogram(VARIOGRAM *v);
 void logprint_variogram(const VARIOGRAM *v, int verbose);
 void fprint_variogram(FILE *f, const VARIOGRAM *v, int verbose);
@@ -182,8 +186,8 @@ DO_AT_ZERO zero_shift(DO_AT_ZERO now, int next);
 FIT_TYPE fit_shift(FIT_TYPE now, int next);
 VGM_MODEL_TYPE model_shift(VGM_MODEL_TYPE now, int next);
 int get_n_variogram_models(void);
-void push_to_v(VARIOGRAM *v, const char *mod, double sill, double range, 
-		double *d, int fit_sill, int fit_range);
+void push_to_v(VARIOGRAM *v, const char *mod, double sill, double *range, 
+		int nrangepars, double *d, int fit_sill, int fit_range);
 
 #if defined(__cplusplus)
 }

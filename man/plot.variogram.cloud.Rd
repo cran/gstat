@@ -23,14 +23,16 @@ cloud points }
 (in case of identify = FALSE) or to plot (in case of identify = TRUE) }
 }
 \value{
-if identify is T, a matrix with in its rows the point pairs identified,
-if identify is F, a plot of the variogram cloud (see \link{plot.variogram})
+if identify is T, a data frame of class \code{point.pairs} with in its 
+rows the point pairs identified, if identify is F, a plot of the 
+variogram cloud (see \link{plot.variogram})
 }
 \references{ 
 \url{http://www.gstat.org/}
 }
 \author{ Edzer J. Pebesma }
 \seealso{
+\link{plot.point.pairs},
 \link{variogram.formula},
 \link{variogram},
 \link{plot.variogram},
@@ -42,4 +44,4 @@ plot(variogram(log(zinc)~1, loc=~x+y, data=meuse, cloud=TRUE))
 # plot(variogram(log(zinc)~1, loc=~x+y, data=meuse, cloud=TRUE, cressie=TRUE))
 }
 
-\keyword{models}
+\keyword{dplot}

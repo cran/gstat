@@ -251,6 +251,16 @@ void set_norm_fns(DATA *d) {
 	}
 }
 
+void init_data_minmax(void) {
+	fix_minmax = 0;
+	set_mv_double(&(min.x));
+	set_mv_double(&(min.y));
+	set_mv_double(&(min.z));
+	set_mv_double(&(max.x));
+	set_mv_double(&(max.y));
+	set_mv_double(&(max.z));
+}
+
 void setup_data_minmax(DATA *d) {
 
 	if (fix_minmax)
@@ -317,7 +327,7 @@ static DATA *read_table(DATA *d) {
 	mk_var_names(d);
 
 	d->n_list = d->n_max = 0; 
-	if (d->id == ID_OF_VALDATA && max_block_dimension() > 0.0) {
+	if (d->id == ID_OF_VALDATA && max_block_dimension(0) > 0.0) {
 		SET_BLOCK(&current);
 		if (IS_POINT(&current)) {
 			pr_warning("bitfield:[%u]\n", current.bitfield);
@@ -1432,7 +1442,7 @@ static int read_data_from_map(DATA *d) {
     current.z = 0.0;
     current.bitfield = 0;
     
-	if (d->id == ID_OF_VALDATA && max_block_dimension() > 0.0)
+	if (d->id == ID_OF_VALDATA && max_block_dimension(0) > 0.0)
 		SET_BLOCK(&current);
 	else
 		SET_POINT(&current);
@@ -1581,7 +1591,7 @@ static int read_idrisi_point_data(DATA *d, const char *fname) {
 	if ((f = fopen(fname, "r")) == NULL)
 		return 1;
     current.z = 0.0;
-	if (d->id == ID_OF_VALDATA && max_block_dimension() > 0.0)
+	if (d->id == ID_OF_VALDATA && max_block_dimension(0) > 0.0)
 		SET_BLOCK(&current);
 	else
 		SET_POINT(&current);
@@ -1742,7 +1752,7 @@ static int read_idrisi32_point_data(DATA *d, const char *fname) {
 			return 1;  /*KS added*/
 	}
     current.z = 0.0;
-    if (d->id == ID_OF_VALDATA && max_block_dimension() > 0.0)
+    if (d->id == ID_OF_VALDATA && max_block_dimension(0) > 0.0)
 		SET_BLOCK(&current);
 	else
 		SET_POINT(&current);

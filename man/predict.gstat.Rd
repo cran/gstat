@@ -44,8 +44,8 @@ conditional distribution at that location, see \code{nmax} in \link{krige}
 and \link{gstat}. The larger \code{nmax}, the better the approximation,
 the smaller \code{nmax}, the faster the simulation process. For selecting
 the nearest \code{nmax} data or previously simulated points, gstat uses
-a PR-bucket quadtree neighbourhood search algorithm. See the nsearch.c
-source file for references to what this means.
+a bucket PR quadtree neighbourhood search algorithm; see the reference
+below.
 
 For sequential Gaussian or indicator simulations, a random path through
 the simulation locations is taken, which is usually done for sequential
@@ -74,7 +74,15 @@ of prediction and prediction variance (in case of kriging) or the
 columns of the conditional Gaussian or indicator simulations 
 }
 
-\references{ \url{http://www.gstat.org/} }
+\references{ 
+ N.A.C. Cressie, 1993, Statistics for Spatial Data,
+Wiley. 
+
+\url{http://www.gstat.org/}
+
+For bucket PR quadtrees, excellent demos are found at
+\url{http://www.cs.umd.edu/~brabec/quadtree/index.html}
+}
 \author{ Edzer J. Pebesma }
 \note{  }
 

@@ -1,13 +1,13 @@
 "vgm" <-
-function(psill = 0, model, range = 0, nugget, add.to, anis) {
+function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5) {
 	add.to.df = function(x, y) {
-		nrx = dim(x)[1]
-		nry = dim(y)[1]
+		nrx = nrow(x)
+		nry = nrow(y)
 		x[(nrx+1):(nrx+nry),] = y
 		return(x)
 	}
-	n = .Call("gstat_get_n_variogram_models", 0)[[1]];
-	m = .C("Cgstat_get_variogram_models", rep("",n))[[1]]
+	n = .Call("gstat_get_n_variogram_models", 0, PACKAGE = "gstat")[[1]];
+	m = .C("Cgstat_get_variogram_models", rep("",n), PACKAGE = "gstat")[[1]]
 	mf = factor(m, levels = m)
 	if (missing(model)) {
 		print("possible models:")
@@ -31,15 +31,15 @@ function(psill = 0, model, range = 0, nugget, add.to, anis) {
 	}
 	if (!missing(nugget)) {
 		ret = data.frame(model=mf[mf==model], psill=psill, range=range,
-			ang1=anis[1], ang2=anis[2], ang3=anis[3], anis1=anis[4], 
-			anis2=anis[5])
+			kappa = kappa, ang1=anis[1], ang2=anis[2], ang3=anis[3], 
+			anis1=anis[4], anis2=anis[5])
 		n.vgm = data.frame(model=mf[mf=="Nug"], psill=nugget, range=0,
-			ang1=0, ang2=0, ang3=0, anis1=1, anis2=1)
+			kappa = 0.0, ang1=0.0, ang2=0.0, ang3=0.0, anis1=1.0, anis2=1.0)
 		ret = add.to.df(n.vgm, ret)
 	} else
 		ret = data.frame(model=mf[mf==model], psill=psill, range=range,
-			ang1=anis[1], ang2=anis[2], ang3=anis[3], anis1=anis[4], 
-			anis2=anis[5])
+			kappa = kappa, ang1=anis[1], ang2=anis[2], ang3=anis[3], 
+			anis1=anis[4], anis2=anis[5])
 	if (!missing(add.to))
 		ret = add.to.df(data.frame(add.to), ret)
 	class(ret) = c("variogram.model", "data.frame")

@@ -1,6 +1,6 @@
 
-R : Copyright 2003, The R Development Core Team
-Version 1.6.2  (2003-01-10)
+R : Copyright 2002, The R Development Core Team
+Version 1.6.1  (2002-11-01)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -13,20 +13,10 @@ Type `demo()' for some demos, `help()' for on-line help, or
 `help.start()' for a HTML browser interface to help.
 Type `q()' to quit R.
 
-[Previously saved workspace restored]
-
-R> library(gstat)
+> library(gstat)
 Loading required package: lattice 
-
-Attaching package `gstat':
-
-
-	The following object(s) are masked _by_ .GlobalEnv :
-
-	 meuse 
-
-R> data(meuse)
-R> variogram(log(zinc)~1, ~x+y, meuse)
+> data(meuse)
+> variogram(log(zinc)~1, ~x+y, meuse)
     np       dist     gamma dir.hor dir.ver id
 1   57   79.29244 0.1234479       0       0  1
 2  299  163.97367 0.2162185       0       0  1
@@ -43,4 +33,4 @@ R> variogram(log(zinc)~1, ~x+y, meuse)
 13 452 1329.16407 0.6517158       0       0  1
 14 457 1437.25620 0.5665318       0       0  1
 15 415 1543.20248 0.5748227       0       0  1
-R> 
+> 

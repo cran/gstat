@@ -57,7 +57,7 @@ simulation, or for other interpolation methods provided by gstat (such as
 inverse distance weighted interpolation or trend surface interpolation)
 use the functions \link{gstat} and \link{predict.gstat} directly.
 
-for further details, see \link{predict.gstat}
+For further details, see \link{predict.gstat}.
 }
 
 \value{
@@ -70,7 +70,6 @@ simulations }
 Wiley. 
 
 \url{http://www.gstat.org/}
-
 }
 \author{ Edzer J. Pebesma }
 \note{  

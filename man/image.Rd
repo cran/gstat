@@ -42,14 +42,14 @@ the approximation. Geographically correct images can be obtained by
 modifiying \code{par("pin")}. Read the examples, image a 2 x 2 grid,
 and play with \code{par("pin")} if you want to learn more about this.
 
-It seems (R 1.6.1) that resizing the plotting window destroys the
+It seems (R >= 1.6.1) that resizing the plotting window destroys the
 aspect ratio, unless par(pin) has been set explicitly.
 
 I wrote this function before I found out about \code{levelplot}, a
 Lattice/Trellis function that lets you control the aspect ratio by an
 \code{aspect} argument. It automatically draws a legend, and therefore
-I now prefer it over \code{image}, although I haven't found out know 
-how to overlay the observation locations. Any help is appreciated.
+I now prefer it over \code{image}. Plotting points on a levelplots
+is probably done with providing a panel function and using \code{lpoints}.
 }
 \references{ }
 \author{ Edzer J. Pebesma }

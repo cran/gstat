@@ -60,5 +60,5 @@ model.2 <- vgm(.59,"Sph",926,.06,anis=c(0,0.3))
 plot(vgm2, model=model.2)
 }
 
-\keyword{models}
+\keyword{dplot}
 

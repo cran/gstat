@@ -63,7 +63,7 @@ void reset_block_discr(void) {
 	reset_anyway = 1;
 }
 
-DATA *block_discr(DATA *d, const DPOINT *block, const DPOINT *where)
+DATA *block_discr(DATA *d, const DPOINT *block, const DPOINT *where) {
 /*
  * Purpose       : get locations that discretize the estimation area
  * Created by    : Edzer J. Pebesma                    
@@ -81,7 +81,6 @@ DATA *block_discr(DATA *d, const DPOINT *block, const DPOINT *where)
  * only the x, y and z field are used for locations, 
  * weights are put in the weight union.
  */
-{
 	int i, k, l, m, ndim;
 	int ndiscr = 0, restart = 0;
 /*

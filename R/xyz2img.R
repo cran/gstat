@@ -1,7 +1,7 @@
 "xyz2img" <-
 function (xyz, zcol = 3, xcol = 1, ycol = 2) 
 {
-    if (dim(xyz)[2] < 3) 
+    if (ncol(xyz) < 3) 
         stop("xyz object should have at least three columns")
     z = xyz[, zcol]
     x = xyz[, xcol]

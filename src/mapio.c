@@ -2625,8 +2625,7 @@ static GRIDMAP *write_gslib(GRIDMAP * m)
 	return m;
 }
 
-GRIDMAP *map_switch_type(GRIDMAP * in, MAPTYPE type)
-{
+GRIDMAP *map_switch_type(GRIDMAP * in, MAPTYPE type) {
 
 	switch (type) {
 	case MT_ARCGRID:
@@ -2692,7 +2691,46 @@ GRIDMAP *map_switch_type(GRIDMAP * in, MAPTYPE type)
 	return in;
 }
 
-#ifdef MAPIO_LIB
+void map_name_nr(GRIDMAP *mask, const char *base, char *name, int nr, int max) {
+	char *cp;
+
+	if (mask->type != MT_CSF) {
+		if (max > 99999)
+			sprintf(name, "%s%06d", base, nr);
+		else if (max > 9999)
+			sprintf(name, "%s%05d", base, nr);
+		else if (max > 999)
+			sprintf(name, "%s%04d", base, nr);
+		else if (max > 99)
+			sprintf(name, "%s%03d", base, nr);
+		else
+			sprintf(name, "%s%02d", base, nr);
+		return;
+	}
+
+/*
+ * CSF/PCRaster convention:
+ * base is the name set in the command file with predictions(id): 'base';
+ * name is the output, which will look like: 'base0000.011', if nr is 11
+ * Big trick: base0001.000 should follow base0000.999, if nr is 1000.
+ * reason for this: csf/PCRaster convention (not my idea).
+ */
+	nr++; /* start at 1 */
+	sprintf(name, "%s", base);
+	/* get basename: don't know if this is completely portable */
+	if ((cp = strrchr(name, '/')) != NULL) /* unix directory delimiter */
+		cp++;
+	else if ((cp = strrchr(name, '\\')) != NULL) /* DOS directory delimiter */
+		cp++;
+	else
+		cp = name; /* no slashes: this is the base name */
+	sprintf(cp, "%011d", nr); /* print the 11-digit number, like 00000000011 */
+	memmove(cp + 9, cp + 8, 4); /* move overlapping last 3 digits + '\0' */
+	cp[8] = '.'; /* print 8.3 point */
+	memcpy(name, base, strlen(base)); /* overprint name excluding '\0' */
+}
+
+#ifdef MAPIO_LIB /* dummy, test main() */
 int main(int argc, char *argv[])
 {
 	printf("all done\n");

@@ -1,0 +1,32 @@
+
+R : Copyright 2003, The R Development Core Team
+Version 1.6.2  (2003-01-10)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type `license()' or `licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type `contributors()' for more information.
+
+Type `demo()' for some demos, `help()' for on-line help, or
+`help.start()' for a HTML browser interface to help.
+Type `q()' to quit R.
+
+> library(gstat)
+Loading required package: lattice 
+> data(meuse)
+> new.locs <- data.frame(x = c(181170, 180310, 180205, 178673, 178770, 178270),
++ 	y = c(333250, 332189, 331707, 330066, 330675, 331075))
+> krige(zinc ~ 1, ~ x + y, meuse, newdata = new.locs, 
++ 		model = vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
++ 		block = c(40,40), nmax = 40)
+[using ordinary kriging]
+       x      y var1.pred  var1.var
+1 181170 333250  268.7576  19447.67
+2 180310 332189  663.4915  16991.33
+3 180205 331707  251.4606  21579.71
+4 178673 330066  532.5776  73807.91
+5 178770 330675  664.4039  23589.17
+6 178270 331075  565.5436 155113.23
+> 

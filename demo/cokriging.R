@@ -11,9 +11,32 @@ x <- variogram(meuse.g, cutoff=1000)
 meuse.fit = fit.lmc(x, meuse.g)
 plot(x, model = meuse.fit)
 z <- predict(meuse.fit, newdata = meuse.grid)
-levelplot(z~x+y|name, map.to.lev(z, z=c(3,5,7,9)), aspect = mapasp(z))
-levelplot(z~x+y|name, map.to.lev(z, z=c(4,6,8,10)), aspect = mapasp(z))
-rm(meuse, meuse.grid, meuse.g, x, meuse.fit, z)
+pl1 <- levelplot(zn.pred~x+y, z, aspect = mapasp(z), 
+	main="log-zinc predictions")
+pl2 <- levelplot(cu.pred~x+y, z, aspect = mapasp(z), 
+	main="log-copper predictions")
+pl3 <- levelplot(cd.pred~x+y, z, aspect = mapasp(z), 
+	main="log-cadmium predictions")
+pl4 <- levelplot(pb.pred~x+y, z, aspect = mapasp(z), 
+	main="log-lead predictions")
+print(pl1, split = c(1,1,2,2), more=TRUE)
+print(pl2, split = c(1,2,2,2), more=TRUE)
+print(pl3, split = c(2,1,2,2), more=TRUE)
+print(pl4, split = c(2,2,2,2))
+pl1 <- levelplot(sqrt(zn.var)~x+y, z, aspect = mapasp(z), 
+	main="log-zinc std.err.")
+pl2 <- levelplot(sqrt(cu.var)~x+y, z, aspect = mapasp(z), 
+	main="log-copper std.err.")
+pl3 <- levelplot(sqrt(cd.var)~x+y, z, aspect = mapasp(z), 
+	main="log-cadmium std.err.")
+pl4 <- levelplot(sqrt(pb.var)~x+y, z, aspect = mapasp(z), 
+	main="log-lead st.err.")
+print(pl1, split = c(1,1,2,2), more=TRUE)
+print(pl2, split = c(1,2,2,2), more=TRUE)
+print(pl3, split = c(2,1,2,2), more=TRUE)
+print(pl4, split = c(2,2,2,2))
+
+rm(meuse.g, x, meuse.fit, z)
 
 # indicator cokriging for the 9 percentiles of zinc:
 data(meuse)

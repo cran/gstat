@@ -262,6 +262,7 @@ void print_data(const DATA *d, int list);
 void logprint_point(const DPOINT *p, const DATA *d);
 DATA *init_one_data(DATA *data);
 int coordinates_are_equal(const DATA *a, const DATA *b);
+void init_data_minmax(void);
 void setup_data_minmax(DATA *d);
 void calc_polynomials(DATA *d);
 double calc_polynomial(DPOINT *p, int colX);

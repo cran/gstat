@@ -9,7 +9,9 @@ function (x, identify = FALSE, xlim = c(0, max(x$dist)),
         tail = floor(x$np%%2^16) + 1
         labs = paste(head, tail, sep = ",")
         sel = identify(x$dist, x$gamma, labs)
-        return(cbind(head, tail)[sel, ])
+        ret = data.frame(cbind(head, tail)[sel, ])
+		class(ret) = c("point.pairs", "data.frame")
+		return(ret)
     } else {
 		x$np = rep(1, length(x$gamma))
 		plot.variogram(x, xlim = xlim, ylim = ylim, xlab = xlab, 

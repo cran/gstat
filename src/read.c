@@ -36,17 +36,6 @@
 #include <string.h>
 
 #include "defs.h"
-
-#ifdef HAVE_GETOPT_H
-# include <getopt.h>
-#endif
-#ifdef HAVE_UNISTD_H
-# include <unistd.h>
-#endif
-#ifndef HAVE_GETOPT
-# include "getopt.h"
-#endif
-
 #include "utils.h"
 #include "userio.h"
 #include "glvars.h"
@@ -72,49 +61,6 @@
 #ifndef HUGE_VAL
 #  define HUGE_VAL    1.7976931348623157e+308
 #endif
-
-#ifdef MAIN_READ
-int main(int argc, char *argv[]) {
-	float f;
-	double d;
-	int i, c;
-	unsigned int u;
-
-	opterr = 0;
-	while ((c = getopt(argc, argv, "i:f:d:")) != EOF) {
-		switch (c) {
-			case 'u':
-				if (read_uint(optarg, &u))
-					printf("error reading uint from %s\n", optarg);
-				else
-					printf("unsigned int '%s' value %u\n", optarg, u);
-				break;
-			case 'i':
-				if (read_int(optarg, &i))
-					printf("error reading int from %s\n", optarg);
-				else
-					printf("int '%s' value %d\n", optarg, i);
-				break;
-			case 'f':
-				if (read_float(optarg, &f))
-					printf("error reading float from %s\n", optarg);
-				else
-					printf("float '%s' value %g\n", optarg, f);
-				break;
-			case 'd':
-				if (read_double(optarg, &d))
-					printf("error reading float from %s\n", optarg);
-				else
-					printf("double '%s' value %g\n", optarg, d);
-				break;
-			case '?'
-				ErrClo(optopt);
-			default:
-				printf("%s -i [int] -f [float] -d [double]", argv[0]);
-		}
-	}
-}
-#endif 
 
 int read_float(const char *s, float *f) {
 /* return 1 on error, 0 on no error */

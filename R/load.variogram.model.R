@@ -11,5 +11,8 @@
 		as.character(model$model),
 		as.numeric(model$psill),
 		as.numeric(model$range),
-		as.numeric(anis))
+		as.numeric(model$kappa),
+		as.numeric(anis)
+		, PACKAGE = "gstat"
+		)
 }

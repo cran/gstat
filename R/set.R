@@ -19,7 +19,7 @@ gstat.load.set <- function(set) {
 	str = gstat.set(set)
 	if (!is.null(str)) {
 		ret = .C("Cload_gstat_command", str, as.integer(length(str)), 
-			as.integer(0))[[3]]
+			as.integer(0), PACKAGE = "gstat")[[3]]
 		if (ret != 0)
 			stop(paste("error occured when parsing command:", str[ret]))
 	}

@@ -173,8 +173,10 @@ void *edmalloc(size_t size, char *file, int line) {
 #ifdef RECORD_MALLOC
 	printlog("%s:%d: malloc(%u)\n", file, line, size);
 #endif
+#ifndef USING_R
 	if (n_mallocs == 0)
 		atexit(print_n);
+#endif
 	n_mallocs++;
 	p = (void *) malloc(size);
 	if (p == NULL) {

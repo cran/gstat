@@ -3,9 +3,6 @@
 
 /* RCS id: $Id: machine.h.in,v 1.3 1995/03/27 15:36:21 des Exp $ */
 
-/* This is for use with "configure" -- if you are not using configure
-	then use machine.van for the "vanilla" version of machine.h */
-
 /* Note special macros: ANSI_C (ANSI C syntax)
 			SEGMENTED (segmented memory machine e.g. MS-DOS)
 			MALLOCDECL (declared if malloc() etc have

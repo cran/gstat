@@ -76,9 +76,8 @@ static double sem_cov_blocks(VARIOGRAM *v, DATA *a, DATA *b, int sem) {
 /*
  * Purpose       : calculates (once) and returns Cov(a,b);
  *                 if a==b && a denotes a block discretisation, the value
- *                 is put in a->block_variance (provided a->id didn't change)
- *                 and a->block_set gets 1
- * Created by    : Edzer J. Pebesma                                      
+ *                 is put in a->block_variance and a->block_xxx_set gets 1
+ * Created by    : Edzer J. Pebesma
  * Date          : 25 jan 1992, 3 june 1993
  * Prerequisites : none 
  * Returns       : sem == 1 ? Sem(a,b) : Cov(a,b) 
@@ -93,7 +92,8 @@ static double sem_cov_blocks(VARIOGRAM *v, DATA *a, DATA *b, int sem) {
 		ErrMsg(ER_IMPOSVAL, "weights needed in SevCov_Blocks()");
 	*/
 	if (a == NULL)
-		return sem ? get_semivariance(v, 0.0, 0.0, 0.0) : get_covariance(v, 0.0, 0.0, 0.0);
+		return sem ? get_semivariance(v, 0.0, 0.0, 0.0) : 
+				get_covariance(v, 0.0, 0.0, 0.0);
 	if (a->n_list == 1 && b->n_list == 1) { /* point--point */
 		return sem ?
 			get_semivariance(v, a->list[0]->x - b->list[0]->x,

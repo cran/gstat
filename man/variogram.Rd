@@ -55,8 +55,8 @@ directions in (x,y) }
 optional a vector of directions
 \item{tol.hor}{ horizontal tolerance angle in degrees }
 \item{tol.ver}{ vertical tolerance angle in degrees }
-\item{cressie}{ logical; if T, use Cressie's robust variogram estimate;
-if F use the classical method of moments variogram estimate }
+\item{cressie}{ logical; if TRUE, use Cressie's robust variogram estimate;
+if FALSE use the classical method of moments variogram estimate }
 \item{dX}{ include a pair of data points $y(s_1),y(s_2)$ taken at
 locations $s_1$ and $s_2$ for sample variogram calculation only when
 $||x(s_1)-x(s_2)|| < dX$ with and $x(s_i)$ the vector with regressors at
@@ -117,7 +117,7 @@ to fit a variogram model to a sample variogram:
 data(meuse)
 # no trend:
 variogram(log(zinc)~1, loc=~x+y, meuse)
-# linear trend:
+# residual variogram w.r.t. a linear trend:
 variogram(log(zinc)~x+y, loc=~x+y, meuse)
 # directional variogram:
 variogram(log(zinc)~x+y, loc=~x+y, meuse, alpha=c(0,45,90,135))

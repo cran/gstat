@@ -274,7 +274,7 @@ void fprint_gnuplot_model(FILE *f, const VARIOGRAM *vgm, int fit) {
 		if (fit && vgm->part[i].fit_range) /* print parameter to string: */
 			sprintf(a, "a%d", i);
 		else
-			sprintf(a, "%.2e", vgm->part[i].range *
+			sprintf(a, "%.2e", vgm->part[i].range[0] *
 				relative_norm(vgm->part[i].tm_range, vgm->ev->direction.x,
 				vgm->ev->direction.y, vgm->ev->direction.z));
 

@@ -43,6 +43,7 @@ void init_userio(int use_stdio);
 void pr_warning(char *fmt, ...);
 void printlog(const char *fmt, ...);
 void print_progress(unsigned int current, unsigned int total);
+void print_to_logfile_if_open(const char *mess);
 
 enum Gstat_errno get_gstat_errno(void);
 void reset_gstat_errno(void);

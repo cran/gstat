@@ -1,4 +1,4 @@
-\name{vgm.panel.xyplot}
+\name{gstat-internal}
 \alias{vgm.panel.xyplot}
 \alias{xvgm.panel.xyplot}
 \alias{vgm.dir.panel.xyplot}
@@ -8,9 +8,10 @@
 \alias{gstat.debug}
 \alias{gstat.set}
 \alias{gstat.load.set}
+\alias{panel.point.pairs}
 
 \title{Gstat Internal Functions}
 \description{gstat internal functions}
 \author{Edzer J. Pebesma}
-\seealso{ }
+\note{these functions should not be called by users directly}
 \keyword{internal}

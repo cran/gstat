@@ -30,9 +30,10 @@ returns an object of class \code{gstat}, with fitted variograms;
 \note{ This function does not use the iterative procedure proposed by
 M. Goulard and M. Voltz (Math. Geol., 24(3): 269-286; reproduced in
 Goovaerts' 1997 book) but uses simply two steps: first, each variogram
-model is fitted to a direct or cross variogram; next the partial sill
-coefficient matrices are approached by positive definite matrices by
-setting the negative eigenvalues to zero.  }
+model is fitted to a direct or cross variogram; next each of the partial
+sill coefficient matrices is approached by its in least squares sense
+closest positive definite matrices (by setting any negative eigenvalues
+to zero). }
 \seealso{ \link{variogram}, \link{vgm}, \link{fit.variogram},
 \code{demo(cokriging)} }
 \examples{ 
