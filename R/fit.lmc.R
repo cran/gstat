@@ -1,6 +1,6 @@
 "fit.lmc" <-
 function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges, 
-    ...) 
+    correct.diagonal = 1.0, ...) 
 {
     posdef = function(X) {
         q = eigen(X)
@@ -42,6 +42,7 @@ function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges,
                 }
             }
             psill = posdef(psill)
+			diag(psill) = diag(psill) * correct.diagonal 
             for (i in 1:length(n)) {
                 for (j in i:length(n)) {
                   name = ifelse(i == j, n[i], cross.name(n[i], n[j]))

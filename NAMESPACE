@@ -2,9 +2,9 @@ useDynLib(gstat)
 
 export(bpy.colors, bubble, cross.name, fit.lmc, fit.variogram,
 	fit.variogram.reml, get.contr, gstat, gstat.cv, "[.gstat",
-	krige, krige.cv, map.to.lev, mapasp, ossfim, point.in.polygon,
-	predict.gstat, select.spatial, show.vgms, variogram,
-	variogram.line, vgm, xyz2img, zerodist)
+	krige, krige.cv, makegrid, map.to.lev, mapasp, ossfim,
+	point.in.polygon, predict.gstat, select.spatial, show.vgms,
+	variogram, variogram.line, vgm, xyz2img, zerodist)
 
 S3method(predict, gstat)
 S3method(print, gstat)

@@ -31,7 +31,10 @@ compontent to the model) }
 an object of class \code{variogramModel}, which extends data.frame Called
 without a model argument returns a character list with available models.
 }
-\references{ }
+\references{ 
+Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
+Computers \& Geosciences, 30: 683-691.
+}
 \author{ Edzer J. Pebesma }
 \note{ 
 Geometric anisotropy can be modelled for each individual simple model
