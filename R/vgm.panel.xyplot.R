@@ -16,7 +16,7 @@ function (x, y, type = "p", pch = plot.symbol$pch, col,
         plot.symbol <- trellis.par.get("plot.symbol")
         plot.line <- trellis.par.get("plot.line")
         lpoints(x = x, y = y, cex = cex, col = col.symbol, pch = pch)
-        if (!missing(model)) {
+        if (!missing(model) && !is.null(model)) {
             ret <- variogram.line(model, max(x))
             llines(x = ret$dist, y = ret$gamma, lty = lty, col = col.line, 
                 lwd = lwd)

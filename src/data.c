@@ -50,6 +50,13 @@
 #include "gls.h" /* free_glm() */
 #include "nsearch.h"
 
+#ifdef HAVE_EXT_DBASE
+#ifndef INCLUDED_EXT_DBASE
+#include "ext_dbase.h"
+#define INCLUDED_EXT_DBASE
+#endif
+#endif
+
 const DATA_TYPE data_types[] = {
 	{ DATA_UNKNOWN, "Unknown file type"},
 	{ DATA_ASCII_TABLE, "Ascii table file"},
@@ -201,6 +208,14 @@ DATA *read_gstat_data(DATA *d) {
 		set_norm_fns(d);
 		return d;
 	} 
+	/* CW trying is done by special fname format
+	 * so it must be tried first
+	 */
+#ifdef HAVE_EXT_DBASE
+	if (strncmp(d->fname,EXT_DBASE_FNAME_SIG,strlen(EXT_DBASE_FNAME_SIG))==0) {
+		read_ext_dbase(d);
+	} else
+#endif
 #ifdef HAVE_LIBGIS
 	if (grass()) {
 		DUMP(d->fname); 
@@ -217,6 +232,7 @@ DATA *read_gstat_data(DATA *d) {
 #endif
 	if (!read_data_from_map(d) && !read_idrisi_points(d) && 
 				!read_idrisi32_points(d)) {
+		/* last try assumes ascii/with geo-eas header */
 		DUMP(d->fname); DUMP(": trying GeoEAS or ascii table... ");
 		d = read_table(d);
 		if (d->type.type == DATA_EAS) {
@@ -225,12 +241,18 @@ DATA *read_gstat_data(DATA *d) {
 			DUMP("ascii\n");
 		}
 	}
-	transform_data(d);
 	set_norm_fns(d);
-	average_duplicates(d);
-	calc_data_mean_std(d);
-	correct_strata(d);
 	d->n_original = d->n_list;
+    if (d->type.type != DATA_EXT_DBASE) {
+	 /* CW only access data to get some info
+	  * not needed for current application of DATA_EXT_DBASE
+	  * or read_ext_dbase should compute/return that info
+	  */
+		transform_data(d); 
+		average_duplicates(d);
+		calc_data_mean_std(d);
+		correct_strata(d);
+    }
 	return d;
 }
 
@@ -703,7 +725,7 @@ n:                       155     [y:] ycoord, m  : [    329714,    333611]
 	if (d->colnvariance) {
 		if (!(d->mode & V_BIT_SET))
 			printlog("%-33s", " ");
-		printlog("[V:] %-10s : [%10g,%10g]\n",
+			printlog("[V:] %-10s : [%10g,%10g]\n",
 			strncpy(tmp, NULS(d->V_coord), 10), d->minvariance, d->maxvariance);
 	}
 
@@ -1022,11 +1044,12 @@ void free_data(DATA *d) {
 		return;
 	if (d->P_base) { /* segmented: */
 		efree(d->P_base);
-		if (d->n_X)
+		if (d->n_X && d->X_base)
 			efree(d->X_base);
 	} else { /* non-segmented */
-		for (i = d->n_list - 1; i >= 0; i--)
-			pop_point(d, i);
+		if (d->list) /* CW at all MV on output both P_base and d_list are 0 */
+			for (i = d->n_list - 1; i >= 0; i--)
+				pop_point(d, i);
 	}
 
 	if (d->sel != NULL && d->sel != d->list)
@@ -1047,6 +1070,10 @@ void free_data(DATA *d) {
     if (d->point_ids)
         for (i = d->n_list - 1; i >= 0; i--)
             efree(d->point_ids[i]);
+#ifdef HAVE_EXT_DBASE
+	if (d->ext_dbase)
+	  unlink_ext_dbase(d);
+#endif
     
 	efree(d);
 	return;
@@ -1151,6 +1178,10 @@ DATA *init_one_data(DATA *data) {
 	set_mv_double(&(data->Icutoff));
 	set_mv_double(&(data->mv));
 
+#ifdef HAVE_EXT_DBASE
+	data->ext_dbase = NULL;
+#endif
+
 	return data;
 }
 
@@ -1189,6 +1220,12 @@ void print_data(const DATA *d, int list) {
 		printlog("current list:\n");
 		logprint_data_header(d);
 		if (d->n_list) {
+#ifdef HAVE_EXT_DBASE
+         if (d->type.type == DATA_EXT_DBASE)
+			printlog("<extdbase>\n");
+		 else
+#endif
+
 			for (i = 0; i < d->n_list; i++)
 				logprint_point(d->list[i], d);
 		} else
@@ -1801,7 +1838,7 @@ static int read_idrisi32_point_data(DATA *d, const char *fname) {
 			total = file_size(fname);
             total = total - 261;
             if (total < 65520)
-    			vecptr = (double *) (emalloc(total));
+    			vecptr = (double *) (emalloc((unsigned int) total));
 			else 
 				vecptr = (double *) (emalloc(65520));
             tmp = (char *) (emalloc(261));
@@ -1821,7 +1858,7 @@ static int read_idrisi32_point_data(DATA *d, const char *fname) {
 
             if (total < 65520) {
             	/* KS: read(fb,vecptr,total); */
-				fread(vecptr, total, 1, f);
+				fread(vecptr, (unsigned int) total, 1, f);
             	total = (int)(total/8);
             	i = 0;
     			while (i < total) {
@@ -1889,7 +1926,7 @@ char *print_data_line(const DATA *d, char **to) {
 	if (d->fname)
 		est_length += strlen(d->fname);
 
-	*to = (char *) erealloc(*to, est_length);
+	*to = (char *) erealloc(*to, (unsigned int) est_length);
 	*to[0] = '\0';
 	if (d->fname) {
 		strcat(*to, "'");
@@ -2098,7 +2135,7 @@ D_VECTOR *push_d_vector(double d, D_VECTOR *v) {
 		v->val = NULL;
 	}
 	v->size++;
-	if (v->size > v->max_size) { /* (re)allocate */
+	if (v->size > v->max_size) { /* (re)allocate v->val */
 		if (v->val == NULL)
 			v->val = (double *) emalloc(v->size * sizeof(double));
 		else
@@ -2141,6 +2178,7 @@ double v_bin(double mu) {
 double v_identity(double mu) {
 	return 1.0;
 }
+
 
 
 #ifdef HAVE_LIBGIS

@@ -30,7 +30,7 @@
 	This is to be included in the matrix.a library
 */
 
-static	char	rcsid[] = "$Id: init.c,v 1.6 1994/01/13 05:36:58 des Exp $";
+static	char	rcsid[] = "$Id: init.c,v 1.1.1.1 2003/06/23 18:31:41 cees Exp $";
 
 #include	<stdio.h>
 #include	"matrix.h"

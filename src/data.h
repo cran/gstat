@@ -111,7 +111,8 @@ typedef enum {
 	DATA_GSLIB,			/* GSLIB ascii grid */
 	DATA_GRASS,			/* GRASS site list */
 	DATA_GRASS_GRID,	/* GRASS raster */
-	DATA_GDAL 			/* GDAL raster */
+	DATA_GDAL, 			/* GDAL raster */
+	DATA_EXT_DBASE  /* CW external database */
 } DATA_TYPE_;
 
 typedef struct {
@@ -134,6 +135,22 @@ typedef struct {
 
 D_VECTOR *push_d_vector(double d, D_VECTOR *v);
 void free_d_vector(D_VECTOR *v);
+
+/* CW added, FTTB copies of DATA members
+ * SEARCH_CRITERIA should become part of DATA
+ * Dit zijn degene die ik begrijp
+ */
+typedef struct {
+ /* DATA::prob sample later */
+ int
+		force, 			/* force neighbourhood selection */
+		sel_min,
+		sel_max,		/* min and max number for neighbourhood selection */
+		oct_max,		/* max # pts for each octant; 0: use no octant search */
+		oct_filled, /* RETURN VALUE? number of non-empty octants in selection */
+		square;     /* use square search neighbourhood, default circular */
+	double sel_rad;		/* radius for neighbourhhood selection */
+}SEARCH_CRITERIA;
 
 typedef struct {		/* structure that holds data info and lists */
 	char *variable,		/* attr name, log(..) */
@@ -201,9 +218,19 @@ typedef struct {		/* structure that holds data info and lists */
 		prob;			/* inclusion probability (to sample data file) */
 	int  minstratum, maxstratum; /* min/max stratum */
 	double mean, std;	/* sample mean and st.dev. of attribute */
-	DPOINT **list,		/* list of data points, of length n_list */
-		**sel;			/* list of selection indices, of length n_sel */
+
+/* CW members to hold data in this struct (DATA_TYPE!= DATA_EXT_DBASE)
+ */
+	DPOINT **list;		/* list of data points, of length n_list */
 	DPOINT *P_base;		/* base for pointer array, if allocated blockwise */
+#ifdef HAVE_EXT_DBASE
+/* CW members when data is held external (DATA_TYPE== DATA_EXT_DBASE) */
+	void   *ext_dbase;  /* ptr to EXTDBASE_LINK struct */
+/* CW end of edits */
+#endif
+
+	DPOINT **sel;			/* list of selection indices, of length n_sel */
+
 	double (*point_norm)(const DPOINT *); /* eucl. vector length */
 	double (*pp_norm2)(const DPOINT *, const DPOINT *); /* point-point squared distance */
 	double (*pb_norm2)(const DPOINT *, BBOX); /* point-BBOX distance: nsearch.c */

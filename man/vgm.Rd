@@ -37,7 +37,7 @@ an object of class variogram.model, which extends data.frame Calling
 \link{print.variogram.model}, 
 \link{fit.variogram}, 
 \link{variogram.line}, 
-link{variogram} for the sample variogram.
+\link{variogram} for the sample variogram.
 }
 \examples{
 vgm(10, "Exp", 300)

@@ -9,7 +9,7 @@ conditional (Gaussian or indicator) simulation equivalents for all kriging
 varieties.
 }
 \usage{ krige(formula, locations, data, newdata, model, beta, nmax = Inf,
-maxdist = Inf, block, nsim = 0, indicators = FALSE, ...) }
+nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE, ...) }
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear
   model of independent variables; suppose the dependent variable has name
@@ -34,6 +34,9 @@ maxdist = Inf, block, nsim = 0, indicators = FALSE, ...) }
   should be used for a kriging prediction or simulation, where nearest
   is defined in terms of the space of the spatial locations. By default,
   all observations are used }
+ \item{nmin}{ for local kriging: if the number of nearest observations
+  within distance \code{maxdist} is less than \code{nmin}, a missing 
+  value will be generated; see maxdist }
  \item{maxdist}{ for local kriging: only observations within a distance
   of \code{maxdist} from the prediction location are used for prediction
   or simulation; if combined with \code{nmax}, both criteria apply }

@@ -16,7 +16,7 @@ function (x, y, subscripts, type = "p", pch = plot.symbol$pch,
         plot.symbol <- trellis.par.get("plot.symbol")
         plot.line <- trellis.par.get("plot.line")
         lpoints(x = x, y = y, cex = cex, col = col.symbol, pch = pch)
-        if (!missing(model)) {
+        if (!missing(model) && !is.null(model)) {
             if (!missing(dir.hor)) {
                 ang <- dir.hor[subscripts]
                 ang.pi <- pi * (ang[1]/180)
@@ -28,6 +28,6 @@ function (x, y, subscripts, type = "p", pch = plot.symbol$pch,
                 lwd = lwd)
         }
 		if(!is.null(labels))
-			ltext(x + 0.05 * max(x), y, labels = labels)
+			ltext(x + 0.05 * max(x), y, labels = labels[subscripts])
     }
 }

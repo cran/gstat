@@ -174,7 +174,8 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 						X_ori = where->X; /* remember... */
 						for (i = 0; i < where->u.stratum; i++)
 							where->X += data[i]->n_X; 
-						pred_lm(&data[where->u.stratum], 1, where, est);
+						if (data[where->u.stratum]->n_sel > 0)
+							pred_lm(&data[where->u.stratum], 1, where, est);
 						where->X = X_ori; /* and put back */
 						break;
 					case MULTIVARIABLE:
@@ -183,8 +184,10 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 					case SIMPLE:
 						X_ori = where->X; /* remember... */
 						for (i = 0; i < n_vars; i++) {
-							pred_lm(&data[i], 1, where, &(est[2*i]));
-							where->X += data[i]->n_X;
+							if (data[i]->n_sel > 0) {
+								pred_lm(&data[i], 1, where, &(est[2*i]));
+								where->X += data[i]->n_X;
+							}
 						}
 						where->X = X_ori; /* and put back */
 						break;
@@ -394,10 +397,13 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 			}
 			break;
 		case LSEM:
+			push_gstat_progress_handler(no_progress);
 			v = get_vgm(LTI(0,0));
 			assert(v);
 			v->id1 = v->id2 = v->id = 0;
 			v->ev->evt = SEMIVARIOGRAM;
+			if (data[0]->is_residual == 0)
+				data[0]->is_residual = 1; /* !! */
 			v->ev->recalc = 1;
 			calc_variogram(v, NULL);
 			if (gl_fit) { 
@@ -406,10 +412,13 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 				save_variogram_parameters(v);
 				fit_variogram(v);
 				/* write back locally fitted variogram model parameters: */
-				for (i = 0; i < MIN(get_n_vars(), v->n_models); i++) {
+				for (i = j = 0; i < MIN(get_n_vars(), v->n_models); i++) {
 					est[2 * i + 0] = v->part[i].sill;
 					est[2 * i + 1] = v->part[i].range[0];
+					j += 2;
 				}
+				if (j < get_n_vars())
+					est[j] = 1.0 * v->fit_is_singular;
 				reset_variogram_parameters(v);
 				update_variogram(v); /* not sure if this is needed */
 			} else {
@@ -419,6 +428,7 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 					est[2 * i + 1] = 1.0 * v->ev->nh[i];
 				}
 			}
+			pop_gstat_progress_handler();
 			break;
 		case NSP:  /* FALLTRHOUGH: */
 		default: 
@@ -474,6 +484,8 @@ static void est_skew_kurt(DATA *data, double *est) {
 	double mean, std, skewness = 0.0, kurtosis = 0.0, d;
 	static int i, size = 0;
 
+	if (data->n_sel <= 1) /* need at least 2 for variance */ 
+		return;
 	if (data->n_sel > size) 
 		list = (double *) erealloc(list, (size = data->n_sel) * sizeof(double));
 	for (i = 0; i < data->n_sel; i++)
@@ -560,4 +572,5 @@ void reset_variogram_parameters(VARIOGRAM *v) {
 		v->part[i].range[0] = vgm_pars[3 * i + 1];
 		v->part[i].range[1] = vgm_pars[3 * i + 2];
 	}
+	v->fit_is_singular = 0;
 }

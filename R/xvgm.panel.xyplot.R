@@ -17,7 +17,7 @@ function (x, y, subscripts, type = "p", pch = plot.symbol$pch,
         plot.symbol <- trellis.par.get("plot.symbol")
         plot.line <- trellis.par.get("plot.line")
         lpoints(x = x, y = y, cex = cex, col = col.symbol, pch = pch)
-        if (!missing(model)) {
+        if (!missing(model) && !is.null(model)) {
 		if (inherits(model, "gstat"))
 			m = model$model
 		else
@@ -31,6 +31,6 @@ function (x, y, subscripts, type = "p", pch = plot.symbol$pch,
 		}
         }
         if (!is.null(labels)) 
-            ltext(x = x + 0.03 * max(x), y = y, labels = labels)
+            ltext(x = x + 0.03 * max(x), y = y, labels = labels[subscripts])
     }
 }

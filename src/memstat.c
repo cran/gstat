@@ -39,7 +39,7 @@
 #include  "sparse.h"
 #endif
 
-static char rcsid[] = "$Id: memstat.c,v 1.1 1994/01/13 05:32:44 des Exp $";
+static char rcsid[] = "$Id: memstat.c,v 1.1.1.1 2003/06/23 18:31:43 cees Exp $";
 
 /* global variable */
 

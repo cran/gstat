@@ -68,9 +68,18 @@ The random number generator used for generating simulations is the native
 random number generator of the environment (R, S); setting seeds works.
 
 When mean coefficient are not supplied, they are generated as well from
-their conditional distribution (MVN, BLUE esimate and covariance);
+their conditional distribution (MVN, BLUE estimate and covariance);
 for a reference to the algorithm used see Abrahamsen and Benth,
 Math. Geol. 33(6), page 742 and leave out all constraints.
+
+Memory requirements for sequential simulation: let n be the product of
+the number of variables, the number of simulation locations, and the
+number of simulations required in a single call.  the gstat C function
+\code{gstat_predict} requires a table of size n * 12 bytes to pass the
+simulations back to R, before it can free n * 4 bytes. Hopefully, R does
+not have to duplicate the remaining n * 8 bytes when the coordinates
+are added as columns, and when the resulting matrix is coerced to
+a \code{data.frame}.
 }
 
 \value{
@@ -100,8 +109,8 @@ v <- variogram(log(zinc)~1,~x+y, meuse)
 m <- fit.variogram(v, vgm(1, "Sph", 300, 1))
 plot(v, model = m)
 set.seed(131)
-sim <- krige(formula = log(zinc)~1, locations = ~x+y, model = m, 
-	data = meuse, newdata = meuse.grid, nmax = 15, beta = 5.9, nsim = 5)
+sim <- krige(formula = log(zinc)~1, locations = ~x+y, model = m, data 
+	= meuse, newdata = meuse.grid, nmax = 15, beta = 5.9, nsim = 5)
 # show all 5 simulation, using map.to.lev to rearrange sim:
 levelplot(z~x+y|name, map.to.lev(sim, z=c(3:7)), aspect = mapasp(sim))
 
@@ -115,11 +124,12 @@ bubble(blue0, zcol = "blue.res", main = "GLS residuals w.r.t. constant")
 # calculate generalised least squares residuals w.r.t. linear trend:
 m <- fit.variogram(variogram(log(zinc)~sqrt(dist.m),~x+y, meuse), 
 	vgm(1, "Sph", 300, 1))
-g <- gstat(id = "log.zinc", formula = log(zinc)~sqrt(dist.m), locations = ~x+y, 
-     model = m, data = meuse)
+g <- gstat(id = "log.zinc", formula = log(zinc)~sqrt(dist.m), 
+	locations = ~x+y, model = m, data = meuse)
 blue1 <- predict(g, newdata = meuse, BLUE = TRUE)
 blue1$blue.res <- log(meuse$zinc) - blue1$log.zinc.pred
-bubble(blue1, zcol = "blue.res", main = "GLS residuals w.r.t. linear trend")
+bubble(blue1, zcol = "blue.res", 
+	main = "GLS residuals w.r.t. linear trend")
 
 # unconditional simulation on a 100 x 100 grid
 xy <- expand.grid(1:100, 1:100)

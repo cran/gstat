@@ -11,7 +11,6 @@ x 15 m.
 \format{
   This data frame contains the following columns:
   \describe{
-    \item{Sample}{original sample number}
     \item{x}{a numeric vector; x-coordinate (m)
 	in RDM (Dutch topographical map coordinates) }
     \item{y}{a numeric vector; y-coordinate (m)
@@ -47,9 +46,9 @@ Systems. Oxford University Press.
 
 \url{http:/www.gstat.org/}
 }
-\author{ }
+\note{ \code{Sample} refers to original sample number (9 of the original 164
+samples were discarded) }
 \keyword{datasets}
-
 \examples{
 data(meuse)
 summary(meuse)

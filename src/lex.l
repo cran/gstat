@@ -1,4 +1,5 @@
 %{
+  /* NOTE CEES REMOVED section from distro */
 /*
     Gstat, a program for geostatistical modelling, prediction and simulation
     Copyright 1992, 2003 (C) Edzer J. Pebesma
@@ -90,6 +91,7 @@ static void reset_lex(void);
 # define output(c)  MY_output(c)
 #endif /* else FLEX_SCANNER */
 
+
 #ifdef LDEBUG
 #	define SCANNED(a) { if (*a) printlog("scanned %s [%s]\n", a, (char *) yytext); \
 	else printlog("scanned %s\n", (char *) yytext); }
@@ -98,17 +100,8 @@ static void reset_lex(void);
 #endif
 
 %}
-	/* 
-	 * regular expressions for primary types:
-	 * 
- 	 * (1) I use the definition for white space to allow dos command files
- 	 * on unix machines (although DJGPP can cope with it)
- 	 * W				[ \t\032\015]*
- 	 * \032 is EOF (^Z), \015 is CR (^M)
- 	 * for unix-only or dos-only ``W	[ \t\n]'' will do.]
- 	 * (2) IDENT (from the flex info files): []] is the `]' character,
- 	 * [[] the ']' character, ^ inside [] is only special as first character.
- 	 */
+
+
 D				[0-9]
 INT				[+-]?{D}+
 UINT			{D}+[U]

@@ -58,6 +58,9 @@ static struct {
 	void (*progress_handler)(unsigned int this, unsigned int total);
 } gstat_handler = { NULL, NULL, NULL, NULL };
 
+static void (*old_progress_handler)(unsigned int this, unsigned int total) 
+		= NULL;
+
 static STRING_BUFFER 
 	*error_prefix = NULL, 
 	*error_message = NULL, 
@@ -86,7 +89,8 @@ const char *error_messages[MAX_ERRNO+1] = {
 /* 17 */	"writing to pipe `%s' failed",
 /* 18 */	"reading from pipe `%s' failed",
 /* 19 */    "function call prevented by secure mode%s",
-/* 20 */	"matrix library error: %s"
+/* 20 */	"matrix library error: %s",
+/* 21 */	"extdbase error: %s"
 };
 
 void init_userio(int use_stdio) {
@@ -236,6 +240,23 @@ void set_gstat_progress_handler(
 	gstat_handler.progress_handler = progress;
 }
 
+void push_gstat_progress_handler(
+		void (*progress)(unsigned int this, unsigned int total)) {
+
+	assert(old_progress_handler == NULL);
+
+	old_progress_handler = gstat_handler.progress_handler;
+	set_gstat_progress_handler(progress);
+}
+
+void pop_gstat_progress_handler(void) {
+
+	assert(old_progress_handler != NULL);
+
+	set_gstat_progress_handler(old_progress_handler);
+	old_progress_handler = NULL;
+}
+
 const char *get_gstat_error_message(void) {
 	return (const char *) error_message->str;
 }
@@ -306,6 +327,9 @@ int set_gstat_log_file(FILE *f) {
 	} else
 		logfile = f;
 	return 0;
+}
+
+void no_progress(unsigned int current, unsigned int total) {
 }
 
 void default_progress(unsigned int current, unsigned int total) {

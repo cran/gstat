@@ -13,9 +13,7 @@ Calculates the sample variogram from data, or in case of a linear model
 is given, for the residuals, with options for directional, robust,
 and pooled variogram, and for irregular distance intervals.  
 }
-\synopsis{
-variogram(object, ...)
-}
+\synopsis{ variogram(object, ...) }
 \usage{
 variogram(object, ...)
 variogram(formula, locations, data, ...)

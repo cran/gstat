@@ -32,7 +32,7 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
             .Call("gstat_new_data", as.vector(object[[i]]), 
 				as.vector(locations[[i]]), as.vector(Xloc), 
 				as.integer(1), as.vector(t.beta), as.integer(-1),
-				as.numeric(-1), as.integer(1), numeric(0)
+				as.integer(0), as.numeric(-1), as.integer(1), numeric(0)
 				, PACKAGE = "gstat"
 				)
         }
@@ -45,7 +45,7 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
 			trend.beta = numeric(0)
         .Call("gstat_new_data", as.vector(object), as.vector(locations), 
             as.vector(X), as.integer(1), as.vector(trend.beta), as.integer(-1), 
-			as.numeric(-1), as.integer(1), numeric(0)
+			as.integer(0), as.numeric(-1), as.integer(1), numeric(0)
 			, PACKAGE = "gstat"
 			)
     }

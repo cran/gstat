@@ -19,6 +19,7 @@ extern int debug_level;
 #define DB_TRACE  (1 << 8) /* print numbers */
 #define DB_BLOCK  (1 << 9) /* block discretization diagnostics (data) */
 
+extern void printlog(const char *fmt, ...);
 #define DUMP(a); {if(debug_level & DB_DUMP) { printlog("%s", a); }}
 #define DEBUG_HELP    (debug_level & DB_HELP)
 #define DEBUG_SILENT  (debug_level == DB_SILENT)

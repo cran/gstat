@@ -1,7 +1,7 @@
 "gstat" <-
 function (g, id, formula, locations, data = NULL, model = NULL, 
-    beta, nmax = Inf, maxdist = Inf, dummy = FALSE, set, fill.all = FALSE,
-	variance = "identity", weights = NULL) 
+    beta, nmax = Inf, nmin = 0, maxdist = Inf, dummy = FALSE, set, 
+	fill.all = FALSE, variance = "identity", weights = NULL) 
 {
 	if (fill.all) {
 		if (missing(g) || is.null(model))
@@ -56,8 +56,8 @@ function (g, id, formula, locations, data = NULL, model = NULL,
         id = paste("var", length(g$data) + 1, sep = "")
     g$data[[id]] = list(formula = formula, locations = locations, 
         data = data, has.intercept = attr(terms(formula), "intercept"),
-		beta = beta, nmax = nmax, maxdist = maxdist, dummy = dummy,
-		vfn = vfn, weights = weights)
+		beta = beta, nmax = nmax, nmin = nmin, maxdist = maxdist, 
+		dummy = dummy, vfn = vfn, weights = weights)
     g$model[[id]] = model
     if (!missing(set)) {
         if (!is.list(set)) 

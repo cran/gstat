@@ -5,7 +5,7 @@ Create a bubble plot of spatial data
 }
 \description{
 Create a bubble plot of spatial data, with options for bicolour
-residual plots
+residual plots (xyplot wrapper)
 }
 \usage{
 bubble(data, xcol = 1, ycol = 2, zcol = 3, fill = TRUE, maxsize = 3,

@@ -155,7 +155,7 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 
 	v->ev->cloud = (v->ev->iwidth <= 0.0);
 	if (v->ev->cloud &&
-			 (d[v->id1]->n_list >= MAX_NH ||  d[v->id2]->n_list >= MAX_NH))
+			 (d[v->id1]->n_sel >= MAX_NH ||  d[v->id2]->n_sel >= MAX_NH))
 		pr_warning("observation numbers in cloud will be wrong");
 	set_direction_values(gl_alpha, gl_beta, gl_tol_hor, gl_tol_ver);
 
@@ -247,9 +247,8 @@ static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev) {
 #endif
 					}
 					ev->dist[index] += ddist;
-					if (d->sel == d->list)
-						ev->pairs[index] = register_pairs(ev->pairs[index],
-							ev->nh[index], d->sel[i], d->sel[j]);
+					ev->pairs[index] = register_pairs(ev->pairs[index],
+						ev->nh[index], d->sel[i], d->sel[j]);
 					ev->nh[index]++;
 				} else { /* cloud: */
 					if (! (ev->zero == ZERO_AVOID && ddist == 0.0)) {
@@ -374,28 +373,28 @@ static SAMPLE_VGM *covariogram(DATA *d, SAMPLE_VGM *ev) {
 
 	ev->evt = COVARIOGRAM;
 	ev = alloc_exp_variogram(d, NULL, ev);
-	for (i = 0; i < d->n_list; i++) {
-		for (j = 0; j <= (ev->map != NULL ? d->n_list-1 : i); j++) {
-			ddist = valid_distance(d->list[i], d->list[j], ev->cutoff, 1,
+	for (i = 0; i < d->n_sel; i++) {
+		for (j = 0; j <= (ev->map != NULL ? d->n_sel-1 : i); j++) {
+			ddist = valid_distance(d->sel[i], d->sel[j], ev->cutoff, 1,
 				d, d, (GRIDMAP *) ev->map);
 			if (ddist >= 0.0) {
 				if (! ev->cloud) {
 					index = get_index(ddist, ev);
-					ev->gamma[index] += d->list[i]->attr * d->list[j]->attr;
+					ev->gamma[index] += d->sel[i]->attr * d->sel[j]->attr;
 #ifdef ADJUST_VARIANCE
 					if (d->colnvariance && i == j)
-						ev->gamma[index] -= d->list[i]->variance;
+						ev->gamma[index] -= d->sel[i]->variance;
 #endif
 					ev->dist[index] += ddist;
 					ev->pairs[index] = register_pairs(ev->pairs[index],
-						ev->nh[index], d->list[i], d->list[j]);
+						ev->nh[index], d->sel[i], d->sel[j]);
 					ev->nh[index]++;
 				} else {
 					if (! (ev->zero == ZERO_AVOID && ddist == 0.0)) {
-						gamma = d->list[i]->attr * d->list[j]->attr;
+						gamma = d->sel[i]->attr * d->sel[j]->attr;
 #ifdef ADJUST_VARIANCE
 						if (d->colnvariance && i == j)
-							gamma -= d->list[i]->variance;
+							gamma -= d->sel[i]->variance;
 #endif
 						uli = i;
 						ulj = j;
@@ -417,24 +416,24 @@ static SAMPLE_VGM *cross_variogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {
 
 	ev->evt = CROSSVARIOGRAM;
 	ev = alloc_exp_variogram(a, b, ev);
-	for (i = 0; i < a->n_list; i++) {
-		for (j = 0; j < b->n_list; j++) {
-			ddist = valid_distance(a->list[i], b->list[j], ev->cutoff,
+	for (i = 0; i < a->n_sel; i++) {
+		for (j = 0; j < b->n_sel; j++) {
+			ddist = valid_distance(a->sel[i], b->sel[j], ev->cutoff,
 				gl_sym_ev || !ev->pseudo, a, b, (GRIDMAP *) ev->map); 
 			if (ddist >= 0.0) {
 				if (!ev->pseudo && i != j) {
 					if (! ev->cloud) {
 						index = get_index(ddist, ev);
 						ev->gamma[index] += 
-							(a->list[i]->attr - a->list[j]->attr) *
-							(b->list[i]->attr - b->list[j]->attr);
+							(a->sel[i]->attr - a->sel[j]->attr) *
+							(b->sel[i]->attr - b->sel[j]->attr);
 						ev->dist[index] += ddist;
 						ev->pairs[index] = register_pairs(ev->pairs[index],
-							ev->nh[index], a->list[i], a->list[j]);
+							ev->nh[index], a->sel[i], a->sel[j]);
 						ev->nh[index]++;
 					} else if (!(ddist == 0.0 && ev->zero == ZERO_AVOID)) { 
-						gamma = (a->list[i]->attr - a->list[j]->attr) *
-							(b->list[i]->attr - b->list[j]->attr);
+						gamma = (a->sel[i]->attr - a->sel[j]->attr) *
+							(b->sel[i]->attr - b->sel[j]->attr);
 						uli = i; 
 						ulj = j;
 						push_to_cloud(ev, gamma / 2.0, ddist, TO_NH(uli,ulj));
@@ -443,21 +442,21 @@ static SAMPLE_VGM *cross_variogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {
 					if (! ev->cloud) {
 						index = get_index(ddist, ev);
 						ev->gamma[index] += 
-							SQR(a->list[i]->attr - b->list[j]->attr);
+							SQR(a->sel[i]->attr - b->sel[j]->attr);
 #ifdef ADJUST_VARIANCE
 						if (a->colnvariance || b->colnvariance)
-							ev->gamma[index] -= a->list[i]->variance +
-								 b->list[j]->variance;
+							ev->gamma[index] -= a->sel[i]->variance +
+								 b->sel[j]->variance;
 #endif
 						ev->dist[index] += ddist;
 						ev->pairs[index] = register_pairs(ev->pairs[index],
-							ev->nh[index], a->list[i], b->list[j]);
+							ev->nh[index], a->sel[i], b->sel[j]);
 						ev->nh[index]++;
 					} else if (! (ev->zero == ZERO_AVOID && ddist == 0.0)) {
-						gamma = SQR(a->list[i]->attr - b->list[j]->attr);
+						gamma = SQR(a->sel[i]->attr - b->sel[j]->attr);
 #ifdef ADJUST_VARIANCE
 						if (a->colnvariance || b->colnvariance)
-							gamma -= a->list[i]->variance + b->list[j]->variance;
+							gamma -= a->sel[i]->variance + b->sel[j]->variance;
 #endif
 						uli = i;
 						ulj = j;
@@ -479,20 +478,20 @@ static SAMPLE_VGM *cross_covariogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {
 
 	ev->evt = CROSSCOVARIOGRAM;
 	ev = alloc_exp_variogram(a, b, ev);
-	for (i = 0; i < a->n_list; i++) {      /* i -> a */
-		for (j = 0; j < b->n_list; j++) {  /* j -> b */
-			ddist = valid_distance(a->list[i], b->list[j], ev->cutoff,
+	for (i = 0; i < a->n_sel; i++) {      /* i -> a */
+		for (j = 0; j < b->n_sel; j++) {  /* j -> b */
+			ddist = valid_distance(a->sel[i], b->sel[j], ev->cutoff,
 				gl_sym_ev, a, b, (GRIDMAP *) ev->map); 
 			if (ddist >= 0.0) {
 				if (! ev->cloud) {
 					index = get_index(ddist, ev);
-					ev->gamma[index] += a->list[i]->attr * b->list[j]->attr;
+					ev->gamma[index] += a->sel[i]->attr * b->sel[j]->attr;
 					ev->dist[index] += ddist;
 					ev->pairs[index] = register_pairs(ev->pairs[index],
-						ev->nh[index], a->list[i], b->list[j]);
+						ev->nh[index], a->sel[i], b->sel[j]);
 					ev->nh[index]++;
 				} else if (! (ev->zero == ZERO_AVOID && ddist == 0.0)) {
-					gamma = a->list[i]->attr * b->list[j]->attr;
+					gamma = a->sel[i]->attr * b->sel[j]->attr;
 					uli = i; 
 					ulj = j;
 					push_to_cloud(ev, gamma, ddist, TO_NH(uli,ulj));
@@ -746,6 +745,10 @@ static void resize_ev(SAMPLE_VGM *ev, unsigned int size) {
 
 static void *register_pairs(void *pairs, unsigned long nh,
 		DPOINT *a, DPOINT *b) {
+/* 
+ * while I'm here -- there may be a problem when ->list != ->sel on
+ * the DATA used, but I don't know why. Probably will never be used.
+ */
 	/* resize pairs; add a and b to it */
 	if (gl_register_pairs == 0)
 		return NULL;
