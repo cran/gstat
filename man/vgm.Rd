@@ -1,16 +1,16 @@
 \name{vgm}
 \alias{vgm}
-\alias{print.variogram.model}
+\alias{print.variogramModel}
 \title{
 Generate, or Add to Variogram Model
 }
 \description{
 Generates a variogram model, or adds to an existing model. 
-\code{print.variogram.model} prints the essence of a variogram  model.
+\code{print.variogramModel} prints the essence of a variogram  model.
 }
 \usage{
 vgm(psill, model, range, nugget, add.to, anis, kappa = 0.5)
-print.variogram.model(x, ...)
+print.variogramModel(x, ...)
 }
 \arguments{
 \item{psill}{ (partial) sill of the variogram model component }
@@ -28,7 +28,7 @@ compontent to the model) }
 (see examples) }
 }
 \value{
-an object of class variogram.model, which extends data.frame Called
+an object of class \code{variogramModel}, which extends data.frame Called
 without a model argument returns a character list with available models.
 }
 \references{ }
@@ -70,7 +70,6 @@ is in error, but I have not corrected anything afterwards.
 }
 \seealso{
 \link{show.vgms} to view the available models,
-\link{print.variogram.model},
 \link{fit.variogram},
 \link{variogram.line},
 \link{variogram} for the sample variogram.

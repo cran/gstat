@@ -13,6 +13,13 @@ has.coordinates <- function(data) {
 	!inherits(try(coordinates(data), silent = TRUE), "try-error")
 }
 
+try.gridparameters <- function(data) {
+	ret = try(grd <- gridparameters(data), silent = TRUE)
+	if (!inherits(ret, "try-error"))
+		grd
+	else numeric(0)
+}
+
 "gstat" <-
 function (g, id, formula, locations = try.coordinates(data), 
 	data = NULL, model = NULL, beta, nmax = Inf, nmin = 0, maxdist = Inf, 

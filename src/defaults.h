@@ -36,7 +36,7 @@
 #define DEF_nocheck           0 /* do check */
 #define DEF_marginal_names NULL
 #define DEF_marginal_values NULL
-#define DEF_mv_string       "NA"
+#define DEF_mv_string       "NaN"
 #define DEF_nblockdiscr       4
 #define DEF_n_uk        INT_MAX
 #define DEF_numbers           1

@@ -1,4 +1,4 @@
-"plot.variogram.cloud" <-
+"plot.variogramCloud" <-
 function (x, identify = FALSE, digitize = FALSE, 
 	xlim = c(0, max(x$dist)), ylim = c(0, max(x$gamma)), 
 	xlab = "distance", ylab = "semivariance", ...) 
@@ -20,11 +20,11 @@ function (x, identify = FALSE, digitize = FALSE,
 			else stop("digitized selection is empty")
 		}
         ret = data.frame(cbind(head, tail)[sel, ])
-        class(ret) = c("point.pairs", "data.frame")
+        class(ret) = c("pointPairs", "data.frame")
         return(ret)
 	} else {
         x$np = rep(1, length(x$gamma))
-        plot.variogram(x, xlim = xlim, ylim = ylim, xlab = xlab, 
+        plot.gstatVariogram(x, xlim = xlim, ylim = ylim, xlab = xlab, 
             ylab = ylab, ...)
     }
 }

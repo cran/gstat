@@ -6,6 +6,7 @@ function (object, ...) {
 	locations = list()
 	X = list()
 	beta = list()
+	grid = list()
 	for (i in 1:length(object$data)) {
 		d = object$data[[i]]
 		raw = gstat.formula(d$formula, d$locations, eval(d$data))
@@ -13,7 +14,9 @@ function (object, ...) {
 		locations[[i]] = raw$locations
 		X[[i]] = raw$X
 		beta[[i]] = raw$beta
+		grid[[i]] = raw$grid
 	}
 	names(y) = names(locations) = names(X) = names(object$data)
-	variogram.default(y, locations, X, trend.beta = beta, ...)
+	# call variogram.default() next:
+	variogram(y, locations, X, trend.beta = beta, grid = grid, ...)
 }

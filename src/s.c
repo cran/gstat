@@ -75,9 +75,11 @@
 
 void s_gstat_error(const char *mess, int level);
 void s_gstat_printlog(const char *mess);
+void s_gstat_progress(unsigned int current, unsigned int total);
 double s_r_uniform(void);
 double s_r_normal(void);
 static int seed_is_in = 0;
+static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams);
 
 SEXP gstat_init(SEXP s_debug_level) {
 
@@ -95,6 +97,10 @@ SEXP gstat_init(SEXP s_debug_level) {
 	seed_is_in = 1;
 	set_rng_functions(s_r_uniform, s_r_normal, "S/R random number generator");
 	debug_level = INTEGER_POINTER(s_debug_level)[0];
+	if (debug_level < 0) {
+		debug_level = -debug_level;
+		set_gstat_progress_handler(s_gstat_progress);
+	}
 	gl_secure = 1;
 	return(s_debug_level);
 }
@@ -112,7 +118,7 @@ SEXP gstat_exit(SEXP x) {
 
 SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
 			SEXP beta, SEXP nmax, SEXP nmin, SEXP maxdist, 
-			SEXP vfn, SEXP sw) {
+			SEXP vfn, SEXP sw, SEXP grid) {
 	double *y, *locs, *X, *w = NULL;
 	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
@@ -141,7 +147,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		w = NUMERIC_POINTER(sw);
 
 	if (LENGTH(sX) % n != 0)
-		PROBLEM "dimensions do not match: X %d and data %ld",
+		PROBLEM "dimensions do not match: X %d and data %ld: missing values in data?",
 			LENGTH(sX), n ERROR;
 	n_X = LENGTH(sX) / n;
 	X = NUMERIC_POINTER(sX);
@@ -194,6 +200,13 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	set_norm_fns(d[id]); /* so gstat can calculate distances */
 	if (w != NULL)
 		d[id]->colnvariance = 1; /* it is set */
+	switch(LENGTH(grid)) {
+		case 0: case 1: break; /* empty, i.e., numeric(0) */
+		case 6: d[id]->grid = gstat_S_fillgrid(grid); break;
+		default: PROBLEM 
+			"length of grid topology %d unrecognized", LENGTH(grid) ERROR;
+	}
+
 	SET_POINT(&current);
 	current.u.stratum = 0;
 	current.attr = current.x = current.y = current.z = 0.0;
@@ -219,7 +232,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		}
 		for (j = 0; j < n_X; j++)
 			current.X[j] = X[j * n + i];
-		if (w != 0)
+		if (w != NULL)
 			current.variance = 1.0/(w[i]);
 		push_point(d[id], &current);
 	}
@@ -438,6 +451,7 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 # endif
 #endif
 	for (i = 0; i < n; i++) {
+		print_progress(i, n);
 		current.x = locs[i];
 		if (dim >= 2)
 			current.y = locs[n + i];
@@ -454,6 +468,7 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 # endif
 #endif
 	}
+	print_progress(100, 100);
 	PROTECT(ret = NEW_LIST(1));
 	PROTECT(retvector_dim = NEW_NUMERIC(2));
 	NUMERIC_POINTER(retvector_dim)[0] = n; /* nrows */
@@ -495,14 +510,20 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 }
 
 SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction, 
-		SEXP cressie, SEXP dX, SEXP boundaries) {
+		SEXP cressie, SEXP dX, SEXP boundaries, SEXP grid) {
 	SEXP ret;
 	SEXP np; 
 	SEXP dist;
 	SEXP gamma;
+	SEXP sx;
+	SEXP sy;
+	/* SEXP y; */
 	long i, id1, id2;
 	VARIOGRAM *vgm;
 	DATA **d;
+
+	GRIDMAP *m;
+	unsigned int row, col, n;
 
 	S_EVALUATOR
 
@@ -533,23 +554,61 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 	} 
 	for (i = 0; i < LENGTH(boundaries); i++) /* do nothing if LENGTH is 0 */
 		push_bound(NUMERIC_POINTER(boundaries)[i]);
+	switch (LENGTH(grid)) {
+		case 0: case 1: break;
+		case 6: vgm->ev->S_grid = gstat_S_fillgrid(grid); break;
+		default: PROBLEM "unrecognized grid length in gstat_variogram" ERROR;
+			break;
+	}
 
 	calc_variogram(vgm, NULL);
 
-	ret = NEW_LIST(3);
-	if (vgm->ev->n_est <= 1)
-		return(ret);
-	np = NEW_NUMERIC(vgm->ev->n_est - 1);
-	dist = NEW_NUMERIC(vgm->ev->n_est - 1);
-	gamma = NEW_NUMERIC(vgm->ev->n_est - 1);
-	for (i = 0; i < vgm->ev->n_est - 1; i++) {
-		NUMERIC_POINTER(np)[i] = vgm->ev->nh[i];
-		NUMERIC_POINTER(dist)[i] = vgm->ev->dist[i];
-		NUMERIC_POINTER(gamma)[i] = vgm->ev->gamma[i];
+	if (vgm->ev->S_grid != NULL) {
+		ret = NEW_LIST(4);
+		m = vgm->ev->map;
+		n = m->rows * m->cols;
+		np = NEW_NUMERIC(n);
+		gamma = NEW_NUMERIC(n);
+		sx = NEW_NUMERIC(n);
+		sy = NEW_NUMERIC(n);
+
+		for (row = i = 0; row < m->rows; row++) {
+			for (col = 0; col < m->cols; col++) {
+				map_rowcol2xy(m, row, col, &(NUMERIC_POINTER(sx)[i]), 
+								&(NUMERIC_POINTER(sy)[i]));
+				NUMERIC_POINTER(np)[i] = vgm->ev->nh[i];
+				if (vgm->ev->nh[i] > 0)
+					NUMERIC_POINTER(gamma)[i] = vgm->ev->gamma[i];
+				else 
+#ifdef USING_R /* avoid NaN's to be returned */
+					NUMERIC_POINTER(gamma)[i] = NA_REAL;
+#else
+					na_set(NUMERIC_POINTER(gamma) + i, S_MODE_DOUBLE);
+					/* the documentation says it should be DOUBLE */
+#endif
+				i++;
+			}
+		}
+		SET_ELEMENT(ret, 0, sx);
+		SET_ELEMENT(ret, 1, sy);
+		SET_ELEMENT(ret, 2, np);
+		SET_ELEMENT(ret, 3, gamma);
+	} else {
+		ret = NEW_LIST(3);
+		if (vgm->ev->n_est <= 1)
+			return(ret);
+		np = NEW_NUMERIC(vgm->ev->n_est - 1);
+		dist = NEW_NUMERIC(vgm->ev->n_est - 1);
+		gamma = NEW_NUMERIC(vgm->ev->n_est - 1);
+		for (i = 0; i < vgm->ev->n_est - 1; i++) {
+			NUMERIC_POINTER(np)[i] = vgm->ev->nh[i];
+			NUMERIC_POINTER(dist)[i] = vgm->ev->dist[i];
+			NUMERIC_POINTER(gamma)[i] = vgm->ev->gamma[i];
+		}
+		SET_ELEMENT(ret, 0, np);
+		SET_ELEMENT(ret, 1, dist);
+		SET_ELEMENT(ret, 2, gamma);
 	}
-	SET_ELEMENT(ret, 0, np);
-	SET_ELEMENT(ret, 1, dist);
-	SET_ELEMENT(ret, 2, gamma);
 	return(ret);
 }
 
@@ -679,6 +738,34 @@ void Cload_gstat_command(char **commands, int *n, int *error) {
 		}
 	}
 	return;
+}
+
+void s_gstat_progress(unsigned int current, unsigned int total) {
+	static int perc_last = -1, sec_last = -1;
+	int perc, sec;
+	static time_t start;
+
+	if (total <= 0 || DEBUG_SILENT)
+		return;
+
+	if (sec_last == -1) {
+		start = time(NULL);
+		sec_last = 0;
+	}
+	perc = floor(100.0 * current / total);
+	if (perc != perc_last) { /* another percentage -> calculate time: */
+		if (current == total) { /* 100% done, reset: */
+			Rprintf("\r%3d%% done\n", 100);
+			perc_last = sec_last = -1;
+		} else {
+			sec = difftime(time(NULL), start);
+			if (sec != sec_last) { /* another second -- don't print too often */
+				Rprintf("\r%3d%% done", perc);
+				perc_last = perc;
+				sec_last = sec;
+			}
+		}
+	}
 }
 
 void s_gstat_error(const char *mess, int level) {
@@ -843,4 +930,21 @@ double s_r_normal(void) {
 	RANDOUT;
 #endif
 	return(r);
+}
+
+static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams) {
+	double x_ul, y_ul, cellsizex, cellsizey;
+	unsigned int rows, cols;
+
+	cellsizex = NUMERIC_POINTER(gridparams)[2];
+	cellsizey = NUMERIC_POINTER(gridparams)[3];
+	rows = (unsigned int) NUMERIC_POINTER(gridparams)[5];
+	cols = (unsigned int) NUMERIC_POINTER(gridparams)[4];
+	x_ul = NUMERIC_POINTER(gridparams)[0] - 0.5 * cellsizex;
+	y_ul = NUMERIC_POINTER(gridparams)[1] + (rows - 0.5) * cellsizey;
+	/*
+	printf("%g %g %g %g %u %u\n", x_ul, y_ul, cellsizex, cellsizey, rows, cols);
+	fflush(stdout);
+	*/
+	return gsetup_gridmap(x_ul, y_ul, cellsizex, cellsizey, rows, cols);
 }

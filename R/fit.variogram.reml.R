@@ -7,8 +7,8 @@ function (formula, locations, data, model, debug.level = 1, set)
         stop("formula should be of class formula")
     if (missing(model)) 
         stop("no model to fit")
-    if (!inherits(model, "variogram.model"))
-        stop("model should be of class variogram.model (use vgm)")
+    if (!inherits(model, "variogramModel"))
+        stop("model should be of class variogramModel (use vgm)")
     fit.sills = rep(TRUE, length(model$model))
     fit.ranges = rep(FALSE, length(model$model))
     .Call("gstat_init", as.integer(debug.level)
@@ -16,10 +16,10 @@ function (formula, locations, data, model, debug.level = 1, set)
 	)
     ret = gstat.formula(formula, locations, data)
     ret$y <- residuals(lm(formula, data))
-    .Call("gstat_new_data", as.vector(ret$y), as.vector(ret$locations),
-		as.vector(ret$X), as.integer(1), as.vector(numeric(0)),
-		as.integer(-1), as.integer(0), as.numeric(-1), as.integer(1), 
-		numeric(0)
+    .Call("gstat_new_data", as.double(ret$y), as.double(ret$locations),
+		as.double(ret$X), as.integer(1), double(0), as.integer(-1), 
+		as.integer(0), as.double(-1), as.integer(1), 
+		double(0), double(0)
 		, PACKAGE = "gstat"
 		)
     load.variogram.model(model)

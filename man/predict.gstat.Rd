@@ -30,7 +30,9 @@ predict.gstat(object, newdata, block = numeric(0), nsim = 0,
  TRUE, use indicator simulation, else use Gaussian simulation }
 \item{BLUE}{ logical; if TRUE return the BLUE trend estimates only, 
 if FALSE return the BLUP predictions (kriging) }
-\item{debug.level}{ integer; set gstat internal debug level }
+\item{debug.level}{ integer; set gstat internal debug level, see below
+for useful values. If set to -1 (or any negative value), a progress counter
+is printed }
 \item{mask}{ not supported anymore -- use na.action; 
 logical or numerical vector; pattern with valid values
 in newdata (marked as TRUE, non-zero, or non-NA); if mask is specified,
@@ -86,6 +88,23 @@ simulations back to R, before it can free n * 4 bytes. Hopefully, R does
 not have to duplicate the remaining n * 8 bytes when the coordinates
 are added as columns, and when the resulting matrix is coerced to
 a \code{data.frame}.
+
+Useful values for \code{debug.level}: 0: suppres any output except
+warning and error messages; 1: normal output (default): short data report,
+program action and mode, program progress in \%, total execution time;
+2: print the value of all global variables, all files read and written,
+and include source file name and line number in error messages; 4: print
+OLS and WLS fit diagnostics; 8: print all data after reading them; 16:
+print the neighbourhood selection for each prediction location; 32:
+print (generalised) covariance matrices, design matrices, solutions,
+kriging weights, etc.; 64: print variogram fit diagnostics (number
+of iterations and variogram model in each iteration step) and order
+relation violations (indicator kriging values before and after order
+relation correction); 512: print block (or area) discretization data
+for each prediction location. To combine settings, sum their respective
+values. Negative values for \code{debug.level} are equal to positive,
+but cause the progress counter to work.
+
 }
 
 \value{
@@ -118,6 +137,7 @@ set.seed(131)
 sim <- krige(formula = log(zinc)~1, locations = ~x+y, model = m, data 
 	= meuse, newdata = meuse.grid, nmax = 15, beta = 5.9, nsim = 5)
 # show all 5 simulation, using map.to.lev to rearrange sim:
+if (require(sp) == FALSE) {
 levelplot(z~x+y|name, map.to.lev(sim, z=c(3:7)), aspect = mapasp(sim))
 
 # calculate generalised least squares residuals w.r.t. constant trend:
@@ -147,6 +167,8 @@ yy <- predict(g.dummy, newdata = xy, nsim = 4)
 levelplot(sim1~x+y, yy, aspect = mapasp(yy))
 # show all four:
 levelplot(z~x+y|name, map.to.lev(yy, z=c(3:6)), aspect = mapasp(yy))
+}
+
 }
 
 \keyword{ models }

@@ -1,0 +1,43 @@
+
+R : Copyright 2003, The R Development Core Team
+Version 1.8.0  (2003-10-08)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> set.seed(1131)
+> d = data.frame(x=runif(50),y=runif(50),z=runif(50),v=rnorm(50))
+> library(gstat)
+Loading required package: lattice 
+> xx = krige.cv(v~1,~x+y+z,d,model=vgm(1,"Exp",1), verbose=F, set=list(debug=0))
+> summary(xx)
+       x                  y                  z              var1.pred      
+ Min.   :0.006784   Min.   :0.003404   Min.   :0.001641   Min.   :-1.1633  
+ 1st Qu.:0.239662   1st Qu.:0.246573   1st Qu.:0.186459   1st Qu.:-0.5713  
+ Median :0.486684   Median :0.452500   Median :0.448503   Median :-0.2006  
+ Mean   :0.499664   Mean   :0.496887   Mean   :0.471422   Mean   :-0.1651  
+ 3rd Qu.:0.747297   3rd Qu.:0.739427   3rd Qu.:0.724035   3rd Qu.: 0.1614  
+ Max.   :0.987539   Max.   :0.987169   Max.   :0.994198   Max.   : 1.0846  
+    var1.var         observed          residual            zscore        
+ Min.   :0.1163   Min.   :-2.2396   Min.   :-2.17554   Min.   :-5.16777  
+ 1st Qu.:0.1748   1st Qu.:-0.8760   1st Qu.:-0.78811   1st Qu.:-1.87495  
+ Median :0.1921   Median :-0.2194   Median : 0.11750   Median : 0.24533  
+ Mean   :0.2079   Mean   :-0.1418   Mean   : 0.02327   Mean   : 0.01669  
+ 3rd Qu.:0.2396   3rd Qu.: 0.5005   3rd Qu.: 0.85075   3rd Qu.: 2.02008  
+ Max.   :0.4257   Max.   : 1.8566   Max.   : 2.52242   Max.   : 7.35414  
+      fold      
+ Min.   : 1.00  
+ 1st Qu.:13.25  
+ Median :25.50  
+ Mean   :25.50  
+ 3rd Qu.:37.75  
+ Max.   :50.00  
+> 

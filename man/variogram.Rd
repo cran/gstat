@@ -3,11 +3,9 @@
 \alias{variogram.gstat}
 \alias{variogram.formula}
 \alias{variogram.default}
-\alias{print.variogram}
-\alias{print.variogram.cloud}
-\title{
-Calculate Sample or Residual Variogram or Variogram Cloud
-}
+\alias{print.gstatVariogram}
+\alias{print.variogramCloud}
+\title{ Calculate Sample or Residual Variogram or Variogram Cloud }
 \description{
 Calculates the sample variogram from data, or in case of a linear model
 is given, for the residuals, with options for directional, robust,
@@ -15,15 +13,16 @@ and pooled variogram, and for irregular distance intervals.
 }
 \synopsis{ variogram(object, ...) }
 \usage{
-variogram(object, ...)
-variogram(formula, locations, data, ...)
-variogram(y, locations, X, cutoff, width = cutoff/15, alpha = 0, beta = 0, 
-	tol.hor = 90/length(alpha), tol.ver = 90/length(beta), 
-	cressie = FALSE, dX = numeric(0), boundaries = numeric(0), 
-	cloud = FALSE, trend.beta = NULL, debug.level = 1, cross = TRUE, 
-	...)
-print.variogram(v, ...)
-print.variogram.cloud(v, ...)
+variogram.formula(object, ...)
+variogram.gstat(formula, locations, data, ...)
+variogram.default(y, locations, X, cutoff, width = cutoff/15, alpha =
+	0, beta = 0, tol.hor = 90/length(alpha), tol.ver =
+	90/length(beta), cressie = FALSE, dX = numeric(0), boundaries =
+	numeric(0), cloud = FALSE, trend.beta = NULL, debug.level = 1,
+	cross = TRUE, grid, map = FALSE, ...)
+
+print.gstatVariogram(v, ...)
+print.variogramCloud(v, ...)
 }
 \arguments{
 \item{object}{object of class \code{gstat}; in this form, direct
@@ -34,17 +33,19 @@ regressors, in case of absence of regressors, use e.g. \code{z~1}}
 \item{data}{data frame where the names in formula are to be found}
 \item{locations}{ spatial data locations.  For variogram.formula: a
 formula with only the coordinate variables in the right hand (explanatory
-variable) side e.g. \code{~x+y}; see examples. 
+variable) side e.g. \code{~x+y}; see examples.
 
-For variogram.default: a matrix, with the number of rows matching
-that of y, the number of columns should match the number of spatial
-dimensions spanned by the data (1 (x), 2 (x,y) or 3 (x,y,z)).  }
+For variogram.default: list with coordinate matrices, each with the number
+of rows matching that of corresponding vectors in y; the number of columns
+should match the number of spatial dimensions spanned by the data (1
+(x), 2 (x,y) or 3 (x,y,z)).  }
 \item{...}{any other arguments that will be passed to 
 \link{variogram.default}}
-\item{y}{ vector with responses }
-\item{X}{ (optional) matrix with regressors/covariates; the number of
-rows should match that of y, the number of columns equals the number
-of regressors (including intercept) }
+\item{y}{ list with for each variable the vector with responses }
+\item{X}{ (optional) list with for each variable the matrix with
+regressors/covariates; the number of rows should match that of the
+correspoding element in y, the number of columns equals the number of
+regressors (including intercept) }
 \item{cutoff}{ spatial separation distance up to which point pairs
 are included in semivariance estimates }
 \item{width}{ the width of subsequent distance intervals into which
@@ -74,30 +75,45 @@ known. By default, trend coefficients are estimated from the data.}
 \item{debug.level}{ integer; set gstat internal debug level }
 \item{cross}{ logical; if FALSE, no cross variograms are calculated
 when object is of class \code{gstat} and has more than one variable }
-\item{v}{ object of class \code{variogram} or \code{variogram.cloud}
+\item{v}{ object of class \code{variogram} or \code{variogramCloud}
 to be printed}
+\item{grid}{ grid parameters, if data are gridded }
+\item{map}{ logical; if TRUE, and \code{cutoff} and \code{width}
+are given, a variogram map is returned. This requires package
+sp. Alternatively, a map can be passed, of class SpatialDataFrameGrid
+(see sp docs) }
 % \item{...}{arguments that get passed to \code{print}, e.g. digits}
 }
 \value{ 
-an object of class "variogram" with the following fields:
+If map is TRUE (or a map is passed), a grid map is returned containing
+the (cross) variogram map(s). See package sp.
+
+In other cases, an object of class "gstatVariogram" with the 
+following fields:
 \item{np}{the number of point pairs for this estimate; 
-in case of a \code{variogram.cloud} see below}
+in case of a \code{variogramCloud} see below}
 \item{dist}{the average distance of all point pairs considered
 for this estimate}
 \item{gamma}{the actual sample variogram estimate}
 \item{dir.hor}{the horizontal direction}
 \item{dir.ver}{the vertical direction}
 \item{id}{the combined id pair}
-If cloud is TRUE: an object of class "variogram.cloud", with the field
+If cloud is TRUE: an object of class \code{variogramCloud}, with the field
 \code{np} encoding the numbers of the point pair that contributed to a
 variogram cloud estimate, as follows. The first point is found by the
 integer division of np by $2^{16}$, the second point by the remainder
-of that division. \link{print.variogram.cloud} shows no \code{np} field,
+of that division. \link{print.variogramCloud} shows no \code{np} field,
 but does show in addition:
-\item{left}{for variogram.cloud: data id (row number) of one of 
+\item{left}{for variogramCloud: data id (row number) of one of 
 the data pair}
-\item{right}{for variogram.cloud: data id (row number) of the other 
+\item{right}{for variogramCloud: data id (row number) of the other 
 data in the pair}
+
+In the past, gstat returned an object of class "variogram"; however,
+this resulted in confusions for users of the package geoR: the geoR
+variog function also returns objects of class "variogram", incompatible
+to those returned by this function. That's why I changed the class name.
+
 }
 
 \references{ 
@@ -110,9 +126,9 @@ Cressie, N.A.C., 1993, Statistics for Spatial Data, Wiley.
 \note{
 }
 \seealso{
-\link{print.variogram},
-\link{plot.variogram},
-\link{plot.variogram.cloud},
+\link{print.gstatVariogram},
+\link{plot.gstatVariogram},
+\link{plot.variogramCloud};
 for variogram models: \link{vgm},
 to fit a variogram model to a sample variogram: 
 \link{fit.variogram}

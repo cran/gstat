@@ -1,4 +1,4 @@
-"print.variogram.model" <-
+"print.variogramModel" <-
 function (x, ...) 
 {
     df <- data.frame(x)

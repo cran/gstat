@@ -1,5 +1,6 @@
-\name{plot.variogram}
-\alias{plot.variogram}
+\name{plot.gstatVariogram}
+\alias{plot.gstatVariogram}
+\alias{plot.variogramMap}
 \title{
 Plot a Sample Variogram
 }
@@ -7,12 +8,13 @@ Plot a Sample Variogram
 Creates a variogram plot
 }
 \usage{
-plot.variogram(x, model = NULL, ylim, xlim, xlab = "distance", 
+plot.gstatVariogram(x, model = NULL, ylim, xlim, xlab = "distance", 
 	ylab = "semivariance", multipanel = TRUE, plot.numbers = FALSE, 
 	scales, ids = x$id, group.id = TRUE, skip, ...)
+plot.variogramMap(x, np = F, skip, ...)
 }
 \arguments{
-\item{x}{ object of class "variogram", obtained from the function 
+\item{x}{ object of class "gstatVariogram", obtained from the function 
 \link{variogram}, possibly containing directional or cross variograms }
 \item{model}{ in case of a single variogram: a variogram model, as 
 obtained from \link{vgm} or \link{fit.variogram}, to be drawn as 
@@ -35,6 +37,8 @@ if TRUE, panels divide direction and colors indicate variables
 (ids), if FALSE panels divide variables/variable pairs and colors
 indicate direction}
 \item{skip}{ logical; can be used to arrange panels, see \code{xyplot}}
+\item{np}{ logical; if TRUE, plot number of point pairs, if FALSE plot
+semivariances }
 \item{\dots}{ any arguments that will be passed to the panel plotting functions
 (such as \code{auto.key} in examples below) }
 }
@@ -73,7 +77,13 @@ g = gstat(g, id="zinc < 800", form=I(zinc<800)~1,loc=~x+y,data=meuse)
 v = variogram(g, alpha=c(0,45,90,135))
 plot(v, group.id = FALSE, auto.key = TRUE) # id and id pairs panels
 plot(v, group.id = TRUE, auto.key = TRUE)  # direction panels
+
+if (require(sp)) {
+  plot(variogram(g, cutoff=1000, width=100, map=TRUE),
+  	main = "(cross) semivariance maps")
+  plot(variogram(g, cutoff=1000, width=100, map=TRUE), np=TRUE,
+  	main = "number of point pairs")
+}
 }
 
 \keyword{dplot}
-

@@ -1,5 +1,5 @@
-\name{plot.variogram.cloud}
-\alias{plot.variogram.cloud}
+\name{plot.variogramCloud}
+\alias{plot.variogramCloud}
 \title{
 Plot and Identify Data Pairs on Sample Variogram Cloud
 }
@@ -8,10 +8,10 @@ Plot a sample variogram cloud, possibly with identification of
 individual point pairs
 }
 \usage{
-plot.variogram.cloud(x, identify = FALSE, digitize = FALSE, xlim, ylim, xlab, ylab, ...)
+plot.variogramCloud(x, identify = FALSE, digitize = FALSE, xlim, ylim, xlab, ylab, ...)
 }
 \arguments{
-\item{x}{ object of class variogram.cloud }
+\item{x}{ object of class \code{variogramCloud}}
 \item{identify}{ logical; if TRUE, the plot allows identification of
 a series of individual point pairs that correspond to individual variogram
 cloud points (use left mouse button to select; right mouse button ends) }
@@ -22,24 +22,23 @@ ends) }
 \item{ylim}{ limits of y-axis }
 \item{xlab}{ x axis label }
 \item{ylab}{ y axis label }
-\item{...}{ parameters that are passed through to \link{plot.variogram}
+\item{...}{ parameters that are passed through to \link{plot.gstatVariogram}
 (in case of identify = FALSE) or to plot (in case of identify = TRUE) }
 }
 \value{
-if identify or digitize is TRUE, a data frame of class \code{point.pairs}
+if identify or digitize is TRUE, a data frame of class \code{pointPairs}
 with in its rows the point pairs identified (pairs of row numbers in the
 original data set); if identify is F, a plot of the variogram cloud,
-which uses \link{plot.variogram}
+which uses \link{plot.gstatVariogram}
 }
 \references{ 
 \url{http://www.gstat.org/}
 }
 \author{ Edzer J. Pebesma }
 \seealso{
-\link{variogram.formula},
 \link{variogram},
-\link{plot.variogram},
-\link{plot.point.pairs},
+\link{plot.gstatVariogram},
+\link{plot.pointPairs},
 \link{identify},
 \link{locator}
 }

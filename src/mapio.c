@@ -451,6 +451,10 @@ int map_xy2rowcol(GRIDMAP * m /* pointer to map */ ,
 			return 1;
 		*row = (unsigned int) floor((m->y_ul - y) / m->cellsizey);
 		*col = (unsigned int) floor((x - m->x_ul) / m->cellsizex);
+		if (*row == m->rows) /* on the bottom edge */
+			*row = *row - 1;
+		if (*col == m->cols) /* on the right edge */
+			*col = *col - 1;
 	}
 	return 0;
 }
@@ -502,6 +506,10 @@ int map_put_cell(GRIDMAP * m,	/* pointer to GRIDMAP structure */
 
 	map_set_row(m, row);
 
+	if (m->grid == NULL)
+		alloc_mv_grid(m);
+	/* assert(m->grid); */
+	assert(m->grid[row]);
 	m->grid[row][col] = value;
 	if (m->cellmin == FLT_MAX)
 		m->cellmin = m->cellmax = value;

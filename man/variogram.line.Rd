@@ -22,7 +22,7 @@ a data frame of dimension (\code{n} x 2), with columns distance and gamma
 }
 \note{this function is used to plot a variogram model}
 \author{ Edzer J. Pebesma }
-\seealso{ \link{plot.variogram}}
+\seealso{ \link{plot.gstatVariogram}}
 
 \examples{
 variogram.line(vgm(5, "Exp", 10, 5), 10, 10)

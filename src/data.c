@@ -1491,7 +1491,8 @@ static int read_data_from_map(DATA *d) {
 		map_free(m);
 		return 0;
 	}
-	d->grid = copy_data_gridmap(m);
+	d->grid = gsetup_gridmap(m->x_ul, m->y_ul, m->cellsizex, m->cellsizey, 
+			m->rows, m->cols);
 	switch(m->type) {
 		case MT_UNKNOWN: break;
 		case MT_CSF: d->type = data_types[DATA_CSF]; break;
@@ -2062,19 +2063,19 @@ int push_to_merge_table(DATA *d, int to_var, int col_this_X, int col_other_X) {
 	return 0;
 }
 
-DATA_GRIDMAP *copy_data_gridmap(void *map) {
+DATA_GRIDMAP *gsetup_gridmap(double x_ul, double y_ul, double cellsizex, 
+			double cellsizey, unsigned int rows, unsigned int cols) {
+
 	DATA_GRIDMAP *t;
-	GRIDMAP *m;
 	int i, j;
 
-	m = (GRIDMAP *) map;
 	t = (DATA_GRIDMAP *) emalloc(sizeof(DATA_GRIDMAP));
-	t->x_ul = m->x_ul;
-	t->y_ul = m->y_ul;
-	t->cellsizex = m->cellsizex;
-	t->cellsizey = m->cellsizey;
-	t->rows = m->rows;
-	t->cols = m->cols;
+	t->x_ul = x_ul;
+	t->y_ul = y_ul;
+	t->cellsizex = cellsizex;
+	t->cellsizey = cellsizey;
+	t->rows = rows;
+	t->cols = cols;
 	t->dpt = (DPOINT ***) emalloc(t->rows * sizeof(DPOINT **));
 	t->grid_base = (DPOINT **) emalloc(t->rows * t->cols * sizeof(DPOINT *));
 	for (i = 0; i < t->rows; i++)

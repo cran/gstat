@@ -150,7 +150,7 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 
 	fill_cutoff_width(d1, v);
 
-	if (v->ev->map && v->fname == NULL)
+	if (v->ev->map && v->fname == NULL && v->ev->S_grid == NULL)
 		return -1;
 
 	v->ev->cloud = (v->ev->iwidth <= 0.0);
@@ -181,7 +181,7 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 				break;
 		}
 	}
-	if (v->ev->map)
+	if (v->ev->map && !v->ev->S_grid)
 		ev2map(v);
 	else if (fname != NULL) {
 		f = efopen(fname, "w");
@@ -587,17 +587,29 @@ void fill_cutoff_width(DATA *data /* pointer to DATA structure to derive
 	double d = 0.0;
 	int i;
 	GRIDMAP *m;
+	DATA_GRIDMAP *dg;
 	SAMPLE_VGM *ev;
 
 	assert(data);
 	assert(v);
 
 	ev = v->ev;
-	if (get_n_masks() > 0 && get_method() != LSEM) {
+	if ((get_n_masks() > 0 && get_method() != LSEM) || ev->S_grid != NULL) {
 		m = new_map(READ_ONLY);
-		m->filename = get_mask_name(0);
-		if ((m = map_read(m)) == NULL)
-			ErrMsg(ER_READ, "cannot open map");
+		if (ev->S_grid) {
+			/* process S_grid to m */
+			dg = (DATA_GRIDMAP *) ev->S_grid;
+			m->x_ul = dg->x_ul;
+			m->y_ul = dg->y_ul;
+			m->cellsizex = dg->cellsizex;
+			m->cellsizey = dg->cellsizey;
+			m->rows = dg->rows;
+			m->cols = dg->cols;
+		} else {
+			m->filename = get_mask_name(0);
+			if ((m = map_read(m)) == NULL)
+				ErrMsg(ER_READ, "cannot open map");
+		}
 		ev->iwidth = 1.0;
 		ev->cutoff = m->rows * m->cols; 
 			/* not a real cutoff, but rather the size of the container array */

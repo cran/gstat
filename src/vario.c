@@ -218,6 +218,7 @@ SAMPLE_VGM *init_ev(void) {
 	ev->pseudo = 0;
 	ev->is_asym = -1;
 	ev->map = NULL;
+	ev->S_grid = NULL;
 	ev->direction.x = 1.0;
 	ev->direction.y = ev->direction.z = 0.0;
 	return ev;
