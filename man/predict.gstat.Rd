@@ -7,7 +7,7 @@ cokriging, point- or block-kriging, and conditional simulation equivalents
 for each of the kriging methods.  }
 \usage{
 predict.gstat(object, newdata, block = numeric(0), nsim = 0, 
-	indicators = FALSE, debug.level = 1, ...)
+	indicators = FALSE, BLUE = FALSE, debug.level = 1, ...)
 }
 \arguments{
 \item{object}{ object of class \code{gstat}, see \link{gstat} and
@@ -25,8 +25,10 @@ predict.gstat(object, newdata, block = numeric(0), nsim = 0,
   is used instead of kriging interpolation. For this, sequential Gaussian
   or indicator simulation is used (depending on the value of 
   \code{indicators}), following a single random path through the data.  }
-\item{indicators}{ logical, only relevant if \code{nsim} is non-zero; if
+\item{indicators}{ logical; only relevant if \code{nsim} is non-zero; if
  TRUE, use indicator simulation, else use Gaussian simulation }
+\item{BLUE}{ logical; if TRUE return the BLUE trend estimates only, 
+if FALSE return the BLUP predictions (kriging) }
 \item{debug.level}{ integer; set gstat internal debug level }
 \item{...}{ignored} } \details{ When a non-stationary (i.e., non-constant)
 mean is used, both for simulation and prediction purposes the variogram
@@ -86,6 +88,7 @@ For bucket PR quadtrees, excellent demos are found at
 \seealso{ \link{gstat}, \link{krige} }
 
 \examples{
+# generate 5 conditional simulations
 data(meuse)
 data(meuse.grid)
 v <- variogram(log(zinc)~1,~x+y, meuse)
@@ -97,6 +100,22 @@ sim <- krige(formula = log(zinc)~1, locations = ~x+y, model = m,
 # show all 5 simulation, using map.to.lev to rearrange sim:
 levelplot(z~x+y|name, map.to.lev(sim, z=c(3:7)), aspect = mapasp(sim))
 
+# calculate generalised least squares residuals w.r.t. constant trend:
+g <- gstat(id = "log.zinc", formula = log(zinc)~1, locations = ~x+y, 
+     model = m, data = meuse)
+blue0 <- predict(g, newdata = meuse, BLUE = TRUE)
+blue0$blue.res <- log(meuse$zinc) - blue0$log.zinc.pred
+bubble(blue0, zcol = "blue.res", main = "GLS residuals w.r.t. constant")
+
+# calculate generalised least squares residuals w.r.t. linear trend:
+m <- fit.variogram(variogram(log(zinc)~sqrt(dist),~x+y, meuse), 
+	vgm(1, "Sph", 300, 1))
+g <- gstat(id = "log.zinc", formula = log(zinc)~sqrt(dist), locations = ~x+y, 
+     model = m, data = meuse)
+blue1 <- predict(g, newdata = meuse, blue = TRUE)
+blue1$blue.res <- log(meuse$zinc) - blue1$log.zinc.pred
+bubble(blue1, zcol = "blue.res", main = "GLS residuals w.r.t. linear trend")
+
 # unconditional simulation on a 100 x 100 grid
 xy <- expand.grid(1:100, 1:100)
 names(xy) <- c("x","y")
@@ -107,6 +126,8 @@ yy <- predict(g.dummy, newdata = xy, nsim = 4)
 levelplot(sim1~x+y, yy, aspect = mapasp(yy))
 # show all four:
 levelplot(z~x+y|name, map.to.lev(yy, z=c(3:6)), aspect = mapasp(yy))
+
 }
+
 
 \keyword{ models }

@@ -55,7 +55,7 @@ function (g, id, formula, locations, data = NULL, model = NULL,
     if (missing(id)) 
         id = paste("var", length(g$data) + 1, sep = "")
     g$data[[id]] = list(formula = formula, locations = locations, 
-        data = data, has.intercept = attr(terms(formula), "intercept"),
+        	data = data, has.intercept = attr(terms(formula), "intercept"),
 		beta = beta, nmax = nmax, maxdist = maxdist, dummy = dummy,
 		vfn = vfn)
     g$model[[id]] = model

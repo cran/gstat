@@ -649,7 +649,11 @@ static void lhs_one(Double_index *list, unsigned int dim,
  	}
 
 	qsort((void *) list, (size_t) dim, sizeof(Double_index),
-		(int (*)(const void *, const void *)) double_index_cmp);
+		(int 
+#ifdef SPLUS6WIN32
+		__cdecl
+#endif
+		 (*)(const void *, const void *)) double_index_cmp);
 /* 
  * Get ranks -- after sorting row_Y on the ->d field,
  * row_Y[0].index,...,row_Y[gl_nsim-1].index contains the original

@@ -405,7 +405,11 @@ static void est_quantile_div(DATA *data, double *est, int div) {
 	for (i = 0; i < data->n_sel; i++)
 		list[i] = data->sel[i]->attr;
 	qsort(list, (size_t) data->n_sel, sizeof(double),
-		(int (*)(const void *, const void *)) d_cmp);
+		(int 
+#ifdef SPLUS6WIN32
+		__cdecl
+#endif
+		 (*)(const void *, const void *)) d_cmp);
 	if (div) { /* get diversity and range in sel: */
 		n = data->n_sel;
 		for (i = 0; i < data->n_sel - 1; i++)

@@ -1,6 +1,6 @@
 "predict.gstat" <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
-	debug.level = 1, ...) 
+	BLUE = FALSE, debug.level = 1, ...) 
 {
     if (missing(object) || length(object$data) < 1) 
         stop("no data available")
@@ -77,7 +77,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
         ret = .Call("gstat_predict", as.integer(nrow(new.X)), 
             as.vector(raw$locations[perm, ]), as.vector(new.X[perm,]), 
 		as.integer(block.cols), as.vector(block), 
-		as.integer(nsim)
+		as.integer(nsim), as.integer(BLUE)
 		, PACKAGE = "gstat"
 		)[[1]]
         ret = data.frame(cbind(raw$locations, 
@@ -86,7 +86,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
     else {
         ret = .Call("gstat_predict", as.integer(nrow(new.X)), 
             as.vector(raw$locations), as.vector(new.X), as.integer(block.cols), 
-            as.vector(block), as.integer(nsim)
+            as.vector(block), as.integer(nsim), as.integer(BLUE)
 			, PACKAGE = "gstat"
 			)[[1]]
         ret = data.frame(cbind(raw$locations, ret))
