@@ -303,7 +303,8 @@ extern const POLY_NM polynomial[N_POLY];
 #define POLY_DEGREE(i) polynomial[i - POLY_MIN].degree
 void data_add_X(DATA *d, int i);
 int push_to_merge_table(DATA *d, int to_var, int col_this_X, int col_other_X);
-DATA_GRIDMAP *copy_data_gridmap(void *map);
+DATA_GRIDMAP *gsetup_gridmap(double x_ul, double y_ul, double cellsizex, 
+			double cellsizey, unsigned int rows, unsigned int cols);
 void datagrid_rebuild(DATA *d, int adjust_to_gridcentres);
 void set_norm_fns(DATA *d);
 double data_block_diagonal(DATA *data);

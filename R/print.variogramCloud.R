@@ -1,4 +1,4 @@
-"print.variogram.cloud" <-
+"print.variogramCloud" <-
 function (x, ...) 
 {
 	x$left = x$np %% 2^16 + 1

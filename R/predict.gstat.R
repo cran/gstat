@@ -29,7 +29,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 				stop("dummy data should have beta defined")
 			loc.dim = length(attr(tr, "term.labels"))
 			.Call("gstat_new_dummy_data", as.integer(loc.dim), 
-				as.integer(d$has.intercept), as.numeric(d$beta), 
+				as.integer(d$has.intercept), as.double(d$beta), 
 				nmax, nmin, maxdist, as.integer(d$vfn)
 				, PACKAGE = "gstat"
 				)
@@ -39,10 +39,10 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			else
 				w = d$weights
 			raw = gstat.formula(d$formula, d$locations, d$data)
-			.Call("gstat_new_data", raw$y, as.vector(raw$locations), 
-				as.vector(raw$X), as.integer(raw$has.intercept),
-				as.numeric(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
-				as.numeric(w)
+			.Call("gstat_new_data", as.double(raw$y), as.double(raw$locations),
+				as.double(raw$X), as.integer(raw$has.intercept),
+				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
+				as.numeric(w), double(0)
 				, PACKAGE = "gstat"
 			)
 		}

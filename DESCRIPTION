@@ -1,7 +1,7 @@
 Package: gstat
-Version: 0.9-11
-Date: 2004/02/02
-Title: multivariable geostatistical modelling, prediction and simulation
+Version: 0.9-12
+Date: 2004/06/11
+Title: uni- and multivariable geostatistical modelling, prediction and simulation
 Author: Edzer J. Pebesma <e.pebesma@geog.uu.nl> and others
 Maintainer: Edzer J. Pebesma <e.pebesma@geog.uu.nl>
 Description: variogram modelling; simple, ordinary and universal point 

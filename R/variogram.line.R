@@ -3,8 +3,8 @@ function(object, maxdist, n=200, min=1.0e-6*maxdist, dir = c(1,0,0), ...)
 {
 	if (missing(object))
 		stop("model is missing");
-	if (!inherits(object, "variogram.model"))
-		stop("model should be of mode variogram.model (use function vgm)")
+	if (!inherits(object, "variogramModel"))
+		stop("model should be of mode variogramModel (use function vgm)")
 	if (missing(maxdist))
 		stop("maxdist is missing");
 	if (length(dir) != 3)

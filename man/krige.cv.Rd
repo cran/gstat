@@ -1,13 +1,24 @@
 \name{krige.cv}
 \alias{krige.cv}
-\title{ kriging cross validation, n-fold or leave-one-out }
+\alias{gstat.cv}
+\title{ (co)kriging cross validation, n-fold or leave-one-out }
 \description{ Cross validation function for simple, ordinary or universal
 point kriging, kriging in a local neighbourhood.  }
 \usage{
+gstat.cv(object, nfold, remove.all = FALSE, verbose = FALSE, ...)
 krige.cv(formula, locations, data, model = NULL, beta = NULL, nmax = Inf, 
-	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = TRUE, ...)
+	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE, ...)
 }
 \arguments{
+  \item{object}{ object of class gstat; see function \link{gstat}}
+  \item{nfold}{ apply n-fold cross validation; if \code{nfold} is set
+  to \code{nrow(data)} (the default), leave-one-out cross validation is
+  done; if set to e.g. 5, five-fold cross validation is done }
+  \item{remove.all}{ logical; if TRUE, remove observations at cross validation
+  locations not only for the first, but for all subsequent variables as well }
+  \item{verbose}{ logical; if TRUE, progress is printed }
+  \item{\dots}{ other arguments that will be passed to \link{predict.gstat}
+  in case of \code{gstat.cv}, or to \link{gstat} in case of \code{krige.cv}}
   \item{formula}{ formula that defines the dependent variable as a linear
   model of independent variables; suppose the dependent variable has name
   \code{z}, for ordinary and simple kriging use the formula \code{z~1};
@@ -36,12 +47,8 @@ krige.cv(formula, locations, data, model = NULL, beta = NULL, nmax = Inf,
   \item{maxdist}{ for local kriging: only observations within a distance
   of \code{maxdist} from the prediction location are used for prediction
   or simulation; if combined with \code{nmax}, both criteria apply }
-  \item{nfold}{ apply n-fold cross validation; if \code{nfold} is set
-  to \code{nrow(data)} (the default), leave-one-out cross validation is
-  done; if set to e.g. 5, five-fold cross validation is done }
-  \item{verbose}{ logical; if TRUE, progress is printed }
-  \item{\dots}{ other arguments that will be passed to \link{gstat}}
 }
+
 \details{ Leave-one-out cross validation (LOOCV) visits a data point, and
 predicts the value at that location by leaving out the observed value,
 and proceeds with the next data point. (The observed value is left
@@ -49,7 +56,7 @@ out because kriging would otherwise predict the value itself.) N-fold
 cross validation makes a partitions the data set in N parts. For all
 observation in a part, predictions are made based on the remaining N-1
 parts; this is repeated for each of the N parts. N-fold cross validation
-is much faster than LOOCV. }
+may be faster than LOOCV. }
 
 \value{ a data frame containing the coordinates of \code{newdata}, and
 columns of prediction and prediction variance of cross validated data
@@ -61,8 +68,8 @@ standard error), and fold.  }
 }
 \author{ Edzer J. Pebesma }
 \note{ Leave-one-out cross validation seems to be much faster in plain
-(stand-alone) gstat, apparently most of the effort is the moving around
-of data from R to gstat. }
+(stand-alone) gstat, apparently most of the effort is spent moving data 
+around from R to gstat. }
 
 \seealso{ \link{krige}, \link{gstat}, \link{predict.gstat} }
 

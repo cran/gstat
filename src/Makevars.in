@@ -1,0 +1,5 @@
+
+# PROJ4 library support - needed for map projections
+PKG_LIBS = -lefence
+
+PKG_CPPFLAGS = 

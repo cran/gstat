@@ -64,8 +64,13 @@ print.gstat(x, ...)
   \item{variance}{ character; variance function to transform to non-stationary
   covariances; "identity" does not transform, other options are "mu" (Poisson)
   and "mu(1-mu)" (binomial) }
-  \item{weights}{ numeric vector; if present, weights passed to OLS 
-  prediction routines (covariates are present, variograms are missing) }
+  \item{weights}{ numeric vector; if present, covariates are present,
+  and variograms are missing weights are passed to OLS prediction routines;
+  if variograms are given, weights should be 1/variance, where variance 
+  specifies location-specific measurement error as in Delhomme, J.P.
+  Kriging in the hydrosciences.  Advances in Water Resources,
+  1(5):251-266, 1978; see also the section Kriging with known measurement
+  errors in the gstat user's manual, URL see below.  }
   \item{merge}{ either character vector of length 2, indicating two ids 
   that share a common mean; the more general gstat merging of any two
   coefficients across variables is obtained when a list is passed, with
@@ -103,18 +108,17 @@ variograms if (i) the original gstat object contained them and (ii) the
 order of the subset indexes increases, numerically, or given the order
 they have in the gstat object.
 
-The merge item may seem obscure. It is. Still, for colocated cokriging,
-it is needed. See texts by Goovaerts, Wackernagel, Chiles and Delfiner,
-or look for standardised ordinary kriging in the 1992 Deutsch and Journel
+The merge item may seem obscure. Still, for colocated cokriging, it is
+needed. See texts by Goovaerts, Wackernagel, Chiles and Delfiner, or
+look for standardised ordinary kriging in the 1992 Deutsch and Journel
 or Isaaks and Srivastava. In these cases, two variables share a common
 mean parameter. Gstat generalises this case: any two variables may share
 any of the regression coefficients; allowing for instance analysis of
 covariance models, when variograms left out (see e.g. R. Christensen's
 ``Plane answers'' book on linear models. The tests directory of the
-package contains examples in file merge.R
+package contains examples in file merge.R.
 
 }
-
 
 \seealso{ \link{predict.gstat}, \link{krige} }
 

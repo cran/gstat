@@ -9,7 +9,7 @@
 \alias{gstat.set}
 \alias{cross.name}
 \alias{gstat.load.set}
-\alias{panel.point.pairs}
+\alias{panel.pointPairs}
 
 \title{Gstat Internal Functions}
 \description{gstat internal functions}

@@ -1,5 +1,5 @@
-\name{plot.point.pairs}
-\alias{plot.point.pairs}
+\name{plot.pointPairs}
+\alias{plot.pointPairs}
 \title{
 Plot a point pairs, identified from a variogram cloud
 }
@@ -7,12 +7,12 @@ Plot a point pairs, identified from a variogram cloud
 Plot a point pairs, identified from a variogram cloud
 }
 \usage{
-plot.point.pairs(x, data, xcol = data$x, ycol = data$y, xlab = "x coordinate", 
+plot.pointPairs(x, data, xcol = data$x, ycol = data$y, xlab = "x coordinate", 
 ylab = "y coordinate", col.line = 2, line.pch = 0, ...) 
 }
 \arguments{
-\item{x}{ object of class "point.pairs", obtained from the function 
-\link{plot.variogram.cloud}, containing point pair indices }
+\item{x}{ object of class "pointPairs", obtained from the function 
+\link{plot.variogramCloud}, containing point pair indices }
 \item{data}{ data frame to which the indices refer (from which the
 variogram cloud was calculated) }
 \item{xcol}{ numeric vector with x-coordinates of data }
@@ -33,7 +33,7 @@ plots the data locations, with lines connecting the point pairs identified
 \references{ \url{http://www.gstat.org}}
 \author{ Edzer J. Pebesma }
 \seealso{
-\link{plot.variogram.cloud}
+\link{plot.variogramCloud}
 }
 \examples{
 ### The following requires interaction, and is therefore outcommented

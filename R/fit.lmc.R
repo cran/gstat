@@ -8,13 +8,13 @@ function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges,
         d[d < 0] = 0
         q$vectors %*% diag(d) %*% t(q$vectors)
     }
-    if (!inherits(v, "variogram"))
+    if (!inherits(v, "gstatVariogram"))
         stop("v should be of class variogram")
     if (!inherits(g, "gstat"))
         stop("g should be of class gstat")
     if (!missing(model)) {
-        if (!inherits(model, "variogram.model"))
-            stop("model should be of class variogram.model")
+        if (!inherits(model, "variogramModel"))
+            stop("model should be of class variogramModel")
     }
     n = names(g$data)
     for (i in 1:length(n)) {
@@ -22,7 +22,7 @@ function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges,
             name = ifelse(i == j, n[i], cross.name(n[i], n[j]))
             x = v[v$id == name, ]
             if (nrow(x) == 0) 
-                stop(paste("variogram", name, "not present"))
+                stop(paste("gstatVariogram", name, "not present"))
             m = g$model[[name]]
             if (!missing(model)) 
                 m = model

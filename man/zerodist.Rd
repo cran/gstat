@@ -20,6 +20,7 @@ can be removed.  A matrix with all pair-wise distances is calculated,
 so if x, y and z are large this function is slow 
 }
 \examples{
+if (require(sp) == FALSE) {
 data(meuse)
 # pick 10 rows
 n <- 10
@@ -32,5 +33,6 @@ sum(abs(zd[1:n,1] - sort(ran10))) # 0!
 meusedup2 <- meusedup[-zd[,2], ]
 # find point pairs within 500 m distance of each other:
 zerodist(meuse$x, meuse$y, 500)
+}
 }
 \keyword{dplot}

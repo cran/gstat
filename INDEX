@@ -12,7 +12,7 @@ gstat                   Create gstat objects, or subset it
 image                   Image Gridded Coordinates in Data Frame
 krige                   Simple, Ordinary or Universal, global or
                         local, Point or Block Kriging
-krige.cv                kriging cross validation, n-fold or
+krige.cv                (co)kriging cross validation, n-fold or
                         leave-one-out
 map.to.lev              rearrange data frame for plotting with
                         levelplot
@@ -25,10 +25,10 @@ meuse.grid              Prediction Grid for Meuse Data Set
 ossfim                  Kriging standard errors as function of grid
                         spacing and block size
 oxford                  Oxford soil samples
-plot.point.pairs        Plot a point pairs, identified from a
+plot.gstatVariogram     Plot a Sample Variogram
+plot.pointPairs         Plot a point pairs, identified from a
                         variogram cloud
-plot.variogram          Plot a Sample Variogram
-plot.variogram.cloud    Plot and Identify Data Pairs on Sample
+plot.variogramCloud     Plot and Identify Data Pairs on Sample
                         Variogram Cloud
 point.in.polygon        do point(s) fall in a given polygon?
 predict.gstat           Multivariable Geostatistical Prediction and

@@ -46,7 +46,8 @@ typedef struct {
 	SAMPLE_VGM_TYPE evt;
 	FIT_TYPE fit;
 	DO_AT_ZERO zero;
-	void *map;
+	void *map, /* variogram map structure, i/o using files */
+		*S_grid /* variogram map structure, passed from S interface*/ ;
 	struct { double x, y, z; } direction;
 	DPOINT ***pairs;
 	/* optionally, the point pair list -- for j in [ 0, nh[i] >

@@ -592,7 +592,7 @@ static BBOX bbox_from_grid(const GRIDMAP *gt, const DATA_GRIDMAP *dg) {
 
 static BBOX bbox_from_data(DATA *d) {
 /* derive a sensible top level bounding box from a data var */
-	double maxspan;
+	double maxspan, dy, dz;
 	BBOX bbox;
 
 	if (d->grid)
@@ -603,8 +603,16 @@ static BBOX bbox_from_data(DATA *d) {
 	bbox.mode = d->mode; /* ??? */
 	/*
 	bbox.mode = d->mode & (X_BIT_SET|Y_BIT_SET|Z_BIT_SET);
-	*/
 	maxspan = MAX((d->maxX-d->minX), MAX((d->maxY-d->minY),(d->maxZ-d->minZ)));
+	*/
+	maxspan = fabs(d->maxX - d->minX);
+	dy = fabs(d->maxY - d->minY);
+	if (dy > maxspan)
+		maxspan = dy;
+	dz = fabs(d->maxZ - d->minZ);
+	if (dz > maxspan)
+		maxspan = dz;
+		
 	/* with d->grid_size entered by user:
 	if (d->grid_size > 0.0) {
 		bbox.x -= 0.5 * d->grid_size;

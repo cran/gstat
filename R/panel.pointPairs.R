@@ -1,4 +1,4 @@
-"panel.point.pairs" <-
+"panel.pointPairs" <-
 function (x, y, type = "p", pch = plot.symbol$pch, col, col.line = 
 	plot.line$col, col.symbol = plot.symbol$col, lty = plot.line$lty, 
 	cex = plot.symbol$cex, lwd = plot.line$lwd, pairs = pairs, 

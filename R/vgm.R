@@ -40,6 +40,6 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5) {
 			anis1=anis[4], anis2=anis[5])
 	if (!missing(add.to))
 		ret = add.to.df(data.frame(add.to), ret)
-	class(ret) = c("variogram.model", "data.frame")
+	class(ret) = c("variogramModel", "data.frame")
 	ret
 }
