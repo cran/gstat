@@ -2,11 +2,17 @@
 	model = NULL, ..., beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, 
 	nfold = nrow(data), verbose = FALSE)
 {
+	if (inherits(data, "gstatVariogram"))
+		model = data
 	if (has.coordinates(locations)) {
 		data = locations
 		locations = coordinates(data)
+		nc = 2 + dim(locations)[2]
+		spdf = TRUE
+	} else {
+		nc = 2 + length(attr(terms(locations), "term.labels"))
+		spdf = FALSE
 	}
-	nc = 2 + length(attr(terms(locations), "term.labels"))
 	ret = data.frame(matrix(NA, nrow(data), nc))
 	if (nfold < nrow(data))
 		fold = sample(nfold, nrow(data), replace = TRUE)
@@ -29,5 +35,7 @@
 	ret = data.frame(ret, observed = observed, residual = residual, 
 		zscore = zscore, fold = fold)
 	names(ret) = c(names(x), "observed", "residual", "zscore", "fold")
+	if (spdf)
+		coordinates(ret) = colnames(locations)
 	ret
 }

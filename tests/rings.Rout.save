@@ -112,7 +112,7 @@ Attaching package: 'gstat'
 
 	The following object(s) are masked from package:sp :
 
-	 bpy.colors bubble makegrid map.to.lev mapasp point.in.polygon select.spatial zerodist 
+	 bpy.colors bubble makegrid mapasp map.to.lev point.in.polygon select.spatial zerodist 
 
 [using ordinary kriging]
 [using ordinary kriging]

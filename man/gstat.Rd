@@ -1,7 +1,7 @@
 \name{gstat}
 \alias{gstat}
 \alias{print.gstat}
-\alias{"[.gstat"}
+\alias{[.gstat}
 \title{ Create gstat objects, or subset it }
 \description{
 Function that creates gstat objects; objects that hold all the information
