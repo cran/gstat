@@ -2,7 +2,7 @@
     Gstat, a program for geostatistical modelling, prediction and simulation
     Copyright 1992, 2003 (C) Edzer J. Pebesma
 
-    Edzer J. Pebesma, e.pebesma$geog.uu.nl
+    Edzer J. Pebesma, e.pebesma@geog.uu.nl
     Department of physical geography, Utrecht University
     P.O. Box 80.115, 3508 TC Utrecht, The Netherlands
 
@@ -30,7 +30,9 @@
  * - catch errors if no response is present in prediction
  */
 
+#include "config.h" /* may define USING_R */
 
+#ifdef USING_R
 # include <R.h>
 # include <Rdefines.h>
 /* # include <Rinternals.h> */
@@ -39,8 +41,21 @@
 # define RANDIN seed_in((long *) NULL)
 # define RANDOUT seed_out((long *) NULL)
 # define S_EVALUATOR
+#else /* some S-Plus version; assuming >= 6 for now: */
+# include "S.h"
+# if (!defined(SPLUS_VERSION) || SPLUS_VERSION < 6000)
+#  error("no SPLUS_VERSION >= 6.0")
+# endif
+# define SEXP s_object *
+# define PROTECT(x) x
+# define UNPROTECT(x)
+# define R_UNIFORM unif_rand(S_evaluator)
+# define R_NORMAL  norm_rand(S_evaluator)
+# define RANDIN seed_in((long *) NULL, S_evaluator)
+# define RANDOUT seed_out((long *) NULL, S_evaluator)
+# define Rprintf printf
+#endif
 
-#include "defs.h"
 #include "data.h"
 #include "utils.h"
 #include "userio.h"
@@ -55,6 +70,7 @@
 
 void no_progress(unsigned int current, unsigned int total);
 void s_gstat_error(const char *mess, int level);
+void s_gstat_printlog(const char *mess);
 double s_r_uniform(void);
 double s_r_normal(void);
 static int seed_is_in = 0;
@@ -68,6 +84,7 @@ SEXP gstat_init(SEXP s_debug_level) {
 	/* 1: set up for stdio */
 	set_gstat_progress_handler(no_progress);
 	set_gstat_error_handler(s_gstat_error);
+	set_gstat_log_handler(s_gstat_printlog);
 	setup_meschach_error_handler();
 	init_global_variables();
 	RANDIN; /* load R/S seed into rng */
@@ -88,9 +105,10 @@ SEXP gstat_exit(SEXP x) {
 	return(x);
 }
 
-SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP beta, SEXP nmax) {
+SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
+			SEXP beta, SEXP nmax, SEXP vfn) {
 	double *y, *locs, *X;
-	long i, j, id, n, dim, n_X;
+	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
 	DATA **d;
 	char name[20];
@@ -143,11 +161,22 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP beta, SEXP nmax) {
 	d[id]->z_coord = string_dup("z (S-plus)");
 	d[id]->variable = string_dup("S-plus data");
 	d[id]->fname = string_dup("S-plus data");
-	d[id]->n_X = n_X;
+	has_int = INTEGER_POINTER(has_intercept)[0];
+	/* increase d[id]->n_X and set d[id]->colX[i]: */
+	for (i = d[id]->n_X = 0; i < n_X; i++) 
+		data_add_X(d[id], i + (has_int ? 0 : 1)); 
+	assert(d[id]->n_X == n_X);
 	for (i = 0; i < LENGTH(beta); i++) /* do nothing if beta is numeric(0) */
 		d[id]->beta = push_to_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
 	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
 		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
+	switch(INTEGER_POINTER(vfn)[0]) {
+		case 1: /* d[id]->variance_fn = v_identity; */ break;
+		case 2: d[id]->variance_fn = v_mu; break;
+		case 3: d[id]->variance_fn = v_bin; break;
+		default: PROBLEM "unknown variance function %d", 
+				 	INTEGER_POINTER(vfn)[0] ERROR;
+	}
 	d[id]->mode = X_BIT_SET | V_BIT_SET;
 	if (dim > 1)
 		d[id]->mode = d[id]->mode | Y_BIT_SET;
@@ -186,8 +215,9 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP beta, SEXP nmax) {
 	return(sy);
 }
 
-SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP beta, SEXP nmax) {
-	int i, id, dim;
+SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta, 
+		SEXP nmax, SEXP vfn) {
+	int i, id, dim, has_int;
 	char name[20];
 	DATA **d = NULL;
 
@@ -212,12 +242,22 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP beta, SEXP nmax) {
 	d[id]->z_coord = string_dup("z (S-plus)");
 	d[id]->variable = string_dup("S-plus data");
 	d[id]->fname = string_dup("S-plus data");
-	d[id]->n_X = LENGTH(beta);;
+	has_int = INTEGER_POINTER(has_intercept)[0];
+	for (i = d[id]->n_X = 0; i < LENGTH(beta); i++)
+		data_add_X(d[id], i + (has_int ? 0 : 1));
+	assert(d[id]->n_X == LENGTH(beta));
 	d[id]->dummy = 1;
 	for (i = 0; i < LENGTH(beta); i++)
 		d[id]->beta = push_to_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
 	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
 		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
+	switch(INTEGER_POINTER(vfn)[0]) {
+		case 1: /* d[id]->variance_fn = v_identity; */ break;
+		case 2: d[id]->variance_fn = v_mu; break;
+		case 3: d[id]->variance_fn = v_bin; break;
+		default: PROBLEM "unknown variance function %d", 
+				 	INTEGER_POINTER(vfn)[0] ERROR;
+	}
 	d[id]->mode = X_BIT_SET | V_BIT_SET;
 	if (dim > 1)
 		d[id]->mode = d[id]->mode | Y_BIT_SET;
@@ -232,7 +272,7 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP beta, SEXP nmax) {
 SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 			SEXP nsim) {
 	double *locs, **est_all, *X;
-	long i, j, k, n, nvars, nest, dim, n_X, c_block, n_block, pos;
+	long i, j, k, n, nvars, nest, dim, n_X, ncols_block, nrows_block, pos;
 	DPOINT current, *bp = NULL;
 	DATA **d = NULL, *vd = NULL, *area = NULL;
 	SEXP ret;
@@ -287,25 +327,31 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		if (LENGTH(block) > 3)
 			pr_warning("block dimension can only be 3; using the first 3");
 	} else {
-		c_block = INTEGER_POINTER(block_cols)[0];
-		if (c_block < 1 || c_block > 3)
+		ncols_block = INTEGER_POINTER(block_cols)[0];
+		if (ncols_block < 1 || ncols_block > 3)
 			ErrMsg(ER_IMPOSVAL, "block dimensions should be in [1..3]");
-		n_block = LENGTH(block) / c_block;
-		if (n_block) {
-			create_data_area();
-			area = get_data_area();
+		nrows_block = LENGTH(block) / ncols_block; /* nr of rows */
+		if (nrows_block > 0) {
+			area = create_data_area();
 			area->n_list = area->n_max = 0;
 			area->id = ID_OF_AREA;
-			for (i = 0; i < n_block; i++) {
+			area->mode = X_BIT_SET;
+			if (ncols_block > 1)
+				area->mode = area->mode & Y_BIT_SET;
+			if (ncols_block > 2)
+				area->mode = area->mode & Z_BIT_SET;
+			for (i = 0; i < nrows_block; i++) {
 				current.x = NUMERIC_POINTER(block)[i];
-				if (c_block > 1)
-					current.y = NUMERIC_POINTER(block)[n_block + i];
-				if (c_block > 2)
-					current.z = NUMERIC_POINTER(block)[2 * n_block + i];
+				if (ncols_block > 1)
+					current.y = NUMERIC_POINTER(block)[nrows_block + i];
+				if (ncols_block > 2)
+					current.z = NUMERIC_POINTER(block)[2 * nrows_block + i];
 				push_point(area, &current);
 			}
 			SET_BLOCK(&current);
 		}
+		if (DEBUG_FORCE)
+			print_data_list(area);
 	}
 
 	X = NUMERIC_POINTER(sX);
@@ -366,6 +412,12 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 	check_global_variables(); /* it's there, better do it now */
 	if (debug_level)
 		Rprintf("[%s]\n", method_string(get_method()));
+#ifdef USING_R
+# ifdef WIN32
+	R_FlushConsole();
+	R_ProcessEvents();
+# endif
+#endif
 	for (i = 0; i < n; i++) {
 		current.x = locs[i];
 		if (dim >= 2)
@@ -377,6 +429,11 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		for (j = 0; j < get_n_vars(); j++)
 			select_at(d[j], &current);
 		get_est(d, get_method(), &current, est_all[i]);
+#ifdef USING_R
+# ifdef WIN32
+		R_ProcessEvents(); /* avoid terminal freeze */
+# endif
+#endif
 	}
 	PROTECT(ret = NEW_LIST(1));
 	PROTECT(retvector_dim = NEW_NUMERIC(2));
@@ -395,7 +452,12 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		for (j = pos = 0; j < nest; j++) {
 			for (i = 0; i < n; i++) {
 				if (is_mv_double(&(est_all[i][j])))
+#ifdef USING_R /* avoid NaN's to be returned */
 					NUMERIC_POINTER(retvector)[pos] = NA_REAL;
+#else
+					na_set(NUMERIC_POINTER(retvector) + pos, S_MODE_DOUBLE);
+					/* the documentation says it should be DOUBLE */
+#endif
 				else
 					NUMERIC_POINTER(retvector)[pos] = est_all[i][j];
 				pos++;
@@ -473,12 +535,13 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 }
 
 void Cgstat_load_variogram(int *ids, int *n_models, 
-		char **model, double *sills, double *ranges, double *anis_all) 
+		char **model, double *sills, double *ranges, double *kappas,
+		double *anis_all) 
 {
 	char *vgm_model;
 	VARIOGRAM *vgm;
 	int i, n, id1, id2, max_id;
-	double anis[5] = {0.0, 0.0, 0.0, 1.0, 1.0};
+	double anis[5] = {0.0, 0.0, 0.0, 1.0, 1.0}, rpars[2];
 
 	id1 = ids[0];
 	id2 = ids[1];
@@ -505,7 +568,9 @@ void Cgstat_load_variogram(int *ids, int *n_models,
 		anis[2] = anis_all[2 * n + i];
 		anis[3] = anis_all[3 * n + i];
 		anis[4] = anis_all[4 * n + i];
-		push_to_v(vgm, model[i], sills[i], ranges[i], 
+		rpars[0] = ranges[i];
+		rpars[1] = kappas[i];
+		push_to_v(vgm, model[i], sills[i], rpars, 2,
 			(anis[3] == 1.0 && anis[4] == 1.0) ? NULL : anis, 1, 1);
 	}
 	update_variogram(vgm);
@@ -589,6 +654,24 @@ void s_gstat_error(const char *mess, int level) {
 		PROBLEM error_messages[level], mess ERROR;
 }
 
+void s_gstat_warning(const char *mess) {
+
+	print_to_logfile_if_open(mess);
+
+	Rprintf("gstat warning: %s\n", mess);
+	return;
+}
+
+void s_gstat_printlog(const char *mess) {
+
+	if (DEBUG_SILENT)
+		return;
+
+	print_to_logfile_if_open(mess);
+	Rprintf("%s", mess);
+}
+
+
 SEXP gstat_load_ev(SEXP np, SEXP dist, SEXP gamma) {
 
 	int i, cloud = 1;
@@ -648,7 +731,7 @@ SEXP gstat_fit_variogram(SEXP fit, SEXP fit_sill, SEXP fit_range) {
 	SSErr = NEW_NUMERIC(1);
 	for (i = 0; i < vgm->n_models; i++) {
 		NUMERIC_POINTER(sills)[i] = vgm->part[i].sill;
-		NUMERIC_POINTER(ranges)[i] = vgm->part[i].range;
+		NUMERIC_POINTER(ranges)[i] = vgm->part[i].range[0];
 	}
 	NUMERIC_POINTER(SSErr)[0] = vgm->SSErr;
 	SET_ELEMENT(ret, 0, sills);
@@ -666,8 +749,15 @@ double s_r_uniform(void) {
 	double u;
 
 	S_EVALUATOR
+#ifdef USING_R
 	if (!seed_is_in) PROBLEM "s_r_uniform(): seed is not read" ERROR; 
+#else /* S-Plus needs RANDIN/RANDOUT to be inside the function calling a RNG */
+	RANDIN;
+#endif
 	u = R_UNIFORM;
+#ifndef USING_R
+	RANDOUT;
+#endif
 	return(u);
 }
 
@@ -675,7 +765,15 @@ double s_r_normal(void) {
 	double r;
 
 	S_EVALUATOR
+#ifdef USING_R
 	if (!seed_is_in) PROBLEM "s_r_normal(): seed is not read" ERROR; 
+#else
+	RANDIN;
+#endif
 	r = R_NORMAL;
+#ifndef USING_R
+	RANDOUT;
+#endif
 	return(r);
 }
+

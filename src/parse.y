@@ -67,8 +67,9 @@ static DATA *d = NULL, **dpp = NULL;
 static DPOINT *bp = NULL;
 static VARIOGRAM *v = NULL;
 static int id = -1, id1 = -1, id2 = -1, col1 = -1, col2 = -1,
-	fit_sill = 0, fit_range = 0, vector_only = 0, allow_vector_only = 0;
-static double range = -1.0, anis[5];
+	fit_sill = 0, fit_range = 0, nrangepars = 1,
+	vector_only = 0, allow_vector_only = 0;
+static double range[NRANGEPARS], anis[5];
 static char **ofn = NULL, *boundary_file = NULL;
 static VARIOGRAM *parse_variogram = NULL;
 static D_VECTOR *sd_vector = NULL;
@@ -310,13 +311,11 @@ area_cmd: area_decl ':' data_cont { ; }
 	;
 
 area_decl: ID_AREA {
-			create_data_area();
-			d = get_data_area();
+			d = create_data_area();
 			d->id = ID_OF_AREA;
 		}
 	| ID_AREA '(' ')' {
-			create_data_area();
-			d = get_data_area();
+			d = create_data_area();
 			d->id = ID_OF_AREA;
 		}
 	;
@@ -361,16 +360,18 @@ vgm_cont: vgm_model
 	;
 
 vgm_model: sill_val vgm_model_type '(' ')' {
-			push_to_v(v, $2, $1, 0.0, NULL, fit_sill, fit_range);
+			range[0] = 0.0;
+			push_to_v(v, $2, $1, range, 1, NULL, fit_sill, fit_range);
 		}
 	| sill_val vgm_model_type '(' vgm_range ')' {
-			push_to_v(v, $2, $1, range, anis, fit_sill, fit_range);
+			push_to_v(v, $2, $1, range, nrangepars, anis, fit_sill, fit_range);
 		}
 	| '+' sill_val vgm_model_type '(' vgm_range ')' {
-			push_to_v(v, $3, $2, range, anis, fit_sill, fit_range);
+			push_to_v(v, $3, $2, range, nrangepars, anis, fit_sill, fit_range);
 		}
 	| '-' sill_val vgm_model_type '(' vgm_range ')' {
-			push_to_v(v, $3, -1.0 * $2, range, anis, fit_sill, fit_range);
+			push_to_v(v, $3, -1.0 * $2, range, nrangepars, anis, 
+				fit_sill, fit_range);
 		}
 	;
 
@@ -381,21 +382,51 @@ vgm_model_type:	IDENT {
 	}
 	;
 
-vgm_range: range_val { range = $1; anis[0] = -9999.0; }
+vgm_range: range_val { 
+			range[0] = $1; 
+			nrangepars = 1;
+			anis[0] = -9999.0; 
+		}
+	| range_val ',' val {
+			range[0] = $1;
+			range[1] = $3;
+			nrangepars = 2;
+		}
 	| range_val ',' val ',' val {
-			range = $1;
+			range[0] = $1;
+			nrangepars = 1;
 			anis[0] = $3;
 			anis[3] = $5;
 			anis[1] = anis[2] = 0.0;
 			anis[4] = 1.0;
 		}
+	| range_val ',' val ',' val ',' val {
+			range[0] = $1;
+			range[1] = $3;
+			nrangepars = 2;
+			anis[0] = $5;
+			anis[3] = $7;
+			anis[1] = anis[2] = 0.0;
+			anis[4] = 1.0;
+		}
 	| range_val ',' val ',' val ',' val ',' val ',' val {
-			range = $1;
+			range[0] = $1;
+			nrangepars = 1;
 			anis[0] = $3;
 			anis[1] = $5;
 			anis[2] = $7;
 			anis[3] = $9;
 			anis[4] = $11;
+		}
+	| range_val ',' val ',' val ',' val ',' val ',' val ',' val {
+			range[0] = $1;
+			range[1] = $3;
+			nrangepars = 2;
+			anis[0] = $5;
+			anis[1] = $7;
+			anis[2] = $9;
+			anis[3] = $11;
+			anis[4] = $13;
 		}
 	;
 

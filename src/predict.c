@@ -104,7 +104,7 @@ void predict_all(DATA **data) {
 		at_what = AT_GRIDMAP;
 		here = (DPOINT *) emalloc(sizeof(DPOINT));
 		here->u.stratum = -2; /* only NON-MV cells */
-		if (max_block_dimension() > 0.0)
+		if (max_block_dimension(0) > 0.0)
 			SET_BLOCK(here);
 		else
 			SET_POINT(here);
@@ -186,6 +186,7 @@ static void init_predictions(PRED_AT w) {
 		break;
 	  case AT_GRIDMAP:
 		/* open mask files: */
+		get_maskX(NULL, NULL, 0, 0); /* re-initializes static arrays */
 		masks = (GRIDMAP **) emalloc(get_n_masks() * sizeof(GRIDMAP *));
 		for (i = 0; i < get_n_masks(); i++)
 			masks[i] = check_open(get_mask_name(i), i); /* read as float */
@@ -324,6 +325,17 @@ static double *get_maskX(DATA **data, DPOINT *p,
 	static DATA *bl = NULL;
 	static GRIDMAP **local_masks = NULL;
 
+	if (data == NULL) {
+		if (d != NULL) {
+			efree(d);
+			d = NULL;
+			efree(posMask);
+			posMask = NULL;
+			local_masks = NULL;
+			totX = 0;
+		}
+		return NULL;
+	}
 	if (d == NULL) { /* first time calling */
 		for (i = 0, totX = 0; i < get_n_vars(); i++) 
 			totX += data[i]->n_X;
@@ -460,8 +472,10 @@ static DPOINT *get_point_location(int random_path) {
 	int i = 0, ri = 0; /* ri: random index */
 	DPOINT *pt = NULL;
 
-	if (current == val_data->n_list)
+	if (current == val_data->n_list) {
+		current = 0; /* reset for next run */
 		return NULL;
+	}
 	if (current == 0 && random_path) { /* first time: randomize list order */
 		for (i = 0; i < val_data->n_list; i++) {
 			ri = floor(r_uniform() * (val_data->n_list));

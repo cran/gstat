@@ -1,0 +1,17 @@
+; dlltool --export-all-symbols --output-def gstat.def block.o chfactor.o copy.o data.o direct.o err.o fit.o getest.o gls.o glvars.o hsehldr.o init.o ivecop.o lex.o lm.o lufactor.o machine.o mapio.o matop.o matrixio.o meminfo.o memory.o memstat.o msim.o norm.o nsearch.o otherio.o parse.o plot.o polygon.o pqueue.o predict.o pxop.o qrfactor.o random.o read.o reml.o report.o s.o select.o sem.o sim.o solve.o sparse.o sparseio.o spbkp.o spchfctr.o splufctr.o sprow.o spswap.o stat.o submat.o userio.o utils.o vario.o vario_fn.o vario_io.o vecop.o version.o writecmd.o xvalid.o
+EXPORTS
+	Cgstat_get_variogram_models @ 3 ; 
+	Cgstat_load_variogram @ 4 ; 
+	Cload_gstat_command @ 5 ; 
+	gstat_debug_level @ 270 ; 
+	gstat_exit @ 272 ; 
+	gstat_fit_variogram @ 273 ; 
+	gstat_get_n_variogram_models @ 274 ; 
+	gstat_init @ 275 ; 
+	gstat_load_ev @ 276 ; 
+	gstat_new_data @ 277 ; 
+	gstat_new_dummy_data @ 278 ; 
+	gstat_predict @ 279 ; 
+	gstat_start @ 280 ; 
+	gstat_variogram @ 281 ; 
+	gstat_variogram_values @ 282 ; 

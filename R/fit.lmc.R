@@ -21,7 +21,7 @@ function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges,
         for (j in i:length(n)) {
             name = ifelse(i == j, n[i], paste(n[i], n[j], sep = "."))
             x = v[v$id == name, ]
-            if (dim(x)[1] == 0) 
+            if (nrow(x) == 0) 
                 stop(paste("variogram", name, "not present"))
             m = g$model[[name]]
             if (!missing(model)) 

@@ -249,10 +249,15 @@ const char *get_gstat_error_message(void) {
 	return (const char *) error_message->str;
 }
 
-void default_warning(const char *mess) {
+void print_to_logfile_if_open(const char *mess) {
 
 	if (is_openf(logfile))
-		printlog("%s\n", mess);
+		fprintf(logfile, "%s", mess);
+}
+
+void default_warning(const char *mess) {
+
+	print_to_logfile_if_open(mess);
 
 	fprintf(stderr, "%s\n", mess);
 	return;
@@ -260,8 +265,7 @@ void default_warning(const char *mess) {
 
 void default_error(const char *mess, int level) {
 
-	if (is_openf(logfile))
-		printlog("%s\n", mess);
+	print_to_logfile_if_open(mess);
 
 	fprintf(stderr, "%s\n", mess);
 	exit(level == 0 ? -1 : level);
@@ -295,9 +299,9 @@ void default_printlog(const char *mess) {
 		return;
 
 	if (is_openf(logfile))
-		fprintf(logfile, "%s", mess);
+		print_to_logfile_if_open(mess);
 	else
-		fprintf(stdout, "%s", mess);
+		printf("%s", mess);
 }
 
 int set_gstat_log_file(FILE *f) {

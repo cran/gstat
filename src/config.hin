@@ -5,6 +5,9 @@
 /* Define to empty if the keyword does not work.  */
 #undef const
 
+/* Define USING_R if compiled as an R package */
+#undef USING_R
+
 /* Define if you don't have vprintf but do have _doprnt.  */
 #undef HAVE_DOPRNT
 

@@ -1,15 +1,7 @@
 ".First.lib" <-
-function(lib, pkg)
-{
+function(lib, pkg) {
 	require(lattice)
 	library.dynam("gstat", pkg, lib)
-	.Call("gstat_init", as.integer(1))
+	.Call("gstat_init", as.integer(1), PACKAGE = "gstat")
 }
-
 variogram <- function(object, ...) UseMethod("variogram")
-
-# ".on.attach" <-
-# function() {
-# 	.Call("gstat_init")
-# 	print("gstat initialized")
-# }

@@ -54,6 +54,7 @@ static int is_valid_cs(const VARIOGRAM *aa, const VARIOGRAM *bb,
 static int is_posdef(MAT *m);
 static void strcat_tm(char *cp, ANIS_TM *tm);
 static ANIS_TM *get_tm(double anis[5]);
+static void init_variogram_part(VGM_MODEL *v, int nrangepars);
 
 const V_MODEL v_models[] = { /* the variogram model ``data base'': */
 	{	 NOT_SP, "Nsp", "Nsp (not specified)",  /* DON'T CHANGE THIS ONE!! */
@@ -76,6 +77,12 @@ const V_MODEL v_models[] = { /* the variogram model ``data base'': */
 		"Gau(a,x) = 1 - exp(-((x/a)**2))",
 		"Gau(a,x) = exp(-((x/a)**2))",
 		fn_gaussian, da_fn_gaussian },
+#ifdef USING_R
+	{	MATERN, "Mat", "Mat (Matern)", 
+		"# Matern model not supported by gnuplot",
+		"# Matern model not supported by gnuplot",
+		fn_matern, NULL },
+#endif
 	{ 	CIRCULAR, "Cir", "Cir (circular)", 
 		"Cir(a,x) = (x < a ? ((2*x)/(pi*a))*sqrt(1-(x/a)**2)+(2/pi)*asin(x/a) : 1)",
 		"Cir(a,x) = (x < a ? (1-(((2*x)/(pi*a))*sqrt(1-(x/a)**2)+(2/pi)*asin(x/a))) : 0)",
@@ -159,7 +166,7 @@ VARIOGRAM *init_variogram(VARIOGRAM *v) {
 	vgm_init_block_values(v);
 	v->part = (VGM_MODEL *) emalloc(INIT_N_VGMM * sizeof(VGM_MODEL));
 	for (i = 0; i < INIT_N_VGMM; i++)
-		init_variogram_part(&(v->part[i]));
+		init_variogram_part(&(v->part[i]), NRANGEPARS);
 	v->max_n_models = INIT_N_VGMM;
 	v->SSErr = 0.0;
 	v->ev = init_ev();
@@ -174,8 +181,13 @@ void vgm_init_block_values(VARIOGRAM *v) {
 	v->block_semivariance = -999999.0;
 }
 
-void init_variogram_part(VGM_MODEL *p) {
-	p->sill = p->range = 0.0;
+void init_variogram_part(VGM_MODEL *p, int nrangepars) {
+	int i;
+
+	p->sill = 0.0;
+	p->range = (double *) emalloc(nrangepars * sizeof(double));
+	for (i = 0; i < nrangepars; i++)
+		set_mv_double(&(p->range[i])); /* trigger errors if misused */
 	p->model = NOT_SP;
 	p->fit_sill = p->fit_range = 1;
 	p->fnct = p->da_fnct = NULL;
@@ -211,6 +223,8 @@ SAMPLE_VGM *init_ev(void) {
 }
 
 void free_variogram(VARIOGRAM *v) {
+	int i;
+
 	assert(v != NULL);
 	if (v->ev) {
 		if (v->ev->n_max > 0) {
@@ -222,6 +236,8 @@ void free_variogram(VARIOGRAM *v) {
 		}
 		efree(v->ev);
 	}
+	for (i = 0; i < v->max_n_models; i++)
+		efree(v->part[i].range);
 	efree(v->part);
 	efree(v);
 }
@@ -317,16 +333,19 @@ void update_variogram(VARIOGRAM *vp) {
 			vp->min_val += p->sill;
 		else
 			vp->max_val += p->sill;
-		vp->max_range = MAX(p->range, vp->max_range);
+		vp->max_range = MAX(p->range[0], vp->max_range);
 
 		if (p->model == BESSEL || p->model == GAUSSIAN ||
 				p->model == EXPONENTIAL || p->model == LOGARITHMIC ||
 				p->model == POWER || p->model == PERIODIC ||
-				(p->model == LINEAR && p->range == 0)) 
+#ifdef USING_R
+				p->model == MATERN ||
+#endif
+				(p->model == LINEAR && p->range[0] == 0)) 
 					/* sill is reached asymptotically or oscillates */
 			vp->max_range = DBL_MAX;
 		else  /* transitive model: */
-			vp->max_range = MAX(p->range, vp->max_range);
+			vp->max_range = MAX(p->range[0], vp->max_range);
 
 		if (p->fit_sill == 0)
 			strcat(cp, "@ ");
@@ -335,11 +354,11 @@ void update_variogram(VARIOGRAM *vp) {
 		strcat(cp, " ");
 		sprintf(s, "%s(", v_models[p->model].name);
 		strcat(cp, s);
-		if ((p->model == LINEAR && p->range == 0.0) || p->model == NUGGET || p->model == INTERCEPT)
+		if ((p->model == LINEAR && p->range[0] == 0.0) || p->model == NUGGET || p->model == INTERCEPT)
 			p->fit_range = 0; /* 1 would lead to singularity */
 		else if (p->fit_range == 0)
 			strcat(cp, "@ ");
-		sprintf(s, gl_format, p->range);
+		sprintf(s, gl_format, p->range[0]);
 		strcat(cp, s);
 		if (p->tm_range != NULL) 
 			strcat_tm(cp, p->tm_range);
@@ -347,7 +366,7 @@ void update_variogram(VARIOGRAM *vp) {
 		if (i != vp->n_models - 1)
 			strcat(cp, vp->part[i+1].sill < 0.0 ? " - " : " + ");
 		if (p->model == LOGARITHMIC || p->model == POWER || p->model == INTERCEPT
-				|| (p->model == LINEAR && p->range == 0))
+				|| (p->model == LINEAR && p->range[0] == 0))
 		 	vp->is_valid_covariance = 0;
 		if (p->fit_sill)
 			vp->n_fit++;
@@ -458,14 +477,14 @@ static int is_valid_cs(const VARIOGRAM *aa, const VARIOGRAM *bb,
 	double maxrange = 0, dist, dx, dy, dz;
 
 	for (i = 0; i < aa->n_models; i++)
-		if (aa->part[i].range > maxrange)
-			maxrange = aa->part[i].range;
+		if (aa->part[i].range[0] > maxrange)
+			maxrange = aa->part[i].range[0];
 	for (i = 0; i < ab->n_models; i++)
-		if (ab->part[i].range > maxrange)
-			maxrange = ab->part[i].range;
+		if (ab->part[i].range[0] > maxrange)
+			maxrange = ab->part[i].range[0];
 	for (i = 0; i < bb->n_models; i++)
-		if (bb->part[i].range > maxrange)
-			maxrange = bb->part[i].range;
+		if (bb->part[i].range[0] > maxrange)
+			maxrange = bb->part[i].range[0];
 	for (i = 0; i < 101 && !check_failed; i++) {
 		dist = (i * maxrange)/100;
 		dx = dy = dz = 0.0;
@@ -516,7 +535,7 @@ void check_variography(const VARIOGRAM **v, int n_vars)
 				reason = "model types differ";
 				lmc = 0;
 			}
-			if (v[0]->part[k].range != v[i]->part[k].range) {
+			if (v[0]->part[k].range[0] != v[i]->part[k].range[0]) {
 				reason = "ranges differ";
 				lmc = 0;
 			}
@@ -669,11 +688,13 @@ double transform_norm(const ANIS_TM *tm, double dx, double dy, double dz) {
 }
 
 double da_general(VGM_MODEL *part, double h) {
-	double low, high, range;
+	double low, high, range, r[2] = { 0.0, 0.0 };
 
-	range = MAX(1e-20, part->range);
-	low = part->fnct(h, range * (1.0 + DA_DELTA));
-	high = part->fnct(h, range * (1.0 - DA_DELTA));
+	range = MAX(1e-20, part->range[0]);
+	r[0] = range * (1.0 + DA_DELTA);
+	low = part->fnct(h, r);
+	r[0] = range * (1.0 - DA_DELTA);
+	high = part->fnct(h, r);
 	return part->sill * (low - high) / (2.0 * range * DA_DELTA);
 }
 
@@ -686,28 +707,30 @@ int push_variogram_model(VARIOGRAM *v, VGM_MODEL part) {
  */
 
 	if (v->n_models == v->max_n_models) {
-		v->max_n_models *= 2;
-		v->part = (VGM_MODEL *) 
-			erealloc(v->part, v->max_n_models * sizeof(VGM_MODEL));
+		v->part = (VGM_MODEL *) erealloc(v->part, 
+				(v->max_n_models + INIT_N_VGMM) * sizeof(VGM_MODEL));
+		for (i = v->max_n_models; i < v->max_n_models + INIT_N_VGMM; i++)
+			init_variogram_part(&(v->part[i]), NRANGEPARS);
+		v->max_n_models += INIT_N_VGMM;
 	}
 	/*
 	 * check some things: 
 	 */
 	if (part.model == NOT_SP)
 		ErrMsg(ER_IMPOSVAL, "model NSP not allowed in variogram structure");
-	if (part.range < 0.0)
+	if (part.range[0] < 0.0)
 		ErrMsg(ER_RANGE, "variogram range cannot be negative");
 	if (part.model == LINEAR) {
-		if (part.range == 0.0)
+		if (part.range[0] == 0.0)
 			part.fit_range = 0;
 	} else if (part.model == NUGGET || part.model == INTERCEPT || 
 			part.model == MERROR) {
 		part.fit_range = 0;
-		if (part.range > 0.0) 
+		if (part.range[0] > 0.0) 
 			ErrMsg(ER_RANGE, "range must be zero");
-	} else if (part.range == 0.0) 
+	} else if (part.range[0] == 0.0) 
 		ErrMsg(ER_RANGE, "range must be positive");
-	if (part.model == POWER && part.range > 2.0)
+	if (part.model == POWER && part.range[0] > 2.0)
 		ErrMsg(ER_RANGE, "power model can not exceed 2.0");
 
 	if (part.id < 0) {
@@ -902,9 +925,9 @@ double effective_range(const VARIOGRAM *v) {
 	double er = 0.0, range;
 	for (i = 0; i < v->n_models; i++) {
 		switch (v->part[i].model) {
-			case EXPONENTIAL: range = 3 * v->part[i].range; break;
-			case GAUSSIAN: range = sqrt(3) * v->part[i].range; break;
-			default: range = v->part[i].range; break;
+			case EXPONENTIAL: range = 3 * v->part[i].range[0]; break;
+			case GAUSSIAN: range = sqrt(3) * v->part[i].range[0]; break;
+			default: range = v->part[i].range[0]; break;
 		}
 		er = MAX(er, range);
 	}
@@ -918,13 +941,17 @@ int get_n_variogram_models(void) {
 	return(n);
 }
 
-void push_to_v(VARIOGRAM *v, const char *mod, double sill, double range, 
-		double *d, int fit_sill, int fit_range) {
+void push_to_v(VARIOGRAM *v, const char *mod, double sill, double *range, 
+		int nrangepars, double *d, int fit_sill, int fit_range) {
 	VGM_MODEL vm;
+	int i;
 
-	init_variogram_part(&vm);
+	init_variogram_part(&vm, NRANGEPARS);
 	vm.model = which_variogram_model(mod);
-	vm.range = range;
+	if (nrangepars > NRANGEPARS)
+		ErrMsg(ER_IMPOSVAL, "too many range parameters");
+	for (i = 0; i < nrangepars; i++)
+		vm.range[i] = range[i];
 	vm.sill = sill;
 	vm.fit_sill = fit_sill;
 	vm.fit_range = fit_range;

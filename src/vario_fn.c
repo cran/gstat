@@ -29,6 +29,13 @@
  */
 #include <stdio.h> /* req'd by userio.h */
 #include <math.h>
+
+#include "defs.h" /* config.h may define USING_R */
+#ifdef USING_R
+/* #define MATHLIB_STANDALONE */
+#include <Rmath.h>
+#endif
+
 #include "userio.h"
 #include "vario_fn.h"
 static double bessi1(double x);
@@ -46,33 +53,33 @@ static double bessk1(double x);
 #endif
 
 
-double fn_nugget(double h, double r) {
+double fn_nugget(double h, double *r) {
 	return (h == 0.0 ? 0.0 : 1.0);
 }
 
-double fn_linear(double h, double r) {
+double fn_linear(double h, double *r) {
 	if (h == 0)
 		return 0.0;
-	if (r == 0)
+	if (*r == 0)
 		return h; /* 1lin() or 1 lin(0): slope 1 (and no range) */
-	return (h >= r ? 1.0 : h/r);
+	return (h >= *r ? 1.0 : h/(*r));
 }
 
-double da_fn_linear(double h, double r) {
-	if (r == 0)
+double da_fn_linear(double h, double *r) {
+	if (*r == 0)
 		return 0.0; /* 1lin() or 1 lin(0): slope 1 (and no range) */
-	if (h > r)
+	if (h > *r)
 		return 0.0;
-	return -h/(r*r);
+	return -h/((*r) * (*r));
 }
 
-double fn_circular(double h, double r) {
+double fn_circular(double h, double *r) {
 	double hr;
 	if (h == 0.0)
 		return 0.0;
-	if (h >= r)
+	if (h >= *r)
 		return 1.0;
-	hr = h/r;
+	hr = h/(*r);
 	/*
 	 * return 1.0 + (2.0/PI) * (hr * sqrt(1.0 - hr * hr) - acos(hr));
 	 * probably equivalent to:
@@ -80,133 +87,151 @@ double fn_circular(double h, double r) {
 	return (2.0/PI) * (hr * sqrt(1.0 - hr * hr) + asin(hr));
 }
 
-double fn_spherical(double h, double r) {
+double fn_spherical(double h, double *r) {
 	double hr;
 	if (h == 0)
 		return 0.0;
-	if (h >= r)
+	if (h >= *r)
 		return 1.0;
-	hr = h/r;
+	hr = h/(*r);
 	return hr * (1.5 - 0.5 * hr * hr);
 }
 
-double da_fn_spherical(double h, double r) {
+double da_fn_spherical(double h, double *r) {
 	double hr2;
-	if (h > r)
+	if (h > *r)
 		return 0.0;
-	hr2 = h / (r * r);
+	hr2 = h / ((*r) * (*r));
 	return 1.5 * hr2 * (-1.0 + h * hr2);
 }
 
-double fn_bessel(double h, double r) {
+double fn_bessel(double h, double *r) {
 	double hr;
-	hr = h/r;
+	hr = h/(*r);
 	if (hr < MIN_BESS) 
 		return 0.0;
 	return 1.0 - hr * bessk1(hr);
 }
 
-double fn_gaussian(double h, double r) {
+double fn_gaussian(double h, double *r) {
 	double hr;
 	if (h == 0.0)
 		return 0.0;
-	hr = h/r;
+	hr = h/(*r);
 	return 1.0 - exp(-(hr*hr)); 
 }
 
-double da_fn_gaussian(double h, double r) {
+double da_fn_gaussian(double h, double *r) {
 	double hr;
-	hr = h / r;
-	return (-hr / r) * exp(-(hr * hr));
+	hr = h / (*r);
+	return (-hr /(*r)) * exp(-(hr * hr));
 }
 
-double fn_exponential(double h, double r) {
+double fn_exponential(double h, double *r) {
 	if (h == 0.0)
 		return 0.0;
-	return 1.0 - exp(-h/r); 
+	return 1.0 - exp(-h/(*r)); 
 }
 
-double da_fn_exponential(double h, double r) {
+double da_fn_exponential(double h, double *r) {
 	double hr;
-	hr = -h/r;
-	return (hr / r)  * exp(hr); 
+	hr = -h/(*r);
+	return (hr / (*r))  * exp(hr); 
 }
 
-double fn_pentaspherical(double h, double r) {
+double fn_pentaspherical(double h, double *r) {
 	double hr, h2r2;
 	if (h == 0.0)
 		return 0.0;
-	if (h >= r)
+	if (h >= *r)
 		return 1.0;
-	hr = h/r;
+	hr = h/(*r);
 	h2r2 = hr * hr;
 	return hr * ((15.0/8.0) + h2r2 * ((-5.0/4.0) + h2r2 * (3.0/8.0)));
 }
 
-double da_fn_pentaspherical(double h, double r) {
+double da_fn_pentaspherical(double h, double *r) {
 	double hr2;
-	if (h >= r)
+	if (h >= *r)
 		return 0.0;
-	hr2 = h / (r * r);
+	hr2 = h / ((*r) * (*r));
 	return hr2*((-15.0/8.0) + hr2*((15.0/4.0)*h - (15.0/8.0)*h*h*hr2));
 }
 
-double fn_periodic(double h, double r) {
+double fn_periodic(double h, double *r) {
 	if (h == 0.0)
 		return 0.0;
-	return 1.0 - cos(2.0 * PI * h/r);
+	return 1.0 - cos(2.0 * PI * h/(*r));
 }
 
-double da_fn_periodic(double h, double r) {
-	return (2.0 * PI * h/(r * r)) * sin(2.0 * PI * h/r);
+double da_fn_periodic(double h, double *r) {
+	return (2.0 * PI * h/((*r) * (*r))) * sin(2.0 * PI * h/(*r));
 }
 
-double fn_hole(double h, double r) {
+double fn_hole(double h, double *r) {
 	if (h == 0.0)
 		return 0.0;
-	return 1.0 - sin(h/r)/(h/r);
+	return 1.0 - sin(h/(*r))/(h/(*r));
 }
 
-double da_fn_hole(double h, double r) {
+double da_fn_hole(double h, double *r) {
 	double hr, hr2;
-	hr = h/r;
-	hr2 = h/(r*r);
+	hr = h/(*r);
+	hr2 = h/((*r)*(*r));
 	return hr2 * sin(hr) + hr * hr2 * cos(hr);
 }
 
-double fn_logarithmic(double h, double r) {
+double fn_logarithmic(double h, double *r) {
 	if (h == 0.0)
 		return 0.0;
-	return log(h + r); 
+	return log(h + *r); 
 }
 
-double da_fn_logarithmic(double h, double r) {
-	return 1/r;
+double da_fn_logarithmic(double h, double *r) {
+	return 1/(*r);
 }
 
-double fn_power(double h, double r) {
+double fn_power(double h, double *r) {
 	if (h == 0.0)
 		return 0.0;
-	return pow(h, r); 
+	return pow(h, *r); 
 }
 
-double da_fn_power(double h, double r) {
-	return log(h) * pow(h, r);
+double da_fn_power(double h, double *r) {
+	return log(h) * pow(h, *r);
 }
 
-double fn_spline(double h, double r) {
+double fn_spline(double h, double *r) {
 	if (h == 0.0)
 		return 0.0;
 	return h * h * log(h); 
 }
 
-double fn_intercept(double h, double r) {
+double fn_intercept(double h, double *r) {
 	return 1.0;
 }
 
-double da_is_zero(double h, double r) {
+double da_is_zero(double h, double *r) {
 	return 0.0;
 }
+
+#ifdef USING_R
+double fn_matern(double h, double *p) {
+	double hr, ans, phi, kappa;
+
+	phi = p[0];
+	kappa = p[1];
+    if (h == 0.0)
+		return(0.0);
+	if (h > 600 * phi)
+		return(1.0);
+	hr = h/phi;
+	ans = (pow(2.0, -(kappa - 1.0))/gammafn(kappa)) *
+			pow(hr, kappa) * bessel_k(hr, kappa, 1.0);
+	/* ans was for correlation; */
+    return 1.0 - ans;
+}
+#endif
 
 static double bessi1(double x)
 /*

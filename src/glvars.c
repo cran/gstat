@@ -293,10 +293,8 @@ static void init_gstat_data(int n) {
 	if (n <= n_last)
 		return;
 	data = (DATA **) erealloc(data, n * sizeof(DATA *));
-	for (i = n_last; i < n; i++)  {
-		data[i] = (DATA *) emalloc(sizeof(DATA));
-		init_one_data(data[i]);
-	}
+	for (i = n_last; i < n; i++)
+		data[i] = init_one_data(NULL);
 	vgm = (VARIOGRAM **) erealloc(vgm, n_vgms * sizeof(VARIOGRAM *));
 	for (i = n_v_last; i < n_vgms; i++)
 		vgm[i] = NULL;
@@ -354,14 +352,28 @@ const char *name_identifier(int i) {
 
 const char *what_is_outfile(int i) {
 	static char **what = NULL;
+	static int sizeof_what = 0;
 	int j, k;
 
-	if (i < 0 || i > get_n_outfile())
+	if (i < 0) {
+		if (what != NULL) {
+			for (j = 0; j < sizeof_what; j++)
+				efree(what[j]);
+			efree(what);
+			what = NULL;
+			sizeof_what = 0;
+		}
+		return NULL;
+	}
+	if (i > get_n_outfile())
 		ErrMsg(ER_RANGE, "what_is_outfile(i): i outside range");
 	if (what == NULL) {
+		sizeof_what = get_n_outfile();
 		what = (char **) emalloc(get_n_outfile() * sizeof(char *));
-		for (j = 0; j < get_n_outfile(); j++)
+		for (j = 0; j < get_n_outfile(); j++) {
 			what[j] = (char *) emalloc (100 * sizeof(char)); 
+			what[j][0] = '\0';
+		}
 		if (get_mode() == STRATIFY) {
 			sprintf(what[0], "[predicted value, per stratum]");
 			sprintf(what[1], "[prediction variance, per stratum]");
@@ -528,10 +540,9 @@ DATA *get_data_area(void) {
 	return data_area;
 }
 
-void create_data_area(void) {
-	data_area = (DATA *) emalloc(sizeof(DATA));
-	init_one_data(data_area);
-	return;
+DATA *create_data_area(void) {
+	data_area = init_one_data(NULL);
+	return data_area;
 }
 
 DPOINT *get_block_p(void) {
@@ -558,9 +569,11 @@ int is_simulation(METHOD m) {
 	return methods[m].is_simulation;
 }
 
-double max_block_dimension(void) {
+double max_block_dimension(int reset) {
 	static double dim = -1.0;
 
+	if (reset)
+		dim = -1.0;
 	if (dim < 0.0) {
 		if (data_area != NULL)
 			dim = data_block_diagonal(data_area);
@@ -879,7 +892,7 @@ void check_global_variables(void) {
 			ErrMsg(ER_IMPOSVAL, "nsim only allowed for simulation");
 	}
 
-	if (method == ISI && max_block_dimension() > 0.0)
+	if (method == ISI && max_block_dimension(0) > 0.0)
 		ErrMsg(ER_IMPOSVAL, "indicator simulation only for points");
 	/*
 	 * check if both block and area are set
@@ -1023,7 +1036,10 @@ void remove_all(void) {
 		remove_id(0); /* hard way */
 		/* remove_id(n_vars - 1);  */
 	/* the hard way; remove_id(n_vars-1) would be the ``easy'' alternative */
-	gls(NULL, 0, GLS_INIT, NULL, NULL);
+	gls(NULL, 0, GLS_INIT, NULL, NULL); /* cleans up static arrays */
+	what_is_outfile(-1); /* cleans up static array */
+	reset_block_discr(); /* resets block settings */
+	max_block_dimension(1); /* reset */
 }
 
 int remove_id(const int id) {

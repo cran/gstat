@@ -1,6 +1,7 @@
 "gstat" <-
 function (g, id, formula, locations, data = NULL, model = NULL, 
-    beta, nmax = Inf, dummy = FALSE, set, fill.all = FALSE) 
+    beta, nmax = Inf, dummy = FALSE, set, fill.all = FALSE,
+	variance = "identity") 
 {
 	if (fill.all) {
 		if (missing(g) || is.null(model))
@@ -25,9 +26,13 @@ function (g, id, formula, locations, data = NULL, model = NULL,
                	stop("second id does not match available data")
            	nm = paste(g.names[min(m1, m2)], g.names[max(m1, 
                	m2)], sep = ".")
-        }
-        else if (is.na(match(id, g.names))) 
-           	stop("id does not match available data")
+        } else if (length(id) == 1) {
+			m1 = match(id, g.names)
+        	if (is.na(m1)) 
+           		stop("id does not match available data")
+			nm = g.names[m1]
+		} else
+			stop("id should have length 1 or 2")
         g$model[[nm]] = model
         return(g)
     }
@@ -37,6 +42,11 @@ function (g, id, formula, locations, data = NULL, model = NULL,
         stop("argument locations should be of class formula")
     if (missing(beta) || is.null(beta)) 
         beta = numeric(0)
+	vfn = pmatch(variance, c("identity", "mu", "mu(1-mu)"))
+	if (is.na(vfn))
+		stop("unknown value for variance function")
+	if (vfn > 1 && length(beta) == 0)
+		stop("non-identity variance function only allowed if beta is supplied")
     if (missing(g)) {
         g = list()
         g[["data"]] = list()
@@ -45,7 +55,9 @@ function (g, id, formula, locations, data = NULL, model = NULL,
     if (missing(id)) 
         id = paste("var", length(g$data) + 1, sep = "")
     g$data[[id]] = list(formula = formula, locations = locations, 
-        data = data, beta = beta, nmax = nmax, dummy = dummy)
+        data = data, has.intercept = attr(terms(formula), "intercept"),
+		beta = beta, nmax = nmax, dummy = dummy,
+		vfn = vfn)
     g$model[[id]] = model
     if (!missing(set)) {
         if (!is.list(set)) 

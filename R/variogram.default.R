@@ -14,7 +14,7 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
         width = numeric(0)
     if (cloud == TRUE) 
         width = 0
-    .Call("gstat_init", as.integer(debug.level))
+    .Call("gstat_init", as.integer(debug.level), PACKAGE = "gstat")
     id.names = NULL
     if (is.list(object) && is.list(locations)) {
         nvars = length(object)
@@ -29,8 +29,10 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
                 0) 
                 t.beta = trend.beta[[i]]
             else t.beta = numeric(0)
-            .Call("gstat_new_data", as.vector(object[[i]]), as.vector(locations[[i]]), 
-                as.vector(Xloc), as.vector(t.beta), as.integer(-1))
+            .Call("gstat_new_data", as.vector(object[[i]]), 
+				as.vector(locations[[i]]), as.vector(Xloc), 
+				as.integer(1), as.vector(t.beta), as.integer(-1),
+				as.integer(1), PACKAGE = "gstat")
         }
     }
     else {
@@ -40,7 +42,8 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
 		if (is.null(trend.beta))
 			trend.beta = numeric(0)
         .Call("gstat_new_data", as.vector(object), as.vector(locations), 
-            as.vector(X), as.vector(trend.beta), as.integer(-1))
+            as.vector(X), as.integer(1), as.vector(trend.beta), as.integer(-1), 
+			as.integer(1), PACKAGE = "gstat")
     }
     pos = 0
     ids = NULL
@@ -54,10 +57,12 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
             for (a in alpha) {
                 for (b in beta) {
                   direction = as.numeric(c(a, b, tol.hor, tol.ver))
-                  ret.call = .Call("gstat_variogram", as.integer(c(id1 - 
-                    1, id2 - 1)), as.numeric(cutoff), as.numeric(width), 
-                    as.numeric(direction), as.integer(cressie), 
-                    as.numeric(dX), as.numeric(boundaries))
+                  ret.call = .Call("gstat_variogram", 
+				  		as.integer(c(id1 - 1, id2 - 1)), 
+						as.numeric(cutoff), as.numeric(width), 
+                    	as.numeric(direction), as.integer(cressie), 
+                    	as.numeric(dX), as.numeric(boundaries),
+						PACKAGE = "gstat")
                   np = ret.call[[1]]
                   sel = np > 0
                   n.dir = length(sel[sel])
@@ -78,7 +83,7 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
             }
         }
     }
-    .Call("gstat_exit", NULL)
+    .Call("gstat_exit", NULL, PACKAGE = "gstat")
     ret$id = factor(ids, levels = unique(ids))
     if (cloud) 
         class(ret) = c("variogram.cloud", "data.frame")

@@ -32,19 +32,11 @@
 #include <math.h>
 
 #include "defs.h"
-#ifdef HAVE_GETOPT_H
-# include <getopt.h>
-#endif
-#ifdef HAVE_UNISTD_H
-# include <unistd.h> /* isatty(),... */
-#endif
-#ifndef HAVE_GETOPT
-# include "getopt.h"
-#endif
 
 #ifdef HAVE_LIBGSL
 # include "gsl/gsl_statistics.h"
 #endif
+
 #include "userio.h"
 #include "data.h"
 #include "utils.h"
@@ -53,8 +45,6 @@
 #include "read.h"
 #include "glvars.h"
 #include "stat.h"
-
-static int stats(char *name, int silent, double q);
 
 double sample_mean(double *list, int n) {
 	int i;
@@ -146,55 +136,7 @@ void calc_r(double *a, double *b, int n, double *corr) {
 	return;
 }
 
-int calc_stats(int argc, char *argv[]) {
-/*
- * read double from stdin until EOF, print summary statistics
- * print error on non-white space; gl_mv_string is the missing value
- */
-#define CSUSAGE \
-"[options] [file [file ...]]\n\
-options:\n\
--s don't print header line\n\
--q quantile (0.25)\n"
-
-	int i, c, silent = 0;
-	double q = 0.25;
-
-	opterr = 0;
-	while ((c = getopt(argc, argv, "f:hq:s?")) != EOF) {
-		switch (c) {
-			case '?': 
-			case 'h': 
-				printf("%s %s", argv[0], CSUSAGE); 
-				ErrClo(optopt); 
-				break;
-			case 's': silent = 1; break;
-			case 'q':
-				if (read_double(optarg, &q))
-					ErrMsg(ER_ARGOPT, "reading float");
-				if (q < 0.0 || q > 1.0)
-					ErrMsg(ER_ARGOPT, "q value out of range [0,1]");
-				if (q > 0.5)
-					q = 1.0 - q;
-				break;
-			default:
-				ErrMsg(ER_ARGOPT, "unknown option");
-				break;
-		}
-	}
-
-	if (optind == argc) { /* no file arguments left: */
-		if (isatty(fileno(stdin))) {
-			printf("%s %s", argv[0], CSUSAGE);
-			exit(0);
-		} else
-			stats(NULL, silent, q);
-	} else for (i = optind; i < argc; i++)
-		stats(argv[i], silent || (i != optind), q);
-	return 0;
-}
-
-static int stats(char *name, int silent, double q) {
+int stats(char *name, int silent, double q) {
 	static D_VECTOR *dv = NULL;
 	double mean = 0.0;
 

@@ -78,12 +78,11 @@
  */
 #ifdef SEGMENTED /* segmented memory: use small buffers */
 # define MAX_DATA 64 /* not a maximum, but an increment step size */
-# define INIT_N_VGMM 2
 #else
 # define MAX_DATA 1250 /* not a maximum, but an increment step size */
-# define INIT_N_VGMM 4
 #endif
 #define MAX_ID_LENGTH 40
+#define INIT_N_VGMM 2
 /* 
  * (for glvars.c:) something, not bigger than 127 
  * because of user interface (crazy though)

@@ -256,7 +256,9 @@ void correct_orv(double *est, int n_vars, int orc) {
 		if (DEBUG_ORDER) {
 			printlog(
 	"order relation violation:\n(before correction) --> (after correction)\n");
+#ifndef USING_R
  			atexit(print_orvc);
+#endif
 		}
 	}
  	n_total++;

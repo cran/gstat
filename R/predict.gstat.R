@@ -6,11 +6,11 @@ function (object, newdata, block = numeric(0), nsim = 0, debug.level = 1,
         stop("no data available")
     if (class(object) != "gstat") 
         stop("first argument should be of class gstat")
-    .Call("gstat_init", as.integer(debug.level))
+    .Call("gstat_init", as.integer(debug.level), PACKAGE = "gstat")
     nvars = length(object$data)
     pos = 1
     new.X = NULL
-    names.vars = rep("xx", nvars * 2 + nvars * (nvars - 1)/2)
+    names.vars = character(nvars * 2 + nvars * (nvars - 1)/2)
     for (i in 1:length(object$data)) {
         name = names(object$data)[i]
         d = object$data[[i]]
@@ -19,15 +19,19 @@ function (object, newdata, block = numeric(0), nsim = 0, debug.level = 1,
         else nmax = as.integer(d$nmax)
         if (d$dummy) {
             tr = terms(d$locations)
-            dim = length(attr(tr, "term.labels")) + attr(tr, 
-                "intercept")
-            .Call("gstat_new_dummy_data", as.integer(dim), as.numeric(d$beta), 
-                nmax)
+			if (is.null(d$beta) || length(d$beta) == 0)
+				stop("dummy data should have beta defined")
+            loc.dim = length(attr(tr, "term.labels"))
+            .Call("gstat_new_dummy_data", as.integer(loc.dim), 
+				as.integer(d$has.intercept), as.numeric(d$beta), 
+				nmax, as.integer(d$vfn), PACKAGE = "gstat")
         }
         else {
             raw = gstat.formula(d$formula, d$locations, d$data)
             .Call("gstat_new_data", raw$y, as.vector(raw$locations), 
-                as.vector(raw$X), as.numeric(d$beta), nmax)
+                as.vector(raw$X), as.integer(raw$has.intercept),
+				as.numeric(d$beta), nmax, as.integer(d$vfn), 
+				PACKAGE = "gstat")
         }
         if (!is.null(object$model[[name]])) 
             load.variogram.model(object$model[[name]], c(i - 1, i - 1))
@@ -54,24 +58,27 @@ function (object, newdata, block = numeric(0), nsim = 0, debug.level = 1,
     if (!is.null(object$set)) 
         gstat.load.set(object$set)
     block.cols = numeric(0)
-    if (!is.null(dim(block))) 
-        block.cols = dim(block)[2]
+    if (!is.null(dim(block))) { # i.e., block is data.frame or matrix
+		block = as.matrix(block)
+        block.cols = ncol(block)
+	}
     if (nsim) {
-        perm = sample(1:(dim(new.X)[1]))
-        ret = .Call("gstat_predict", as.integer(dim(new.X)[1]), 
-            as.vector(raw$locations[perm, ]), as.vector(new.X[perm, 
-                ]), as.integer(block.cols), as.vector(block), 
-            as.integer(nsim))[[1]]
-        ret = data.frame(cbind(raw$locations, ret[order(perm), 
-            ]))
+		# random path: randomly permute row indices
+		perm = sample(seq(along = new.X[, 1]))
+        ret = .Call("gstat_predict", as.integer(nrow(new.X)), 
+            as.vector(raw$locations[perm, ]), as.vector(new.X[perm,]), 
+			as.integer(block.cols), as.vector(block), 
+            as.integer(nsim), PACKAGE = "gstat")[[1]]
+        ret = data.frame(cbind(raw$locations, 
+			matrix(ret[order(perm),], nrow(new.X), max(2, abs(nsim) * nvars))))
     }
     else {
-        ret = .Call("gstat_predict", as.integer(dim(new.X)[1]), 
+        ret = .Call("gstat_predict", as.integer(nrow(new.X)), 
             as.vector(raw$locations), as.vector(new.X), as.integer(block.cols), 
-            as.vector(block), as.integer(nsim))[[1]]
+            as.vector(block), as.integer(nsim), PACKAGE = "gstat")[[1]]
         ret = data.frame(cbind(raw$locations, ret))
     }
-    .Call("gstat_exit", NULL)
+    .Call("gstat_exit", NULL, PACKAGE = "gstat")
     if (abs(nsim) > 0) {
         names.vars = names(object$data)
         if (length(names.vars) > 1) 
@@ -79,7 +86,7 @@ function (object, newdata, block = numeric(0), nsim = 0, debug.level = 1,
                 paste("sim", 1:abs(nsim), sep = ""), sep = ".")
         else names.vars = paste("sim", 1:abs(nsim), sep = "")
         if (abs(nsim) == 1) 
-            ret = ret[, 1:(dim(ret)[2] - 1)]
+            ret = ret[, 1:(ncol(ret) - 1)]
     }
     names(ret) = c(dimnames(raw$locations)[[2]], names.vars)
     return(ret)

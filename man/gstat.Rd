@@ -9,7 +9,7 @@ necessary for univariate or multivariate geostatistical prediction
 unconditional Gaussian or indicator simulation equivalents.  }
 \usage{
 gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
-	dummy = FALSE, set, fill.all = FALSE)
+	dummy = FALSE, set, fill.all = FALSE, variance = "identity")
 print.gstat(x, ...)
 }
 \arguments{
@@ -30,7 +30,8 @@ print.gstat(x, ...)
   spatial data locations (coordinates), e.g. \code{~x+y} }
   \item{data}{ data frame; contains the dependent variable, independent
   variables, and locations. }
-  \item{model}{ variogram model; defined by a call to \link{vgm} }
+  \item{model}{ variogram model for this \code{id}; defined by a call to 
+  \link{vgm}; see argument \code{id} to see how cross variograms are entered }
   \item{beta}{ only for simple kriging (and simulation based on simple
   kriging); vector with the trend coefficients (including intercept);
   if no independent variables are defined the model only contains an
@@ -45,6 +46,9 @@ print.gstat(x, ...)
   \item{x}{ gstat object to print }
   \item{fill.all}{ logical; if TRUE, fill all of the variogram and cross
   variogram model slots in \code{g} with the given variogram model }
+  \item{variance}{ character; variance function to transform to non-stationary
+  covariances; "identity" does not transform, other options are "mu" (poisson)
+  and "mu(1-mu)" (binomial) }
   \item{...}{ arguments that are passed to the printing of the variogram
   models only}
 }
@@ -75,8 +79,33 @@ data frame, but could not get this to work. Any help is appreciated.
 \seealso{ \link{predict.gstat}, \link{krige} }
 
 \examples{
-# cross variogram
-# set list, e.g. set = list(idp = 5)
+data(meuse)
+# let's do some manual fitting of two direct variograms and a cross variogram
+g <- gstat(id = "ln.zinc", formula = log(zinc)~1, locations = ~x+y, 
+	data = meuse)
+g <- gstat(g, id = "ln.lead", formula = log(lead)~1, locations = ~x+y, 
+	data = meuse)
+# examine variograms and cross variogram:
+plot(variogram(g))
+# enter direct variograms:
+g <- gstat(g, id = "ln.zinc", model = vgm(.55, "Sph", 900, .05))
+g <- gstat(g, id = "ln.lead", model = vgm(.55, "Sph", 900, .05))
+# enter cross variogram:
+g <- gstat(g, id = c("ln.zinc", "ln.lead"), model = vgm(.47, "Sph", 900, .03))
+# examine fit:
+plot(variogram(g), model = g$model, main = "models fitted by eye")
+# see also demo(cokriging) for a more efficient approach
 
+# Inverse distance interpolation with inverse distance power set to .5:
+# (kriging variants need a variogram model to be specified)
+data(meuse)
+data(meuse.grid)
+meuse.gstat <- gstat(id = "zinc", formula = zinc ~ 1, locations = ~ x + y,
+	data = meuse, nmax = 7, set = list(idp = .5))
+meuse.gstat
+z <- predict(meuse.gstat, meuse.grid)
+levelplot(zinc.pred~x+y, z, aspect = mapasp(z))
+# see demo(cokriging) and demo(examples) for further examples, 
+# and the manuals for predict.gstat and image
 }
 \keyword{ models }

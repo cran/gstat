@@ -15,12 +15,13 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
     if (length(fit.ranges) < length(model$model)) 
         fit.ranges = rep(fit.ranges, length(model$model))
     fit.ranges = fit.ranges & (model$model != "Nug")
-    .Call("gstat_init", as.integer(debug.level))
-    .Call("gstat_load_ev", object$np, object$dist, object$gamma)
+    .Call("gstat_init", as.integer(debug.level), PACKAGE = "gstat")
+    .Call("gstat_load_ev", object$np, object$dist, object$gamma, 
+		PACKAGE = "gstat")
     load.variogram.model(model)
     ret = .Call("gstat_fit_variogram", as.integer(fit.method), 
-        as.integer(fit.sills), as.integer(fit.ranges))
-    .Call("gstat_exit", 0)
+        as.integer(fit.sills), as.integer(fit.ranges), PACKAGE = "gstat")
+    .Call("gstat_exit", 0, PACKAGE = "gstat")
     model$psill = ret[[1]]
     model$range = ret[[2]]
     if (print.SSE) 

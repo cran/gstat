@@ -59,8 +59,10 @@ void	m_version()
 	printf("EJP: corrected ``configure'', include setjmp.h for u_int def\n");
 	printf("EJP: added with-sparse in makefile (otherwise z* is needed)\n");
 	printf("EJP: changed  all HUGE into HUGE_VAL\n");
-	printf("EJP: modernized configure.in and configure (autoconf 2.12)");
-	printf("EJP: added prototypes");
+	printf("EJP: modernized configure.in and configure, to autoconf 2.12\n");
+	printf("EJP: added prototypes to header files\n");
+	printf("EJP: removed note about machine.van in configure.[h|hin] \n");
+	printf("EJP: (seems to be missing)\n");
 }
 
 /* $Log: version.c,v $

@@ -9,8 +9,8 @@ function (formula, locations, data)
     }
     call = match.call()
     X = model.matrix(delete.resp.f(formula), data = data)
-    if (dim(X)[1] == 1 && dim(data)[1] > 1) 
-        X = as.matrix(rep(X, dim(data)[1]))
+    if (nrow(X) == 1 && nrow(data) > 1) 
+        X = as.matrix(rep(X, nrow(data)))
     m = match.call(expand = FALSE)
     m$method = m$model = m$x = m$y = m$... = NULL
     m$formula = m$locations

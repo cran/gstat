@@ -2,3 +2,4 @@ cokriging	fitting a linear model of coregionalization and cokriging
 cosimulation	fitting a linear model of coregionalization and cosimulation
 examples	how to do the original gstat example files in S
 gstat3D		example of 3D interpolation of random points
+krige		sample run of ordinary and universal kriging
