@@ -12,7 +12,8 @@ gstat object can be subsetted. }
 \usage{
 gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
 	nmin = 0, maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, 
-	fill.cross = TRUE, variance = "identity", weights = NULL, merge, degree = 0)
+	fill.cross = TRUE, variance = "identity", weights = NULL, merge, 
+	degree = 0)
 print.gstat(x, ...)
 }
 \arguments{
@@ -54,7 +55,8 @@ print.gstat(x, ...)
   \item{dummy}{ logical; if TRUE, consider this data as a dummy variable
   (only necessary for unconditional simulation) }
   \item{set}{ named list with optional parameters to be passed to
-  gstat (only \code{set} commands of gstat are allowed; see gstat manual) }
+  gstat (only \code{set} commands of gstat are allowed, and not all of
+  them may be relevant; see the manual for gstat stand-alone, URL below ) }
   \item{x}{ gstat object to print }
   \item{fill.all}{ logical; if TRUE, fill all of the direct variogram and,
   depending on the value of \code{fill.cross} also all cross

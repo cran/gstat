@@ -15,8 +15,10 @@ a grid with 40 m x 40 m spacing that covers the Meuse Study area
 	\item{dist}{distance to the Meuse river; obtained by a spread
 	(spatial distance) GIS operation, from border of river; normalized to
 	$[0,1]$ }
+	\item{ffreq}{flood frequency class}
 	\item{part.a}{arbitrary division of the area in two areas, a and b}
 	\item{part.b}{see \code{part.a}}
+	\item{soil}{soil class (questionable whether this is from a real soil map)}
   }
 }
 \details{

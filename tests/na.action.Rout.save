@@ -1,13 +1,14 @@
 
-R : Copyright 2003, The R Development Core Team
-Version 1.8.0  (2003-10-08)
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 2.0.0  (2004-10-04), ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
 
 R is a collaborative project with many contributors.
-Type 'contributors()' for more information.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
 
 Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for a HTML browser interface to help.
@@ -62,7 +63,7 @@ Loading required package: lattice
 234  180820 333020  6.068761       NA
 2467 180460 330380  6.082566       NA
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.fail))
-Error in na.fail.default(structure(list(x = c(180300, NA, 179380, 179180,  : 
+Error in na.fail.default(list(x = c(180300, NA, 179380, 179180, 179500,  : 
 	missing values in object
 > 
 > # select 10 random rows;
@@ -105,6 +106,6 @@ Error in na.fail.default(structure(list(x = c(180300, NA, 179380, 179180,  :
 1149 179980 331700  5.345455 0.2408518
 2951 179540 329900  6.314501 0.2402659
 > try(krige(log(zinc)~dist,~x+y,meuse,m, na.action = na.fail))
-Error in na.fail.default(structure(list(dist = c(0.527108, 0.929323, NA,  : 
+Error in na.fail.default(list(dist = c(0.527108, 0.929323, NA, 0.266212,  : 
 	missing values in object
 > 

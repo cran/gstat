@@ -82,6 +82,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
                     	as.numeric(dX), as.numeric(boundaries), map
 						, PACKAGE = "gstat"
 						)
+				  boundaries = numeric(0)
                   if (is.logical(map) && map == FALSE) {
                     np = ret.call[[1]]
                     sel = np > 0
