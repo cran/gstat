@@ -69,12 +69,12 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		gstat.load.set(object$set)
 	if (!is.null(object$merge)) 
 		gstat.load.merge(object)
-	if (is(newdata, "SpatialRings") && require(sp)) {
-		pol = getSRpolygonsSlot(newdata)
+	if (is(newdata, "SpatialPolygons") && require(sp)) {
+		pol = getSpPpolygonsSlot(newdata)
 		if (length(pol) != nrow(raw$locations))
 			stop("polygons and center points length mismatch")
 		block = matrix(NA, 0, 2)
-		nd = as(newdata, "SpatialRings")
+		nd = as(newdata, "SpatialPolygons")
 		block.cols = rep(as.numeric(NA), length(pol))
 		for (i in seq(along = pol)) {
 			sps.args$x = nd[i]
@@ -142,8 +142,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	if (use.sdf) {
 		coordinates(ret) = dimnames(raw$locations)[[2]]
 		gridded(ret) = gridded(newdata)
-	} else if (is(newdata, "SpatialRings"))
-		ret = SpatialRingsDataFrame(as(newdata, "SpatialRings"), ret,
+	} else if (is(newdata, "SpatialPolygons"))
+		ret = SpatialPolygonsDataFrame(as(newdata, "SpatialPolygons"), ret,
 			match.ID = FALSE)
 	return(ret)
 }

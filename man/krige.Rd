@@ -1,5 +1,6 @@
 \name{krige}
 \alias{krige}
+\alias{idw}
 \title{ Simple, Ordinary or Universal, global or local, Point or Block Kriging,
 or simulation. }
 \description{
@@ -7,11 +8,15 @@ Function for simple, ordinary or universal kriging (sometimes called
 external drift kriging), kriging in a local neighbourhood, point kriging
 or kriging of block mean values (rectangular or irregular blocks), and
 conditional (Gaussian or indicator) simulation equivalents for all kriging
-varieties. For multivariable prediction, see \link{gstat} and \link{predict.gstat}
+varieties, and function for inverse distance weighted interpolation. 
+For multivariable prediction, see \link{gstat} and \link{predict.gstat}
 }
-\usage{krige(formula, locations, data, newdata, model, ..., beta, nmax = Inf, 
-nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
-na.action = na.pass) }
+\usage{krige(formula, locations, data, newdata, model, ..., beta, nmax
+= Inf, nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
+na.action = na.pass)
+idw(formula, locations, data, newdata, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0),
+na.action = na.pass, idp = 2.0)
+}
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear
   model of independent variables; suppose the dependent variable has name
@@ -61,14 +66,19 @@ na.action = na.pass) }
   values in 'newdata'.  The default is to predict 'NA'.  Missing values 
   in coordinates and predictors are both dealt with. }
  \item{\dots}{ other arguments that will be passed to \link{gstat}}
+ \item{idp}{numeric; specify the inverse distance weighting power}
 }
 \details{
-This function is a simple wrapper function around \link{gstat} and
-\link{predict.gstat} for univariate kriging prediction and conditional
+Function \code{krige} is a simple wrapper function around \link{gstat}
+and \link{predict.gstat} for univariate kriging prediction and conditional
 simulation methods available in gstat. For multivariate prediction or
 simulation, or for other interpolation methods provided by gstat (such as
 inverse distance weighted interpolation or trend surface interpolation)
 use the functions \link{gstat} and \link{predict.gstat} directly.
+
+Function \code{idw} performs just as \code{krige} without a model being
+passed, but allows direct specification of the inverse distance weighting
+power. Don't use with predictors in the formula.
 
 For further details, see \link{predict.gstat}.
 }
