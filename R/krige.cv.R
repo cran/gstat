@@ -6,7 +6,7 @@
 		data = locations
 		locations = coordinates(data)
 	}
-	nc = 2 + length(attr(terms(~x+y),"term.labels"))
+	nc = 2 + length(attr(terms(locations), "term.labels"))
 	ret = data.frame(matrix(NA, nrow(data), nc))
 	if (nfold < nrow(data))
 		fold = sample(nfold, nrow(data), replace = TRUE)

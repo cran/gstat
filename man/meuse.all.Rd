@@ -1,6 +1,6 @@
-\name{meuse}
-\alias{meuse}
-\title{Meuse river data set}
+\name{meuse.all}
+\alias{meuse.all}
+\title{Meuse river data set -- original, full data set}
 \description{
 This data set gives locations and top soil heavy metal concentrations
 (ppm), along with a number of soil and landscape variables, collected in
@@ -11,6 +11,7 @@ x 15 m.
 \format{
   This data frame contains the following columns:
   \describe{
+    \item{sample}{sample number}
     \item{x}{a numeric vector; x-coordinate (m)
 	in RDM (Dutch topographical map coordinates) }
     \item{y}{a numeric vector; y-coordinate (m)
@@ -22,10 +23,6 @@ x 15 m.
 	\item{lead}{topsoil lead concentration, ppm. }
 	\item{zinc}{topsoil zinc concentration, ppm. } 
 	\item{elev}{relative elevation}
-	\item{dist}{distance to river Meuse; obtained from the nearest cell in
-	\link{meuse.grid}, which in turn was derived by a spread (spatial distance)
-	GIS operation, therefore it is accurate up to 20 metres; 
-	normalized $[0,1]$ }
 	\item{om}{organic matter, as percentage }
 	\item{ffreq}{flooding frequency class}
 	\item{soil}{soil type}
@@ -33,10 +30,15 @@ x 15 m.
 	\item{landuse}{landuse class}
 	\item{dist.m}{distance to river Meuse (metres), as obtained during
 	the field survey}
-  }
-}
+	\item{in.pit}{logical; indicates whether this is a sample taken in
+	a pit}
+	\item{in.meuse155}{logical; indicates whether the sample is part of
+	the \code{meuse} (i.e., filtered) data set; in addition to the samples
+	in a pit, an sample (139) with outlying zinc content was removed }
+  } 
+} 
 \usage{
-data(meuse)
+data(meuse.all)
 }
 \authors{ The actual field data were collected by Ruud van Rijn and
 Mathieu Rikken }
@@ -46,11 +48,14 @@ Systems. Oxford University Press.
 
 \url{http:/www.gstat.org/}
 }
-\note{ \code{Sample} refers to original sample number (9 of the original 164
-samples were discarded) }
-\seealso{\link{meuse.all}}
+\note{ \code{sample} refers to original sample number.  Eight samples
+were left out because they were not indicative for the metal content of
+the soil. They were taken in an old pit. One sample contains an outlying
+zinc value, which was also discarded for the meuse (155) data set.
+}
+\seealso{\link{meuse}}
 \keyword{datasets}
 \examples{
-data(meuse)
-summary(meuse)
+data(meuse.all)
+summary(meuse.all)
 }

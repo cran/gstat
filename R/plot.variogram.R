@@ -18,6 +18,8 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 	} 
     if (plot.numbers == TRUE) 
        	labels = as.character(x$np)
+    if (length(unique(x$dir.ver)) > 1 || any(x$dir.ver != 0))
+		warning("vertical directions are not dealt with -- yet!")
     if (length(unique(x$dir.hor)) > 1 && group.id == TRUE) { 
 	# directional, grouped:
         if (multipanel) {
@@ -29,7 +31,7 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 				xyplot(gamma ~ dist | as.factor(dir.hor), subscripts = TRUE, 
                 	panel = vgm.dir.panel.xyplot, data = x, xlim = xlim, 
                 	ylim = ylim, xlab = xlab, ylab = ylab, dir.hor = x$dir.hor, 
-                	labels = labels, model = model, ...)
+                	labels = labels, model = model, shift = shift, ...)
         } else { # univariate directional, using symbol/color to distinguish
             pch = as.integer(as.factor(x$dir.hor))
             xyplot(gamma ~ dist, data = x, type = c("p", "l"), 
@@ -46,31 +48,31 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 		}
         if (missing(scales)) 
             scales = list(y = list(relation = "free"))
-    	if (length(unique(x$dir.hor)) > 1) { # multiv., directional groups
+    	if (length(unique(x$dir.hor)) > 1) { # multiv.; directional groups
 			xyplot(gamma ~ dist | id, data = x, 
 				type = c("p", "l"), xlim = xlim, ylim = ylim, xlab = xlab, 
 				ylab = ylab, groups = as.factor(dir.hor), 
 				layout = c(n, n), skip = skip, scales = scales, ...)
-		} else { # non-directional, multivariable
+		} else { # non-multi-directional, multivariable
 			if (ylim.set) {
         		xyplot(gamma ~ dist | id, data = x, xlim = xlim, 
             		ylim = ylim, xlab = xlab, ylab = ylab, ids = ids, 
             		panel= xvgm.panel.xyplot, labels = labels, scales = scales, 
             		layout = c(n, n), skip = skip, prepanel = function(x, y) 
 					list(ylim = c(min(0, y), max(0, y))), model = model, 
-					shift = shift, ...)
+					direction = c(x$dir.hor[1], x$dir.ver[1]), shift = shift, ...)
 			} else {
         		xyplot(gamma ~ dist | id, data = x, xlim = xlim, 
             		xlab = xlab, ylab = ylab, ids = ids, 
             		panel =xvgm.panel.xyplot, labels = labels, scales = scales, 
             		layout = c(n, n), skip = skip, prepanel = function(x, 
                 		y) list(ylim = c(min(0, y), max(0, y))), 
-					model = model, shift = shift, ...)
+					model = model, direction = c(x$dir.hor[1], x$dir.ver[1]), 
+					shift = shift, ...)
 			}
 		}
-    } else  { # non-directional, univariable -- mostly used of all:
-		xyplot(gamma ~ dist, data = x, panel = vgm.panel.xyplot, 
-        xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, labels = labels, 
-        model = model, shift = shift, ...)
-	}
+    } else  # non multi-directional, univariable -- mostly used of all:
+		xyplot(gamma ~ dist, data = x, panel = vgm.panel.xyplot, xlim = xlim, 
+			ylim = ylim, xlab = xlab, ylab = ylab, labels = labels, model = model, 
+			direction = c(x$dir.hor[1], x$dir.ver[1]), shift = shift, ...)
 }

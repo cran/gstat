@@ -44,7 +44,9 @@ returns (or plots) the variogram plot
 \references{ \url{http://www.gstat.org}}
 \author{ Edzer J. Pebesma }
 \note{ currently, plotting models and/or point pair numbers is not
-supported when a variogram is both directional and multivariable. }
+supported when a variogram is both directional and multivariable; also,
+three-dimensional directional variograms will probably not be displayed
+correctly. }
 \seealso{
 \link{variogram},
 \link{fit.variogram}, 
