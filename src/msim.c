@@ -45,6 +45,7 @@
 #include "predict.h" /* n_pred_locs */
 #include "userio.h"
 #include "mapio.h"
+#include "lm.h"
 #include "gls.h"
 #include "sim.h"
 #include "msim.h"
@@ -536,14 +537,14 @@ void lhs(DATA **d, int n_vars, int stratify) {
 		lhsvar = (GRIDMAP **) emalloc((gl_n_marginals / 2) * sizeof(GRIDMAP *));
 		for (i = 0; i < gl_n_marginals / 2; i++) {
 			fname = string_dup(gl_marginal_names[i * 2]);
-			lhsmean[i] = new_map();
+			lhsmean[i] = new_map(READ_ONLY);
 			lhsmean[i]->filename = fname;
 			if ((lhsmean[i] = map_read(lhsmean[i])) == NULL)
 				ErrMsg(ER_READ, fname);
 			if (DEBUG_COV)
 				printlog("mean: %s, ", fname);
 			fname = string_dup(gl_marginal_names[i * 2 + 1]);
-			lhsvar[i] = new_map();
+			lhsvar[i] = new_map(READ_ONLY);
 			lhsvar[i]->filename = fname;
 			if ((lhsvar[i] = map_read(lhsvar[i])) == NULL)
 				ErrMsg(ER_READ, fname);
@@ -649,11 +650,7 @@ static void lhs_one(Double_index *list, unsigned int dim,
  	}
 
 	qsort((void *) list, (size_t) dim, sizeof(Double_index),
-		(int 
-#ifdef SPLUS6WIN32
-		__cdecl
-#endif
-		 (*)(const void *, const void *)) double_index_cmp);
+		(int CDECL (*)(const void *, const void *)) double_index_cmp);
 /* 
  * Get ranks -- after sorting row_Y on the ->d field,
  * row_Y[0].index,...,row_Y[gl_nsim-1].index contains the original
@@ -696,17 +693,18 @@ void setup_beta(DATA **d, int n_vars, int n_sim) {
 		for (j = 0; j < n_sim; j++)
 			beta[i][j] = (double *) emalloc(d[i]->n_X * sizeof(double));
 	}
-	printlog("drawing %d %s realisation%s of beta...\n", n_sim,
-			gl_mvbeta ? "multivariate" : "univariate",
-			n_sim > 1 ? "s" : "");
 	for (i = 0; i < n_vars; i++) {
 		if (d[i]->beta == NULL) /* push bogus values */
 			for (j = 0; j < d[i]->n_X; j++)
-				d[i]->beta = push_to_vector(-9999.9, d[i]->beta);
+				d[i]->beta = push_d_vector(-9999.9, d[i]->beta);
 		sum_n_X += d[i]->n_X;
 	}
+	printlog("drawing %d %s%s realisation%s of beta...\n", n_sim,
+		n_vars > 1 ? (gl_sim_beta == 0 ? "multivariate " : "univariate ") : "",
+		gl_sim_beta == 2 ? "OLS" : "GLS",
+		n_sim > 1 ? "s" : "");
 	is_pt = (int *) emalloc(sum_n_X * sizeof(int));
-	if (gl_mvbeta) {
+	if (gl_sim_beta == 0) {
 		est = make_gls_mv(d, n_vars);
 		for (j = 0; j < n_sim; j++) {
 			sim = cond_sim(est, sum_n_X, GSI, is_pt, 0); /* length sum_n_X */
@@ -725,7 +723,10 @@ void setup_beta(DATA **d, int n_vars, int n_sim) {
 		efree(est);
 	} else {
 		for (i = 0; i < n_vars; i++) {
-			est = make_gls(d[i], 0);
+			if (gl_sim_beta == 1)
+				est = make_gls(d[i], 0);
+			else /* gl_sim_beta == 2 */
+				est = make_ols(d[i]);
 			for (j = 0; j < n_sim; j++) {
 				sim = cond_sim(est, d[i]->n_X, GSI, is_pt, 0);
 				for (k = 0; k < d[i]->n_X; k++)
@@ -762,9 +763,8 @@ void set_beta(DATA **d, int sim, int n_vars, METHOD method) {
  	return;
 }
 
-#ifdef SIM_DOUBLE
-# error get_msim will not work with SIM_DOUBLE defined
-#endif
+#ifndef SIM_DOUBLE
 float ***get_msim(void) {
 	return msim;
 }
+#endif

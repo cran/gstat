@@ -23,12 +23,17 @@ x 15 m.
 	\item{lead}{topsoil lead concentration, ppm. }
 	\item{zinc}{topsoil zinc concentration, ppm. } 
 	\item{elev}{relative elevation}
-	\item{dist}{distance to river Meuse (m)}
+	\item{dist}{distance to river Meuse; obtained from the nearest cell in
+	\link{meuse.grid}, which in turn was derived by a spread (spatial distance)
+	GIS operation, therefore it is accurate up to 20 metres; 
+	normalized $[0,1]$ }
 	\item{om}{organic matter, as percentage }
 	\item{ffreq}{flooding frequency class}
 	\item{soil}{soil type}
 	\item{lime}{lime class}
 	\item{landuse}{landuse class}
+	\item{dist.m}{distance to river Meuse (metres), as obtained during
+	the field survey}
   }
 }
 \usage{

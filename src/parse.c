@@ -1304,9 +1304,9 @@ case 27:
 #line 181 "parse.y"
 { 
 			if (d == NULL)
-				sd_vector = push_to_vector(yyvsp[0].dval, sd_vector);
+				sd_vector = push_d_vector(yyvsp[0].dval, sd_vector);
 			else
-				d->beta = push_to_vector(yyvsp[0].dval, d->beta);
+				d->beta = push_d_vector(yyvsp[0].dval, d->beta);
 		}
     break;
 case 43:
@@ -2083,43 +2083,43 @@ static int is_data_expr(DATA *d, GSTAT_EXPR *expr, const char *fld) {
 #define TABLE_SIZE 32
 	GSTAT_EXPR data_options[TABLE_SIZE];
 	int i = 0;
-#define fill_table(n, p, w, l) \
+#define FILL_TABLE(n, p, w, l) \
  data_options[i].name = n; data_options[i].ptr = p; \
  data_options[i].what = w; data_options[i].limit = l; i++;
 
 /* set up table: */
-	fill_table("x",          &(d->colnx),        IS_INT, GTZERO  )
-	fill_table("y",          &(d->colny),        IS_INT, GTZERO  )
-	fill_table("z",          &(d->colnz),        IS_INT, GTZERO  )
-	fill_table("v",          &(d->colnvalue),    IS_INT, GTZERO  )
-	fill_table("V",          &(d->colnvariance), IS_INT, GTZERO  )
-	fill_table("d",          &(d->polynomial_degree), IS_INT, GEZERO  )
-	fill_table("max",        &(d->sel_max),      IS_INT, GEZERO  )
-	fill_table("omax",       &(d->oct_max),      IS_INT, GEZERO  )
-	fill_table("min",        &(d->sel_min),      IS_INT, GEZERO  )
-	fill_table("n$max",      &(d->init_max),     IS_INT, GEZERO  )
-	fill_table("togrid",     &(d->togrid),       IS_INT,  GEZERO )
-	fill_table("I",          &(d->Icutoff),      IS_REAL, NOLIMIT )
-	fill_table("mv",         &(d->mv),           IS_REAL, NOLIMIT )
-	fill_table("rad$ius",    &(d->sel_rad),      IS_REAL, GTZERO  )
-	fill_table("dX",         &(d->dX),           IS_REAL, GEZERO  )
-	fill_table("b$eta",      &(d->beta),         IS_D_VECTOR, NOLIMIT )
-	fill_table("stan$dard",  &(d->standard),     NO_ARG, NOLIMIT )
-	fill_table("log",        &(d->log),          NO_ARG, NOLIMIT )
-	fill_table("av$erage",   &(d->average),      NO_ARG, NOLIMIT )
-	fill_table("re$gion",    &(d->region),       NO_ARG, NOLIMIT )
-	fill_table("du$mmy",     &(d->dummy),        NO_ARG, NOLIMIT )
-	fill_table("res$idual",  &(d->calc_residuals), NO_ARG, NOLIMIT )
-	fill_table("vdist",      &(d->vdist),        NO_ARG, NOLIMIT )
-	fill_table("force",      &(d->force),        NO_ARG, NOLIMIT )
-	fill_table("Cat$egory",   &(d->Category),    IS_STRING, NOLIMIT )
-	fill_table("ID",         &(d->coln_id),      IS_INT, GTZERO  )
-	fill_table("VarF$unction", &(d->var_fn_str), IS_STRING, NOLIMIT  )
-	fill_table("nscore",     &(d->nscore_table), IS_STRING, NOLIMIT )
-	fill_table("every",      &(d->every),        IS_INT, GTZERO )
-	fill_table("offset",     &(d->offset),       IS_INT, NOLIMIT )
-	fill_table("prob",       &(d->prob),         IS_REAL, GTZERO )
-	fill_table(NULL, NULL, IS_INT, NOLIMIT )
+	FILL_TABLE("x",          &(d->colnx),        IS_INT, GTZERO  )
+	FILL_TABLE("y",          &(d->colny),        IS_INT, GTZERO  )
+	FILL_TABLE("z",          &(d->colnz),        IS_INT, GTZERO  )
+	FILL_TABLE("v",          &(d->colnvalue),    IS_INT, GTZERO  )
+	FILL_TABLE("V",          &(d->colnvariance), IS_INT, GTZERO  )
+	FILL_TABLE("d",          &(d->polynomial_degree), IS_INT, GEZERO  )
+	FILL_TABLE("max",        &(d->sel_max),      IS_INT, GEZERO  )
+	FILL_TABLE("omax",       &(d->oct_max),      IS_INT, GEZERO  )
+	FILL_TABLE("min",        &(d->sel_min),      IS_INT, GEZERO  )
+	FILL_TABLE("n$max",      &(d->init_max),     IS_INT, GEZERO  )
+	FILL_TABLE("togrid",     &(d->togrid),       IS_INT,  GEZERO )
+	FILL_TABLE("I",          &(d->Icutoff),      IS_REAL, NOLIMIT )
+	FILL_TABLE("mv",         &(d->mv),           IS_REAL, NOLIMIT )
+	FILL_TABLE("rad$ius",    &(d->sel_rad),      IS_REAL, GTZERO  )
+	FILL_TABLE("dX",         &(d->dX),           IS_REAL, GEZERO  )
+	FILL_TABLE("b$eta",      &(d->beta),         IS_D_VECTOR, NOLIMIT )
+	FILL_TABLE("stan$dard",  &(d->standard),     NO_ARG, NOLIMIT )
+	FILL_TABLE("log",        &(d->log),          NO_ARG, NOLIMIT )
+	FILL_TABLE("av$erage",   &(d->average),      NO_ARG, NOLIMIT )
+	FILL_TABLE("re$gion",    &(d->region),       NO_ARG, NOLIMIT )
+	FILL_TABLE("du$mmy",     &(d->dummy),        NO_ARG, NOLIMIT )
+	FILL_TABLE("res$idual",  &(d->calc_residuals), NO_ARG, NOLIMIT )
+	FILL_TABLE("vdist",      &(d->vdist),        NO_ARG, NOLIMIT )
+	FILL_TABLE("force",      &(d->force),        NO_ARG, NOLIMIT )
+	FILL_TABLE("Cat$egory",   &(d->Category),    IS_STRING, NOLIMIT )
+	FILL_TABLE("ID",         &(d->coln_id),      IS_INT, GTZERO  )
+	FILL_TABLE("VarF$unction", &(d->var_fn_str), IS_STRING, NOLIMIT  )
+	FILL_TABLE("nscore",     &(d->nscore_table), IS_STRING, NOLIMIT )
+	FILL_TABLE("every",      &(d->every),        IS_INT, GTZERO )
+	FILL_TABLE("offset",     &(d->offset),       IS_INT, NOLIMIT )
+	FILL_TABLE("prob",       &(d->prob),         IS_REAL, GTZERO )
+	FILL_TABLE(NULL, NULL, IS_INT, NOLIMIT )
 
 /* check TABLE_SIZE was set correctly... */
 	assert(i == TABLE_SIZE); 
@@ -2160,7 +2160,7 @@ static int is_data_expr(DATA *d, GSTAT_EXPR *expr, const char *fld) {
 		pr_warning("use `v' instead of `c' in data definition");
 	} else if (almost_equals(fld, "sk_mean")) { /* move it to beta: */
 		d->beta = NULL;
-		d->beta = push_to_vector(-9999.0, d->beta);
+		d->beta = push_d_vector(-9999.0, d->beta);
 		expr->ptr = &(d->beta->val[0]);
 		expr->what = IS_REAL; 
 		expr->limit = NOLIMIT;
@@ -2201,7 +2201,7 @@ static int is_set_expr(GSTAT_EXPR *expr, const char *name) {
 	{ "j$graph",        &gl_jgraph,       IS_INT,  GEZERO  },
 	{ "lhs",            &gl_lhs,          IS_INT,  GEZERO  },
 	{ "log$file",       &logfile_name,    IS_STRING, NOLIMIT },
-	{ "mvbeta",   		&gl_mvbeta,       IS_INT, GEZERO },
+	{ "sim_beta",  		&gl_sim_beta,     IS_INT, GEZERO },
 	{ "mv$string",		&gl_mv_string,    IS_STRING, NOLIMIT },
 	{ "n_uk",           &gl_n_uk,         IS_INT,  GEZERO  },
 	{ "numbers",        &gl_numbers,      IS_INT,  GEZERO  },
@@ -2212,7 +2212,8 @@ static int is_set_expr(GSTAT_EXPR *expr, const char *name) {
 	{ "or$der",         &gl_order,        IS_INT,  GEZERO },
 	{ "pag$er",         &gl_pager,        IS_STRING, NOLIMIT },
 	{ "pl$otfile",      &gl_plotfile,     IS_STRING, NOLIMIT },
-	{ "q$uantile",      &gl_quantile,     IS_REAL, GTZERO  },
+	{ "q$uantile",      &gl_quantile,     IS_REAL, GEZERO  },
+	{ "rowwise",        &gl_rowwise,      IS_INT,  GEZERO  },
 	{ "rp",             &gl_rp,           IS_INT,  GEZERO  },
 	{ "sec$ure",        &gl_secure,       IS_INT,  GTZERO  },
 	{ "see$d",          &gl_seed,         IS_INT,  GTZERO  },
@@ -2442,6 +2443,10 @@ static void verify_data(DATA *d) { /* declaration : contents */
 	if (d->var_fn_str != NULL) {
 		if (almost_equals(d->var_fn_str, "mu"))
 			d->variance_fn = v_mu;
+		else if (almost_equals(d->var_fn_str, "mu^2"))
+			d->variance_fn = v_bin;
+		else if (almost_equals(d->var_fn_str, "mu^3"))
+			d->variance_fn = v_bin;
 		else if (almost_equals(d->var_fn_str, "mu(1-mu)"))
 			d->variance_fn = v_bin;
 		else if (almost_equals(d->var_fn_str, "identity"))

@@ -851,11 +851,7 @@ void save_strcat(STRING_BUFFER *dest, const char *src) {
 	dest->str = strcat(dest->str, src);
 }
 
-int 
-#ifdef SPLUS6WIN32
-__cdecl
-#endif
-double_index_cmp(const Double_index *a, const Double_index *b) {
+int CDECL double_index_cmp(const Double_index *a, const Double_index *b) {
 /* ANSI-qsort() conformant Double_index comparison function: sort on field d */
 	if (a->d < b->d)
 		return -1;
@@ -866,12 +862,23 @@ double_index_cmp(const Double_index *a, const Double_index *b) {
 
 int grass(void) {
 	static int gisinit = 0;
+	int env, lock;
+	char *str, *home;
 
 	if (gisinit == 1) /* been here before... */
 		return gisinit;
 
-	if ((getenv("LOCATION") || getenv("LOCATION_NAME"))&& 
-					getenv("GISDBASE") && getenv("MAPSET")) {
+	env = ((getenv("LOCATION") || getenv("LOCATION_NAME"))&& 
+					getenv("GISDBASE") && getenv("MAPSET"));
+	home = getenv("HOME");
+	if (home == NULL)
+		home = "";
+	str = (char *) emalloc(strlen(home) + 20);
+	str[0] = '\0';
+	strcat(str, home);
+	strcat(str, "/.gislock5");
+	lock = file_exists(str);
+	if (env || lock) {
 #ifdef HAVE_LIBGIS
 		if (gisinit == 0) {
 			G_gisinit("gstat");
@@ -881,5 +888,6 @@ int grass(void) {
 		pr_warning("this version of gstat was not compiled with grass support");
 #endif
 	}
+	efree(str);
 	return gisinit;
 }

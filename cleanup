@@ -1,4 +1,2 @@
-rm -f src/*.o src/gstat.so
-rm -f makefile src/makefile src/config.h src/machine.h
-rm -f config.status config.log config.cache
-rm -f macheps maxint
+rm -f src/*.o src/gstat.so makefile src/makefile src/config.h \
+	src/machine.h config.status config.log config.cache macheps maxint

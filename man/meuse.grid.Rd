@@ -12,7 +12,9 @@ a grid with 40 m x 40 m spacing that covers the Meuse Study area
   \describe{
     \item{x}{a numeric vector; x-coordinate (see \link{meuse}) }
     \item{y}{a numeric vector; y-coordinate (see \link{meuse}) }
-	\item{dist}{distance to the Meuse river}
+	\item{dist}{distance to the Meuse river; obtained by a spread
+	(spatial distance) GIS operation, from border of river; normalized to
+	$[0,1]$ }
 	\item{part.a}{arbitrary division of the area in two areas, a and b}
 	\item{part.b}{see \code{part.a}}
   }

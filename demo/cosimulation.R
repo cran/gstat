@@ -55,4 +55,3 @@ plot(x, model = meuse.fit)
 
 z <- predict(meuse.fit, newdata = meuse.grid, nsim = 2, indicators = TRUE)
 levelplot(z~x+y|name, map.to.lev(z, z=c(3:20)), aspect = mapasp(z))
-rm(z, meuse.fit, x, meuse.i, q)

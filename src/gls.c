@@ -597,6 +597,9 @@ static void debug_result(VEC *blup, MAT *MSPE, enum GLS_WHAT pred) {
 }
 
 double *make_gls(DATA *d, int calc_residuals) {
+/* 
+ * if calc_residuals == 0, return value is allocated, but not freed 
+ */
 	int i, j, size;
 	double *est = NULL;
 	DATA **data;
@@ -645,6 +648,9 @@ double *make_gls(DATA *d, int calc_residuals) {
 }
 
 double *make_gls_mv(DATA **d, int n_vars) {
+/* 
+ * allocates memory for est (return value) but does not free it 
+ */
 	int i, j, sum_X, index, size = 0;
 	double *est = NULL;
 	GLM *glm;
@@ -675,6 +681,7 @@ double *make_gls_mv(DATA **d, int n_vars) {
 		}
 	}
 	gls(NULL, 0, GLS_INIT, NULL, NULL);
+	efree(where.X);
 	return est;
 }
 

@@ -79,41 +79,24 @@ void report_xvalid(double *xdata, double *xpred, double *xdiff, double *xstd,
 	/* select not missing values, put mv's at the end: */
 	/* sorting arrays: */
 	qsort(xdata, (size_t) ndata, sizeof(double), 
-			(int 
-#ifdef SPLUS6WIN32
-			__cdecl
-#endif
-			 (*)(const void *,const void *)) compare);
+			(int CDECL (*)(const void *,const void *)) compare);
 	while (!is_mv_double(&(xdata[nXdata])) && nXdata < ndata)
 		nXdata++;
 	qsort(xpred, (size_t) ndata, sizeof(double), 
-			(int 
-#ifdef SPLUS6WIN32
-			__cdecl
-#endif
-			 (*)(const void *,const void *)) compare);
+			(int CDECL (*)(const void *,const void *)) compare);
 	while (!is_mv_double(&(xpred[nXpred])) && nXpred < ndata)
 		nXpred++;
-	qsort(xdiff, (size_t) ndata, sizeof(double), (int 
-#ifdef SPLUS6WIN32
-			__cdecl
-#endif
-			(*)(const void *,const void *)) compare);
+	qsort(xdiff, (size_t) ndata, sizeof(double), 
+			(int CDECL (*)(const void *,const void *)) compare);
 	while (!is_mv_double(&(xdiff[nXdiff])) && nXdiff < ndata)
 		nXdiff++;
 	if (var) { /* do everything for xstd and xzscore */
-		qsort(xstd, (size_t) ndata, sizeof(double), (int 
-#ifdef SPLUS6WIN32
-			__cdecl
-#endif
-			(*)(const void *,const void *)) compare);
+		qsort(xstd, (size_t) ndata, sizeof(double), 
+			(int CDECL (*)(const void *,const void *)) compare);
 		while ((! is_mv_double(&(xstd[n_std]))) && (n_std < ndata))
 			n_std++;
-		qsort(xzscore, (size_t) ndata, sizeof(double), (int 
-#ifdef SPLUS6WIN32
-			__cdecl
-#endif
-			(*)(const void *,const void *)) compare);
+		qsort(xzscore, (size_t) ndata, sizeof(double), 
+			(int CDECL (*)(const void *,const void *)) compare);
 		while ((! is_mv_double(&(xzscore[nZscore]))) && (nZscore < ndata))
 			nZscore++;
 	}
@@ -225,11 +208,7 @@ void report_xvalid(double *xdata, double *xpred, double *xdiff, double *xstd,
 	return;
 }
 
-int 
-#ifdef SPLUS6WIN32
-__cdecl
-#endif
-compare(const double *a, const double *b) 
+int CDECL compare(const double *a, const double *b) 
 /* ansi conformant qsort cmp, puts mv's at the end */
 {
 	if (is_mv_double(a)) /* a is bigger */

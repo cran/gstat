@@ -98,7 +98,7 @@ typedef struct {
 	char 	*descr, *fname, *fname2; /* descript. and sample variogram (maps) */
 	int 	n_models, max_n_models, n_fit, id, id1, id2,
 			block_semivariance_set, block_covariance_set, isotropic,
-			is_valid_covariance;
+			is_valid_covariance, fit_is_singular;
 	VGM_MODEL *part;			/* the basic models */
 	double	block_semivariance,	/* average within-block semivariance */
 			block_covariance,	/* average within-block covariance */

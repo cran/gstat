@@ -3,8 +3,6 @@ AC_INIT(./src/s.c)
 
 AC_CONFIG_HEADER(src/config.h:src/config.hin src/machine.h:src/machine.hin)
 
-version=2.3.10
-AC_SUBST(version)
 DEBUG_FLAG="-g -Wall"
 
 dnl Checks for programs.
@@ -30,16 +28,10 @@ AC_HEADER_TIME
 dnl Checks for library functions:
 AC_FUNC_MEMCMP
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(strstr strtod strtol popen drand48 gettimeofday)
-
-dnl Add getopt.o to LIBOBJS if getopt is not found in a default lib:
-AC_REPLACE_FUNCS(getopt)
+AC_CHECK_FUNCS(strstr strtod strtol drand48 gettimeofday)
 
 dnl Checks for compiler characteristics (not suitable when cross compiling)
 AC_C_BIGENDIAN
-
-AC_SUBST(INCLUDES)
-AC_SUBST(DEBUG_FLAG)
 
 AC_SUBST(MESCHACH_TARGET)
 
@@ -112,4 +104,4 @@ AC_HAVE_FUNCS(bcopy bzero)
 LOCAL_HAVE_PROTOTYPES
 
 # process target files, apart from the config.h files:
-AC_OUTPUT(makefile src/makefile)
+AC_OUTPUT(makefile)

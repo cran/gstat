@@ -10,7 +10,7 @@ unconditional Gaussian or indicator simulation equivalents.  }
 \usage{
 gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
 	maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, 
-	variance = "identity")
+	variance = "identity", weights = NULL)
 print.gstat(x, ...)
 }
 \arguments{
@@ -51,8 +51,10 @@ print.gstat(x, ...)
   \item{fill.all}{ logical; if TRUE, fill all of the variogram and cross
   variogram model slots in \code{g} with the given variogram model }
   \item{variance}{ character; variance function to transform to non-stationary
-  covariances; "identity" does not transform, other options are "mu" (poisson)
-  and "mu(1-mu)" (binomial) }
+  covariances; "identity" does not transform, other options are "mu" (Poisson)
+  and "mu(1-mu)" (Binomial) }
+  \item{weights}{ numeric vector; if present, weights passed to OLS 
+  prediction routines (covariates are present, variograms are missing) }
   \item{...}{ arguments that are passed to the printing of the variogram
   models only}
 }

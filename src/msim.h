@@ -9,5 +9,7 @@ void init_simulations(DATA **d);
 void set_beta(DATA **d, int sim, int n_vars, METHOD method);
 void setup_beta(DATA **d, int n_vars, int n_sim);
 void print_sim(void);
-float ***get_msim(void);
 void free_simulations(void);
+#ifndef SIM_DOUBLE
+float ***get_msim(void);
+#endif

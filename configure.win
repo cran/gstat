@@ -1,0 +1,7 @@
+# configure script for compiling gstat R package for Win32.
+# Assumes that the `cp' and `rm' programs exist.
+# Mon Jun 23 15:57:06 CEST 2003
+
+cp src/config.w32  src/config.h
+cp src/machine.w32 src/machine.h
+rm -f src/lex.l src/parse.y

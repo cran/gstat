@@ -5,8 +5,8 @@
 Function for simple, ordinary or universal kriging (sometimes called
 external drift kriging), kriging in a local neighbourhood, point kriging
 or kriging of block mean values (rectangular or irregular blocks), and
-conditional (Gaussian or indicator) simulation equivalents for all kriging 
-variaties.
+conditional (Gaussian or indicator) simulation equivalents for all kriging
+varieties.
 }
 \usage{ krige(formula, locations, data, newdata, model, beta, nmax = Inf,
 maxdist = Inf, block, nsim = 0, indicators = FALSE, ...) }

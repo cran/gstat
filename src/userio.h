@@ -30,7 +30,7 @@ enum Gstat_errno {
 };
 
 #define MAX_ERRNO 20
-const char *error_messages[MAX_ERRNO+1];
+extern const char *error_messages[MAX_ERRNO+1];
 void message(char *fmt, ...);  /* message() calls always preceed ErrMsg() */
 #define ErrMsg(a,b) gstat_error(__FILE__,__LINE__,a,b)
 void gstat_error(char *fname, int line, 

@@ -399,8 +399,7 @@ int is_valid_strata_map(const char *name, int n_vars) {
 	GRIDMAP *mp;
 	int check_failed = 1;
 
-	mp = new_map();
-	mp->is_write = 0;
+	mp = new_map(READ_ONLY);
 	mp->filename = name;
 	if ((mp = map_read(mp)) == NULL)
 		ErrMsg(ER_READ, name);
@@ -452,9 +451,8 @@ static GRIDMAP *check_open(const char *name, int i) {
 	GRIDMAP *mask;
 	unsigned int r, c;
 
-	mask = new_map();
+	mask = new_map(READ_ONLY);
 	mask->filename = name;
-	mask->is_write = 0;
 	if ((mask = map_read(mask)) == NULL)
 		ErrMsg(ER_READ, name);
 	if (i == 0) {

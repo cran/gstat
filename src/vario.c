@@ -157,6 +157,7 @@ VARIOGRAM *init_variogram(VARIOGRAM *v) {
 	v->is_valid_covariance = 1;
 	v->isotropic = 1;
 	v->n_fit = 0;
+	v->fit_is_singular = 0;
 	v->descr = v->fname = v->fname2 = (char *) NULL;
 	v->max_range = (double) DBL_MIN;
 	v->sum_sills = 0.0;
@@ -688,8 +689,15 @@ double transform_norm(const ANIS_TM *tm, double dx, double dy, double dz) {
 }
 
 double da_general(VGM_MODEL *part, double h) {
-	double low, high, range, r[2] = { 0.0, 0.0 };
+	int i;
+	double low, high, range, r[NRANGEPARS];
 
+	for (i = 0; i < NRANGEPARS; i++) {
+		if (is_mv_double(&(part->range[i])))
+			set_mv_double(&(r[i]));
+		else
+			r[i] = part->range[i];
+	}
 	range = MAX(1e-20, part->range[0]);
 	r[0] = range * (1.0 + DA_DELTA);
 	low = part->fnct(h, r);

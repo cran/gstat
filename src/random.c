@@ -169,17 +169,8 @@ static void init_random(void) {
 	my_rng.r_normal = my_gsl_normal;
 	printlog("using the GSL random number generator\n");
 	return;
-#else
-# ifdef HAVE_DRAND48
-	sprintf(start_up, 
-		"using drand48() as random number generator, seed %lu\n", seed);
-	srand48(seed);
-	printlog("using drand48() as random number generator\n");
-	my_rng.r_unif = drand48;
-	my_rng.r_normal = my_normal;
-	return;
-# endif
 #endif
+
 	if (seed > 65536) {
 		a = seed << 16;
 		a = a >> 16;
@@ -192,6 +183,17 @@ static void init_random(void) {
 	my_rng.r_normal = my_normal;
 	printlog("using Marsaglia's random number generator\n");
 	return; 
+
+#ifdef USE_DRAND48 /* effectively outcommented */
+	sprintf(start_up, 
+		"using drand48() as random number generator, seed %lu\n", seed);
+	srand48(seed);
+	printlog("using drand48() as random number generator\n");
+	my_rng.r_unif = drand48;
+	my_rng.r_normal = my_normal;
+	return;
+#endif
+
 }
 
 /*
