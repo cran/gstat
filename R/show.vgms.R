@@ -48,12 +48,9 @@ function(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
 		lpoints(x[1],y[1])
 		llines(x[2:n],y[2:n])
 	}
-	if (!plot) { 
+	if (!plot)
 		dframe
-	} else { 
-		require(lattice)
+	else
 		xyplot(semivariance ~ distance | model, dframe, 
-			panel = vgm.panel,
-			as.table = TRUE)
-	}
+			panel = vgm.panel, as.table = TRUE)
 }

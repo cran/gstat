@@ -31,6 +31,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			tr = terms(d$locations)
 			if (is.null(d$beta) || length(d$beta) == 0)
 				stop("dummy data should have beta defined")
+			if (d$degree != 0)
+				stop("dummy data cannot have non-zero degree arg; use formula")
 			loc.dim = length(attr(tr, "term.labels"))
 			.Call("gstat_new_dummy_data", as.integer(loc.dim), 
 				as.integer(d$has.intercept), as.double(d$beta), 
@@ -46,7 +48,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			.Call("gstat_new_data", as.double(raw$y), as.double(raw$locations),
 				as.double(raw$X), as.integer(raw$has.intercept),
 				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
-				as.numeric(w), double(0)
+				as.numeric(w), double(0), as.integer(d$degree)
 				, PACKAGE = "gstat"
 			)
 		}

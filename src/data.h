@@ -314,6 +314,8 @@ double v_mu2(double mu);
 double v_mu3(double mu);
 double v_bin(double mu);
 double v_identity(double mu);
+void setup_polynomial_X(DATA *d);
+void calc_polynomial_point(DATA *d, DPOINT *pt);
 
 #if defined(__cplusplus)
 }

@@ -1,5 +1,5 @@
 "fit.variogram.reml" <-
-function (formula, locations, data, model, debug.level = 1, set)
+function (formula, locations, data, model, debug.level = 1, set, degree = 0)
 {
     if (missing(formula)) 
         stop("nothing to fit to")
@@ -19,7 +19,7 @@ function (formula, locations, data, model, debug.level = 1, set)
     .Call("gstat_new_data", as.double(ret$y), as.double(ret$locations),
 		as.double(ret$X), as.integer(1), double(0), as.integer(-1), 
 		as.integer(0), as.double(-1), as.integer(1), 
-		double(0), double(0)
+		double(0), double(0), as.integer(degree)
 		, PACKAGE = "gstat"
 		)
     load.variogram.model(model)

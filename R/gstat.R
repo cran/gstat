@@ -24,7 +24,7 @@ try.gridparameters <- function(data) {
 function (g, id, formula, locations = try.coordinates(data), 
 	data = NULL, model = NULL, beta, nmax = Inf, nmin = 0, maxdist = Inf, 
 	dummy = FALSE, set, fill.all = FALSE, fill.cross = TRUE, 
-	variance = "identity", weights = NULL, merge) 
+	variance = "identity", weights = NULL, merge, degree = 0) 
 {
 	call = match.call()
 	if (has.coordinates(locations)) { # shift arguments:
@@ -88,7 +88,7 @@ function (g, id, formula, locations = try.coordinates(data),
     g$data[[id]] = list(formula = formula, locations = locations, 
         data = data, has.intercept = attr(terms(formula), "intercept"),
 		beta = beta, nmax = nmax, nmin = nmin, maxdist = maxdist, 
-		dummy = dummy, vfn = vfn, weights = weights)
+		dummy = dummy, vfn = vfn, weights = weights, degree = degree)
     g$model[[id]] = model
     if (!missing(set)) {
         if (!is.list(set)) 

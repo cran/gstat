@@ -13,12 +13,12 @@
 	else
 		fold = 1:nrow(data)
 	for (i in sort(unique(fold))) {
-		sel = (1:nrow(data))[fold == i]
+		sel = which(fold == i)
     	g = gstat(formula = formula, locations = locations, model = model, 
-			data = data[-sel,], beta = beta, nmax = nmax, nmin = nmin,
+			data = data[-sel, ], beta = beta, nmax = nmax, nmin = nmin,
 			maxdist = maxdist, ...)
-    	x = predict.gstat(g, newdata = data[sel,])
-    	ret[sel,] = x
+    	x = predict.gstat(g, newdata = data[sel, ])
+    	ret[sel, ] = x
 		if (verbose)
 			print(paste("fold", i))
 	}

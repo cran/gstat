@@ -12,7 +12,7 @@ gstat object can be subsetted. }
 \usage{
 gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
 	nmin = 0, maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, 
-	fill.cross = TRUE, variance = "identity", weights = NULL, merge)
+	fill.cross = TRUE, variance = "identity", weights = NULL, merge, degree = 0)
 print.gstat(x, ...)
 }
 \arguments{
@@ -78,6 +78,7 @@ print.gstat(x, ...)
   each element a character vector of length 4, in the form 
   \code{c("id1", 1,"id2", 2)}. This merges the first parameter 
   for variable \code{id1} to the second of variable \code{id2}.}
+  \item{degree}{order of trend surface in the location, between 0 and 3}
   \item{...}{ arguments that are passed to the printing of variogram
   models only}
 }

@@ -15,6 +15,8 @@ function (object, ...) {
 		X[[i]] = raw$X
 		beta[[i]] = raw$beta
 		grid[[i]] = raw$grid
+		if (d$degree != 0)
+			stop("degree != 0: residual variograms wrt coord trend using degree not supported")
 	}
 	names(y) = names(locations) = names(X) = names(object$data)
 	# call variogram.default() next:

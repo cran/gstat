@@ -1,8 +1,6 @@
 "select.spatial" <-
-function(x = data$x, y = data$y, data, pch = "+") {
-	require(MASS)
-	eqscplot(x, y, pch = pch)
-	pol = locator(n = 512, type = "o")
-	sel = 1:length(x)
-	sel[point.in.polygon(x, y, pol$x, pol$y)]
+function(x = data$x, y = data$y, data, pch = "+", n = 512) {
+	plot(x, y, pch = pch, asp = 1)
+	pol = locator(n = n, type = "o")
+	which(point.in.polygon(x, y, pol$x, pol$y))
 }
