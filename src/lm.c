@@ -55,21 +55,12 @@ void pred_lm(DATA **data, int n_vars, DPOINT *where, double *est) {
 	LM *lm;
 	static MAT *X0 = MNULL;
 
-	for (i = 0; i < n_vars; i++) {
-		set_mv_double(&(est[2 * i]));
-		set_mv_double(&(est[2 * i + 1]));
-	}
-
-	if (n_vars == 1 && data[0]->n_sel == 0)
-		return; /* CW hook */
-
 	global = 1;
 	while (global && i < n_vars) {
 		if (data[i]->sel != data[i]->list) /* local selection */
 			global = 0; /* and jump out of this loop */
 		i++;
 	}
-
 	if (data[0]->lm == NULL || !global) {
 		create_lm(data, n_vars);
 		if (DEBUG_FIT) {
@@ -79,9 +70,14 @@ void pred_lm(DATA **data, int n_vars, DPOINT *where, double *est) {
 		} 
 	} 
 	lm = (LM *) data[0]->lm;
-	if (lm != NULL && lm->is_singular) {
-		pr_warning("singular X matrix at x[%g], y[%g], z[%g]:",
-		where->x, where->y, where->z);
+	if (lm == NULL || lm->y->dim == 0 || lm->is_singular) {
+		for (i = 0; i < n_vars; i++) {
+			set_mv_double(&(est[2 * i]));
+			set_mv_double(&(est[2 * i + 1]));
+		}
+		if (lm && lm->is_singular)
+			pr_warning("singular X matrix at x[%g], y[%g], z[%g]:",
+			where->x, where->y, where->z);
 	} else {
 		X0 = get_X0(data, X0, where, n_vars);
 		if (DEBUG_COV) {

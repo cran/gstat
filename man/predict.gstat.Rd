@@ -7,7 +7,8 @@ cokriging, point- or block-kriging, and conditional simulation equivalents
 for each of the kriging methods.  }
 \usage{
 predict.gstat(object, newdata, block = numeric(0), nsim = 0, 
-	indicators = FALSE, BLUE = FALSE, debug.level = 1, mask, ...)
+	indicators = FALSE, BLUE = FALSE, debug.level = 1, mask, 
+	na.action = na.pass, ...)
 }
 \arguments{
 \item{object}{ object of class \code{gstat}, see \link{gstat} and
@@ -30,18 +31,22 @@ predict.gstat(object, newdata, block = numeric(0), nsim = 0,
 \item{BLUE}{ logical; if TRUE return the BLUE trend estimates only, 
 if FALSE return the BLUP predictions (kriging) }
 \item{debug.level}{ integer; set gstat internal debug level }
-\item{mask}{ logical or numerical vector; pattern with valid values
+\item{mask}{ deprecated -- use na.action; 
+logical or numerical vector; pattern with valid values
 in newdata (marked as TRUE, non-zero, or non-NA); if mask is specified,
 the returned data frame will have the same number and order of rows 
 in newdata, and masked rows will be filled with NA's. }
-\item{...}{ (ignored; but necessary for the generic/method consistency) }
+\item{na.action}{ function determining what should be done with missing
+values in 'newdata'.  The default is to predict 'NA'.  Missing values 
+in coordinates and predictors are both dealt with. }
+\item{...}{ ignored (but necessary for the S3 generic/method consistency) }
 }
 
 \details{ When a non-stationary (i.e., non-constant) mean is used, both
 for simulation and prediction purposes the variogram model defined should
 be that of the residual process, and not that of the raw observations.
 
-The algorirthm used by gstat for simulation random fields is the
+The algorithm used by gstat for simulation random fields is the
 sequential simulation algorithm. This algorithm scales well to large or
 very large fields (e.g., more than $10^6$ nodes). Its power lies in using
 only data and simulated values in a local neighbourhood to approximate the
@@ -65,7 +70,8 @@ gain in simulating 1000 fields in a single call to \link{predict.gstat},
 compared to 1000 calls, each for simulating a single field.
 
 The random number generator used for generating simulations is the native
-random number generator of the environment (R, S); setting seeds works.
+random number generator of the environment (R, S); fixing randomness by
+setting seeds with \code{set.seed()} therefore works.
 
 When mean coefficient are not supplied, they are generated as well from
 their conditional distribution (MVN, BLUE estimate and covariance);

@@ -19,7 +19,7 @@ function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges,
     n = names(g$data)
     for (i in 1:length(n)) {
         for (j in i:length(n)) {
-            name = ifelse(i == j, n[i], paste(n[i], n[j], sep = "."))
+            name = ifelse(i == j, n[i], cross.name(n[i], n[j]))
             x = v[v$id == name, ]
             if (nrow(x) == 0) 
                 stop(paste("variogram", name, "not present"))
@@ -36,8 +36,7 @@ function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges,
             psill = matrix(NA, nrow = length(n), ncol = length(n))
             for (i in 1:length(n)) {
                 for (j in i:length(n)) {
-                  name = ifelse(i == j, n[i], paste(n[i], n[j], 
-                    sep = "."))
+                  name = ifelse(i == j, n[i], cross.name(n[i], n[j]))
                   psill[i, j] = psill[j, i] = g$model[[name]][k, 
                     "psill"]
                 }
@@ -45,8 +44,7 @@ function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges,
             psill = posdef(psill)
             for (i in 1:length(n)) {
                 for (j in i:length(n)) {
-                  name = ifelse(i == j, n[i], paste(n[i], n[j], 
-                    sep = "."))
+                  name = ifelse(i == j, n[i], cross.name(n[i], n[j]))
                   g$model[[name]][k, "psill"] = psill[i, j]
                 }
             }

@@ -625,7 +625,7 @@ static int is_data_expr(DATA *d, GSTAT_EXPR *expr, const char *fld) {
 	FILL_TABLE("b$eta",      &(d->beta),         IS_D_VECTOR, NOLIMIT )
 	FILL_TABLE("stan$dard",  &(d->standard),     NO_ARG, NOLIMIT )
 	FILL_TABLE("log",        &(d->log),          NO_ARG, NOLIMIT )
-	FILL_TABLE("av$erage",   &(d->average),      NO_ARG, NOLIMIT )
+	FILL_TABLE("av$erage",   &(d->average),      IS_INT, GEZERO )
 	FILL_TABLE("re$gion",    &(d->region),       NO_ARG, NOLIMIT )
 	FILL_TABLE("du$mmy",     &(d->dummy),        NO_ARG, NOLIMIT )
 	FILL_TABLE("res$idual",  &(d->calc_residuals), NO_ARG, NOLIMIT )

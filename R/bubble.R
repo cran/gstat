@@ -1,7 +1,8 @@
 "bubble" <-
 function (data, xcol = 1, ycol = 2, zcol = 3, fill = TRUE, maxsize = 3, 
     do.sqrt = TRUE, pch, col = c(2, 3), key.entries = quantile(data[,zcol]),
-    ...) 
+	main = ifelse(is.numeric(zcol), names(data)[zcol], zcol),
+    identify = FALSE, ...) 
 {
     x = data[, xcol]
     y = data[, ycol]
@@ -17,14 +18,18 @@ function (data, xcol = 1, ycol = 2, zcol = 3, fill = TRUE, maxsize = 3,
     az = abs(z)
     q = abs(q)
     if (do.sqrt) {
-        az = sqrt(az)
-	q = sqrt(q)
+		az = sqrt(az)
+		q = sqrt(q)
     }
     cex = maxsize * az/max(az)
     q.cex = maxsize * q/max(az)
 
+    if (identify) {
+		plot(data[, xcol], data[, ycol], asp = 1, cex = cex, main = main, ...)
+		return(identify(data[, xcol], data[, ycol]))
+	} 
     key = list(space = "right", points = list(pch = q.pch, col = q.col, 
     	cex = q.cex), text = list(q.text))
-    xyplot(y ~ x, d, col = z.col, cex = cex, pch = pch, asp = mapasp(d), 
-        key = key, ...)
+	xyplot(y ~ x, d, col = z.col, cex = cex, pch = pch, asp = mapasp(d), 
+        key = key, main = main, ...)
 }

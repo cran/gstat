@@ -9,7 +9,8 @@ conditional (Gaussian or indicator) simulation equivalents for all kriging
 varieties.
 }
 \usage{ krige(formula, locations, data, newdata, model, beta, nmax = Inf,
-nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE, ...) }
+nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE, 
+na.action = na.pass, ...) }
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear
   model of independent variables; suppose the dependent variable has name
@@ -18,7 +19,9 @@ nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE, ...) }
   kriging, suppose \code{z} is linearly dependent on \code{x} and \code{y},
   use the formula \code{z~x+y}}
  \item{locations}{ formula with only independent variables that define the
-  spatial data locations (coordinates), e.g. \code{~x+y} }
+  spatial data locations (coordinates), e.g. \code{~x+y}; if \code{data}
+  is of class \code{spatial.data.frame}, this argument may be ignored, as
+  it can be derived from the data }
  \item{data}{ data frame; should contain the dependent variable, independent
   variables, and coordinates. }
  \item{newdata}{ data frame with prediction/simulation locations; should 
@@ -52,6 +55,9 @@ nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE, ...) }
   \code{indicators}), following a single random path through the data.  }
  \item{indicators}{ logical, only relevant if \code{nsim} is non-zero; if
   TRUE, use indicator simulation; else use Gaussian simulation }
+ \item{na.action}{ function determining what should be done with missing
+  values in 'newdata'.  The default is to predict 'NA'.  Missing values 
+  in coordinates and predictors are both dealt with. }
  \item{\dots}{ other arguments that will be passed to \link{gstat}}
 }
 \details{

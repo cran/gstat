@@ -35,7 +35,7 @@ function (x, ...)
     if (length(data.names) > 1) {
         for (j in 2:length(data.names)) {
             for (i in 1:(j - 1)) {
-                n = paste(data.names[i], data.names[j], sep = ".")
+                n = cross.name(data.names[i], data.names[j])
                 m = x$model[[n]]
                 if (!is.null(m)) {
                   xx = rbind(xx, m)

@@ -3,6 +3,8 @@ function (formula, locations, data = sys.frame(sys.parent()),
 	model = NULL, beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, 
 	nfold = nrow(data), verbose = TRUE, ...)
 {
+#	if (missing(locations) && inherits(data, "spatial.data.frame"))
+#		locations = sp.formula(data)
 	nc = 2 + length(attr(terms(~x+y),"term.labels"))
 	ret = data.frame(matrix(NA, nrow(data), nc))
 	if (nfold < nrow(data))

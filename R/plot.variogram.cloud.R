@@ -12,8 +12,11 @@ function (x, identify = FALSE, digitize = FALSE,
         	labs = paste(head, tail, sep = ",")
         	sel = identify(x$dist, x$gamma, labs)
 		} else {
+			print("mouse-left digitizes, mouse-right closes polygon")
 			poly = locator(n = 512, type = "l")
-			sel = point.in.polygon(x$dist, x$gamma, poly$x, poly$y)
+			if (!is.null(poly))
+				sel = point.in.polygon(x$dist, x$gamma, poly$x, poly$y)
+			else stop("digitized selection is empty")
 		}
         ret = data.frame(cbind(head, tail)[sel, ])
         class(ret) = c("point.pairs", "data.frame")

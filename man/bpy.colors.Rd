@@ -1,20 +1,22 @@
 \name{bpy.colors}
 \alias{bpy.colors}
-\title{ blue-pink-yellow color scheme }
+\title{ blue-pink-yellow color scheme that prints well on black/white printers }
 \description{ Create a vector of `n' ``contiguous'' colors.  }
-\usage{ bpy.colors(n) }
+\usage{ bpy.colors(n = 100, cutoff.tails = 0.1) }
 \arguments{
 \item{n}{number of colors (>= 1) to be in the palette}
+\item{cutoff.tails}{tail fraction to be cut off. This palette runs
+from black to white if \code{cutoff.tails} is 0; by cutting off 
+the tails, it runs from blue to yellow, which looks nicer. }
 }
 \value{ A character vector, `cv', of color names.  This can be used
 either to create a user-defined color palette for subsequent graphics
 by `palette(cv)', a `col=' specification in graphics functions or in
-`par'.  }
+`par'. }
 \references{ see url; gnuplot has this color map }
 \author{ unknown }
 \url{ http://www.ihe.uni-karlsruhe.de/mitarbeiter/vonhagen/palette.en.html }
-\note{ in contrast to e.g. rainbow, this color map prints well on 
-black-and-white printers. }
+\note{ This color map prints well on black-and-white printers. }
 \seealso{\link{rainbow}, \link{cm.colors}}
 \examples{
 bpy.colors(10)

@@ -1,16 +1,18 @@
 \name{gstat}
 \alias{gstat}
 \alias{print.gstat}
-\title{ Creates gstat Objects }
+\alias{"[.gstat"}
+\title{ Create gstat objects, or subset it }
 \description{
 Function that creates gstat objects; objects that hold all the information
 necessary for univariate or multivariate geostatistical prediction
 (simple, ordinary or universal (co)kriging), or its conditional or
-unconditional Gaussian or indicator simulation equivalents.  }
+unconditional Gaussian or indicator simulation equivalents. Multivariate
+gstat object can be subsetted. }
 \usage{
 gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
 	nmin = 0, maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, 
-	variance = "identity", weights = NULL)
+	fill.cross = TRUE, variance = "identity", weights = NULL)
 print.gstat(x, ...)
 }
 \arguments{
@@ -28,7 +30,9 @@ print.gstat(x, ...)
   kriging, suppose \code{z} is linearly dependent on \code{x} and \code{y},
   use the formula \code{z~x+y}}
   \item{locations}{ formula with only independent variables that define the
-  spatial data locations (coordinates), e.g. \code{~x+y} }
+  spatial data locations (coordinates), e.g. \code{~x+y}; if \code{data}
+  is of class \code{spatial.data.frame}, this argument may be ignored, as 
+  it can be derived from the data }
   \item{data}{ data frame; contains the dependent variable, independent
   variables, and locations. }
   \item{model}{ variogram model for this \code{id}; defined by a call to 
@@ -51,37 +55,47 @@ print.gstat(x, ...)
   \item{set}{ named list with optional parameters to be passed to
   gstat (only \code{set} commands of gstat are allowed; see gstat manual) }
   \item{x}{ gstat object to print }
-  \item{fill.all}{ logical; if TRUE, fill all of the variogram and cross
+  \item{fill.all}{ logical; if TRUE, fill all of the direct variogram and,
+  depending on the value of \code{fill.cross} also all cross
   variogram model slots in \code{g} with the given variogram model }
+  \item{fill.cross}{ logical; if TRUE, fill all of the cross variograms, if
+  FALSE fill only all direct variogram model slots in \code{g} with the 
+  given variogram model (only if \code{fill.all} is used)}
   \item{variance}{ character; variance function to transform to non-stationary
   covariances; "identity" does not transform, other options are "mu" (Poisson)
-  and "mu(1-mu)" (Binomial) }
+  and "mu(1-mu)" (binomial) }
   \item{weights}{ numeric vector; if present, weights passed to OLS 
   prediction routines (covariates are present, variograms are missing) }
   \item{...}{ arguments that are passed to the printing of the variogram
   models only}
 }
 \details{ to print the full contents of the object \code{g} returned,
-use \code{as.list(g)} }
+use \code{as.list(g)} or \code{print.default(g)} }
 \value{
 an object of class \code{gstat}, which inherits from \code{list}.
 Its components are: 
  \item{data}{list; each element is a list with the \code{formula}, 
-  \code{locations}, \code{data}, \code{nvars}, and \code{beta} for a 
+  \code{locations}, \code{data}, \code{nvars}, \code{beta}, etc., for a 
   variable}
  \item{model}{list; each element contains a variogram model; names are
   those of the elements of \code{data}; cross variograms have names of
   the pairs of data elements, separated by a \code{.} (e.g.: 
-  \code{var1.var2}}
+  \code{var1.var2}})
  \item{set}{list; named list, corresponding to set \code{name}=\code{value};
  gstat commands (look up the set command in the gstat manual for a full list)}
 }
 \references{ \url{http://www.gstat.org/} }
 \author{ Edzer J. Pebesma }
 \note{ 
-the function currently copies the data objects into the gstat object, so
+The function currently copies the data objects into the gstat object, so
 this may become a large object. I would like to copy only the name of the
 data frame, but could not get this to work. Any help is appreciated.  
+
+Subsetting (see examples) is done using the \code{id}'s of the variables,
+or using numeric subsets. Subsetted gstat objects only contain cross
+variograms if (i) the original gstat object contained them and (ii) the
+order of the subset indexes increases, numerically, or given the order
+they have in the gstat object.
 }
 
 
@@ -104,6 +118,11 @@ g <- gstat(g, id = c("ln.zinc", "ln.lead"), model = vgm(.47, "Sph", 900, .03))
 # examine fit:
 plot(variogram(g), model = g$model, main = "models fitted by eye")
 # see also demo(cokriging) for a more efficient approach
+g["ln.zinc"]
+g["ln.lead"]
+g[c("ln.zinc", "ln.lead")]
+g[1]
+g[2]
 
 # Inverse distance interpolation with inverse distance power set to .5:
 # (kriging variants need a variogram model to be specified)

@@ -675,8 +675,8 @@ static int read_arcgrid_header(GRIDMAP * m, FILE * f)
 
 	while (ok && get_line(&line_buf, &line_size, f) != NULL &&
 		   isalpha(*line_buf)) {
-		tok1 = strtok(line_buf, " \r");	/* first word */
-		tok2 = strtok(NULL, " \n\r");	/* second word */
+		tok1 = strtok(line_buf, " \t\n\r");	/* first word */
+		tok2 = strtok(NULL, " \t\n\r");	/* second word */
 		if (tok1 == NULL || tok2 == NULL) {
 			ok = 0;
 		} else if (string_casecmp(tok1, "ncols") == 0) {
@@ -1168,7 +1168,7 @@ static int read_ascii_grid(GRIDMAP * m, FILE * f, int first_line_in_buffer)
 		return 1;
 	do {
 		at_start = 1;			/* we're at a new line */
-		while (ok && (tok = strtok(at_start ? line_buf : NULL, " \n\r"))
+		while (ok && (tok = strtok(at_start ? line_buf : NULL, " \t\n\r"))
 			   != NULL) {
 			at_start = 0;
 			row = cells / m->cols;

@@ -230,11 +230,12 @@ static void write_ascii_header(FILE *out_file, DATA *data, int n_outfl) {
 	if (data->mode & X_BIT_SET) i++; 		/* xcoord */
 	if (data->mode & Y_BIT_SET) i++; 		/* ycoord */
 	if (data->mode & Z_BIT_SET) i++; 		/* zcoord */
+	if (data->mode & S_BIT_SET) i++;
 	if (data->colnvalue > 0) i++;	/* obs */
     if (data->point_ids) i++;
     
 	if (get_mode() == STRATIFY)
-		i+= 3;
+		i+= 2;
 	else
 		i+= n_outfl; 					/* est[0], .. , est[n_outfl-1]  */
 	if (data->type.type == DATA_EAS) {

@@ -7,6 +7,7 @@
 \alias{gstat.formula.predict}
 \alias{gstat.debug}
 \alias{gstat.set}
+\alias{cross.name}
 \alias{gstat.load.set}
 \alias{panel.point.pairs}
 

@@ -1,3 +1,0 @@
- \item{nmin}{ for local kriging: if the number of nearest observations
-  within distance \code{maxdist} is less than \code{nmin}, a missing 
-  value will be generated; see maxdist }

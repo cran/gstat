@@ -10,7 +10,7 @@ residual plots (xyplot wrapper)
 \usage{
 bubble(data, xcol = 1, ycol = 2, zcol = 3, fill = TRUE, maxsize = 3,
     do.sqrt = TRUE, pch, col = c(2,3), key.entries = quantile(data[,zcol]),
-    ...)
+    main, identify = FALSE, ...)
 }
 \arguments{
 \item{data}{ data frame from which x- and y-coordinate and z-variable are taken}
@@ -28,14 +28,19 @@ is proportional to the value of the z-variable; if FALSE, the symbol size
 is for negative values, second for positive values. }
 \item{key.entries}{ the values that will be plotted in the key; by default 
 the five quantiles min, q.25, median q.75, max }
-\item{...}{ arguments, passed to \code{xyplot}}
+\item{main}{ character; plot title }
+\item{identify}{ logical; if true, regular \code{plot} is called instead of
+\code{xyplot}, and followed by a call to \code{identify()}. }
+\item{...}{ arguments, passed to \code{xyplot}, or \code{plot} if 
+identification is required. }
 }
 \value{
-returns (or plots) the bubble plot
+returns (or plots) the bubble plot; if \code{identify} is TRUE, returns
+the indexes (row numbers) of identified points.
 }
 \references{ }
 \author{ Edzer J. Pebesma }
-\seealso{xyplot, \link{mapasp}}
+\seealso{\link{xyplot}, \link{mapasp}, \link{identify}}
 \examples{
 data(meuse)
 bubble(meuse, max = 2.5, main = "cadmium concentrations (ppm)", 

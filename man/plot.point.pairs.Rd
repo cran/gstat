@@ -8,7 +8,7 @@ Plot a point pairs, identified from a variogram cloud
 }
 \usage{
 plot.point.pairs(x, data, xcol = data$x, ycol = data$y, xlab = "x coordinate", 
-ylab = "y coordinate", ...) 
+ylab = "y coordinate", col.line = 2, ...) 
 }
 \arguments{
 \item{x}{ object of class "point.pairs", obtained from the function 
@@ -19,7 +19,8 @@ variogram cloud was calculated) }
 \item{ycol}{ numeric vector with y-coordinates of data }
 \item{xlab}{ x-axis label }
 \item{ylab}{ y-axis label }
-\item{...}{ arguments passed to \code{xyplot}}
+\item{col.line}{ color for lines connecting points }
+\item{...}{ arguments, further passed to \code{xyplot}}
 }
 \value{
 plots the data locations, with lines connecting the point pairs identified
@@ -31,11 +32,11 @@ plots the data locations, with lines connecting the point pairs identified
 \link{plot.variogram.cloud}
 }
 \examples{
+### The following requires interaction, and is therefore outcommented
 #data(meuse)
 #vgm1 <- variogram(log(zinc)~1, ~x+y, meuse, cloud = TRUE)
 #pp <- plot(vgm1, id = TRUE)
-# identify the point pairs
+### Identify the point pairs
 #plot(pp, data = meuse) # meuse has x and y as coordinates
 }
-
 \keyword{dplot}

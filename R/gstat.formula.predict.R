@@ -1,25 +1,27 @@
 "gstat.formula.predict" <-
-function (formula, locations, data) 
+function (formula, locations, newdata, na.action) 
 {
-    delete.resp.f <- function(x) {
-        f <- formula(x)
-        if (length(f) == 3) 
-            f[[2]] <- NULL
-        f
-    }
-    call = match.call()
-    X = model.matrix(delete.resp.f(formula), data = data)
-    m = match.call(expand = FALSE)
-    m$method = m$model = m$x = m$y = m$... = NULL
-    m$formula = m$locations
-    m$locations = NULL
-    m[[1]] = as.name("model.frame")
-    m = eval(m, sys.frame(sys.parent()))
-    Terms = attr(m, "terms")
-    attr(Terms, "intercept") = 0
-    # locations = model.matrix(locations, data = data)
-    locations = model.matrix(Terms, m)
-    if (nrow(X) == 1 && nrow(locations) > 1) 
-        X = as.matrix(rep(X, nrow(locations)))
-    list(locations = locations, X = X, call = call)
+	# resolve locations:
+	terms.l = terms(locations)
+    attr(terms.l, "intercept") = 0
+    mf.locs = model.frame(terms.l, newdata, na.action = na.action)
+    locs = model.matrix(terms.l, mf.locs)
+
+	# resolve formula:
+	terms.f = delete.response(terms(formula))
+    mf.f = model.frame(terms.f, newdata, na.action = na.action)
+    X = model.matrix(terms.f, mf.f)
+
+	if (NROW(locs) != NROW(X)) { 
+		# NA's were filtered in one, but not the other:
+		mf.locs = model.frame(terms.l, newdata, na.action = na.pass)
+    	mf.f =    model.frame(terms.f, newdata, na.action = na.pass)
+		valid.pattern = !(apply(cbind(mf.f, mf.locs), 1,
+			             function(x) any(is.na(x))))
+		X    = model.matrix(terms.f, mf.f   [valid.pattern, , drop = FALSE])
+		locs = model.matrix(terms.l, mf.locs[valid.pattern, , drop = FALSE])
+		if (NROW(locs) != NROW(X))
+			stop("NROW(locs) != NROW(X): this should not occur")
+	}
+    list(locations = as.matrix(locs), X = as.matrix(X))
 }
