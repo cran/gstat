@@ -18,24 +18,25 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 	} 
     if (plot.numbers == TRUE) 
        	labels = as.character(x$np)
-    if (length(unique(x$dir.hor)) > 1 && group.id == TRUE) { # directional
+    if (length(unique(x$dir.hor)) > 1 && group.id == TRUE) { 
+	# directional, grouped:
         if (multipanel) {
             if (length(levels(ids)) > 1) { # multivariate directional:
 				xyplot(gamma ~ dist | as.factor(dir.hor), data = x, 
 					type = c("p", "l"), xlim = xlim, ylim = ylim, xlab = xlab, 
 					ylab = ylab, groups = id, ...)
-			} else
+			} else # univariate directional, multipanel:
 				xyplot(gamma ~ dist | as.factor(dir.hor), subscripts = TRUE, 
                 	panel = vgm.dir.panel.xyplot, data = x, xlim = xlim, 
                 	ylim = ylim, xlab = xlab, ylab = ylab, dir.hor = x$dir.hor, 
                 	labels = labels, model = model, ...)
-        } else {
+        } else { # univariate directional, using symbol/color to distinguish
             pch = as.integer(as.factor(x$dir.hor))
             xyplot(gamma ~ dist, data = x, type = c("p", "l"), 
                 groups = pch, xlim = xlim, ylim = ylim, xlab = xlab, 
                 ylab = ylab, pch = pch, ...)
         }
-    } else if (length(unique(ids)) > 1) {
+    } else if (length(unique(ids)) > 1) { # multivariable:
         n = floor(sqrt(2 * length(unique(ids))))
 		if (missing(skip)) {
         	skip = NULL
@@ -45,12 +46,12 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 		}
         if (missing(scales)) 
             scales = list(y = list(relation = "free"))
-    	if (length(unique(x$dir.hor)) > 1 && group.id == FALSE) { # directional
+    	if (length(unique(x$dir.hor)) > 1) { # multiv., directional groups
 			xyplot(gamma ~ dist | id, data = x, 
 				type = c("p", "l"), xlim = xlim, ylim = ylim, xlab = xlab, 
 				ylab = ylab, groups = as.factor(dir.hor), 
 				layout = c(n, n), skip = skip, scales = scales, ...)
-		} else {
+		} else { # non-directional, multivariable
 			if (ylim.set) {
         		xyplot(gamma ~ dist | id, data = x, xlim = xlim, 
             		ylim = ylim, xlab = xlab, ylab = ylab, ids = ids, 
@@ -67,8 +68,9 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 					model = model, shift = shift, ...)
 			}
 		}
-    }
-    else xyplot(gamma ~ dist, data = x, panel = vgm.panel.xyplot, 
+    } else  { # non-directional, univariable -- mostly used of all:
+		xyplot(gamma ~ dist, data = x, panel = vgm.panel.xyplot, 
         xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, labels = labels, 
-        model = model, ...)
+        model = model, shift = shift, ...)
+	}
 }

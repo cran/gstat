@@ -25,3 +25,36 @@ gstat.load.set <- function(set) {
 	}
 	invisible()
 }
+
+gstat.load.merge <- function(obj) {
+	gstat.merge <- function(obj) {
+		ret = NULL
+		for (i in 1:length(obj$merge)) {
+			m = obj$merge[[i]]
+			if (is.character(m) && length(m) == 4) {
+				id = match(m[c(1,3)], names(obj$data)) - 1 # name ->> id
+				if (any(is.na(id)))
+					stop(paste("could not match all ids:", m[c(1,3)]))
+				col = as.integer(m[c(2,4)]) - 1
+				if (any(is.na(col)) || any(col < 0))
+					stop("merge: parameters should be positive integers")
+				str = paste("merge", id[1], "(", col[1], ") with", id[2], 
+						"(", col[2], ");")
+				ret = c(ret, str)
+			} else stop(
+				"list elements of merge should be lenght 4 character vectors")
+		}
+		ret
+	}
+
+	if (is.character(obj$merge) && length(obj$merge) == 2)
+		obj$merge = list(c(obj$merge[1], 1, obj$merge[2], 1))
+	if (is.list(obj$merge)) {
+		str = gstat.merge(obj)
+		ret = .C("Cload_gstat_command", str, as.integer(length(str)), 
+			as.integer(0), PACKAGE = "gstat")[[3]]
+		if (ret != 0)
+			stop(paste("error occured when parsing command:", str[ret]))
+	} else 
+		stop("merge argument should be list or character vector of lenght 2")
+}

@@ -2,7 +2,7 @@
 function (x, y, type = "p", pch = plot.symbol$pch, col, 
 	col.line = plot.line$col, col.symbol = plot.symbol$col, lty = 
 	plot.line$lty, cex = plot.symbol$cex, lwd = plot.line$lwd, 
-	model = model, labels, ...) 
+	model = model, labels, shift = shift, ...) 
 {
     x <- as.numeric(x)
     y <- as.numeric(y)
@@ -22,6 +22,6 @@ function (x, y, type = "p", pch = plot.symbol$pch, col,
                 lwd = lwd)
         }
 		if (!is.null(labels))
-			ltext(x = x + 0.03 * max(x), y = y, labels = labels)
+			ltext(x = x + shift * max(x), y = y, labels = labels)
     }
 }

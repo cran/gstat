@@ -8,7 +8,7 @@ Plot a point pairs, identified from a variogram cloud
 }
 \usage{
 plot.point.pairs(x, data, xcol = data$x, ycol = data$y, xlab = "x coordinate", 
-ylab = "y coordinate", col.line = 2, ...) 
+ylab = "y coordinate", col.line = 2, line.pch = 0, ...) 
 }
 \arguments{
 \item{x}{ object of class "point.pairs", obtained from the function 
@@ -20,6 +20,10 @@ variogram cloud was calculated) }
 \item{xlab}{ x-axis label }
 \item{ylab}{ y-axis label }
 \item{col.line}{ color for lines connecting points }
+\item{line.pch}{ if non-zero, symbols are also plotted at the middle of
+line segments, to mark lines too short to be visible on the plot;
+the color used is \code{col.line}; the value passed to this argument
+will be used as plotting symbol (pch) }
 \item{...}{ arguments, further passed to \code{xyplot}}
 }
 \value{

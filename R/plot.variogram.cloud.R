@@ -9,6 +9,7 @@ function (x, identify = FALSE, digitize = FALSE,
         head = floor(x$np/2^16) + 1
         tail = floor(x$np%%2^16) + 1
 		if (identify) {
+			print("mouse-left identifies, mouse-right stops")
         	labs = paste(head, tail, sep = ",")
         	sel = identify(x$dist, x$gamma, labs)
 		} else {

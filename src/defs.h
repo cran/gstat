@@ -29,7 +29,7 @@
 #endif
 
 #define GSTAT_NAME      "gstat"
-#define GSTAT_CR        "Copyright (C) 1992, 2003 Edzer J. Pebesma"
+#define GSTAT_CR        "Copyright (C) 1992, 2004 Edzer J. Pebesma"
 #define GSTAT_EMAIL     "e.pebesma@geog.uu.nl"
 #define GSTAT_INFO      "gstat-info@geog.uu.nl"
 #define GSTAT_ANNOUNCE  "gstat-announce@geog.uu.nl"

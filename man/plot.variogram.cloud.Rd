@@ -26,10 +26,10 @@ ends) }
 (in case of identify = FALSE) or to plot (in case of identify = TRUE) }
 }
 \value{
-if identify or digitize is TRUE, 
-a data frame of class \code{point.pairs} with in its 
-rows the point pairs identified, if identify is F, a plot of the 
-variogram cloud (see \link{plot.variogram})
+if identify or digitize is TRUE, a data frame of class \code{point.pairs}
+with in its rows the point pairs identified (pairs of row numbers in the
+original data set); if identify is F, a plot of the variogram cloud,
+which uses \link{plot.variogram}
 }
 \references{ 
 \url{http://www.gstat.org/}

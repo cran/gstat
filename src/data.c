@@ -2035,7 +2035,8 @@ int push_to_merge_table(DATA *d, int to_var, int col_this_X, int col_other_X) {
 
 	data = get_gstat_data();
 	if (to_var >= d->id) { /* should not occur by construction */
-		pr_warning("use push_to_merge_table only backwards");
+		pr_warning("use push_to_merge_table only backwards (%d >= %d)",
+				to_var, d->id);
 		return 1;
 	}
 	if (col_this_X >= d->n_X || col_other_X >= data[to_var]->n_X) {

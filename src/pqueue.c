@@ -43,8 +43,9 @@
 #include <stdlib.h> /* exit() */
 #include <string.h>
 
-#ifndef QUEUE_MAIN
 # include "defs.h"
+
+#ifndef QUEUE_MAIN
 # include "userio.h"
 # include "data.h"
 # include "utils.h"

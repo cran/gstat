@@ -12,7 +12,7 @@ gstat object can be subsetted. }
 \usage{
 gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
 	nmin = 0, maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, 
-	fill.cross = TRUE, variance = "identity", weights = NULL)
+	fill.cross = TRUE, variance = "identity", weights = NULL, merge)
 print.gstat(x, ...)
 }
 \arguments{
@@ -66,7 +66,13 @@ print.gstat(x, ...)
   and "mu(1-mu)" (binomial) }
   \item{weights}{ numeric vector; if present, weights passed to OLS 
   prediction routines (covariates are present, variograms are missing) }
-  \item{...}{ arguments that are passed to the printing of the variogram
+  \item{merge}{ either character vector of length 2, indicating two ids 
+  that share a common mean; the more general gstat merging of any two
+  coefficients across variables is obtained when a list is passed, with
+  each element a character vector of length 4, in the form 
+  \code{c("id1", 1,"id2", 2)}. This merges the first parameter 
+  for variable \code{id1} to the second of variable \code{id2}.}
+  \item{...}{ arguments that are passed to the printing of variogram
   models only}
 }
 \details{ to print the full contents of the object \code{g} returned,
@@ -96,6 +102,17 @@ or using numeric subsets. Subsetted gstat objects only contain cross
 variograms if (i) the original gstat object contained them and (ii) the
 order of the subset indexes increases, numerically, or given the order
 they have in the gstat object.
+
+The merge item may seem obscure. It is. Still, for colocated cokriging,
+it is needed. See texts by Goovaerts, Wackernagel, Chiles and Delfiner,
+or look for standardised ordinary kriging in the 1992 Deutsch and Journel
+or Isaaks and Srivastava. In these cases, two variables share a common
+mean parameter. Gstat generalises this case: any two variables may share
+any of the regression coefficients; allowing for instance analysis of
+covariance models, when variograms left out (see e.g. R. Christensen's
+``Plane answers'' book on linear models. The tests directory of the
+package contains examples in file merge.R
+
 }
 
 

@@ -31,7 +31,7 @@ predict.gstat(object, newdata, block = numeric(0), nsim = 0,
 \item{BLUE}{ logical; if TRUE return the BLUE trend estimates only, 
 if FALSE return the BLUP predictions (kriging) }
 \item{debug.level}{ integer; set gstat internal debug level }
-\item{mask}{ deprecated -- use na.action; 
+\item{mask}{ not supported anymore -- use na.action; 
 logical or numerical vector; pattern with valid values
 in newdata (marked as TRUE, non-zero, or non-NA); if mask is specified,
 the returned data frame will have the same number and order of rows 

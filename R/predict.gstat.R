@@ -8,11 +8,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		stop("first argument should be of class gstat")
 	.Call("gstat_init", as.integer(debug.level), PACKAGE = "gstat")
 	if (!missing(mask)) {
-		# mask = as.logical(mask) & !is.na(mask)
-		# nrow.original = nrow(newdata)
-		# newdata = newdata[mask, ]
 		cat("argument mask is deprecated:")
-		cat("use a missing value pattern in newdata instead")
+		stop("use a missing value pattern in newdata instead")
 	}
 	nvars = length(object$data)
 	new.X = NULL
@@ -67,6 +64,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	}
 	if (!is.null(object$set)) 
 		gstat.load.set(object$set)
+	if (!is.null(object$merge)) 
+		gstat.load.merge(object)
 	if (!is.null(dim(block))) { # i.e., block is data.frame or matrix
 		block = data.matrix(block) # converts to numeric
 		block.cols = ncol(block)

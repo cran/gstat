@@ -5,6 +5,6 @@ function(point.x, point.y, pol.x, pol.y) {
 		as.numeric(point.y),
 		as.numeric(pol.x),
 		as.numeric(pol.y)
-		, PACKAGE = "gstat")
-		)
+		, PACKAGE = "gstat"
+		))
 }

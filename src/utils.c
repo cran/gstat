@@ -864,15 +864,15 @@ int CDECL double_index_cmp(const Double_index *a, const Double_index *b) {
 int grass(void) {
 	static int gisinit = 0;
 	int env, lock;
-	char *str, *home;
+	char *str, *home, *gisrc;
 
 	if (gisinit == 1) /* been here before... */
 		return gisinit;
 
-	env = ((getenv("LOCATION") || getenv("LOCATION_NAME"))&& 
-					getenv("GISDBASE") && getenv("MAPSET"));
-	home = getenv("HOME");
-	if (home == NULL)
+	env = ((getenv("LOCATION") || 
+		getenv("LOCATION_NAME"))&& getenv("GISDBASE") && getenv("MAPSET") ||
+		getenv("GISRC"));
+	if ((home = getenv("HOME")) == NULL)
 		home = "";
 	str = (char *) emalloc(strlen(home) + 20);
 	str[0] = '\0';
@@ -883,6 +883,10 @@ int grass(void) {
 #ifdef HAVE_LIBGIS
 		if (gisinit == 0) {
 			G_gisinit("gstat");
+			/*
+			gisrc = G__get_gisrc_file();
+			printf("gisrc: [%s]\n", gisrc ? gisrc : "NULL");
+			*/
 			gisinit = 1;
 		}
 #else

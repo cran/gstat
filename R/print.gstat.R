@@ -19,6 +19,12 @@ function (x, ...)
                 cat(" dummy data")
             else cat(" NULL data")
         }
+		if (x$data[[n]]$nmax != Inf)
+			cat(" nmax =", x$data[[n]]$nmax)
+		if (x$data[[n]]$nmin > 0)
+			cat(" nmin =", x$data[[n]]$nmin)
+		if (x$data[[n]]$maxdist < Inf)
+			cat(" radius =", x$data[[n]]$maxdist)
         cat("\n")
     }
     xx.names = xx = NULL

@@ -34,7 +34,7 @@ case of the plotting of variograms and cross variograms }
 if TRUE, panels divide direction and colors indicate variables
 (ids), if FALSE panels divide variables/variable pairs and colors
 indicate direction}
-\item{skip}{ logical; can be used to arrange panels, see \link{xyplot}}
+\item{skip}{ logical; can be used to arrange panels, see \code{xyplot}}
 \item{\dots}{ any arguments that will be passed to the panel plotting functions
 (such as \code{auto.key} in examples below) }
 }

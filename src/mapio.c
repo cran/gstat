@@ -1450,8 +1450,11 @@ static GRIDMAP *read_grass(GRIDMAP * m)
 	int row, col;
 	struct Cell_head region;
 
-	if (! grass()) 
+	DUMP(": trying grass map format... ");
+	if (! grass()) {
+		DUMP("(no grass session recognized) ");
 		return NULL;
+	}
 
 	name = (char *) m->filename;
 	if ((mapset = G_find_cell2(name, "")) == NULL)

@@ -9,10 +9,8 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5) {
 	n = .Call("gstat_get_n_variogram_models", 0, PACKAGE = "gstat")[[1]];
 	m = .C("Cgstat_get_variogram_models", rep("",n), PACKAGE = "gstat")[[1]]
 	mf = factor(m, levels = m)
-	if (missing(model)) {
-		print("possible models:")
+	if (missing(model))
 		return(mf)
-	} 
 	if (!any(m == model)) stop(paste("variogram model", model, "unknown\n"))
 	if (missing(anis))
 		anis = c(0,0,0,1,1)
@@ -21,7 +19,7 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5) {
 	else if (length(anis) != 5)
 		stop("anis vector should have length 2 (2D) or 5 (3D)")
 	if (model != "Nug") {
-		if (model != "Lin")
+		if (model != "Lin" && model != "Err" && model != "Int")
 			if (range <= 0.0) stop("range should be positive")
 		else if(range < 0.0) stop("range should be non-negative")
 	} else {

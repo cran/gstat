@@ -624,7 +624,9 @@ SEXP gstat_variogram_values(SEXP ids, SEXP pars) {
 	dist = NEW_NUMERIC(n);
 	gamma = NEW_NUMERIC(n);
 	for (i = 0; i < n; i++) {
-		d = from + (i/(n-1))*(to-from);
+		d = from;
+		if (i > 0) /* implies n > 1 */
+			d += (i/(n-1))*(to-from);
 		NUMERIC_POINTER(dist)[i] = d;
 		NUMERIC_POINTER(gamma)[i] = get_semivariance(vgm, d * x, d * y, d * z);
 	}
