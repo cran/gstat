@@ -1,3 +1,6 @@
+data(meuse)
+data(meuse.grid)
+vgm.fit = fit.variogram(variogram(zinc~1, ~x+y, meuse), vgm(1, "Sph", 800, 1))
 bl0 = krige(zinc~1, ~x+y, meuse, meuse.grid, model = vgm.fit, block = c(0,0))
 bl1 = krige(zinc~1, ~x+y, meuse, meuse.grid, model = vgm.fit, block = c(40,40))
 bl2 = krige(zinc~1, ~x+y, meuse, meuse.grid, model = vgm.fit,block = c(100,100))
