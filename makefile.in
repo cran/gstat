@@ -1,0 +1,83 @@
+HERE = /home/edzer/R/src
+MESCHACH_HERE = /home/edzer/R/src/meschach
+THERE = /home/edzer/c/gstat/src
+MESCHACH_THERE = /home/edzer/c/gstat/meschach
+
+MESCHACH_SRC = \
+	chfactor.c \
+	copy.c \
+	err.c \
+	hsehldr.c \
+	init.c \
+	ivecop.c \
+	lufactor.c \
+	machine.c \
+	matop.c \
+	matrixio.c \
+	meminfo.c \
+	memory.c \
+	memstat.c \
+	mfunc.c \
+	norm.c \
+	otherio.c \
+	pxop.c \
+	qrfactor.c \
+	solve.c \
+	sparse.c \
+	sparseio.c \
+	spbkp.c \
+	spchfctr.c \
+	splufctr.c \
+	sprow.c \
+	spswap.c \
+	submat.c \
+	vecop.c \
+	version.c \
+	macheps.c \
+	fmacheps.c \
+	dmacheps.c \
+	maxint.c
+
+MESCHACH_HEADERS = machine.h \
+	zmatrix.h \
+	err.h \
+	meminfo.h \
+	matrix.h \
+	matrix2.h \
+	sparse.h \
+	sparse2.h \
+	zmatrix2.h
+
+SOURCES = block.c data.c direct.c fig.c fit.c getest.c gls.c glvars.c \
+	gstat.c lex.l lm.c map2fig.c map2gd.c mapio.c maputils.c msim.c \
+	nsearch.c ossfim.c palet.c parse.y plot.c polygon.c pqueue.c \
+	predict.c random.c read.c reml.c report.c sample.c select.c \
+	sem.c sem_main.c sim.c stat.c ui.c userio.c utils.c \
+	vario.c vario_fn.c vario_io.c writecmd.c xvalid.c s.c
+
+HEADERS = block.h config.h  data.h  debug.h defaults.h defs.h \
+	direct.h fig.h fit.h getest.h gls.h glvars.h lex.h lm.h \
+	lm_type.h map2fig.h map2gd.h mapio.h maputils.h msim.h nsearch.h \
+	ossfim.h palet.h parse.h plot.h polygon.h pqueue.h predict.h \
+	random.h read.h reml.h report.h sample.h select.h sem.h \
+	sem_main.h sim.h stat.h ui.h ui_help.h userio.h utils.h \
+	vario.h vario_fn.h vario_io.h version.h writecmd.h xvalid.h
+
+default:
+	(cd src; make)
+
+clean:
+	./cleanup
+
+cp_here: 
+	(cd $(THERE); cp $(SOURCES) $(HEADERS) $(HERE))
+	(cd $(MESCHACH_THERE); \
+		cp $(MESCHACH_SOURCES) $(MESCHACH_HEADERS) $(MESCHACH_HERE))
+
+cp_there: 
+	(cd $(HERE); cp $(SOURCES) $(HEADERS) $(THERE))
+	(cd $(MESCHACH_HERE); \
+		cp $(MESCHACH_SOURCES) $(MESCHACH_HEADERS) $(MESCHACH_THERE))
+
+index:
+	R CMD Rdindex man > INDEX

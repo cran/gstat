@@ -1,0 +1,22 @@
+fit.lmc                 Fit a Linear Model of Coregionalization to a
+                        Multivariable Sample Variogram 
+fit.variogram           Fit a Variogram Model to a Sample Variogram 
+vgm.panel.xyplot        Gstat Internal Functions
+gstat                   Creates gstat Objects 
+image                   Image Gridded Coordinates in Data Frame 
+krige                   Simple, Ordinary or Universal, global or local,
+                        Point or Block Kriging 
+map.to.lev              rearrange data frame for plotting with
+                        levelplot 
+mapasp                  Calculate plot aspect ratio for geographic maps 
+meuse                   Meuse river data set
+meuse.grid              Prediction Grid for Meuse Data Set 
+plot.variogram          Plot a Sample Variogram 
+plot.variogram.cloud    Plot and Identify Data Pairs on Sample
+                        Variogram Cloud 
+predict.gstat           Multivariable Geostatistical Prediction and
+                        Simulation 
+variogram               Calculate Sample or Residual Variogram or
+                        Variogram Cloud 
+variogram.line          Semivariance Values For a Given Variogram Model 
+vgm                     Generate, or Add to Variogram Model 
