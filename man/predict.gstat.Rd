@@ -7,7 +7,7 @@ cokriging, point- or block-kriging, and conditional simulation equivalents
 for each of the kriging methods.  }
 \usage{
 predict.gstat(object, newdata, block = numeric(0), nsim = 0, 
-	debug.level = 1, ...)
+	indicators = FALSE, debug.level = 1, ...)
 }
 \arguments{
 \item{object}{ object of class \code{gstat}, see \link{gstat} and
@@ -21,20 +21,17 @@ predict.gstat(object, newdata, block = numeric(0), nsim = 0,
   the points that discretize the block in the x-, y- and z-dimension; 
   the latter can be used to define irregular blocks. By default,
   predictions or simulations refer to point support values. }
-\item{nsim}{ integer; if set to a nonzero value, conditional simulation
-  is used instead of kriging interpolation. If \code{nsim} is positive,
-  \code{nsim} realisations will be simulated using sequential Gaussian 
-  simulation, following a single random path through the data. If
-  \code{nsim} is negative, \code{-nsim} realisations will be simulated
-  using sequential indicator simulation, following a single random path
-  through the data. }
+\item{nsim}{ integer; if set to a non-zero value, conditional simulation
+  is used instead of kriging interpolation. For this, sequential Gaussian
+  or indicator simulation is used (depending on the value of 
+  \code{indicators}), following a single random path through the data.  }
+\item{indicators}{ logical, only relevant if \code{nsim} is non-zero; if
+ TRUE, use indicator simulation, else use Gaussian simulation }
 \item{debug.level}{ integer; set gstat internal debug level }
-\item{...}{ignored}
-}
-\details{
-When a non-stationary (i.e., non-constant) mean is used, both for
-simulation and prediction purposes the variogram model defined should
-be that of the residual process, and not that of the raw observations.
+\item{...}{ignored} } \details{ When a non-stationary (i.e., non-constant)
+mean is used, both for simulation and prediction purposes the variogram
+model defined should be that of the residual process, and not that of
+the raw observations.
 
 The algorirthm used by gstat for simulation random fields is the
 sequential simulation algorithm. This algorithm scales well to large or

@@ -9,7 +9,8 @@ necessary for univariate or multivariate geostatistical prediction
 unconditional Gaussian or indicator simulation equivalents.  }
 \usage{
 gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
-	dummy = FALSE, set, fill.all = FALSE, variance = "identity")
+	maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, 
+	variance = "identity")
 print.gstat(x, ...)
 }
 \arguments{
@@ -39,6 +40,9 @@ print.gstat(x, ...)
   \item{nmax}{ for local kriging: the number of nearest observations that
   should be used for a kriging prediction or simulation, where nearest
   is defined in terms of the space of the spatial locations }
+  \item{maxdist}{ for local kriging: only observations within a distance
+  of \code{maxdist} from the prediction location are used for prediction
+  or simulation; if combined with \code{nmax}, both criteria apply }
   \item{dummy}{ logical; if TRUE, consider this data as a dummy variable
   (only necessary for unconditional simulation) }
   \item{set}{ named list with optional parameters to be passed to

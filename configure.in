@@ -30,7 +30,7 @@ AC_HEADER_TIME
 dnl Checks for library functions:
 AC_FUNC_MEMCMP
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS(strstr strtod strtol popen drand48 tempnam gettimeofday mkstemp)
+AC_CHECK_FUNCS(strstr strtod strtol popen drand48 gettimeofday)
 
 dnl Add getopt.o to LIBOBJS if getopt is not found in a default lib:
 AC_REPLACE_FUNCS(getopt)

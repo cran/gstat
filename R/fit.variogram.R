@@ -10,6 +10,8 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
         stop("no model to fit")
     if (!inherits(model, "variogram.model"))
         stop("model should be of class variogram.model (use vgm)")
+    if (fit.method == 5)
+    	stop("use function fit.variogram.reml() to use REML")
     if (length(fit.sills) < length(model$model)) 
         fit.sills = rep(fit.sills, length(model$model))
     if (length(fit.ranges) < length(model$model)) 

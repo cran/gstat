@@ -80,7 +80,7 @@ VARIOGRAM *reml_sills(DATA *data, VARIOGRAM *vp) {
  */
 	Y = get_y(&data, Y, 1);
 	X = get_X(&data, X, 1);
-	Vk = (MAT **) emalloc(vp->n_models * sizeof(MAT));
+	Vk = (MAT **) emalloc(vp->n_models * sizeof(MAT *));
 	init = v_resize(init, vp->n_models);
 
 	for (i = 0; i < vp->n_models; i++) {

@@ -1,6 +1,6 @@
 "predict.gstat" <-
-function (object, newdata, block = numeric(0), nsim = 0, debug.level = 1, 
-    ...) 
+function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
+	debug.level = 1, ...) 
 {
     if (missing(object) || length(object$data) < 1) 
         stop("no data available")
@@ -17,6 +17,8 @@ function (object, newdata, block = numeric(0), nsim = 0, debug.level = 1,
         if (d$nmax == Inf) 
             nmax = as.integer(-1)
         else nmax = as.integer(d$nmax)
+	if (d$maxdist == Inf)
+	    maxdist = as.numeric(-1)
         if (d$dummy) {
             tr = terms(d$locations)
 			if (is.null(d$beta) || length(d$beta) == 0)
@@ -24,14 +26,17 @@ function (object, newdata, block = numeric(0), nsim = 0, debug.level = 1,
             loc.dim = length(attr(tr, "term.labels"))
             .Call("gstat_new_dummy_data", as.integer(loc.dim), 
 				as.integer(d$has.intercept), as.numeric(d$beta), 
-				nmax, as.integer(d$vfn), PACKAGE = "gstat")
+				nmax, maxdist, as.integer(d$vfn)
+				, PACKAGE = "gstat"
+				)
         }
         else {
             raw = gstat.formula(d$formula, d$locations, d$data)
             .Call("gstat_new_data", raw$y, as.vector(raw$locations), 
-                as.vector(raw$X), as.integer(raw$has.intercept),
-				as.numeric(d$beta), nmax, as.integer(d$vfn), 
-				PACKAGE = "gstat")
+		as.vector(raw$X), as.integer(raw$has.intercept),
+		as.numeric(d$beta), nmax, maxdist, as.integer(d$vfn)
+				, PACKAGE = "gstat"
+				)
         }
         if (!is.null(object$model[[name]])) 
             load.variogram.model(object$model[[name]], c(i - 1, i - 1))
@@ -57,25 +62,33 @@ function (object, newdata, block = numeric(0), nsim = 0, debug.level = 1,
     }
     if (!is.null(object$set)) 
         gstat.load.set(object$set)
-    block.cols = numeric(0)
     if (!is.null(dim(block))) { # i.e., block is data.frame or matrix
-		block = as.matrix(block)
+	block = data.matrix(block) # converts to numeric
         block.cols = ncol(block)
-	}
+    } else {
+    	block = as.numeric(block) # make sure it's not integer
+    	block.cols = numeric(0)
+    } 
     if (nsim) {
-		# random path: randomly permute row indices
-		perm = sample(seq(along = new.X[, 1]))
+    	if (indicators == TRUE)
+		nsim = -abs(nsim)
+	# random path: randomly permute row indices
+	perm = sample(seq(along = new.X[, 1]))
         ret = .Call("gstat_predict", as.integer(nrow(new.X)), 
             as.vector(raw$locations[perm, ]), as.vector(new.X[perm,]), 
-			as.integer(block.cols), as.vector(block), 
-            as.integer(nsim), PACKAGE = "gstat")[[1]]
+		as.integer(block.cols), as.vector(block), 
+		as.integer(nsim)
+		, PACKAGE = "gstat"
+		)[[1]]
         ret = data.frame(cbind(raw$locations, 
-			matrix(ret[order(perm),], nrow(new.X), max(2, abs(nsim) * nvars))))
+		matrix(ret[order(perm),], nrow(new.X), max(2, abs(nsim) * nvars))))
     }
     else {
         ret = .Call("gstat_predict", as.integer(nrow(new.X)), 
             as.vector(raw$locations), as.vector(new.X), as.integer(block.cols), 
-            as.vector(block), as.integer(nsim), PACKAGE = "gstat")[[1]]
+            as.vector(block), as.integer(nsim)
+			, PACKAGE = "gstat"
+			)[[1]]
         ret = data.frame(cbind(raw$locations, ret))
     }
     .Call("gstat_exit", NULL, PACKAGE = "gstat")

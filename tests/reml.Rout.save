@@ -1,0 +1,23 @@
+
+R : Copyright 2003, The R Development Core Team
+Version 1.6.2  (2003-01-10)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type `license()' or `licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type `contributors()' for more information.
+
+Type `demo()' for some demos, `help()' for on-line help, or
+`help.start()' for a HTML browser interface to help.
+Type `q()' to quit R.
+
+> library(gstat)
+Loading required package: lattice 
+> data(meuse)
+> fit.variogram.reml(log(zinc)~1, ~x+y, meuse, model = vgm(1, "Sph", 900,1))
+  model      psill range
+1   Nug 0.02547708     0
+2   Sph 0.61088826   900
+> 

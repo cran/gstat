@@ -122,15 +122,8 @@ void gstat_error(char *fname, int line,
 	save_strcat(error_message, "gstat: ");
 	len = strlen(error_message->str);
 	buf = error_message->str + len;
-
-#ifdef USE_ASPRINTF
-	asprintf(&buf, error_messages[err_nr], NULS(msg));
-	save_strcat(error_message, buf);
-#else
 	snprintf(buf, ERROR_BUFFER_SIZE - len,
 		error_messages[err_nr], save_string(msg));
-#endif
-
 	if (DEBUG_DUMP || err_nr == ER_NULL) { /* print file&line */
 		save_strcat(error_message, " (");
 		save_strcat(error_message, fname);
@@ -166,20 +159,10 @@ void message(char *fmt, ...) {
 	va_list args;
 	char *buf = NULL;
 
-#ifdef USE_VASPRINTF
 	va_start(args, fmt);
-	vasprintf(&buf, fmt, args);
-	va_end(args);
-	save_strcat(error_prefix, buf);
-#else
-	va_start(args, fmt);
-	/*
-	vsprintf(error_prefix->str, fmt, args);
-	*/
 	vsnprintf(error_prefix->str, ERROR_BUFFER_SIZE, fmt, args);
 	va_end(args);
 	buf = NULL;
-#endif
 }
 
 /* print a warning message to string, and call warning message handler */
@@ -193,18 +176,12 @@ void pr_warning(char *fmt, ...) {
 	warning_message->str[0] = '\0';
 	save_strcat(warning_message, "Warning: ");
 
-#ifdef USE_VASPRINTF
-	va_start(args, fmt);
-	vasprintf(&buf, fmt, args);
-	va_end(args);
-	save_strcat(warning_message, buf);
-#else
 	buf = warning_message->str + 9;
+
 	va_start(args, fmt);
 	/* vsprintf(buf, fmt, args); */
 	vsnprintf(buf, ERROR_BUFFER_SIZE - 9, fmt, args);
 	va_end(args);
-#endif
 
 	gstat_handler.warning_handler(warning_message->str);
 }
@@ -274,20 +251,12 @@ void default_error(const char *mess, int level) {
 void printlog(const char *fmt, ...) {
 	STRING_BUFFER *s;
 	va_list args;
-#ifdef USE_VASPRINTF
-	char *buf = NULL;
 
 	s = resize_strbuf(NULL, ERROR_BUFFER_SIZE);
-	va_start(args, fmt);
-	vasprintf(&buf, fmt, args);
-	va_end(args);
-	save_strcat(s, buf);
-#else
-	s = resize_strbuf(NULL, ERROR_BUFFER_SIZE);
+
 	va_start(args, fmt);
 	vsnprintf(s->str, ERROR_BUFFER_SIZE, fmt, args);
 	va_end(args);
-#endif
 
 	gstat_handler.printlog_handler(s->str);
 	free_strbuf(s);

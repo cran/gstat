@@ -8,46 +8,48 @@ or kriging of block mean values (rectangular or irregular blocks), and
 conditional (Gaussian or indicator) simulation equivalents for all kriging 
 variaties.
 }
-\usage{
-krige(formula, locations, data, newdata, model, beta, nmax, block, nsim, ...)
-}
+\usage{ krige(formula, locations, data, newdata, model, beta, nmax = Inf,
+maxdist = Inf, block, nsim = 0, indicators = FALSE, ...) }
 \arguments{
-  \item{formula}{ formula that defines the dependent variable as a linear
+ \item{formula}{ formula that defines the dependent variable as a linear
   model of independent variables; suppose the dependent variable has name
   \code{z}, for ordinary and simple kriging use the formula \code{z~1};
   for simple kriging also define \code{beta} (see below); for universal
   kriging, suppose \code{z} is linearly dependent on \code{x} and \code{y},
   use the formula \code{z~x+y}}
-  \item{locations}{ formula with only independent variables that define the
+ \item{locations}{ formula with only independent variables that define the
   spatial data locations (coordinates), e.g. \code{~x+y} }
-  \item{data}{ data frame; should contain the dependent variable, independent
+ \item{data}{ data frame; should contain the dependent variable, independent
   variables, and coordinates. }
-  \item{newdata}{ data frame with prediction/simulation locations; should 
+ \item{newdata}{ data frame with prediction/simulation locations; should 
   contain columns with the independent variables (if present) and the
   coordinates with names as defined in \code{locations} }
-  \item{model}{ variogram model of dependent variable (or its residuals), 
+ \item{model}{ variogram model of dependent variable (or its residuals), 
   defined by a call to \link{vgm} or \link{fit.variogram}}
-  \item{beta}{ only for simple kriging (and simulation based on simple
+ \item{beta}{ only for simple kriging (and simulation based on simple
   kriging); vector with the trend coefficients (including intercept);
   if no independent variables are defined the model only contains an
   intercept and this should be the simple kriging mean }
-  \item{nmax}{ for local kriging: the number of nearest observations that
+ \item{nmax}{ for local kriging: the number of nearest observations that
   should be used for a kriging prediction or simulation, where nearest
   is defined in terms of the space of the spatial locations. By default,
   all observations are used }
-  \item{block}{ block size; a vector with 1, 2 or 3 values containing
+ \item{maxdist}{ for local kriging: only observations within a distance
+  of \code{maxdist} from the prediction location are used for prediction
+  or simulation; if combined with \code{nmax}, both criteria apply }
+ \item{block}{ block size; a vector with 1, 2 or 3 values containing
   the size of a rectangular in x-, y- and z-dimension respectively
   (0 if not set), or a data frame with 1, 2 or 3 columns, containing
   the points that discretize the block in the x-, y- and z-dimension; 
   the latter can be used to define irregular blocks. By default,
   predictions or simulations refer to point support values. }
-  \item{nsim}{ integer; if set to a nonzero value, conditional simulation
-  is used instead of kriging interpolation. If \code{nsim} is positive,
-  \code{nsim} realisations will be simulated by using Gaussian simulation,
-  following a single random path through the data. If \code{nsim} is
-  negative, \code{-nsim} realisations will be simulated using indicator
-  simulation, following a single random path through the data. }
-  \item{\dots}{ other arguments that will be passed to \link{gstat}}
+ \item{nsim}{ integer; if set to a non-zero value, conditional simulation
+  is used instead of kriging interpolation. For this, sequential Gaussian
+  or indicator simulation is used (depending on the value of 
+  \code{indicators}), following a single random path through the data.  }
+ \item{indicators}{ logical, only relevant if \code{nsim} is non-zero; if
+  TRUE, use indicator simulation; else use Gaussian simulation }
+ \item{\dots}{ other arguments that will be passed to \link{gstat}}
 }
 \details{
 This function is a simple wrapper function around \link{gstat} and

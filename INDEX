@@ -2,6 +2,7 @@ bubble                  Create a bubble plot of spatial data
 fit.lmc                 Fit a Linear Model of Coregionalization to a
                         Multivariable Sample Variogram 
 fit.variogram           Fit a Variogram Model to a Sample Variogram 
+fit.variogram.reml      REML Fit Direct Variogram Partial Sills to Data 
 gstat-internal          Gstat Internal Functions
 gstat                   Creates gstat Objects 
 image                   Image Gridded Coordinates in Data Frame 
@@ -14,6 +15,8 @@ map.to.lev              rearrange data frame for plotting with
 mapasp                  Calculate plot aspect ratio for geographic maps 
 meuse                   Meuse river data set
 meuse.grid              Prediction Grid for Meuse Data Set 
+ossfim                  Kriging standard errors as function of grid
+                        spacing and block size
 plot.point.pairs        Plot a point pairs, identified from a variogram
                         cloud 
 plot.variogram          Plot a Sample Variogram 
