@@ -1,6 +1,6 @@
 "krige.cv" <- function (formula, locations, data = sys.frame(sys.parent()), 
-	model = NULL, beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, 
-	nfold = nrow(data), verbose = FALSE, ...)
+	model = NULL, ..., beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, 
+	nfold = nrow(data), verbose = FALSE)
 {
 	if (has.coordinates(locations)) {
 		data = locations

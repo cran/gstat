@@ -157,7 +157,18 @@ levelplot(sqrt(sq.dist.var) ~ x + y, x, aspect = mapasp(x),
 ##
 ## Stratified ordinary kriging (within-category ordinary kriging)
 ##
-## (stratified mode not implemented; this can be programmed easily in R)
+
+# find out in which part the data are:
+meuse$part.a = krige(part.a~1, ~x+y, meuse.grid, meuse, nmax=1)$var1.pred
+x1 = krige(log(zinc)~1, ~x+y, meuse[meuse$part.a == 0,], 
+	meuse.grid[meuse.grid$part.a == 0,], model = vgm(.548, "Sph", 900, .0654), 
+	nmin = 20, nmax = 40, maxdist = 1000)
+x2 = krige(log(zinc)~1, ~x+y, meuse[meuse$part.a == 1,], 
+	meuse.grid[meuse.grid$part.a == 1,], model = vgm(.716, "Sph", 900), 
+	nmin = 20, nmax = 40, maxdist = 1000)
+x = rbind(x1, x2)
+levelplot(var1.pred~x+y, x, aspect = mapasp(x),
+	main = "stratified kriging predictions")
 
 ##
 ## ex13.cmd 

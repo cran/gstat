@@ -247,6 +247,7 @@ int init_global_variables(void) {
 	init_one_data(valdata);
 	block.x = block.y = block.z = 0.0;
 	set_mv_double(&gl_zmap);
+	get_covariance(NULL, 0, 0, 0);
 	return 0;
 }
 

@@ -92,8 +92,8 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 "plot.variogramMap" <-
 function(x, np = FALSE, skip, threshold, ...) {
 	x = x$map
-	if (!is(x, "SpatialGridDataFrame"))
-		stop("x should be of class, or extend, SpatialGridDataFrame")
+	if (!is(x, "SpatialPixelsDataFrame"))
+		stop("x should be of class, or extend, SpatialPixelsDataFrame")
 	if (np)
 		start = 2 
 	else

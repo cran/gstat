@@ -9,9 +9,9 @@ or kriging of block mean values (rectangular or irregular blocks), and
 conditional (Gaussian or indicator) simulation equivalents for all kriging
 varieties. For multivariable prediction, see \link{gstat} and \link{predict.gstat}
 }
-\usage{krige(formula, locations, data, newdata, model, beta, nmax = Inf,
-nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE, 
-na.action = na.pass, ...) }
+\usage{krige(formula, locations, data, newdata, model, ..., beta, nmax = Inf, 
+nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
+na.action = na.pass) }
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear
   model of independent variables; suppose the dependent variable has name
@@ -120,7 +120,13 @@ x <- krige(log(zinc)~x+y, ~x+y, model = m, data = meuse, newdata =
 	meuse.grid, block = c(40,40))
 levelplot(var1.pred~x+y, x, aspect = mapasp(x),
 	main = "universal kriging predictions")
+# add grid:
 levelplot(var1.var~x+y, x, aspect = mapasp(x),
+		panel = function(...) {
+			panel.levelplot(...)
+			panel.abline(h = 0:3*1000 + 330000, v= 0:2*1000 + 179000, col = "grey")
+		},
 	main = "universal kriging variance")
+
 }
 \keyword{ models }

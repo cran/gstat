@@ -8,7 +8,9 @@ for each of the kriging methods.  }
 \usage{
 predict.gstat(object, newdata, block = numeric(0), nsim = 0, 
 	indicators = FALSE, BLUE = FALSE, debug.level = 1, mask, 
-	na.action = na.pass, ...)
+	na.action = na.pass, sps.args = list(n = 500, type = "regular",
+	offset = c(.5, .5)), ...)
+
 }
 \arguments{
 \item{object}{ object of class \code{gstat}, see \link{gstat} and
@@ -42,21 +44,32 @@ in newdata, and masked rows will be filled with NA's. }
 \item{na.action}{ function determining what should be done with missing
 values in 'newdata'.  The default is to predict 'NA'.  Missing values 
 in coordinates and predictors are both dealt with. }
+\item{sps.args}{ when newdata is of class \code{SpatialRings} this
+argument list gets passed to \code{spsample} in package \code{sp} to
+control the discretizing of polygons }
 \item{...}{ ignored (but necessary for the S3 generic/method consistency) }
 }
 
 \details{ When a non-stationary (i.e., non-constant) mean is used, both
 for simulation and prediction purposes the variogram model defined should
-be that of the residual process, and not that of the raw observations.
+be that of the residual process, not that of the raw observations.
 
 For irregular block kriging, coordinates should discretize the area
-relative to 0, (0,0) or (0,0,0); the coordinates in newdata should give
+relative to (0), (0,0) or (0,0,0); the coordinates in newdata should give
 the centroids around which the block should be located. So, suppose the
 block is discretized by points (3,3) (3,5) (5,5) and (5,3), we should
 pass point (4,4) in newdata and pass points (-1,-1) (-1,1) (1,1) (1,-1)
 to the block argument. Although passing the uncentered block and (0,0)
 as newdata may work for global neighbourhoods, neighbourhood selection
 is always done relative to the centroid values in newdata.
+
+If newdata is of class \code{SpatialRings} (see package sp), then
+the block average for each of the rings (sets) is calculated, using
+\code{spsample} to discretize the rings. \code{sps.args} controls the
+parameters used for \code{spsample}. The "location" with respect to
+which neighbourhood selection is done is for each polygon the Srings
+label point; if you use local neighbourhoods you should check out where
+these points are---this may be well outside the ring itself.
 
 The algorithm used by gstat for simulation random fields is the
 sequential simulation algorithm. This algorithm scales well to large or

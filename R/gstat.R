@@ -70,7 +70,7 @@ function (g, id, formula, locations = try.coordinates(data),
     if (!inherits(formula, "formula"))
         stop("argument formula should be of class formula")
     if (!inherits(locations, "formula") && !has.coordinates(data))
-        stop("argument locations should be of class formula or data.frame")
+        stop("argument locations should be of class formula or matrix")
     if (missing(beta) || is.null(beta)) 
         beta = numeric(0)
 	vfn = pmatch(variance, c("identity", "mu", "mu(1-mu)", "mu^2", "mu^3"))

@@ -1,12 +1,13 @@
 predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
-	BLUE = FALSE, debug.level = 1, mask, na.action = na.pass, ...) 
+	BLUE = FALSE, debug.level = 1, mask, na.action = na.pass, sps.args = 
+	list(n = 500, type = "regular", offset = c(.5, .5)), ...) 
 {
 	if (missing(object) || length(object$data) < 1) 
 		stop("no data available")
 	if (!inherits(object, "gstat"))
 		stop("first argument should be of class gstat")
-	if (is(newdata, "Spatial") && require(sp))
+	if (is(newdata, "SpatialPoints") && require(sp))
 		use.sdf = TRUE
 	else
 		use.sdf = FALSE
@@ -68,7 +69,24 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		gstat.load.set(object$set)
 	if (!is.null(object$merge)) 
 		gstat.load.merge(object)
-	if (!is.null(dim(block))) { # i.e., block is data.frame or matrix
+	if (is(newdata, "SpatialRings") && require(sp)) {
+		pol = getSRpolygonsSlot(newdata)
+		if (length(pol) != nrow(raw$locations))
+			stop("polygons and center points length mismatch")
+		block = matrix(NA, 0, 2)
+		nd = as(newdata, "SpatialRings")
+		block.cols = rep(as.numeric(NA), length(pol))
+		for (i in seq(along = pol)) {
+			sps.args$x = nd[i]
+			cc = coordinates(do.call("spsample", sps.args))
+			cc[,1] = cc[,1] - raw$locations[i,1]
+			cc[,2] = cc[,2] - raw$locations[i,2]
+			block.cols[i] = nrow(block) + 1
+			block = rbind(block, cc)
+		}
+		if (length(pol) == 1)
+			block.cols = 2
+	} else if (!is.null(dim(block))) { # i.e., block is data.frame or matrix
 		block = data.matrix(block) # converts to numeric
 		block.cols = ncol(block)
 	} else {
@@ -124,7 +142,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	if (use.sdf) {
 		coordinates(ret) = dimnames(raw$locations)[[2]]
 		gridded(ret) = gridded(newdata)
-	}
+	} else if (is(newdata, "SpatialRings"))
+		ret = SpatialRingsDataFrame(as(newdata, "SpatialRings"), ret)
 	return(ret)
 }
 

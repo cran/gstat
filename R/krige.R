@@ -1,12 +1,15 @@
 "krige" <-
 function (formula, locations = try.coordinates(data), data = sys.frame(sys.parent()), 
-	newdata, model = NULL, beta = NULL, nmax = Inf, nmin = 0, 
+	newdata, model = NULL, ..., beta = NULL, nmax = Inf, nmin = 0, 
 	maxdist = Inf, block = numeric(0), nsim = 0, indicators = FALSE, 
-	na.action = na.pass, ...)
+	na.action = na.pass)
 {
 	if (has.coordinates(locations)) { # shift arguments:
-		if (has.coordinates(data)) # another shift:
-			newdata = data
+		if (!is(data, "Spatial")) # another shift:
+			stop("if data derives from Spatial, so should newdata")
+		if (!missing(newdata) && is(newdata, "variogramModel"))
+			model = newdata
+		newdata = data
 		data = locations
 		locations = coordinates(data)
 	}

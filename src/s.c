@@ -82,6 +82,7 @@ double s_r_uniform(void);
 double s_r_normal(void);
 static int seed_is_in = 0;
 static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams);
+static void gstat_set_block(long i, SEXP block, SEXP block_cols, DPOINT *current);
 
 SEXP gstat_init(SEXP s_debug_level) {
 
@@ -378,7 +379,7 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 			bp->z = NUMERIC_POINTER(block)[2];
 		if (LENGTH(block) > 3)
 			pr_warning("block dimension can only be 3; using the first 3");
-	} else {
+	} else if (LENGTH(block_cols) == 1) { /* if > 1, block contains multiple 2D blocks */
 		ncols_block = INTEGER_POINTER(block_cols)[0];
 		if (ncols_block < 1 || ncols_block > 3)
 			ErrMsg(ER_IMPOSVAL, "block dimensions should be in [1..3]");
@@ -458,7 +459,6 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		current.X = (double *) erealloc(current.X, vd->n_X * sizeof(double));
 	}
 
-
 	/* so far for the faking; now let's see what gstat makes out of this: */
 	if (INTEGER_POINTER(nsim)[0] == 0) {
 		if (INTEGER_POINTER(blue)[0] == 0) /* FALSE */
@@ -491,6 +491,8 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 #endif
 	for (i = 0; i < n; i++) {
 		print_progress(i, n);
+		if (LENGTH(block_cols) > 1)
+			gstat_set_block(i, block, block_cols, &current);
 		current.x = locs[i];
 		if (dim >= 2)
 			current.y = locs[n + i];
@@ -522,7 +524,6 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 			for (j = 0; j < gl_nsim; j++) 
 				for (k = 0; k < n; k++)
 					NUMERIC_POINTER(retvector)[pos++] = msim[i][k][j];
-		free_simulations();
 		NUMERIC_POINTER(retvector_dim)[1] = nvars * gl_nsim; /* ncols */
 	} else {
 		PROTECT(retvector = NEW_NUMERIC(n * nest));
@@ -542,6 +543,8 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		}
 		NUMERIC_POINTER(retvector_dim)[1] = nest; /* ncols */
 	}
+	if (gl_nsim > 0)
+		free_simulations();
 	SET_DIM(retvector, retvector_dim);
 	SET_ELEMENT(ret, 0, retvector);
 	for (i = 0; i < n; i++)
@@ -550,6 +553,42 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 	efree(current.X);
 	UNPROTECT(3);
 	return(ret);
+}
+
+static void gstat_set_block(long i, SEXP block, SEXP block_cols, DPOINT *current) {
+	DATA *area;
+	VARIOGRAM *v;
+	long nrows_block, start, end, j;
+
+	if (i >= LENGTH(block_cols) || i < 0)
+		ErrMsg(ER_IMPOSVAL, "block_cols length less than nr of prediction locations");
+	nrows_block = LENGTH(block) / 2; /* nr of rows */
+	start = INTEGER_POINTER(block_cols)[i];
+	if (i == LENGTH(block_cols) - 1)
+		end = nrows_block;
+	else
+		end = INTEGER_POINTER(block_cols)[i+1] - 1;
+	area = get_data_area();
+	if (area != NULL)
+		free_data(area);
+	area = create_data_area();
+	area->n_list = area->n_max = 0;
+	area->id = ID_OF_AREA;
+	area->mode = X_BIT_SET & Y_BIT_SET;
+	for (j = start - 1; j < end; j++) {
+		current->x = NUMERIC_POINTER(block)[j];
+		current->y = NUMERIC_POINTER(block)[nrows_block + j];
+		push_point(area, current);
+	}
+	SET_BLOCK(current);
+	if (DEBUG_FORCE)
+		print_data_list(area); 
+	for (j = 0; j < get_n_vgms(); j++) {
+		v = get_vgm(j);
+		if (v != NULL)
+			v->block_semivariance_set = v->block_covariance_set = 0; /* don't store under these circumstances! */
+	}
+	return;
 }
 
 SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction, 

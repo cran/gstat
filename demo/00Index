@@ -7,3 +7,4 @@ gstat3D		example of 3D interpolation of random points
 krige		sample run of ordinary and universal kriging
 sic2004		part of sic2004 excercise; see ?sic2004
 pcb			pcb North Sea data analysis as used for geoENV2004 paper; see ?pcb
+fulmar		analysis of Fulmaris glacialis data on Dutch part of the North Sea

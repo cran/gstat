@@ -1,0 +1,41 @@
+
+R : Copyright 2004, The R Foundation for Statistical Computing
+Version 2.0.1  (2004-11-15), ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(gstat)
+> data(meuse)
+> set.seed(158229572)
+> new.locs <- data.frame(x = c(181170, 180310, 180205, 178673, 178770, 178270),
++ 	y = c(333250, 332189, 331707, 330066, 330675, 331075))
+> krige(zinc ~ 1, ~ x + y, meuse, newdata = new.locs, 
++ 		model = vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
++ 		block = c(40,40), nmax = 40, nsim = 10)
+drawing 10 GLS realisations of beta...
+[using conditional Gaussian simulation]
+       x      y      sim1        sim2     sim3     sim4     sim5     sim6
+1 181170 333250  18.33159  263.298126 163.2056 213.7206 214.7038 225.7169
+2 180310 332189 619.66339  802.327087 678.6948 774.7139 587.4872 767.4883
+3 180205 331707 253.92937    3.855528 421.6661 373.5612 130.7957 150.7491
+4 178673 330066 844.62842 1226.336548 561.4246 337.7627 579.6103 620.3597
+5 178770 330675 728.76978  799.246887 671.2447 928.5037 602.8870 800.5181
+6 178270 331075  56.53292  860.660706 398.0604 662.1263 696.3955 920.6278
+      sim7      sim8       sim9    sim10
+1 384.1810 389.50336  330.09689 522.8774
+2 672.6479 736.83380  993.94556 561.0284
+3 282.1509 282.26648   98.56178 268.0665
+4 791.2877 887.69098  383.18793 -98.6590
+5 750.6602 480.12805  788.65808 662.2195
+6 994.8704  70.69811 1303.22021 507.4458
+> 

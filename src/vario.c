@@ -473,12 +473,19 @@ double get_covariance(const VARIOGRAM *vp, double dx, double dy, double dz) {
 	static int warning = 0;
 	double ctmp = 0.0, dist;
 
+	if (vp == NULL) {
+		warning = 0;
+		return 0.0;
+	}
+
 	if (! vp->is_valid_covariance && !warning) {
 		pr_warning(
-			"%s: non-transitive variogram model not allowed as covariance",
+			"%s: non-transitive variogram model not allowed as covariance function",
 			vp->descr);
 		warning = 1;
 	}
+	if (!vp->is_valid_covariance && !DEBUG_FORCE)
+		ErrMsg(ER_IMPOSVAL, "covariance from non-transitive variogram not allowed ");
 	if (vp->table != NULL)
 		return(COV_TABLE_VALUE(vp->table, 
 				transform_norm(vp->table->tm_range, dx, dy, dz)));

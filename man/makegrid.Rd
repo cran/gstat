@@ -18,6 +18,8 @@ data frame with the following elements:
 \item{x}{ x-coordinates }
 \item{y}{ y-coordinate } 
 }
+\note{ see also \code{spsample} methods in package \code{sp}; the better code 
+is there }
 \examples{
 data(meuse)
 grd <- makegrid(meuse$x, meuse$y, 1000)
