@@ -19,9 +19,12 @@ map.to.lev              rearrange data frame for plotting with
 mapasp                  Calculate plot aspect ratio for geographic
                         maps
 meuse                   Meuse river data set
+meuse.all               Meuse river data set -- original, full data
+                        set
 meuse.grid              Prediction Grid for Meuse Data Set
 ossfim                  Kriging standard errors as function of grid
                         spacing and block size
+oxford                  Oxford soil samples
 plot.point.pairs        Plot a point pairs, identified from a
                         variogram cloud
 plot.variogram          Plot a Sample Variogram
