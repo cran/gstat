@@ -25,6 +25,11 @@ function (x, ...)
 			cat(" nmin =", x$data[[n]]$nmin)
 		if (x$data[[n]]$maxdist < Inf)
 			cat(" radius =", x$data[[n]]$maxdist)
+		if (x$data[[n]]$vfn > 1)
+			cat(" variance function =", 
+				c("identity", "mu", "mu(1-mu)", "mu^2", "mu^3")[x$data[[n]]$vfn])
+		if (length(x$data[[n]]$beta) > 0)
+			cat(" beta =", x$data[[n]]$beta)
         cat("\n")
     }
     xx.names = xx = NULL

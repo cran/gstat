@@ -6,6 +6,10 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		stop("no data available")
 	if (!inherits(object, "gstat"))
 		stop("first argument should be of class gstat")
+	if (extends(class(newdata), "SpatialDataFrame") && require(sp))
+		use.sdf = TRUE
+	else
+		use.sdf = FALSE
 	.Call("gstat_init", as.integer(debug.level), PACKAGE = "gstat")
 	if (!missing(mask)) {
 		cat("argument mask is deprecated:")
@@ -123,6 +127,10 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	} else
 		names.vars = create.gstat.names(names(object$data))
 	names(ret) = c(dimnames(raw$locations)[[2]], names.vars)
+	if (use.sdf) {
+		coordinates(ret) = dimnames(raw$locations)[[2]]
+		gridded(ret) = gridded(newdata)
+	}
 	return(ret)
 }
 

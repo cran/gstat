@@ -10,8 +10,8 @@ Creates a variogram plot
 \usage{
 plot.gstatVariogram(x, model = NULL, ylim, xlim, xlab = "distance", 
 	ylab = "semivariance", multipanel = TRUE, plot.numbers = FALSE, 
-	scales, ids = x$id, group.id = TRUE, skip, ...)
-plot.variogramMap(x, np = F, skip, ...)
+	scales, ids = x$id, group.id = TRUE, skip, layout, ...)
+plot.variogramMap(x, np = FALSE, skip, ...)
 }
 \arguments{
 \item{x}{ object of class "gstatVariogram", obtained from the function 
@@ -37,6 +37,7 @@ if TRUE, panels divide direction and colors indicate variables
 (ids), if FALSE panels divide variables/variable pairs and colors
 indicate direction}
 \item{skip}{ logical; can be used to arrange panels, see \code{xyplot}}
+\item{layout}{ integer vector; can be used to set panel layout: c(ncol,nrow) }
 \item{np}{ logical; if TRUE, plot number of point pairs, if FALSE plot
 semivariances }
 \item{\dots}{ any arguments that will be passed to the panel plotting functions

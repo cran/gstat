@@ -8,7 +8,8 @@ Plot a sample variogram cloud, possibly with identification of
 individual point pairs
 }
 \usage{
-plot.variogramCloud(x, identify = FALSE, digitize = FALSE, xlim, ylim, xlab, ylab, ...)
+plot.variogramCloud(x, identify = FALSE, digitize = FALSE, xlim, ylim, xlab, ylab, 
+	keep = FALSE, ...)
 }
 \arguments{
 \item{x}{ object of class \code{variogramCloud}}
@@ -22,14 +23,31 @@ ends) }
 \item{ylim}{ limits of y-axis }
 \item{xlab}{ x axis label }
 \item{ylab}{ y axis label }
+\item{keep}{ logical; if TRUE and \code{identify} is TRUE, the labels
+identified and their position are kept and glued to object x, which is
+returned. Subsequent calls to plot this object will now have the labels
+shown, e.g. to plot to hardcopy }
 \item{...}{ parameters that are passed through to \link{plot.gstatVariogram}
 (in case of identify = FALSE) or to plot (in case of identify = TRUE) }
 }
 \value{
-if identify or digitize is TRUE, a data frame of class \code{pointPairs}
-with in its rows the point pairs identified (pairs of row numbers in the
-original data set); if identify is F, a plot of the variogram cloud,
-which uses \link{plot.gstatVariogram}
+If \code{identify} or \code{digitize} is TRUE, a data frame of class
+\code{pointPairs} with in its rows the point pairs identified (pairs of
+row numbers in the original data set); if identify is F, a plot of the
+variogram cloud, which uses \link{plot.gstatVariogram}
+
+If in addition to \code{identify}, \code{keep} is also TRUE, an object
+of class \code{variogramCloud} is returned, having attached to it attributes
+"sel" and "text", which will be used in subsequent calls to plot.variogramCloud
+with \code{identify} set to FALSE, to plot the text previously identified.
+
+If in addition to \code{digitize}, \code{keep} is also TRUE, an object of
+class \code{variogramCloud} is returned, having attached to it attribute
+"poly", which will be used in subsequent calls to plot.variogramCloud
+with \code{digitize} set to FALSE, to plot the digitized line.
+
+In both of the \code{keep = TRUE} cases, the attribute \code{ppairs} of
+class \code{pointPairs} is present, containing the point pairs identified.
 }
 \references{ 
 \url{http://www.gstat.org/}
@@ -44,7 +62,6 @@ which uses \link{plot.gstatVariogram}
 }
 \examples{
 data(meuse)
-# no trend:
 plot(variogram(log(zinc)~1, loc=~x+y, data=meuse, cloud=TRUE))
 ## commands that require interaction:
 # x <- variogram(log(zinc)~1, loc=~x+y, data=meuse, cloud=TRUE)

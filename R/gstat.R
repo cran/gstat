@@ -26,6 +26,7 @@ function (g, id, formula, locations = try.coordinates(data),
 	dummy = FALSE, set, fill.all = FALSE, fill.cross = TRUE, 
 	variance = "identity", weights = NULL, merge) 
 {
+	call = match.call()
 	if (has.coordinates(locations)) { # shift arguments:
 		data = locations
 		locations = NULL
@@ -96,6 +97,7 @@ function (g, id, formula, locations = try.coordinates(data),
     }
 	if (!missing(merge))
 		g$merge = merge
+	g$call = call
     class(g) = c("gstat", "list")
     g
 }
@@ -124,6 +126,3 @@ function (g, id, formula, locations = try.coordinates(data),
     class(g) = c("gstat", "list")
 	g
 }
-
-# "[<-.gstat" <- function(x, ids) { 
-# }

@@ -1,5 +1,5 @@
 "variogram.default" <-
-function (object, locations, X, cutoff, width = cutoff/15, alpha = 0, 
+function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0, 
     beta = 0, tol.hor = 90/length(alpha), tol.ver = 90/length(beta), 
     cressie = FALSE, dX = numeric(0), boundaries = numeric(0), 
     cloud = FALSE, trend.beta = NULL, debug.level = 1, cross = TRUE, 
@@ -101,11 +101,11 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
 				  } else {
 				  	if (is.null(ret)) {
 					  ret = data.frame(ret.call[[1]], ret.call[[2]],
-							ret.call[[3]], ret.call[[4]])
-					  names = c("dx", "dy", paste("np", id, sep="."), id)
+							ret.call[[4]], ret.call[[3]])
+					  names = c("dx", "dy", id, paste("np", id, sep="."))
 					} else { 
-					  ret = data.frame(ret, ret.call[[3]], ret.call[[4]])
-					  names = c(names, paste("np", id, sep="."), id)
+					  ret = data.frame(ret, ret.call[[4]], ret.call[[3]])
+					  names = c(names, id, paste("np", id, sep="."))
 					}
 					names(ret) = names
 				  }

@@ -34,7 +34,11 @@ This is a data.frame with a logical attribute "singular" that
 indicates whether the non-linear fit converged, or ended in a 
 singularity.
 }
-\references{ \url{http://www.gstat.org/} }
+\references{ \url{http://www.gstat.org/} 
+
+Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
+Computers \& Geosciences, 30: 683-691.
+}
 \author{ Edzer J. Pebesma }
 \seealso{
 \link{variogram},

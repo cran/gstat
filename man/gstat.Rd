@@ -18,11 +18,12 @@ print.gstat(x, ...)
 \arguments{
   \item{g}{ gstat object to append to; if missing, a new gstat object
   is created }
-  \item{id}{ id of new variable; if missing, \code{varn} is used with
+  \item{id}{ identifier of new variable; if missing, \code{varn} is used with
     \code{n} the number for this variable. If a cross variogram is entered,
-    \code{id} is a vector with the two \code{id} values , e.g. 
-    \code{c("zn", "cd")} and further only supply arguments \code{g} 
-    and \code{model}}
+    \code{id} should be a vector with the two \code{id} values , e.g. 
+    \code{c("zn", "cd")}, further only supplying arguments \code{g} 
+    and \code{model}. Note that it is not advisable to use expressions, such
+	as \code{log(zinc)}, as identifiers }
   \item{formula}{ formula that defines the dependent variable as a linear
   model of independent variables; suppose the dependent variable has name
   \code{z}, for ordinary and simple kriging use the formula \code{z~1};
@@ -95,7 +96,11 @@ Its components are:
  \item{set}{list; named list, corresponding to set \code{name}=\code{value};
  gstat commands (look up the set command in the gstat manual for a full list)}
 }
-\references{ \url{http://www.gstat.org/} }
+\references{ \url{http://www.gstat.org/} 
+
+Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
+Computers \& Geosciences, 30: 683-691.
+}
 \author{ Edzer J. Pebesma }
 \note{ 
 The function currently copies the data objects into the gstat object, so

@@ -2,10 +2,11 @@
 \alias{krige.cv}
 \alias{gstat.cv}
 \title{ (co)kriging cross validation, n-fold or leave-one-out }
-\description{ Cross validation function for simple, ordinary or universal
-point kriging, kriging in a local neighbourhood.  }
+\description{ Cross validation functions for simple, ordinary or universal
+point (co)kriging, kriging in a local neighbourhood.  }
 \usage{
-gstat.cv(object, nfold, remove.all = FALSE, verbose = FALSE, ...)
+gstat.cv(object, nfold, remove.all = FALSE, verbose = FALSE, 
+	all.residuals = FALSE, ...)
 krige.cv(formula, locations, data, model = NULL, beta = NULL, nmax = Inf, 
 	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE, ...)
 }
@@ -17,6 +18,8 @@ krige.cv(formula, locations, data, model = NULL, beta = NULL, nmax = Inf,
   \item{remove.all}{ logical; if TRUE, remove observations at cross validation
   locations not only for the first, but for all subsequent variables as well }
   \item{verbose}{ logical; if TRUE, progress is printed }
+  \item{all.residuals}{ logical; if TRUE, residuals for all variables are
+  returned instead of for the first variable only}
   \item{\dots}{ other arguments that will be passed to \link{predict.gstat}
   in case of \code{gstat.cv}, or to \link{gstat} in case of \code{krige.cv}}
   \item{formula}{ formula that defines the dependent variable as a linear
@@ -58,18 +61,19 @@ observation in a part, predictions are made based on the remaining N-1
 parts; this is repeated for each of the N parts. N-fold cross validation
 may be faster than LOOCV. }
 
-\value{ a data frame containing the coordinates of \code{newdata}, and
-columns of prediction and prediction variance of cross validated data
-points, observed values, residuals, zscore (residual divided by kriging
-standard error), and fold.  }
+\value{ data frame containing the coordinates of \code{data} or those
+of the first variable in \code{object}, and columns of prediction and
+prediction variance of cross validated data points, observed values,
+residuals, zscore (residual divided by kriging standard error), and fold.
 
-\references{ 
-\url{http://www.gstat.org/}
-}
+If \code{all.residuals} is true, a data frame with residuals for all
+variables is returned, without coordinates. }
+
+\references{ \url{http://www.gstat.org/} }
 \author{ Edzer J. Pebesma }
 \note{ Leave-one-out cross validation seems to be much faster in plain
-(stand-alone) gstat, apparently most of the effort is spent moving data 
-around from R to gstat. }
+(stand-alone) gstat, apparently quite a bit of the effort is spent moving 
+data around from R to gstat. }
 
 \seealso{ \link{krige}, \link{gstat}, \link{predict.gstat} }
 

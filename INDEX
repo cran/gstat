@@ -6,6 +6,7 @@ fit.lmc                 Fit a Linear Model of Coregionalization to a
 fit.variogram           Fit a Variogram Model to a Sample Variogram
 fit.variogram.reml      REML Fit Direct Variogram Partial Sills to
                         Data
+fulmar                  Fulmaris glacialis data
 get.contr               Calculate contrasts from multivariable
                         predictions
 gstat                   Create gstat objects, or subset it
@@ -14,6 +15,8 @@ krige                   Simple, Ordinary or Universal, global or
                         local, Point or Block Kriging
 krige.cv                (co)kriging cross validation, n-fold or
                         leave-one-out
+makegrid                make regular grid with square cells and round
+                        numbers
 map.to.lev              rearrange data frame for plotting with
                         levelplot
 mapasp                  Calculate plot aspect ratio for geographic
@@ -22,6 +25,8 @@ meuse                   Meuse river data set
 meuse.all               Meuse river data set -- original, full data
                         set
 meuse.grid              Prediction Grid for Meuse Data Set
+ncp.grid                Grid for the NCP, the Dutch part of the North
+                        Sea
 ossfim                  Kriging standard errors as function of grid
                         spacing and block size
 oxford                  Oxford soil samples
@@ -35,6 +40,8 @@ predict.gstat           Multivariable Geostatistical Prediction and
                         Simulation
 select.spatial          select points spatially
 show.vgms               Plot Variogram Model Functions
+sic2004                 Spatial Interpolation Comparison 2004 data
+                        set: Natural Ambient Radioactivity
 variogram               Calculate Sample or Residual Variogram or
                         Variogram Cloud
 variogram.line          Semivariance Values For a Given Variogram
