@@ -47,7 +47,11 @@
 static int octant_select(DATA *d, DPOINT *where);
 static int which_octant(DPOINT *where, DPOINT *p, int mode);
 
-int dist_cmp(const DPOINT **ap, const DPOINT **bp);
+int 
+#ifdef SPLUS6WIN32
+	__cdecl
+#endif
+	dist_cmp(const DPOINT **ap, const DPOINT **bp);
 static void zero_sel_dist2(DATA *d);
 static void print_selection(DATA *d, DPOINT *where);
 
@@ -168,13 +172,19 @@ int select_at(DATA *d, DPOINT *where) {
 		d->oct_filled = octant_select(d, where);
 		/* sorts, adjusts n_sel and destroys distance order, so only */
 		if (get_method() == SPREAD) /* then we've got to re-order them */
-			qsort(d->sel, (size_t) d->n_sel, sizeof(DPOINT *),
-				(int (*)(const void *,const void *)) dist_cmp);
+			qsort(d->sel, (size_t) d->n_sel, sizeof(DPOINT *), (int
+#ifdef SPLUS6WIN32
+				__cdecl
+#endif
+				(*)(const void *,const void *)) dist_cmp);
 	} 
 
 	if (d->vdist) {
-		qsort(d->sel, (size_t) d->n_sel, sizeof(DPOINT *),
-			(int (*)(const void *, const void *)) dist_cmp);
+		qsort(d->sel, (size_t) d->n_sel, sizeof(DPOINT *), (int 
+#ifdef SPLUS6WIN32
+			__cdecl
+#endif
+			(*)(const void *, const void *)) dist_cmp);
 		/* pick d->sel_[max|min] nearest: */
 		if (d->sel_min && d->n_sel == d->sel_min
 				&& d->sel[d->n_sel]->u.dist2 > d->sel_rad) /* we forced: */
@@ -217,8 +227,11 @@ static int octant_select(DATA *d, DPOINT *where) {
 			n_notempty++; /* Yahoo, another non-empty octant! */
 		if (n > d->oct_max) {
 			/* to get the closest n: sort sel from start to end: */
-			qsort(sel + start, (size_t) n, sizeof(DPOINT *),
-				(int (*)(const void *, const void *)) dist_cmp);
+			qsort(sel + start, (size_t) n, sizeof(DPOINT *), (int 
+#ifdef SPLUS6WIN32
+				__cdecl
+#endif
+				(*)(const void *, const void *)) dist_cmp);
 			/* swap the remaining ones to the end of sel and forget about'm: */
 			for (j = start + d->oct_max; j < end; j++) {
 				d->n_sel--;
@@ -261,7 +274,11 @@ static int which_octant(DPOINT *where, DPOINT *p, int mode) {
 	return (x | (y << 1) | (z << 2));	
 }
 
-int dist_cmp(const DPOINT **pa, const DPOINT **pb) {
+int 
+#ifdef SPLUS6WIN32
+__cdecl
+#endif
+dist_cmp(const DPOINT **pa, const DPOINT **pb) {
 /* ANSI qsort() conformant dist_cmp */
 
 	if ( (*pa)->u.dist2 < (*pb)->u.dist2 )

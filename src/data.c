@@ -806,7 +806,11 @@ static void transform_data(DATA *d) {
 			values[i].index = i; /* unique identifiers */
 		}
 		qsort((void *) values, (size_t) d->n_list, sizeof(Double_index),
-			(int (*)(const void *, const void *)) double_index_cmp);
+			(int 
+#ifdef SPLUS6WIN32
+__cdecl
+#endif
+			 (*)(const void *, const void *)) double_index_cmp);
 		for (i = 0; i < d->n_list; i += tie_length) { /* ignore ties: */
 			/* assume they're all ties, with min run length 1: */
 			tie_length = 1;

@@ -152,7 +152,11 @@ int stats(char *name, int silent, double q) {
 	assert(dv->size > 0);
 
 	qsort(dv->val, (size_t) dv->size, sizeof(double),
-		(int (*)(const void *, const void *)) d_cmp);
+		(int 
+#ifdef SPLUS6WIN32
+__cdecl
+#endif
+		 (*)(const void *, const void *)) d_cmp);
 
 	mean = sample_mean(dv->val, dv->size);
 
@@ -185,7 +189,11 @@ int stats(char *name, int silent, double q) {
 	return 0;
 }
 
-int d_cmp(const double *a, const double *b) {
+int 
+#ifdef SPLUS6WIN32
+__cdecl
+#endif
+d_cmp(const double *a, const double *b) {
 	if (*a < *b)
 		return -1;
 	if (*a > *b)

@@ -851,7 +851,11 @@ void save_strcat(STRING_BUFFER *dest, const char *src) {
 	dest->str = strcat(dest->str, src);
 }
 
-int double_index_cmp(const Double_index *a, const Double_index *b) {
+int 
+#ifdef SPLUS6WIN32
+__cdecl
+#endif
+double_index_cmp(const Double_index *a, const Double_index *b) {
 /* ANSI-qsort() conformant Double_index comparison function: sort on field d */
 	if (a->d < b->d)
 		return -1;

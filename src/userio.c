@@ -122,8 +122,12 @@ void gstat_error(char *fname, int line,
 	save_strcat(error_message, "gstat: ");
 	len = strlen(error_message->str);
 	buf = error_message->str + len;
+#ifdef HAVE_SNPRINTF
 	snprintf(buf, ERROR_BUFFER_SIZE - len,
 		error_messages[err_nr], save_string(msg));
+#else
+	sprintf(buf, error_messages[err_nr], save_string(msg));
+#endif
 	if (DEBUG_DUMP || err_nr == ER_NULL) { /* print file&line */
 		save_strcat(error_message, " (");
 		save_strcat(error_message, fname);
@@ -160,7 +164,11 @@ void message(char *fmt, ...) {
 	char *buf = NULL;
 
 	va_start(args, fmt);
+#ifdef HAVE_VSNPRINTF
 	vsnprintf(error_prefix->str, ERROR_BUFFER_SIZE, fmt, args);
+#else
+	vsprintf(error_prefix->str, fmt, args);
+#endif
 	va_end(args);
 	buf = NULL;
 }
@@ -179,8 +187,11 @@ void pr_warning(char *fmt, ...) {
 	buf = warning_message->str + 9;
 
 	va_start(args, fmt);
-	/* vsprintf(buf, fmt, args); */
+#ifdef HAVE_VSNPRINTF
 	vsnprintf(buf, ERROR_BUFFER_SIZE - 9, fmt, args);
+#else
+	vsprintf(buf, fmt, args);
+#endif
 	va_end(args);
 
 	gstat_handler.warning_handler(warning_message->str);
@@ -255,7 +266,11 @@ void printlog(const char *fmt, ...) {
 	s = resize_strbuf(NULL, ERROR_BUFFER_SIZE);
 
 	va_start(args, fmt);
+#ifdef HAVE_VSNPRINTF
 	vsnprintf(s->str, ERROR_BUFFER_SIZE, fmt, args);
+#else
+	vsprintf(s->str, fmt, args);
+#endif
 	va_end(args);
 
 	gstat_handler.printlog_handler(s->str);

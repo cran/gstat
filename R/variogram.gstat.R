@@ -8,7 +8,7 @@ function (object, ...) {
 	beta = list()
 	for (i in 1:length(object$data)) {
 		d = object$data[[i]]
-		raw = gstat.formula(d$formula, d$locations, d$data)
+		raw = gstat.formula(d$formula, d$locations, eval(d$data))
 		y[[i]] = raw$y
 		locations[[i]] = raw$locations
 		X[[i]] = raw$X

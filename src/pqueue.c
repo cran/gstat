@@ -84,8 +84,11 @@ static void enlarge_queue(QUEUE *q) {
 	q->block[q->blocks - 1] = block;
 }
 
-QUEUE *init_queue(QUEUE *q,
-		int (*cmp)(const Q_ELEMENT_WHAT *a, const Q_ELEMENT_WHAT *b)) {
+QUEUE *init_queue(QUEUE *q, int (
+#ifdef SPLUS6WIN32
+		__cdecl
+#endif
+		*cmp)(const Q_ELEMENT_WHAT *a, const Q_ELEMENT_WHAT *b)) {
 	int i, j;
 
 	if (q == NULL) {
@@ -145,8 +148,11 @@ void enqueue(QUEUE *q, Q_ELEMENT_WHAT *el, int n) {
 	/* 
 	 * first sort array el
 	 */
-	qsort(el, (size_t) n, sizeof(Q_ELEMENT_WHAT),
-			(int (*)(const void *,const void *)) q->cmp);
+	qsort(el, (size_t) n, sizeof(Q_ELEMENT_WHAT), (int 
+#ifdef SPLUS6WIN32
+			__cdecl
+#endif
+			(*)(const void *,const void *)) q->cmp);
 
 	/*
  	 * and then merge them with the priority queue q

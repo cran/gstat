@@ -9,10 +9,10 @@ function (data, xcol = 1, ycol = 2, zcol = 3, fill = TRUE, maxsize = 3,
     d = data.frame(x = x, y = y)
     if (missing(pch)) 
         pch = ifelse(fill, 16, 1)
-    q.pch = rep(pch, length(q))
     z.col = ifelse(z < 0, col[1], col[2])
     q = key.entries
-    q.text = as.character(round(q,3))
+    q.pch = rep(pch, length(q))
+    q.text = as.character(round(q, 3))
     q.col = ifelse(q < 0, col[1], col[2])
     az = abs(z)
     q = abs(q)

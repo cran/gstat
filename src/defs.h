@@ -43,6 +43,8 @@
 # elif defined (_MSC_VER) /* some Microsoft C version, might work? */
 #  define GSTAT_OS "Win32/msc"
 #  define SEGMENTED
+# elif defined (__MINGW32__)
+#  define GSTAT_OS "Win32/MinGW"
 # elif defined (BORLANDC)
 #  define GSTAT_OS "Win32/bcc"
 # elif defined (WIN32) /* NT/98/9x/? */
@@ -62,7 +64,7 @@
 # elif defined (GSTAT_UNIX)
 #  define GSTAT_OS "unix"
 # else
-#  error fill in unknown platform
+#  define GSTAT_OS "unknown" /* not important */
 # endif
 #endif /* ifndef GSTAT_OS */
 

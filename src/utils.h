@@ -91,7 +91,11 @@ const char *save_string(const char *msg);
 void save_strcat(STRING_BUFFER *dest, const char *src);
 STRING_BUFFER *resize_strbuf(STRING_BUFFER *b, unsigned int size);
 void free_strbuf(STRING_BUFFER *b);
-int double_index_cmp(const Double_index *a, const Double_index *b);
+int 
+#ifdef SPLUS6WIN32
+	__cdecl
+#endif
+	double_index_cmp(const Double_index *a, const Double_index *b);
 int grass(void);
 char *temp_name(void);
 

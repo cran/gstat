@@ -521,8 +521,13 @@ static int get_map_location(DPOINT *loc, int random_path,
 	loc->u.stratum = -1; /* in case of MV in mask map: skip get_est() */
 	if (!at_end && !map_cell_is_mv(masks[0], *row, *col)) {
 		value = map_get_cell(masks[0], *row, *col);
-		loc->u.stratum = (int) STRATUM(value); /* always >= 0 */
-		assert(loc->u.stratum >= 0);
+		if (((int) STRATUM(value)) >= 0) 
+			loc->u.stratum = (int) STRATUM(value);
+		else {
+			if (get_mode() == STRATIFY)
+				pr_warning("negative stratum value %g set to zero", value);
+			loc->u.stratum = 0;
+		}
 		est[0] = value;
 		if (! DEBUG_TRACE)
 			print_progress(n_done++, n_pred_locs);
@@ -614,7 +619,15 @@ void map_sign(GRIDMAP *m, const char *what) {
 	if ((timestring = asctime(localtime(&tm))) == NULL)
 		timestring = "";
 	m->history = (char *) emalloc(1024 * sizeof(char));
-	snprintf(m->history, 1024,
+#ifdef HAVE_SNPRINTF
+	snprintf
+#else 
+	sprintf
+#endif
+		(m->history,
+#ifdef HAVE_SNPRINTF
+		1024,
+#endif
 		"%s%s\n%s %s %s\n%s%s\n%s %s\n%s %s\n%s %s (seed %lu)\n",
 		*user ? 
 		"creator:       " : "", user, 
@@ -629,7 +642,12 @@ void map_sign(GRIDMAP *m, const char *what) {
 		m->description[0] = '\0';
 	} else {
 		m->description = (char *) emalloc((strlen(what) + 1) * sizeof(char));
+#ifdef HAVE_SNPRINTF
 		snprintf(m->description, strlen(what) + 1, "%s\n", what);
+#else
+		sprintf(m->description, "%s\n", what);
+#endif
+
 	}
 }
 

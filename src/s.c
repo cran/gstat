@@ -269,7 +269,7 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 }
 
 SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
-			SEXP nsim) {
+			SEXP nsim, SEXP blue) {
 	double *locs, **est_all, *X;
 	long i, j, k, n, nvars, nest, dim, n_X, ncols_block, 
 		nrows_block, pos;
@@ -384,9 +384,12 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		}
 	}
 	/* so far for the faking; now let's see what gstat makes out of this: */
-	if (INTEGER_POINTER(nsim)[0] == 0)
-		set_method(get_default_method());
-	else {
+	if (INTEGER_POINTER(nsim)[0] == 0) {
+		if (INTEGER_POINTER(blue)[0] == 0) /* FALSE */
+			set_method(get_default_method());
+		else 
+			set_method(LSLM);
+	} else {
 		if (INTEGER_POINTER(nsim)[0] < 0) {
 			gl_nsim = -(INTEGER_POINTER(nsim)[0]);
 			set_method(ISI);

@@ -171,6 +171,7 @@ static float default_misval_idrisi = 0.0;
 #define BINARY_NATIVE      1
 #define BINARY_NON_NATIVE  2
 #define DEFAULT_MISVAL -9999.0
+#define SURFER_MISVAL 1.70141E+38
 
 static char *line_buf = NULL;
 static int line_size = 0;
@@ -1108,8 +1109,7 @@ static void write_ascii_grid(GRIDMAP * m, FILE * f, int as_rows)
 	for (i = 0; i < m->rows; i++) {
 		for (j = 0; j < m->cols; j++)
 			fprintf(f, fmt, (j && as_rows) ? " " : "",
-					is_mv_float(&(m->grid[i][j])) ? m->misval : m->
-					grid[i][j]);
+					is_mv_float(&(m->grid[i][j])) ? m->misval : m->grid[i][j]);
 		if (as_rows)
 			fprintf(f, "\n");
 	}
@@ -2397,21 +2397,27 @@ static void write_ermapper_header(GRIDMAP * m, FILE * fp)
 	fprintf(fp, "DatasetHeader End\n");
 }
 
-static GRIDMAP *read_surfer(GRIDMAP * m)
-{
+static GRIDMAP *read_surfer(GRIDMAP * m) {
 	FILE *f = NULL;
 	int i, j, size;
-	float *buf;
+	float *buf, zlo, zhi;
 
 	DUMP(m->filename);
 	DUMP(".grd: trying Surfer DSAA format... ");
 	if (file_exists(string_cat(m->filename, ".grd"))) {
 		f = efopen(string_cat(m->filename, ".grd"), "r");
-		if (read_surfer_header(m, f) || read_ascii_grid(m, f, 0)) {
+		if (read_surfer_header(m, f)) {
+			efclose(f);
+			return NULL;
+		} else { /* use min/max in header to set missing values later on */
+			zlo = m->cellmin;
+			zhi = m->cellmax;
+		}
+		if (read_ascii_grid(m, f, 0)) {
 			efclose(f);
 			return NULL;
 		}
-	} else						/* filename.grd does not exist */
+	} else	/* filename.grd does not exist */
 		return NULL;
 	efclose(f);
 	/* swap row order: */
@@ -2424,9 +2430,15 @@ static GRIDMAP *read_surfer(GRIDMAP * m)
 		memcpy(m->grid[j], buf, size);
 	}
 	m->is_binary = 0;
+	m->misval = SURFER_MISVAL;
+	for (i = 0; i < m->rows; i++)
+		for (j = 0; j < m->cols; j++)
+			if (m->grid[i][j] >= m->misval)
+				set_mv_float(&(m->grid[i][j]));
 	m->type = MT_SURFER;
 	m->write = write_surfer;
 	DUMP("yes\n");
+	efree(buf);
 	return m;
 }
 
@@ -2509,8 +2521,7 @@ static GRIDMAP *write_surfer(GRIDMAP * m)
 		row = m->rows - (i / m->cols) - 1;	/* from bottom to top */
 		col = i % m->cols;
 		if (map_cell_is_mv(m, row, col))
-			fprintf(f, "%g", m->cellmin < -9999.0 ?
-					m->cellmin * 1.1 : -9999.0);
+			fprintf(f, "%g", m->misval);
 		else
 			fprintf(f, "%g", m->grid[row][col]);
 		fprintf(f, ((i + 1) % 5 == 0) ? "\n" : " ");

@@ -53,7 +53,6 @@ x <- variogram(meuse.i, cutoff=1000)
 meuse.fit = fit.lmc(x, meuse.i)
 plot(x, model = meuse.fit)
 
-z <- predict(meuse.fit, newdata = meuse.grid, nsim = -2)
-# nsim = -2 instead of 2 forces indicator simulation
+z <- predict(meuse.fit, newdata = meuse.grid, nsim = 2, indicators = TRUE)
 levelplot(z~x+y|name, map.to.lev(z, z=c(3:20)), aspect = mapasp(z))
 rm(z, meuse.fit, x, meuse.i, q)

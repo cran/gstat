@@ -90,7 +90,11 @@
 (_p).y = (_a).y + (_r) * ((_b).y - (_a).y);
 
 static char InPoly( PLOT_POINT q, POLYGON *Poly);
-static int dist_cmp(const DPOINT **ap, const DPOINT **bp);
+static int 
+#ifdef SPLUS6WIN32
+	__cdecl
+#endif
+	dist_cmp(const DPOINT **ap, const DPOINT **bp);
 unsigned char line_of_sight(const PLOT_POINT data, const PLOT_POINT target,
                             const POLYGON *p_obj);
 static unsigned int segment_cross_check(PLOT_POINT p1, PLOT_POINT p2, PLOT_POINT p3, PLOT_POINT p4, double *r, double *s);
@@ -529,7 +533,11 @@ void check_edges(DATA *d, const DPOINT *where) {
 		return;
     /* otherwise sort d->sel by dist2 (u.dist2 is smaller then BAD, so it comes out first:*/
     qsort(d->sel, (size_t) d->n_sel, sizeof(DPOINT *),
-          (int (*)(const void *,const void *)) dist_cmp);
+          (int 
+#ifdef SPLUS6WIN32
+	__cdecl
+#endif
+	   (*)(const void *,const void *)) dist_cmp);
     /* and set d->n_sel to the number of GOOD ones */
     d->n_sel -= culled;
     return;
@@ -762,7 +770,11 @@ static int segment_between_check(PLOT_POINT a, PLOT_POINT b, PLOT_POINT c) {
 
 */
 
-static int dist_cmp(const DPOINT **pa, const DPOINT **pb) {
+static int 
+#ifdef SPLUS6WIN32
+__cdecl
+#endif
+dist_cmp(const DPOINT **pa, const DPOINT **pb) {
 /* ANSI qsort() conformant dist_cmp */
 
 	if ( (*pa)->u.dist2 < (*pb)->u.dist2 )
