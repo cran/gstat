@@ -2,7 +2,7 @@
 function (data, xcol = 1, ycol = 2, zcol = 3, fill = TRUE, maxsize = 3, 
     do.sqrt = TRUE, pch, col = c(2, 3), key.entries = quantile(data[,zcol]),
 	main = ifelse(is.numeric(zcol), names(data)[zcol], zcol),
-    identify = FALSE, ...) 
+    identify = FALSE, labels = row.names(data), ...) 
 {
     x = data[, xcol]
     y = data[, ycol]
@@ -26,7 +26,7 @@ function (data, xcol = 1, ycol = 2, zcol = 3, fill = TRUE, maxsize = 3,
 
     if (identify) {
 		plot(data[, xcol], data[, ycol], asp = 1, cex = cex, main = main, ...)
-		return(identify(data[, xcol], data[, ycol]))
+		return(identify(data[, xcol], data[, ycol], labels))
 	} 
     key = list(space = "right", points = list(pch = q.pch, col = q.col, 
     	cex = q.cex), text = list(q.text))

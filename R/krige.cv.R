@@ -1,10 +1,11 @@
-"krige.cv" <-
-function (formula, locations, data = sys.frame(sys.parent()), 
+"krige.cv" <- function (formula, locations, data = sys.frame(sys.parent()), 
 	model = NULL, beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, 
 	nfold = nrow(data), verbose = TRUE, ...)
 {
-#	if (missing(locations) && inherits(data, "spatial.data.frame"))
-#		locations = sp.formula(data)
+	if (has.coordinates(locations)) {
+		data = locations
+		locations = coordinates(data)
+	}
 	nc = 2 + length(attr(terms(~x+y),"term.labels"))
 	ret = data.frame(matrix(NA, nrow(data), nc))
 	if (nfold < nrow(data))
@@ -18,7 +19,7 @@ function (formula, locations, data = sys.frame(sys.parent()),
 			maxdist = maxdist, ...)
     	x = predict.gstat(g, newdata = data[sel,])
     	ret[sel,] = x
-		if(verbose)
+		if (verbose)
 			print(paste("fold", i))
 	}
 	names(ret) = names(x)

@@ -1,5 +1,5 @@
 bpy.colors              blue-pink-yellow color scheme that prints well
-                        on black/white printers
+                        as grey tone
 bubble                  Create a bubble plot of spatial data
 fit.lmc                 Fit a Linear Model of Coregionalization to a
                         Multivariable Sample Variogram
@@ -31,6 +31,7 @@ point.in.polygon        do point(s) fall in a given polygon?
 predict.gstat           Multivariable Geostatistical Prediction and
                         Simulation
 select.spatial          select points spatially
+show.vgms               Plot Variogram Model Functions
 variogram               Calculate Sample or Residual Variogram or
                         Variogram Cloud
 variogram.line          Semivariance Values For a Given Variogram

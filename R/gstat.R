@@ -2,11 +2,27 @@
     paste(id1, id2, sep = ".")
 }
 
+try.coordinates <- function(data) {
+	ret = try(cc <- coordinates(data), silent = TRUE)
+	if (inherits(ret, "try-error"))
+		stop("coordinates could not be derived from data; please supply them")
+	else cc
+}
+
+has.coordinates <- function(data) {
+	!inherits(try(coordinates(data), silent = TRUE), "try-error")
+}
+
 "gstat" <-
-function (g, id, formula, locations, data = NULL, model = NULL, 
-    beta, nmax = Inf, nmin = 0, maxdist = Inf, dummy = FALSE, set, 
-	fill.all = FALSE, fill.cross = TRUE, variance = "identity", weights = NULL) 
+function (g, id, formula, locations = try.coordinates(data), 
+	data = NULL, model = NULL, beta, nmax = Inf, nmin = 0, maxdist = Inf, 
+	dummy = FALSE, set, fill.all = FALSE, fill.cross = TRUE, 
+	variance = "identity", weights = NULL, merge) 
 {
+	if (has.coordinates(locations)) { # shift arguments:
+		data = locations
+		locations = NULL
+	}
 	if (fill.all) {
 	# fill all variogram models
 		if (missing(g) || is.null(model))
@@ -43,12 +59,10 @@ function (g, id, formula, locations, data = NULL, model = NULL,
         g$model[[nm]] = model
         return(g)
     }
-#	if (missing(locations) && inherits(data, "spatial.data.frame"))
-#		locations = sp.formula(data)
     if (!inherits(formula, "formula"))
         stop("argument formula should be of class formula")
-    if (!inherits(locations, "formula"))
-        stop("argument locations should be of class formula")
+    if (!inherits(locations, "formula") && !has.coordinates(data))
+        stop("argument locations should be of class formula or data.frame")
     if (missing(beta) || is.null(beta)) 
         beta = numeric(0)
 	vfn = pmatch(variance, c("identity", "mu", "mu(1-mu)", "mu^2", "mu^3"))
@@ -73,6 +87,8 @@ function (g, id, formula, locations, data = NULL, model = NULL,
             stop("argument set should be a list")
         g$set = set
     }
+	if (!missing(merge))
+		g$merge = merge
     class(g) = c("gstat", "list")
     g
 }
@@ -96,6 +112,8 @@ function (g, id, formula, locations, data = NULL, model = NULL,
 		g$model = x$model[ids]
 	if (!is.null(x$set))
 		g$set = x$set
+	if (!is.null(g$merge))
+		g$merge = x$merge
     class(g) = c("gstat", "list")
 	g
 }

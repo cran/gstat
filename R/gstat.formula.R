@@ -1,33 +1,30 @@
 "gstat.formula" <-
-function (formula, locations, data) 
+function (formula, locations, data)
 {
-    call = match.call()
-    m = match.call(expand = FALSE)
-    Y = NULL
-    m$method = m$model = m$x = m$y = m$... = NULL
-    m$drop.unused.levels = TRUE
-    m[[1]] = as.name("model.frame")
-    m$locations = NULL
-    m = eval(m, sys.frame(sys.parent()))
-    Terms = attr(m, "terms")
+    if (has.coordinates(locations)) {
+        data = as.data.frame(locations)
+        locations = coordinates(locations)
+    } else if (has.coordinates(data)) {
+        locations = coordinates(data)
+        data = as.data.frame(data)
+    } else { # resolve formula from data.frame:
+        if (!inherits(locations, "formula"))
+            stop("locations argument should be a formula, such as ~x+y")
+		m = model.frame(terms(locations), data)
+        Terms = attr(m, "terms")
+        attr(Terms, "intercept") = 0
+        if ((yvar = attr(Terms, "response")) > 0)
+            stop("no response allowed in locations formula")
+        locations = model.matrix(Terms, m)
+    }
+    m = model.frame(terms(formula), data)
     Y = model.extract(m, response)
-    if (length(Y) == 0) 
+    if (length(Y) == 0)
         stop("no response variable present in formula")
-    X = model.matrix(Terms, m)
-	has.intercept = attr(Terms, "intercept")
-    if (!inherits(locations, "formula"))
-        stop("locations argument should be a formula, such as ~x+y")
-    m = match.call(expand = FALSE)
-    m$method = m$model = m$x = m$y = m$... = NULL
-    m$formula = locations
-    m$locations = NULL
-    m[[1]] = as.name("model.frame")
-    m = eval(m, sys.frame(sys.parent()))
     Terms = attr(m, "terms")
-    attr(Terms, "intercept") = 0
-    if ((yvar = attr(Terms, "response")) > 0) 
-        stop("no response allowed in locations formula")
-    locations = model.matrix(Terms, m)
-    list(y = Y, locations = locations, X = X, call = call, has.intercept =
-		has.intercept)
+    X = model.matrix(Terms, m)
+    has.intercept = attr(Terms, "intercept")
+
+    list(y = Y, locations = as.matrix(locations), X = X, call = call,
+        has.intercept = has.intercept)
 }

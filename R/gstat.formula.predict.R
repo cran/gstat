@@ -1,18 +1,23 @@
 "gstat.formula.predict" <-
 function (formula, locations, newdata, na.action) 
 {
-	# resolve locations:
-	terms.l = terms(locations)
-    attr(terms.l, "intercept") = 0
-    mf.locs = model.frame(terms.l, newdata, na.action = na.action)
-    locs = model.matrix(terms.l, mf.locs)
+	if (has.coordinates(newdata)) {
+		locs = coordinates(newdata)
+		newdata = as.data.frame(newdata)
+	} else {
+		# resolve locations:
+		terms.l = terms(locations)
+    	attr(terms.l, "intercept") = 0
+    	mf.locs = model.frame(terms.l, newdata, na.action = na.action)
+    	locs = model.matrix(terms.l, mf.locs)
+	}
 
 	# resolve formula:
 	terms.f = delete.response(terms(formula))
     mf.f = model.frame(terms.f, newdata, na.action = na.action)
     X = model.matrix(terms.f, mf.f)
 
-	if (NROW(locs) != NROW(X)) { 
+	if (inherits(locations, "formula") && NROW(locs) != NROW(X)) { 
 		# NA's were filtered in one, but not the other:
 		mf.locs = model.frame(terms.l, newdata, na.action = na.pass)
     	mf.f =    model.frame(terms.f, newdata, na.action = na.pass)

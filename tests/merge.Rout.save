@@ -1,0 +1,222 @@
+
+R : Copyright 2003, The R Development Core Team
+Version 1.8.0  (2003-10-08)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for a HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # illustrates the use of merge, for merging parameters accross variables:
+> # Z1=m+e1(s)
+> # Z2=m+e2(s)
+> # Z1 and Z2 each have a different variogram, but share the parameter m
+> # see documentation of gstat() function
+> library(gstat)
+Loading required package: lattice 
+> d1 = data.frame(x=c(0,2),y=c(0,0),z=c(0,1))
+> d2 = data.frame(x=c(0,2),y=c(2,2),z=c(4,5))
+> g = gstat(NULL,"d1", z~1,~x+y,d1,model=vgm(1, "Exp", 1))
+> g = gstat(g,"d2", z~1,~x+y,d2,model=vgm(1, "Exp", 1), merge=c("d1","d2"))
+> g = gstat(g, c("d1", "d2"), model = vgm(0.5, "Exp", 1))
+> predict.gstat(g, data.frame(x=1,y=1), debug = 32)
+Intrinsic Correlation found. Good.
+[using ordinary cokriging]
+we're at location X: 1 Y: 1 Z: 0
+zero block size
+we're at point X: 1 Y: 1 Z: 0
+
+# X:
+Matrix: 4 by 1
+row 0:              1 
+row 1:              1 
+row 2:              1 
+row 3:              1 
+[using generalized covariances: max_val - semivariance()]
+# Covariances (x_i, x_j) matrix C (lower triangle only):
+Matrix: 4 by 4
+row 0:              1              0              0              0 
+row 1:    0.135335283              1              0              0 
+row 2:   0.0676676416   0.0295528733              1              0 
+row 3:   0.0295528733   0.0676676416    0.135335283              1 
+
+# X'C-1 X:
+Matrix: 1 by 1
+row 0:     3.24528918 
+
+# beta:
+Vector: dim: 1
+           2.5 
+# Cov(beta), (X'C-1 X)-1:
+Matrix: 1 by 1
+row 0:     0.30813895 
+
+# Corr(beta):
+Matrix: 1 by 1
+row 0:              1 
+
+# X0 (X values at prediction location x0):
+Matrix: 1 by 2
+row 0:              1              1 
+
+# BLUE(mu), E(y(x0)) = X0'beta:
+Vector: dim: 2
+           2.5            2.5 
+# Covariances (x_i, x_0), C0:
+Matrix: 4 by 2
+row 0:    0.243116734    0.121558367 
+row 1:    0.243116734    0.121558367 
+row 2:    0.121558367    0.243116734 
+row 3:    0.121558367    0.243116734 
+
+# C-1 C0:
+Matrix: 4 by 2
+row 0:    0.206482174    0.089386867 
+row 1:    0.206482174    0.089386867 
+row 2:    0.089386867    0.206482174 
+row 3:    0.089386867    0.206482174 
+
+# [a] Cov_ij(B,B) or Cov_ij(0,0):
+Matrix: 2 by 2
+row 0:              1            0.5 
+row 1:            0.5              1 
+
+# [c] (x0-X'C-1 c0)'(X'C-1 X)-1(x0-X'C-1 c0):
+Matrix: 2 by 2
+row 0:   0.0513599204   0.0513599204 
+row 1:   0.0513599204   0.0513599204 
+
+# [b] c0'C-1 c0:
+Matrix: 2 by 2
+row 0:    0.122129987   0.0936621582 
+row 1:   0.0936621582    0.122129987 
+
+# Best Linear Unbiased Predictor:
+Vector: dim: 2
+    2.03161877     2.96838123 
+# MSPE ([a]-[b]+[c]):
+Matrix: 2 by 2
+row 0:    0.929229934    0.457697762 
+row 1:    0.457697762    0.929229934 
+
+# kriging weights:
+Matrix: 4 by 2
+row 0:    0.308547653    0.191452347 
+row 1:    0.308547653    0.191452347 
+row 2:    0.191452347    0.308547653 
+row 3:    0.191452347    0.308547653 
+
+
+  x y  d1.pred  d1.var  d2.pred  d2.var cov.d1.d2
+1 1 1 2.031619 0.92923 2.968381 0.92923 0.4576978
+> 
+> # Z1 and Z2 share a regression slope:
+> g = gstat(NULL,"d1", z~x,~x+y,d1,model=vgm(1, "Exp", 1))
+> g = gstat(g,"d2", z~x,~x+y,d2,model=vgm(1, "Exp", 1), 
++ 	merge=list(c("d1",2,"d2",2)))
+> g = gstat(g, c("d1", "d2"), model = vgm(0.5, "Exp", 1))
+> predict.gstat(g, data.frame(x=1,y=1), debug = 32)
+Intrinsic Correlation found. Good.
+[using universal cokriging]
+we're at location X: 1 Y: 1 Z: 0
+zero block size
+we're at point X: 1 Y: 1 Z: 0
+
+# X:
+Matrix: 4 by 3
+row 0:              1              0              0 
+row 1:              1              2              0 
+row 2:              0              0              1 
+row 3:              0              2              1 
+[using generalized covariances: max_val - semivariance()]
+# Covariances (x_i, x_j) matrix C (lower triangle only):
+Matrix: 4 by 4
+row 0:              1              0              0              0 
+row 1:    0.135335283              1              0              0 
+row 2:   0.0676676416   0.0295528733              1              0 
+row 3:   0.0295528733   0.0676676416    0.135335283              1 
+
+# X'C-1 X:
+Matrix: 3 by 3
+row 0:     1.77460693     1.62264459   -0.151962334 
+row 1:     1.62264459     7.67605004     1.62264459 
+row 2:   -0.151962334     1.62264459     1.77460693 
+
+# beta:
+Vector: dim: 3
+2.10985743e-16            0.5              4 
+# Cov(beta), (X'C-1 X)-1:
+Matrix: 3 by 3
+row 0:    0.793362513   -0.225694871    0.274305129 
+row 1:   -0.225694871    0.225694871   -0.225694871 
+row 2:    0.274305129   -0.225694871    0.793362513 
+
+# Corr(beta):
+Matrix: 3 by 3
+row 0:              1   -0.533365606     0.34575005 
+row 1:   -0.533365606              1   -0.533365606 
+row 2:     0.34575005   -0.533365606              1 
+
+# X0 (X values at prediction location x0):
+Matrix: 3 by 2
+row 0:              1              0 
+row 1:              1              1 
+row 2:              0              1 
+
+# BLUE(mu), E(y(x0)) = X0'beta:
+Vector: dim: 2
+           0.5            4.5 
+# Covariances (x_i, x_0), C0:
+Matrix: 4 by 2
+row 0:    0.243116734    0.121558367 
+row 1:    0.243116734    0.121558367 
+row 2:    0.121558367    0.243116734 
+row 3:    0.121558367    0.243116734 
+
+# C-1 C0:
+Matrix: 4 by 2
+row 0:    0.206482174    0.089386867 
+row 1:    0.206482174    0.089386867 
+row 2:    0.089386867    0.206482174 
+row 3:    0.089386867    0.206482174 
+
+# [a] Cov_ij(B,B) or Cov_ij(0,0):
+Matrix: 2 by 2
+row 0:              1            0.5 
+row 1:            0.5              1 
+
+# [c] (x0-X'C-1 c0)'(X'C-1 X)-1(x0-X'C-1 c0):
+Matrix: 2 by 2
+row 0:     0.20356416   -0.100844319 
+row 1:   -0.100844319     0.20356416 
+
+# [b] c0'C-1 c0:
+Matrix: 2 by 2
+row 0:    0.122129987   0.0936621582 
+row 1:   0.0936621582    0.122129987 
+
+# Best Linear Unbiased Predictor:
+Vector: dim: 2
+           0.5            4.5 
+# MSPE ([a]-[b]+[c]):
+Matrix: 2 by 2
+row 0:     1.08143417    0.305493523 
+row 1:    0.305493523     1.08143417 
+
+# kriging weights:
+Matrix: 4 by 2
+row 0:            0.5 4.16333634e-17 
+row 1:            0.5 -1.38777878e-17 
+row 2: -5.55111512e-17            0.5 
+row 3: 2.77555756e-17            0.5 
+
+
+  x y d1.pred   d1.var d2.pred   d2.var cov.d1.d2
+1 1 1     0.5 1.081434     4.5 1.081434 0.3054935
+> 

@@ -1,6 +1,6 @@
 \name{bpy.colors}
 \alias{bpy.colors}
-\title{ blue-pink-yellow color scheme that prints well on black/white printers }
+\title{ blue-pink-yellow color scheme that prints well as grey tone }
 \description{ Create a vector of `n' ``contiguous'' colors.  }
 \usage{ bpy.colors(n = 100, cutoff.tails = 0.1) }
 \arguments{
@@ -13,9 +13,11 @@ the tails, it runs from blue to yellow, which looks nicer. }
 either to create a user-defined color palette for subsequent graphics
 by `palette(cv)', a `col=' specification in graphics functions or in
 `par'. }
-\references{ see url; gnuplot has this color map }
 \author{ unknown }
-\url{ http://www.ihe.uni-karlsruhe.de/mitarbeiter/vonhagen/palette.en.html }
+\references{
+\url{http://www.ihe.uni-karlsruhe.de/mitarbeiter/vonhagen/palette.en.html};
+gnuplot has this color map 
+}
 \note{ This color map prints well on black-and-white printers. }
 \seealso{\link{rainbow}, \link{cm.colors}}
 \examples{
@@ -23,5 +25,7 @@ bpy.colors(10)
 p <- expand.grid(x=1:30,y=1:30)
 p$z <- p$x + p$y
 image(p, col = bpy.colors(100))
+# require(lattice)
+# trellis.par.set("regions", list(col=bpy.colors())) # make default
 }
 \keyword{color}

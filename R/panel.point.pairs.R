@@ -1,7 +1,8 @@
 "panel.point.pairs" <-
 function (x, y, type = "p", pch = plot.symbol$pch, col, col.line = 
 	plot.line$col, col.symbol = plot.symbol$col, lty = plot.line$lty, 
-	cex = plot.symbol$cex, lwd = plot.line$lwd, pairs = pairs, ...) 
+	cex = plot.symbol$cex, lwd = plot.line$lwd, pairs = pairs, 
+	line.pch = line.pch, ...) 
 {
     x = as.numeric(x)
     y = as.numeric(y)
@@ -20,6 +21,8 @@ function (x, y, type = "p", pch = plot.symbol$pch, col, col.line =
 				xx = c(x[pairs[i,1]], x[pairs[i,2]])
 				yy = c(y[pairs[i,1]], y[pairs[i,2]])
             	llines(x = xx, y = yy, lty = lty, col = col.line, lwd = lwd)
+				if (line.pch > 0)
+					lpoints(mean(xx), mean(yy), pch = line.pch, col = col.line)
 			}
         }
     }

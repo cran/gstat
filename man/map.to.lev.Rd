@@ -20,6 +20,6 @@ data frame with the following elements:
 of \code{data} stacked } 
 \item{name}{ factor; name of each of the stacked \code{z} columns } 
 }
-\seealso{ \link{levelplot}, \link{image.data.frame}, \link{krige};
+\seealso{ \code{levelplot}, \link{image.data.frame}, \link{krige};
 for examples see \link{predict.gstat} }
 \keyword{dplot}

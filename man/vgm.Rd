@@ -22,21 +22,57 @@ models }
 \item{nugget}{ nugget component of the variogram (this basically adds a nugget
 compontent to the model) }
 \item{add.to}{ a variogram model to which we want to add a component }
-\item{anis}{ anisotropy parameters: }
+\item{anis}{ anisotropy parameters: see notes below }
 \item{x}{ a variogram model to print }
 \item{...}{ arguments that will be passed to \code{print}, e.g. \code{digits}
 (see examples) }
 }
 \value{
-an object of class variogram.model, which extends data.frame Calling 
-\code{vgm} without a model argument returns the list with available models.
+an object of class variogram.model, which extends data.frame Called
+without a model argument returns a character list with available models.
 }
 \references{ }
 \author{ Edzer J. Pebesma }
+\note{ 
+Geometric anisotropy can be modelled for each individual simple model
+by giving two or five anisotropy parameters, two for two-dimensional
+and five for three-dimensional data. In any case, the range defined
+is the range in the direction of the strongest correlation, or the
+major range. Anisotropy parameters define which direction this is (the
+main axis), and how much shorter the range is in (the) direction(s)
+perpendicular to this main axis.
+
+In two dimensions, two parameters define an anisotropy ellipse, say
+\code{anis = c(45, 0.5)}. The first parameter, \code{30}, refers to
+the main axis direction: it is the angle for the principal direction
+of continuity (measured in degrees, clockwise from positive Y, North).
+The second parameter, \code{0.5}, is the anisotropy ratio, the ratio
+of the minor range to the major range (a value between 0 and 1).  So,
+in our example, if the range in the major direction (North-East) is 100,
+the range in the minor direction (South-East) is 50.
+
+In three dimensions, five values should be given in the form \code{anis
+= c(p,q,r,s,t)}.  Now, $p$ is the angle for the principal direction of
+continuity (measured in degrees, clockwise from Y, in direction of X),
+$q$ is the dip angle for the principal direction of continuity (measured
+in positive degrees up from horizontal), $r$ is the third rotation angle
+to rotate the two minor directions around the principal direction defined
+by $p$ and $q$. A positive angle acts counter-clockwise while looking
+in the principal direction. Anisotropy ratios $s$ and $t$ are the ratios
+between the major range and each of the two minor ranges. 
+
+(Note that \code{anis = c(p,s)} is equivalent to \code{anis = c(p,0,0,s,1)}.)
+
+The implementation in gstat for 2D and 3D anisotropy was taken from
+the gslib (probably 1992) code.  I have seen a paper where it is argued
+that the 3D anisotropy code implemented in gslib (en then also in gstat)
+is in error, but I have not corrected anything afterwards.
+}
 \seealso{
-\link{print.variogram.model}, 
-\link{fit.variogram}, 
-\link{variogram.line}, 
+\link{show.vgms} to view the available models,
+\link{print.variogram.model},
+\link{fit.variogram},
+\link{variogram.line},
 \link{variogram} for the sample variogram.
 }
 \examples{
@@ -58,4 +94,3 @@ print.data.frame(x)
 }
 
 \keyword{models}
-
