@@ -423,6 +423,7 @@ char *yytext;
 #line 1 "lex.l"
 #define INITIAL 0
 #line 2 "lex.l"
+  /* NOTE CEES REMOVED section from distro */
 /*
     Gstat, a program for geostatistical modelling, prediction and simulation
     Copyright 1992, 2003 (C) Edzer J. Pebesma
@@ -514,6 +515,7 @@ static void reset_lex(void);
 # define output(c)  MY_output(c)
 #endif /* else FLEX_SCANNER */
 
+
 #ifdef LDEBUG
 #	define SCANNED(a) { if (*a) printlog("scanned %s [%s]\n", a, (char *) yytext); \
 	else printlog("scanned %s\n", (char *) yytext); }
@@ -521,17 +523,6 @@ static void reset_lex(void);
 #	define SCANNED(a)
 #endif
 
-/* 
-* regular expressions for primary types:
-* 
-* (1) I use the definition for white space to allow dos command files
-* on unix machines (although DJGPP can cope with it)
-* W				[ \t\032\015]*
-* \032 is EOF (^Z), \015 is CR (^M)
-* for unix-only or dos-only ``W	[ \t\n]'' will do.]
-* (2) IDENT (from the flex info files): []] is the `]' character,
-* [[] the ']' character, ^ inside [] is only special as first character.
-*/
 /*
 * following is the RULES section:
 */
@@ -696,7 +687,7 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 133 "lex.l"
+#line 126 "lex.l"
 
 
 	if ( yy_init )
@@ -782,7 +773,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 134 "lex.l"
+#line 127 "lex.l"
 { 	SCANNED("INT");
 				if (read_int((char *) yytext, &(yylval.ival))) {
 					lex_error();
@@ -793,7 +784,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 141 "lex.l"
+#line 134 "lex.l"
 { 	SCANNED("UINT");
 				cp = strchr((char *) yytext, 'U');
 				*cp = '\0';
@@ -805,12 +796,12 @@ YY_RULE_SETUP
 			}
 	YY_BREAK
 case 3:
-#line 151 "lex.l"
+#line 144 "lex.l"
 case 4:
-#line 152 "lex.l"
+#line 145 "lex.l"
 case 5:
 YY_RULE_SETUP
-#line 152 "lex.l"
+#line 145 "lex.l"
 {	SCANNED("REAL");
 				if (read_double((char *) yytext, &(yylval.dval))) {
 					lex_error();
@@ -820,10 +811,10 @@ YY_RULE_SETUP
 			}
 	YY_BREAK
 case 6:
-#line 160 "lex.l"
+#line 153 "lex.l"
 case 7:
 YY_RULE_SETUP
-#line 160 "lex.l"
+#line 153 "lex.l"
 {	SCANNED("[S|D]QSTRING");
 				yylval.sval = unquote((char *) yytext);
 				return(QSTR);
@@ -831,7 +822,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 164 "lex.l"
+#line 157 "lex.l"
 {	SCANNED("BQSTRING");
 				yylval.sval = bquote(unquote((char *) yytext));
 				return(QSTR);
@@ -839,7 +830,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 168 "lex.l"
+#line 161 "lex.l"
 {	/* SCANNED("IDENT"); */
 				yylval.sval = string_dup((char *) yytext);
 				if (almost_equals((char *) yytext, "data") ||
@@ -879,27 +870,27 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 204 "lex.l"
+#line 197 "lex.l"
 {	SCANNED("WS"); return(yylex()); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 205 "lex.l"
+#line 198 "lex.l"
 {	SCANNED("NL"); My_yy_lineno++; return(yylex()); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 206 "lex.l"
+#line 199 "lex.l"
 {	SCANNED("COMMENT (#)"); My_yy_lineno++; return(yylex()); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 207 "lex.l"
+#line 200 "lex.l"
 {	SCANNED(""); return(*yytext); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 209 "lex.l"
+#line 202 "lex.l"
 ECHO;
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
@@ -1791,7 +1782,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 209 "lex.l"
+#line 202 "lex.l"
 
 /* User supplied subroutines: */
 int MY_input(void) {

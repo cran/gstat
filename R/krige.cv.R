@@ -1,6 +1,6 @@
 "krige.cv" <-
 function (formula, locations, data = sys.frame(sys.parent()), 
-	model = NULL, beta = NULL, nmax = Inf, maxdist = Inf, 
+	model = NULL, beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, 
 	nfold = nrow(data), verbose = TRUE, ...)
 {
 	nc = 2 + length(attr(terms(~x+y),"term.labels"))
@@ -12,7 +12,7 @@ function (formula, locations, data = sys.frame(sys.parent()),
 	for (i in sort(unique(fold))) {
 		sel = (1:nrow(data))[fold == i]
     	g = gstat(formula = formula, locations = locations, model = model, 
-			data = data[-sel,], beta = beta, nmax = nmax, 
+			data = data[-sel,], beta = beta, nmax = nmax, nmin = nmin,
 			maxdist = maxdist, ...)
     	x = predict.gstat(g, newdata = data[sel,])
     	ret[sel,] = x

@@ -142,11 +142,11 @@ int stats(char *name, int silent, double q) {
 
 	if (dv == NULL) {
 		dv = (D_VECTOR *) emalloc(sizeof(D_VECTOR));
-		dv->size = 0;
+		dv->max_size = dv->size = 0;
 		dv->val = NULL;
 	}
-
 	dv->size = 0;
+
 	read_vector(dv, name);
 
 	assert(dv->size > 0);

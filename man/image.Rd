@@ -20,13 +20,15 @@ y-coordinate, and z-coordinate in its columns }
 \item{xcol}{ column number of x-coordinate }
 \item{ycol}{ column number of y-coordinate }
 \item{...}{ arguments, passed to image.default }
-\item{xyz}{same as \code{x}}
+\item{xyz}{data frame (same as \code{x})}
 }
 \value{
 \link{image.data.frame} plots an image from gridded data, organized
 in arbritrary order, in a data frame. It uses \link{xyz2img} and
-\link{image.default} for this. \link{xyz2img} tries to make an equal
-aspect ratio.
+\link{image.default} for this. In the S-Plus version, \link{xyz2img}
+tries to make an image object with a size such that it will plot with
+an equal aspect ratio; for the R version, image.data.frame uses the
+\code{asp=1} argument to guarantee this.
 
 \link{xyz2img} returns a list with components: \code{z}, a matrix
 containing the z-values; \code{x}, the increasing coordinates of the
@@ -34,22 +36,20 @@ rows of \code{z}; \code{y}, the increasing coordinates of the columns
 of \code{z}. This list is suitable input to \link{image.default}.
 }
 \note{
-It is hard (if not impossible) to get exactly right cell shapes (e.g.,
-square for a square grid) without altering the size of the plotting
-region, but this function tries hard to do so by extending the image
-to plot in either x- or y-direction.  The larger the grid, the better
-the approximation. Geographically correct images can be obtained by
-modifiying \code{par("pin")}. Read the examples, image a 2 x 2 grid,
+I wrote this function before I found out about \code{levelplot},
+a Lattice/Trellis function that lets you control the aspect ratio by
+the \code{aspect} argument, and that automatically draws a legend, and
+therefore I now prefer levelplot over \code{image}. Plotting points
+on a levelplots is probably done with providing a panel function and
+using \code{lpoints}.
+
+(for S-Plus only -- ) it is hard (if not impossible) to get exactly right
+cell shapes (e.g., square for a square grid) without altering the size of
+the plotting region, but this function tries hard to do so by extending
+the image to plot in either x- or y-direction.  The larger the grid, the
+better the approximation. Geographically correct images can be obtained
+by modifiying \code{par("pin")}. Read the examples, image a 2 x 2 grid,
 and play with \code{par("pin")} if you want to learn more about this.
-
-It seems (R >= 1.6.1) that resizing the plotting window destroys the
-aspect ratio, unless par(pin) has been set explicitly.
-
-I wrote this function before I found out about \code{levelplot}, a
-Lattice/Trellis function that lets you control the aspect ratio by an
-\code{aspect} argument. It automatically draws a legend, and therefore
-I now prefer it over \code{image}. Plotting points on a levelplots
-is probably done with providing a panel function and using \code{lpoints}.
 }
 \references{ }
 \author{ Edzer J. Pebesma }

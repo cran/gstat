@@ -1373,7 +1373,7 @@ static GRIDMAP *write_csf(GRIDMAP * m)
 {
 	if (m->CSF_MAP == NULL)
 		ErrMsg(ER_NULL, "write_csf()");
-	if (m->write_row != NULL) /* flush last row: */
+	if (m->write_row != NULL && m->grid) /* flush last row: */
 		m->write_row(m, m->grid[m->current_row], m->current_row);
 	else { /* flush complete map: */
 		if (RputSomeCells((MAP *) m->CSF_MAP, 0, m->base_size, m->base) != 

@@ -1,5 +1,5 @@
-#ifndef ERROR_H
-#define ERROR_H
+#ifndef USERIO_H
+#define USERIO_H
 
 #if defined(__cplusplus)
 extern "C" {
@@ -26,10 +26,11 @@ enum Gstat_errno {
 	ER_PWRITE      = 17 /* error while writing to a pipe */,
 	ER_PREAD       = 18 /* error while reading from a pipe */,
 	ER_SECURE      = 19 /* secure mode: operation not allowed */,
-	ER_MESCHACH    = 20 /* error happened somewhere in meschach matrix lib */
+	ER_MESCHACH    = 20 /* error happened somewhere in meschach matrix lib */,
+	ER_EXT_DBASE   = 21 /* error happened somewhere in extdbase.c on hooks */
 };
 
-#define MAX_ERRNO 20
+#define MAX_ERRNO 21
 extern const char *error_messages[MAX_ERRNO+1];
 void message(char *fmt, ...);  /* message() calls always preceed ErrMsg() */
 #define ErrMsg(a,b) gstat_error(__FILE__,__LINE__,a,b)
@@ -54,11 +55,15 @@ void set_gstat_error_handler(void (*error_fn)(const char *message, int level));
 void set_gstat_log_handler(void (*logprint)(const char *str));
 void set_gstat_progress_handler(
 	void (*progress)(unsigned int step, unsigned int total));
+void push_gstat_progress_handler(
+	void (*progress)(unsigned int step, unsigned int total));
+void pop_gstat_progress_handler(void);
 
 void default_warning(const char *mess);
 void default_error(const char *mess, int level);
 void default_printlog(const char *mess);
 void default_progress(unsigned int step, unsigned int total);
+void no_progress(unsigned int current, unsigned int total);
 
 int set_gstat_log_file(FILE *f);
 
@@ -68,4 +73,4 @@ const char *get_gstat_error_message(void);
 }
 #endif
 
-#endif /* ERROR_H */
+#endif /* USERIO_H */

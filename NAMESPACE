@@ -1,0 +1,36 @@
+useDynLib(gstat)
+
+export(
+bpy.colors,
+bubble,
+fit.lmc,
+fit.variogram,
+fit.variogram.reml,
+gstat,
+krige.cv,
+krige,
+map.to.lev,
+mapasp,
+ossfim,
+point.in.polygon,
+predict.gstat,
+select.spatial,
+variogram,
+variogram.line,
+vgm,
+xyz2img,
+zerodist
+)
+
+S3method(predict, gstat)
+S3method(print, gstat)
+S3method(print, variogram)
+S3method(print, variogram.cloud)
+S3method(print, variogram.model)
+S3method(variogram, default)
+S3method(variogram, formula)
+S3method(variogram, gstat)
+S3method(plot, point.pairs)
+S3method(plot, variogram)
+S3method(plot, variogram.cloud)
+S3method(image, data.frame)

@@ -22,8 +22,10 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		if (d$nmax == Inf) 
 			nmax = as.integer(-1)
 		else nmax = as.integer(d$nmax)
+		nmin = as.integer(max(0, d$nmin))
 		if (d$maxdist == Inf)
 			maxdist = as.numeric(-1)
+		else maxdist = d$maxdist
 		if (d$dummy) {
 			tr = terms(d$locations)
 			if (is.null(d$beta) || length(d$beta) == 0)
@@ -31,7 +33,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			loc.dim = length(attr(tr, "term.labels"))
 			.Call("gstat_new_dummy_data", as.integer(loc.dim), 
 				as.integer(d$has.intercept), as.numeric(d$beta), 
-				nmax, maxdist, as.integer(d$vfn)
+				nmax, nmin, maxdist, as.integer(d$vfn)
 				, PACKAGE = "gstat"
 				)
 		} else {
@@ -42,7 +44,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			raw = gstat.formula(d$formula, d$locations, d$data)
 			.Call("gstat_new_data", raw$y, as.vector(raw$locations), 
 				as.vector(raw$X), as.integer(raw$has.intercept),
-				as.numeric(d$beta), nmax, maxdist, as.integer(d$vfn),
+				as.numeric(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
 				as.numeric(w)
 				, PACKAGE = "gstat"
 			)

@@ -95,10 +95,10 @@
 
 static void init_qtree(DATA *d);
 static void init_qnode(QTREE_NODE **p_node, int is_leaf, BBOX bb);
-static void qtree_push(DPOINT *p, QTREE_NODE **p_node);
+static void qtree_push(DPOINT *p, QTREE_NODE **p_node, int recursion_depth);
 static BBOX sub_bbox(const BBOX bb, int i);
 static int in_bbox(const DPOINT *p, BBOX bb);
-static void qtree_split_node(QTREE_NODE *node, BBOX bb);
+static void qtree_split_node(QTREE_NODE *node, BBOX bb, int rec_level);
 static QTREE_NODE *qtree_expand(const DPOINT *p, QTREE_NODE *root);
 static QTREE_NODE **qtree_find_node(const DPOINT *p, QTREE_NODE **p_node,
 	BBOX *bbox);
@@ -217,17 +217,19 @@ void qtree_push_point(DATA *d, DPOINT *where) {
 	/*
 	 * finally push the point onto the tree:
 	 */
-	qtree_push(where, &(d->qtree_root));
+	qtree_push(where, &(d->qtree_root), 0);
 	return;
 }
 
-static void qtree_push(DPOINT *where, QTREE_NODE **p_node) {
+static void qtree_push(DPOINT *where, QTREE_NODE **p_node, 
+				int recursion_depth) {
 /* add a data point to the quad tree starting at the node specified. */
 
 	QTREE_NODE **p_leaf, *node;
 	BBOX bb;
 
 	bb = (*p_node)->bb;
+	recursion_depth += 1;
 	/* find the leaf node where this point belongs */
 	p_leaf = qtree_find_node(where, p_node, &bb);
 
@@ -237,9 +239,9 @@ static void qtree_push(DPOINT *where, QTREE_NODE **p_node) {
 	node = *p_leaf;
 
 	/* If it is already full, split it into another level and try again: */
-	if (node->n_node == gl_split) {
-		qtree_split_node(node, (*p_node)->bb); 
-		qtree_push(where, &node);
+	if (node->n_node == gl_split && recursion_depth < MAX_RECURSION_DEPTH) {
+		qtree_split_node(node, (*p_node)->bb, recursion_depth); 
+		qtree_push(where, &node, recursion_depth);
 		return;
 	}
 
@@ -309,7 +311,7 @@ void qtree_free(QTREE_NODE *node) {
 	return;
 }
 
-static void qtree_split_node(QTREE_NODE *node, BBOX bbox) {
+static void qtree_split_node(QTREE_NODE *node, BBOX bbox, int rec_level) {
 /*
  * split the quadtree at 'node' and redistribute its points
  */
@@ -325,7 +327,7 @@ static void qtree_split_node(QTREE_NODE *node, BBOX bbox) {
 
 	/* redistribute the points into the child nodes where they belong */
 	for (i = 0; i < n; i++)
-		qtree_push(list[i], &node);
+		qtree_push(list[i], &node, rec_level);
 
 	return;
 }

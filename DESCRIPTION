@@ -1,6 +1,6 @@
 Package: gstat
-Version: 0.9-7
-Date: 2003/06/02
+Version: 0.9-8
+Date: 2003/08/19
 Title: multivariable geostatistical modelling, prediction and simulation
 Author: Edzer J. Pebesma <e.pebesma@geog.uu.nl> and others
 Maintainer: Edzer J. Pebesma <e.pebesma@geog.uu.nl>

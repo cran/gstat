@@ -31,7 +31,7 @@
   processors etc).
   */
 
-static	char	*rcsid = "$Id: machine.c,v 1.4 1994/01/13 05:28:56 des Exp $";
+static	char	*rcsid = "$Id: machine.c,v 1.1.1.1 2003/06/23 18:31:41 cees Exp $";
 
 #include	"machine.h"
 

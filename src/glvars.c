@@ -146,7 +146,7 @@ const METHODS methods[] = { /* methods and codes */
 	{ POLY,     0, "point-in-polygon" }, /* point-in-polygon */
 	{ DIV,      0, "div" }, /* diversity and modus */
 	{ SKEW,     0, "skew" }, /* skewness and kurtosis */
-	{ LSEM,     0, "lsem" }, /* locally fitted semivariogram parameters */
+	{ LSEM,     0, "lsem" }, /* locally estimated/fitted variogram parameters */
 	{ TEST,     0, "test" },  /* do-nothing? */
 	{ NSP,      0, NULL } /* terminating field */
 };
@@ -494,7 +494,7 @@ const char *method_string(METHOD i) {
 			sprintf(mstr, "skewness and kurtosis");
 			break;
 		case LSEM:
-			sprintf(mstr, "locally fitted semivariogram parameters");
+			sprintf(mstr, "local semivariance or locally fitted semivariogram parameters");
 			break;
 	}
 	return mstr;

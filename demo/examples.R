@@ -3,6 +3,7 @@
 ## Two variables with (initial estimates of) variograms,
 ## calcute sample variogram and plot fitted model
 ##
+
 par(ask = TRUE)
 data(meuse)
 x <- variogram(zinc ~ 1, ~ x + y, meuse)
@@ -13,6 +14,7 @@ x <- variogram(log(zinc) ~ 1, ~ x + y, meuse)
 v <- vgm(.5, "Sph", 800, nug = .1)
 plot(x, model = v)
 plot(x, model = fit.variogram(x, model = v))
+
 ##
 ## ex03.cmd:
 ## Inverse distance interpolation on a mask map
@@ -20,17 +22,19 @@ plot(x, model = fit.variogram(x, model = v))
 data(meuse.grid)
 x <- krige(zinc ~ 1, ~ x + y, meuse, meuse.grid, model = NULL)
 levelplot(var1.pred ~ x + y, x, aspect = mapasp(x))
+
 ##
 ## ex04.cmd 
 ## Local ordinary block kriging at non-gridded locations
 ##
-## skipped min and radius data arguments, which affects only the
-## last location
+## the gstat "classic" radius maps into the gstat "S" maxdist argument
+##
 new.locs <- data.frame(x = c(181170, 180310, 180205, 178673, 178770, 178270),
 	y = c(333250, 332189, 331707, 330066, 330675, 331075))
 krige(zinc ~ 1, ~ x + y, meuse, newdata = new.locs, 
 		model = vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
-		block = c(40,40), nmax = 40)
+		block = c(40,40), nmax = 40, nmin = 20, 
+		maxdist = 1000)
 
 ##
 ## ex05.cmd 
@@ -39,11 +43,12 @@ krige(zinc ~ 1, ~ x + y, meuse, newdata = new.locs,
 ##
 v <- vgm(0.581, "Sph", 900, nug = 0.0554)
 x <- krige(log(zinc) ~ 1, ~ x + y, meuse, meuse.grid, model = v, 
-	nmax = 40, beta = c(5.9))
+	nmax = 40, nmin = 20, maxdist = 1000, beta = 5.9)
 levelplot(var1.pred ~ x + y, x, aspect = mapasp(x), 
 	main = "log(zinc) simple kriging prediction")
 levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x), 
 	main = "log(zinc) simple kriging standard errors")
+
 ##
 ## ex06.cmd 
 ##
@@ -54,6 +59,7 @@ x <- krige(log(zinc) ~ 1, ~ x + y, data = NULL, newdata = meuse.grid,
 	model = v, nmax = 20, beta = c(5.9), nsim = 5, dummy = TRUE)
 levelplot(z ~ x + y | name, map.to.lev(x, z=c(3:7)), aspect = mapasp(x),
 	main = "five unconditional realisations of a correlated Gaussian field")
+
 ##
 ## ex07.cmd 
 ##
@@ -71,7 +77,8 @@ levelplot(z ~ x + y | name, map.to.lev(x, z=c(3:7)), aspect = mapasp(x),
 ## Change of support: local ordinary block kriging on a mask
 ##
 x <- krige(log(zinc) ~ 1, ~ x + y, meuse, meuse.grid, 
-	model = v, nmax = 40, block = c(40,40))
+	model = v, nmax = 40, nmin = 20, maxdist = 1000,
+	block = c(40,40))
 levelplot(var1.pred ~ x + y, x, aspect = mapasp(x),
 	main = "ordinary block kriging predictions")
 levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
@@ -102,9 +109,10 @@ x <- variogram(dist~1,~x+y,meuse)
 v.dist <- fit.variogram(x, model = vgm(1,"Gau",100))
 plot(x, model = v.dist)
 g <- gstat(id = "ln.zinc", form = log(zinc) ~ 1, loc = ~ x + y, 
-	data = meuse, nmax = 40, model = v)
+	data = meuse, nmax = 40, nmin = 20, maxdist = 1000, model = v)
 g <- gstat(g, id = "dist", form = dist ~ 1, loc = ~ x + y, 
-	data = meuse, nmax = 40, model = vgm(.01, "Nug", 0, add.to = v.dist))
+	data = meuse, nmax = 40, nmin = 20, maxdist = 1000,
+	model = vgm(.01, "Nug", 0, add.to = v.dist))
 # the added nugget variance is necessary to avoid near-singular covariances
 x <- predict(g, meuse.grid)
 levelplot(ln.zinc.pred ~ x + y, x, aspect = mapasp(x),
@@ -123,9 +131,11 @@ levelplot(sqrt(dist.var) ~ x + y, x, aspect = mapasp(x),
 ## For examples of fitting an LMC: see demo(cokriging)
 ##
 g <- gstat(id = "ln.zinc", form = log(zinc) ~ 1, loc = ~ x + y, 
-	data = meuse, nmax = 40, model = vgm(0.581, "Sph", 900, 0.0554))
+	data = meuse, nmax = 40, nmin = 20, maxdist = 1000,
+	model = vgm(0.581, "Sph", 900, 0.0554))
 g <- gstat(g, id = "sq.dist", form = sqrt(dist) ~ 1, loc = ~ x + y, 
-	data = meuse, nmax = 40, model = vgm(0.0631, "Sph", 900, 0.0001))
+	data = meuse, nmax = 40, nmin = 20, maxdist = 1000,
+	model = vgm(0.0631, "Sph", 900, 0.0001))
 g <- gstat(g, id = c("ln.zinc", "sq.dist"), 
 	model = vgm(-0.156, "Sph", 900, 1e-5))
 # small nugget necessary to let gstat recognize LMC
@@ -144,7 +154,7 @@ levelplot(sqrt(sq.dist.var) ~ x + y, x, aspect = mapasp(x),
 ##
 ## Stratified ordinary kriging (within-category ordinary kriging)
 ##
-## (stratified mode not implemented)
+## (stratified mode not implemented; this can be programmed easily in R)
 
 ##
 ## ex13.cmd 
@@ -153,7 +163,8 @@ levelplot(sqrt(sq.dist.var) ~ x + y, x, aspect = mapasp(x),
 ###
 ## the variogram should be that of the residual:
 x <- krige(log(zinc) ~ sqrt(dist), ~ x + y, meuse, meuse.grid, 
-	model = vgm(.149, "Sph", 700, .0674), nmax = 40)
+	model = vgm(.149, "Sph", 700, .0674), 
+	nmax = 40, nmin = 20, maxdist = 1000)
 levelplot(var1.pred ~ x + y, x, aspect = mapasp(x),
 	main = "universal kriging predictions")
 levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
@@ -187,7 +198,7 @@ levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
 ## Local linear model, using one continuous variable
 ##
 x <- krige(log(zinc) ~ sqrt(dist), ~ x + y, meuse, meuse.grid, 
-	model = NULL, nmax = 40)
+	model = NULL, nmax = 40, nmin = 20, maxdist = 1000)
 levelplot(var1.pred ~ x + y, x, aspect = mapasp(x),
 	main = "IID local linear model kriging predictions")
 levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
@@ -204,6 +215,5 @@ levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
 ## ex17.cmd 
 ##
 ## global coordinate polynomial trend surfaces
-## trend orders 0-3.
-## (you'd better use lm() for this)
+## trend orders 0-3 ==>> better use lm() for this
 ##

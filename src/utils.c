@@ -816,6 +816,7 @@ const char *save_string(const char *msg) {
 		s = (char *) emalloc(MAX_SIZE * sizeof(char));
 		strncpy(s, msg, MAX_SIZE-5);
 		s[MAX_SIZE-5] = '\0';
+
 		strcat(s, "...");
 		return s;
 	}

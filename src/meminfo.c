@@ -41,7 +41,7 @@
 #include  "sparse.h"
 #endif
 
-static char rcsid[] = "$Id: meminfo.c,v 1.1 1994/01/13 05:31:39 des Exp $";
+static char rcsid[] = "$Id: meminfo.c,v 1.1.1.1 2003/06/23 18:31:43 cees Exp $";
 
 /* this array is defined further in this file */
 extern MEM_CONNECT mem_connect[MEM_CONNECT_MAX_LISTS];

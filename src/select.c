@@ -43,6 +43,9 @@
 #include "nsearch.h"
 #include "select.h"
 #include "polygon.h"
+#ifdef HAVE_EXT_DBASE
+# include "ext_dbase.h"
+#endif
 
 static int octant_select(DATA *d, DPOINT *where);
 static int which_octant(DPOINT *where, DPOINT *p, int mode);
@@ -56,28 +59,8 @@ static void print_selection(DATA *d, DPOINT *where);
 /* beware-of-side-effect macro: don't call with ++/--'s */
 #define DPSWAP(a,b) { if (a != b) { tmp = a; a = b; b = tmp; }}
 
-int select_at(DATA *d, DPOINT *where) {
-/*
- * fill the array d->sel appropriatly given x,y,z,d->sel_min,d->sel_max
- * and d->sel_rad: possibly by corresponding semivariance value
- * first select all points within a distance d->sel_rad from where
- * then select at max the d->sel_max nearest and return no selection
- * if there are less then d->sel_min
- * if "FORCE", then select ALWAYS the d->sel_min nearest points.
- * 
- * corrected variogram distance feb. 16th 1993
- * changed search to normalizing to (0,0,0) first, aug 1993
- */
-	int i;
-	DATA **data = NULL;
-
-	if (get_method() == POLY) 
-		return d->n_sel;
-
-	if (d->what_is_u == U_UNKNOWN)
-		d->what_is_u = U_ISDIST; /* we're going to fill this right now */
-	else if (d->what_is_u != U_ISDIST)
-		ErrMsg(ER_IMPOSVAL, "select_at() needs distances");
+static int select_qtree(DATA *d, DPOINT *where)
+{
 	if (d->n_list <= 0 || d->id < 0 || d->sel_max == 0)
 		return (d->n_sel = 0);
 /* 
@@ -110,7 +93,8 @@ int select_at(DATA *d, DPOINT *where) {
 		if (gl_coincide == DEF_coincide)
 			gl_coincide = decide_on_coincide(); /* establish first ... */
  		if (gl_coincide) {
- 			data = get_gstat_data();
+	        int i;
+	        DATA **data = get_gstat_data();
  			d->n_sel = data[0]->n_sel;
 			for (i = 0; i < d->n_sel; i++) /* copy previous selection: */
 				d->sel[i] = d->list[GET_INDEX(data[0]->sel[i])]; 
@@ -141,6 +125,43 @@ int select_at(DATA *d, DPOINT *where) {
  * or (c) oct_max is set, so let's do the smart thing:
  */
 	qtree_select(where, d);
+	return -1; /* more work to do */
+}
+
+int select_at(DATA *d, DPOINT *where) {
+/*
+ * fill the array d->sel appropriatly given x,y,z,d->sel_min,d->sel_max
+ * and d->sel_rad: possibly by corresponding semivariance value
+ * first select all points within a distance d->sel_rad from where
+ * then select at max the d->sel_max nearest and return no selection
+ * if there are less then d->sel_min
+ * if "FORCE", then select ALWAYS the d->sel_min nearest points.
+ * 
+ * corrected variogram distance feb. 16th 1993
+ * changed search to normalizing to (0,0,0) first, aug 1993
+ */
+
+	if (get_method() == POLY) 
+		return d->n_sel;
+
+	if (d->what_is_u == U_UNKNOWN)
+		d->what_is_u = U_ISDIST; /* we're going to fill this right now */
+	else if (d->what_is_u != U_ISDIST)
+		ErrMsg(ER_IMPOSVAL, "select_at() needs distances");
+
+	/* CW */
+	if (d->type.type==DATA_EXT_DBASE) {
+#ifdef HAVE_EXT_DBASE
+	  if (select_ext_dbase(d,where)!=-1) {
+        if (DEBUG_SEL) 
+           print_selection(d, where);
+		return d->n_sel;
+      }
+#endif
+	} else {
+	  if (select_qtree(d,where)!=-1)
+		return d->n_sel;
+	}
 
 	if (get_n_edges()) 
 		check_edges(d, where);
@@ -151,9 +172,11 @@ int select_at(DATA *d, DPOINT *where) {
  * (b) we selected (at least) the nearest d->sel_max
  * (c) we selected (forced) at least d->sel_min, possibly beyond d->sel_rad
  * Now, should we select further, sorting on distance?
+ *
  */
 
 	if (d->vdist) { /* use variogram distance as sort criterium */
+		int i;
 		for (i = 0; i < d->n_sel; i++)
 			d->sel[i]->u.dist2 = get_semivariance(get_vgm(LTI(d->id,d->id)),
 				where->x - d->sel[i]->x,
@@ -280,6 +303,12 @@ static void zero_sel_dist2(DATA *d) {
 }
 
 static void print_selection(DATA *d, DPOINT *where) {
+
+/* Add this statement to filter out
+ * empty selections
+   if (!d->n_sel)
+     return;
+ */
 
 	if (where) {
 		printlog("selection at "); 

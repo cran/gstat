@@ -73,7 +73,6 @@
 #include "getest.h"
 #include "polygon.h"
 
-void no_progress(unsigned int current, unsigned int total);
 void s_gstat_error(const char *mess, int level);
 void s_gstat_printlog(const char *mess);
 double s_r_uniform(void);
@@ -112,7 +111,8 @@ SEXP gstat_exit(SEXP x) {
 }
 
 SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
-			SEXP beta, SEXP nmax, SEXP maxdist, SEXP vfn, SEXP sw) {
+			SEXP beta, SEXP nmax, SEXP nmin, SEXP maxdist, 
+			SEXP vfn, SEXP sw) {
 	double *y, *locs, *X, *w = NULL;
 	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
@@ -171,6 +171,8 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		d[id]->beta = push_d_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
 	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
 		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
+	if (INTEGER_POINTER(nmin)[0] > 0) /* leave default (0) if <= 0 */
+		d[id]->sel_min = INTEGER_POINTER(nmin)[0];
 	if (NUMERIC_POINTER(maxdist)[0] > 0.0)
 		d[id]->sel_rad = NUMERIC_POINTER(maxdist)[0];
 	switch(INTEGER_POINTER(vfn)[0]) {
@@ -225,7 +227,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 }
 
 SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta, 
-		SEXP nmax, SEXP maxdist, SEXP vfn) {
+		SEXP nmax, SEXP nmin, SEXP maxdist, SEXP vfn) {
 	int i, id, dim, has_int;
 	char name[20];
 	DATA **d = NULL;
@@ -260,6 +262,10 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 		d[id]->beta = push_d_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
 	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
 		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
+/* I doubt whether using nmin for dummy data _ever_ can have a
+ * meaning, but hey, let's add it anyway. */
+	if (INTEGER_POINTER(nmin)[0] > 0) /* leave default (0) if <= 0 */
+		d[id]->sel_min = INTEGER_POINTER(nmin)[0];
 	if (NUMERIC_POINTER(maxdist)[0] > 0.0)
 		d[id]->sel_rad = NUMERIC_POINTER(maxdist)[0];
 	switch(INTEGER_POINTER(vfn)[0]) {
@@ -653,9 +659,6 @@ void Cload_gstat_command(char **commands, int *n, int *error) {
 		}
 	}
 	return;
-}
-
-void no_progress(unsigned int current, unsigned int total) {
 }
 
 void s_gstat_error(const char *mess, int level) {

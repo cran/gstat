@@ -30,7 +30,7 @@
 #include	<stdio.h>
 #include	"matrix.h"
 
-static	char	rcsid[] = "$Id: matop.c,v 1.4 1995/03/27 15:43:57 des Exp $";
+static	char	rcsid[] = "$Id: matop.c,v 1.1.1.1 2003/06/23 18:31:39 cees Exp $";
 
 
 /* m_add -- matrix addition -- may be in-situ */
