@@ -5,7 +5,7 @@
 point kriging, kriging in a local neighbourhood.  }
 \usage{
 krige.cv(formula, locations, data, model = NULL, beta = NULL, nmax = Inf, 
-	nfold = nrow(data), verbose = TRUE, ...)
+	maxdist = Inf, nfold = nrow(data), verbose = TRUE, ...)
 }
 \arguments{
   \item{formula}{ formula that defines the dependent variable as a linear
@@ -28,6 +28,9 @@ krige.cv(formula, locations, data, model = NULL, beta = NULL, nmax = Inf,
   should be used for a kriging prediction or simulation, where nearest
   is defined in terms of the space of the spatial locations. By default,
   all observations are used }
+  \item{maxdist}{ for local kriging: only observations within a distance
+  of \code{maxdist} from the prediction location are used for prediction
+  or simulation; if combined with \code{nmax}, both criteria apply }
   \item{nfold}{ apply n-fold cross validation; if \code{nfold} is set
   to \code{nrow(data)} (the default), leave-one-out cross validation is
   done; if set to e.g. 5, five-fold cross validation is done }

@@ -601,14 +601,8 @@ static int get_random_cell(GRIDMAP *m, unsigned int *row, unsigned int *col) {
  * history is fixed for a session; description depends on the map contents
  */
 void map_sign(GRIDMAP *m, const char *what) {
-#define BUFSIZE 4096
-	static char *pwd = NULL, *user = NULL, *timestring = NULL, *fname = NULL,
-		str[BUFSIZE];
+	char *pwd = NULL, *user = NULL, *timestring = NULL, *fname = NULL;
 	time_t tm;
-#ifdef USE_ASPRINTF
-	int size;
-	char *buf = NULL;
-#endif
 
 	if ((user = getenv("LOGNAME")) == NULL)
 		user = ""; 
@@ -619,21 +613,8 @@ void map_sign(GRIDMAP *m, const char *what) {
 	tm = time(&tm);
 	if ((timestring = asctime(localtime(&tm))) == NULL)
 		timestring = "";
-#ifdef USE_ASPRINTF
-	asprintf(&buf, "%s%s\n%s %s %s\n%s%s\n%s %s\n%s %s\n%s %s (seed %lu)\n",
-		*user ? 
-		"creator:       " : "", user, 
-		"program:      ", argv0, VERSION,
-		*pwd ? 
-		"path:          " : "", pwd,
-		"command file: ", fname,
-		"method used:  ", method_string(get_method()),
-		"date:         ", timestring, get_seed());
-	m->history = string_dup(buf);
-	asprintf(&buf, "%s\n", what);
-	m->description = string_dup(buf);
-#else
-	snprintf(str, BUFSIZE,
+	m->history = (char *) emalloc(1024 * sizeof(char));
+	snprintf(m->history, 1024,
 		"%s%s\n%s %s %s\n%s%s\n%s %s\n%s %s\n%s %s (seed %lu)\n",
 		*user ? 
 		"creator:       " : "", user, 
@@ -643,10 +624,13 @@ void map_sign(GRIDMAP *m, const char *what) {
 		"command file: ", fname,
 		"method used:  ", method_string(get_method()),
 		"date:         ", timestring, get_seed());
-	m->history = string_dup(str);
-	snprintf(str, BUFSIZE, "%s\n", what);
-	m->description = string_dup(str);
-#endif
+	if (what == NULL) { /* paranoia */
+		m->description = (char *) emalloc(sizeof(char));
+		m->description[0] = '\0';
+	} else {
+		m->description = (char *) emalloc((strlen(what) + 1) * sizeof(char));
+		snprintf(m->description, strlen(what) + 1, "%s\n", what);
+	}
 }
 
 const void *get_mask0(void) {

@@ -3,10 +3,10 @@
 \title{ Semivariance Values For a Given Variogram Model }
 \description{ Generates a semivariance values given a variogram model }
 \synopsis{
-variogram.line(object, maxdist, n=200, min=1.0e-6*maxdist, ids=c(0,0), dir = c(1,0,0), ...)
+variogram.line(object, maxdist, n=200, min=1.0e-6*maxdist, dir = c(1,0,0), ...)
 }
 \usage{
-variogram.line(object, maxdist, n, min, ids, dir, ...)
+variogram.line(object, maxdist, n, min, dir, ...)
 }
 \arguments{
 \item{object}{ variogram model for which we want semivariance function values }
@@ -15,7 +15,6 @@ variogram.line(object, maxdist, n, min, ids, dir, ...)
 \item{min}{ minimum distance; a value slightly larger than zero is usually
 used to avoid the discontinuity at distance zero if a nugget component is
 present }
-\item{ids}{ pair of data ids }
 \item{dir}{ direction vector: unit length vector pointing the direction in 
 x (East-West), y (North-South) and z (Up-Down) }
 \item{...}{ignored}

@@ -32,7 +32,9 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
             .Call("gstat_new_data", as.vector(object[[i]]), 
 				as.vector(locations[[i]]), as.vector(Xloc), 
 				as.integer(1), as.vector(t.beta), as.integer(-1),
-				as.integer(1), PACKAGE = "gstat")
+				as.numeric(-1), as.integer(1)
+				, PACKAGE = "gstat"
+				)
         }
     }
     else {
@@ -43,7 +45,9 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
 			trend.beta = numeric(0)
         .Call("gstat_new_data", as.vector(object), as.vector(locations), 
             as.vector(X), as.integer(1), as.vector(trend.beta), as.integer(-1), 
-			as.integer(1), PACKAGE = "gstat")
+			as.numeric(-1), as.integer(1)
+			, PACKAGE = "gstat"
+			)
     }
     pos = 0
     ids = NULL
@@ -61,8 +65,9 @@ function (object, locations, X, cutoff, width = cutoff/15, alpha = 0,
 				  		as.integer(c(id1 - 1, id2 - 1)), 
 						as.numeric(cutoff), as.numeric(width), 
                     	as.numeric(direction), as.integer(cressie), 
-                    	as.numeric(dX), as.numeric(boundaries),
-						PACKAGE = "gstat")
+                    	as.numeric(dX), as.numeric(boundaries)
+						, PACKAGE = "gstat"
+						)
                   np = ret.call[[1]]
                   sel = np > 0
                   n.dir = length(sel[sel])

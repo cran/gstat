@@ -32,13 +32,14 @@ variable pairs defined in \code{object}}
 regressors, in case of absence of regressors, use e.g. \code{z~1}}
 \item{data}{data frame where the names in formula are to be found}
 \item{locations}{ spatial data locations.  For variogram.formula: a
-formula with only the coordinate variables in the left hand (dependent
-variable) side (see examples).
+formula with only the coordinate variables in the right hand 
+(explanatory variable) side e.g. \code{~x+y}; see examples.
 
 For variogram.default: a matrix, with the number of rows matching
 that of y, the number of columns should match the number of spatial
 dimensions spanned by the data (1 (x), 2 (x,y) or 3 (x,y,z)).  }
-\item{...}{any other arguments that will be passed to \link{variogram.default}}
+\item{...}{any other arguments that will be passed to 
+\link{variogram.default}}
 \item{y}{ vector with responses }
 \item{X}{ (optional) matrix with regressors/covariates; the number of
 rows should match that of y, the number of columns equals the number

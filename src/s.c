@@ -109,7 +109,7 @@ SEXP gstat_exit(SEXP x) {
 }
 
 SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
-			SEXP beta, SEXP nmax, SEXP vfn) {
+			SEXP beta, SEXP nmax, SEXP maxdist, SEXP vfn) {
 	double *y, *locs, *X;
 	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
@@ -165,6 +165,8 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		d[id]->beta = push_to_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
 	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
 		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
+	if (NUMERIC_POINTER(maxdist)[0] > 0.0)
+		d[id]->sel_rad = NUMERIC_POINTER(maxdist)[0];
 	switch(INTEGER_POINTER(vfn)[0]) {
 		case 1: /* d[id]->variance_fn = v_identity; */ break;
 		case 2: d[id]->variance_fn = v_mu; break;
@@ -211,7 +213,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 }
 
 SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta, 
-		SEXP nmax, SEXP vfn) {
+		SEXP nmax, SEXP maxdist, SEXP vfn) {
 	int i, id, dim, has_int;
 	char name[20];
 	DATA **d = NULL;
@@ -246,6 +248,8 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 		d[id]->beta = push_to_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
 	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
 		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
+	if (NUMERIC_POINTER(maxdist)[0] > 0.0)
+		d[id]->sel_rad = NUMERIC_POINTER(maxdist)[0];
 	switch(INTEGER_POINTER(vfn)[0]) {
 		case 1: /* d[id]->variance_fn = v_identity; */ break;
 		case 2: d[id]->variance_fn = v_mu; break;
@@ -562,7 +566,7 @@ void Cgstat_load_variogram(int *ids, int *n_models,
 	}
 	update_variogram(vgm);
 	if (DEBUG_DUMP)
-		fprint_variogram(stdout, vgm, 1); 
+		logprint_variogram(vgm, 1); 
 }
 
 SEXP gstat_variogram_values(SEXP ids, SEXP pars)
@@ -687,8 +691,10 @@ SEXP gstat_load_ev(SEXP np, SEXP dist, SEXP gamma) {
 			cloud = 0;
 	}
 	vgm->ev->cloud = cloud;
+#ifndef WIN32
 	if (DEBUG_VGMFIT)
 		fprint_sample_vgm(stdout, vgm->ev);
+#endif
 	return(np);
 }
 
@@ -708,10 +714,10 @@ SEXP gstat_fit_variogram(SEXP fit, SEXP fit_sill, SEXP fit_range) {
 	}
 	update_variogram(vgm);
 	if (DEBUG_VGMFIT)
-		fprint_variogram(stdout, vgm, 1);
+		logprint_variogram(vgm, 1);
 	fit_variogram(vgm);
 	if (DEBUG_VGMFIT)
-		fprint_variogram(stdout, vgm, 1);
+		logprint_variogram(vgm, 1);
 	ret = NEW_LIST(3);
 	sills = NEW_NUMERIC(vgm->n_models);
 	ranges = NEW_NUMERIC(vgm->n_models);
