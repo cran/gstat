@@ -330,6 +330,9 @@ int set_gstat_log_file(FILE *f) {
 }
 
 void no_progress(unsigned int current, unsigned int total) {
+#ifdef USING_R
+	R_CheckUserInterrupt();
+#endif
 }
 
 void default_progress(unsigned int current, unsigned int total) {

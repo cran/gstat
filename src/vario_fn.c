@@ -133,6 +133,12 @@ double fn_exponential(double h, double *r) {
 	return 1.0 - exp(-h/(*r)); 
 }
 
+double fn_exclass(double h, double *r) {
+	if (h == 0.0)
+		return 0.0;
+	return 1.0 - exp(-pow(h/r[0],r[1])); 
+}
+
 double da_fn_exponential(double h, double *r) {
 	double hr;
 	hr = -h/(*r);

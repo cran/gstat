@@ -10,6 +10,7 @@
 #names(joker) = c("record", "x", "y", "dayx")
 
 library(gstat)
+library(lattice)
 data(sic2004) # load directly from R data base
 input = sic.test[,1:4]
 names(input) = c("record", "x", "y", "dayx")
@@ -59,9 +60,9 @@ sic.stats = function(obs, pred) {
 
 options(digits=4)
 print("input data first")
-sic.stats(sic.valid[,4], output$var1.pred)
+sic.stats(sic.test[,4], output$var1.pred)
 print("joker with error variogram")
-sic.stats(sic.valid[,4], joker.output$var1.pred)
+sic.stats(sic.test[,4], joker.output$var1.pred)
 
 ##################
 
@@ -101,6 +102,6 @@ cp2 = contourplot(sqrt(z)~x+y|name, map.to.lev(grid1,z=4,
 print(cp1, c(0,0,0.625,1), more=T)
 print(cp2, c(0.625,0,1,1), more=F)
 
-wireframe(var1.pred~x+y,grid2,asp=c(mapasp(grid2),0.5), 
+wireframe(var1.pred~x+y,grid2,asp=c(diff(range(grid2$y))/diff(range(grid2$x)),0.5), 
     xlab="x",ylab="y",zlab="z",drape=T,
     col.regions=gray(sqrt(seq(from=1.0, to=0.0, length=100))))

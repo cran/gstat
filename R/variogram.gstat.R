@@ -1,5 +1,4 @@
-"variogram.gstat" <-
-function (object, ...) {
+"variogram.gstat" = function (object, ...) {
 	if (!inherits(object, "gstat"))
 		stop("first argument should be of class gstat")
 	y = list()
@@ -7,7 +6,7 @@ function (object, ...) {
 	X = list()
 	beta = list()
 	grid = list()
-	for (i in 1:length(object$data)) {
+	for (i in seq(along = object$data)) {
 		d = object$data[[i]]
 		raw = gstat.formula(d$formula, d$locations, eval(d$data))
 		y[[i]] = raw$y
@@ -20,5 +19,5 @@ function (object, ...) {
 	}
 	names(y) = names(locations) = names(X) = names(object$data)
 	# call variogram.default() next:
-	variogram(y, locations, X, trend.beta = beta, grid = grid, ...)
+	variogram(y, locations, X, trend.beta = beta, grid = grid, g = object, ...)
 }

@@ -1,5 +1,6 @@
 "variogram.line" <-
-function(object, maxdist, n=200, min=1.0e-6*maxdist, dir = c(1,0,0), ...)
+function(object, maxdist, n=200, min=1.0e-6 * maxdist, dir = c(1,0,0), 
+	covariance = FALSE,	...)
 {
 	if (missing(object))
 		stop("model is missing");
@@ -12,9 +13,7 @@ function(object, maxdist, n=200, min=1.0e-6*maxdist, dir = c(1,0,0), ...)
 	pars = c(min,maxdist,n,dir)
 	load.variogram.model(object, c(0,0)) # loads object into gstat 
 	ret = .Call("gstat_variogram_values", as.integer(c(0,0)),
-		as.numeric(pars)
-		, PACKAGE = "gstat"
-		)
-	.Call("gstat_exit", 0, PACKAGE = "gstat");
+		as.numeric(pars), as.integer(covariance))
+	.Call("gstat_exit", 0);
 	data.frame(dist=ret[[1]], gamma=ret[[2]])
 }

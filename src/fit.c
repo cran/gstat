@@ -162,6 +162,7 @@ static void wls_fit(VARIOGRAM *vp) {
 		if ((vp->fit_is_singular = fit_GaussNewton(vp, p, lm, n_iter, &bounded))) {
 			pr_warning("singular model in variogram fit");
 			print_progress(gl_iter, gl_iter);
+			vp->SSErr = getSSErr(vp, p, lm);
 			return;
 		} 
 		update_variogram(vp);
@@ -316,6 +317,7 @@ static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, int iter,
 		m_foutput(stdout, lm->X);
 	}
 
+	lm->has_intercept = 1; /* does not affect the fit */
 	lm = calc_lm(lm); /* solve WLS eqs. for beta */
 
 	if (DEBUG_FIT) {

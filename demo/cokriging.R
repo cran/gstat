@@ -11,6 +11,9 @@ x <- variogram(meuse.g, cutoff=1000)
 meuse.fit = fit.lmc(x, meuse.g)
 plot(x, model = meuse.fit)
 z <- predict(meuse.fit, newdata = meuse.grid)
+
+library(lattice)
+
 pl1 <- levelplot(zn.pred~x+y, z, aspect = mapasp(z), 
 	main="log-zinc predictions")
 pl2 <- levelplot(cu.pred~x+y, z, aspect = mapasp(z), 

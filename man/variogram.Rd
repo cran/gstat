@@ -19,7 +19,7 @@ variogram.default(y, locations, X, cutoff, width = cutoff/15, alpha =
 	0, beta = 0, tol.hor = 90/length(alpha), tol.ver =
 	90/length(beta), cressie = FALSE, dX = numeric(0), boundaries =
 	numeric(0), cloud = FALSE, trend.beta = NULL, debug.level = 1,
-	cross = TRUE, grid, map = FALSE, ...)
+	cross = TRUE, grid, map = FALSE, g = NULL, ...)
 
 print.gstatVariogram(v, ...)
 print.variogramCloud(v, ...)
@@ -82,6 +82,8 @@ to be printed}
 are given, a variogram map is returned. This requires package
 sp. Alternatively, a map can be passed, of class SpatialDataFrameGrid
 (see sp docs) }
+\item{g}{ NULL or object of class gstat; may be used to pass settable
+parameters and/or variograms; see example }
 % \item{...}{arguments that get passed to \code{print}, e.g. digits}
 }
 \value{ 
@@ -143,6 +145,15 @@ variogram(log(zinc)~1, loc=~x+y, meuse)
 variogram(log(zinc)~x+y, loc=~x+y, meuse)
 # directional variogram:
 variogram(log(zinc)~x+y, loc=~x+y, meuse, alpha=c(0,45,90,135))
+
+# GLS residual variogram:
+v = variogram(log(zinc)~x+y,~x+y,meuse)
+v.fit = fit.variogram(v, vgm(1, "Sph", 700, 1))
+v.fit
+set = list(gls=1)
+v
+g = gstat(NULL, "log-zinc", log(zinc)~x+y,~x+y, meuse, model=v.fit, set = set)
+variogram(g)
 }
 
 \keyword{models}

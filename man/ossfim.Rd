@@ -50,6 +50,7 @@ sampling scheme for isarithmic mapping''.
 }
 \examples{
 x <- ossfim(1:15,1:15, model = vgm(1,"Exp",15))
+library(lattice)
 levelplot(kriging.se~spacing+block.size, x, 
   main = "Ossfim results, variogram 1 Exp(15)")
 # if you wonder about the decrease in the upper left corner of the graph,

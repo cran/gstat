@@ -4,7 +4,7 @@
 \description{ Generates a semivariance values given a variogram model }
 \usage{
 variogram.line(object, maxdist, n = 200, min = 1.0e-6 * maxdist, 
-	dir = c(1,0,0), ...)
+	dir = c(1,0,0), covariance = FALSE, ...)
 }
 \arguments{
 \item{object}{ variogram model for which we want semivariance function values }
@@ -15,6 +15,8 @@ used to avoid the discontinuity at distance zero if a nugget component is
 present }
 \item{dir}{ direction vector: unit length vector pointing the direction in 
 x (East-West), y (North-South) and z (Up-Down) }
+\item{covariance}{logical; if TRUE return covariance values, otherwise
+return semivariance values }
 \item{...}{ignored}
 }
 \value{

@@ -9,6 +9,9 @@ bl0$"block=0x0" =     bl0$var1.pred
 bl0$"block=40x40" =   bl1$var1.pred
 bl0$"block=100x100" = bl2$var1.pred
 bl0$"block=400x400" = bl3$var1.pred
+
+library(lattice)
+
 plt1 = levelplot(z ~ x + y | name, map.to.lev(bl0, z = c(5:8)), layout=c(4,1),
         asp=mapasp(bl0),col.regions=bpy.colors(), main = "kriging predictions")
 bl0$"block=0x0" =     bl0$var1.var

@@ -240,6 +240,9 @@ int init_global_variables(void) {
 	plotfile         = NULL;
 	
 	init_gstat_data(0);
+	/* EJPXX 
+	 * 	if (valdata == NULL)
+	 * 	*/
 	valdata = (DATA *) emalloc(sizeof(DATA));
 	init_one_data(valdata);
 	block.x = block.y = block.z = 0.0;
@@ -477,7 +480,7 @@ const char *method_string(METHOD i) {
 			sprintf(mstr, "using %suniversal %skriging", str, co);
 			break;
 		case GSI:
-			sprintf(mstr, "using %s%sconditional gaussian %ssimulation%s",
+			sprintf(mstr, "using %s%sconditional Gaussian %ssimulation%s",
 				str, un, co, gsum);
 			break;
 		case ISI:
@@ -710,7 +713,9 @@ METHOD get_default_method(void) {
  * check on variograms
  */
 	for (i = 0, Vgm_set = 0; i < get_n_vars(); i++)
-		if (vgm[LTI(i,i)] != NULL && vgm[LTI(i,i)]->n_models > 0) /* was: ->id >= 0*/
+		if (vgm[LTI(i,i)] != NULL && 
+				(vgm[LTI(i,i)]->n_models > 0 || vgm[LTI(i,i)]->table != NULL)) 
+					/* was: ->id >= 0*/
 			Vgm_set++;
 	if (!(Vgm_set == 0 || Vgm_set == get_n_vars()))
 		ErrMsg(ER_SYNTAX, "set either all or no variograms");
@@ -1039,6 +1044,7 @@ void check_global_variables(void) {
 				pr_warning("NOTE that `%s' is a file name, variogram models never have quotes", vgm[i]->fname2);
 		}
 	}
+	free_variogram(v_tmp);
 } 
 
 void remove_all(void) {

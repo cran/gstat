@@ -39,6 +39,9 @@ new.data[is.na(mask$mask.map), ] = c(NA,NA)
 
 zinc.kr = predict(zinc.g, new.data)
 image(zinc.kr)
+
+library(lattice)
+
 levelplot(lzinc.pred~east+north, zinc.kr, asp=1.34, col.regions=bpy.colors(100))
 
 # push prediction and variances grids back into GRASS data base:

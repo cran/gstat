@@ -1,14 +1,15 @@
 \name{krige}
 \alias{krige}
-\title{ Simple, Ordinary or Universal, global or local, Point or Block Kriging }
+\title{ Simple, Ordinary or Universal, global or local, Point or Block Kriging,
+or simulation. }
 \description{
 Function for simple, ordinary or universal kriging (sometimes called
 external drift kriging), kriging in a local neighbourhood, point kriging
 or kriging of block mean values (rectangular or irregular blocks), and
 conditional (Gaussian or indicator) simulation equivalents for all kriging
-varieties.
+varieties. For multivariable prediction, see \link{gstat} and \link{predict.gstat}
 }
-\usage{ krige(formula, locations, data, newdata, model, beta, nmax = Inf,
+\usage{krige(formula, locations, data, newdata, model, beta, nmax = Inf,
 nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE, 
 na.action = na.pass, ...) }
 \arguments{
@@ -104,6 +105,7 @@ data(meuse.grid)
 m <- vgm(.59, "Sph", 874, .04)
 # ordinary kriging:
 x <- krige(log(zinc)~1, ~x+y, model = m, data = meuse, newd = meuse.grid)
+library(lattice)
 levelplot(var1.pred~x+y, x, aspect = mapasp(x),
 	main = "ordinary kriging predictions")
 levelplot(var1.var~x+y, x, aspect = mapasp(x),

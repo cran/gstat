@@ -152,6 +152,7 @@ sim <- krige(formula = log(zinc)~1, locations = ~x+y, model = m, data
 	= meuse, newdata = meuse.grid, nmax = 15, beta = 5.9, nsim = 5)
 # show all 5 simulation, using map.to.lev to rearrange sim:
 if (require(sp) == FALSE) {
+library(lattice)
 levelplot(z~x+y|name, map.to.lev(sim, z=c(3:7)), aspect = mapasp(sim))
 
 # calculate generalised least squares residuals w.r.t. constant trend:

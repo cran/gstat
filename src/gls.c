@@ -716,6 +716,12 @@ void free_glm(void *v_glm) {
 		v_free(glm->y);
 	if (glm->beta)
 		v_free(glm->beta);
+	/* EJPXX
+	if (glm->mu)
+		v_free(glm->mu);
+	if (glm->mu0)
+		v_free(glm->mu0);
+	*/
 	free(glm);
 }
 

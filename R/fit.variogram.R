@@ -1,6 +1,6 @@
 "fit.variogram" <-
 function (object, model, fit.sills = TRUE, fit.ranges = TRUE, 
-    fit.method = 7, print.SSE = FALSE, debug.level = 1) 
+    fit.method = 7, debug.level = 1, warn.if.neg = FALSE) 
 {
     if (missing(object)) 
         stop("nothing to fit to")
@@ -19,23 +19,28 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
     if (length(fit.ranges) < length(model$model)) 
         fit.ranges = rep(fit.ranges, length(model$model))
     fit.ranges = fit.ranges & (model$model != "Nug")
-    .Call("gstat_init", as.integer(debug.level), PACKAGE = "gstat")
-    .Call("gstat_load_ev", object$np, object$dist, object$gamma, 
-		PACKAGE = "gstat")
+    .Call("gstat_init", as.integer(debug.level))
+    .Call("gstat_load_ev", object$np, object$dist, object$gamma)
     load.variogram.model(model)
     ret = .Call("gstat_fit_variogram", as.integer(fit.method), 
-        as.integer(fit.sills), as.integer(fit.ranges), PACKAGE = "gstat")
-    .Call("gstat_exit", 0, PACKAGE = "gstat")
+        as.integer(fit.sills), as.integer(fit.ranges))
+    .Call("gstat_exit", 0)
     model$psill = ret[[1]]
     model$range = ret[[2]]
 	attr(model, "singular") = as.logical(ret[[3]]);
+	attr(model, "SSErr") = ret[[4]]
 	direct = attr(object, "direct")
 	if (!is.null(direct)) {
 		id = unique(object$id)
-		if (direct[direct$id == id, "is.direct"] && any(model$psill < 0))
-			stop("partial sill fitted to direct variogram is negative")
+		if (direct[direct$id == id, "is.direct"] && any(model$psill < 0)) {
+			if (warn.if.neg)
+				warning("partial sill or nugget fixed at zero value")
+			fit.sills = model$psill > 0
+			model$psill[model$psill < 0] = 0.0
+			return(fit.variogram(object, model, fit.sills = fit.sills, fit.ranges =
+				fit.ranges, fit.method = fit.method, debug.level = debug.level,
+				warn.if.neg = warn.if.neg))
+		}
 	}
-    if (print.SSE) 
-        print(paste("SSErr: ", ret[[4]]))
     model
 }

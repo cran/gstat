@@ -203,10 +203,14 @@ static DPOINT *which_point(DATA *d, DPOINT *where) {
 	int i;
 	double dzero2;
 
+#define WPWARNING "if you are simulating with a Gaussian variogram model without nugget\n\
+then try to add a small nugget variance to avoid the following error message"
+
 	dzero2 = gl_zero * gl_zero;
 	for (i = 0; i < d->n_sel; i++)
 		if (fabs(d->pp_norm2(d->sel[i], where)) <= dzero2)
 			return d->sel[i];
+	pr_warning(WPWARNING);
 	ErrMsg(ER_NULL, "which_point(): point not found");
 	return where; /* never reached */
 }
@@ -531,7 +535,7 @@ void lhs(DATA **d, int n_vars, int stratify) {
 	if (gl_nsim <= 15)
 		pr_warning("small sample size (%d) may cause disturbed joint distributions", gl_nsim);
  	if (get_method() != GSI)
- 		pr_warning("lhs(): will produce nonsense if not used for gaussian simulation");
+ 		pr_warning("lhs(): will produce nonsense if not used for Gaussian simulation");
 	if (gl_marginal_names) {
 		lhsmean = (GRIDMAP **) emalloc((gl_n_marginals / 2) * sizeof(GRIDMAP *));
 		lhsvar = (GRIDMAP **) emalloc((gl_n_marginals / 2) * sizeof(GRIDMAP *));

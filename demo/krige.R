@@ -7,6 +7,9 @@ m <- fit.variogram(v, vgm(1, "Sph", 300, 1))
 plot(v, model = m)
 lzn.kr <- krige(formula = log(zinc)~1, locations = ~x+y, model = m, 
 	data = meuse, newdata = meuse.grid)
+
+library(lattice)
+
 pl1 <- levelplot(var1.pred ~ x + y, lzn.kr, aspect = mapasp(lzn.kr),
 	main = "ordinary kriging prediction of log-zinc")
 pl2 <- levelplot(sqrt(var1.var) ~ x + y, lzn.kr, aspect = mapasp(lzn.kr),

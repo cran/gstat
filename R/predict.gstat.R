@@ -1,4 +1,4 @@
-"predict.gstat" <-
+predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	BLUE = FALSE, debug.level = 1, mask, na.action = na.pass, ...) 
 {
@@ -6,11 +6,11 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		stop("no data available")
 	if (!inherits(object, "gstat"))
 		stop("first argument should be of class gstat")
-	if (extends(class(newdata), "SpatialDataFrame") && require(sp))
+	if (is(newdata, "Spatial") && require(sp))
 		use.sdf = TRUE
 	else
 		use.sdf = FALSE
-	.Call("gstat_init", as.integer(debug.level), PACKAGE = "gstat")
+	.Call("gstat_init", as.integer(debug.level))
 	if (!missing(mask)) {
 		cat("argument mask is deprecated:")
 		stop("use a missing value pattern in newdata instead")
@@ -36,9 +36,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			loc.dim = length(attr(tr, "term.labels"))
 			.Call("gstat_new_dummy_data", as.integer(loc.dim), 
 				as.integer(d$has.intercept), as.double(d$beta), 
-				nmax, nmin, maxdist, as.integer(d$vfn)
-				, PACKAGE = "gstat"
-				)
+				nmax, nmin, maxdist, as.integer(d$vfn))
 		} else {
 			if (is.null(d$weights))
 				w = numeric(0)
@@ -48,9 +46,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			.Call("gstat_new_data", as.double(raw$y), as.double(raw$locations),
 				as.double(raw$X), as.integer(raw$has.intercept),
 				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
-				as.numeric(w), double(0), as.integer(d$degree)
-				, PACKAGE = "gstat"
-			)
+				as.numeric(w), double(0), as.integer(d$degree))
 		}
 		if (!is.null(object$model[[name]])) 
 			load.variogram.model(object$model[[name]], c(i - 1, i - 1))
@@ -95,10 +91,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		perm = sample(seq(along = new.X[, 1]))
 		ret = .Call("gstat_predict", as.integer(nrow(as.matrix(new.X))),
 			as.vector(raw$locations[perm, ]), as.vector(new.X[perm,]), 
-		as.integer(block.cols), as.vector(block), 
-		as.integer(nsim), as.integer(BLUE)
-		, PACKAGE = "gstat"
-		)[[1]]
+			as.integer(block.cols), as.vector(block), 
+			as.integer(nsim), as.integer(BLUE))[[1]]
 		ret = data.frame(cbind(raw$locations, 
 		matrix(ret[order(perm),], nrow(as.matrix(new.X)), 
 		max(2, abs(nsim) * nvars))))
@@ -106,12 +100,10 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	else {
 		ret = .Call("gstat_predict", as.integer(nrow(as.matrix(new.X))),
 			as.vector(raw$locations), as.vector(new.X), as.integer(block.cols), 
-			as.vector(block), as.integer(nsim), as.integer(BLUE)
-			, PACKAGE = "gstat"
-			)[[1]]
+			as.vector(block), as.integer(nsim), as.integer(BLUE))[[1]]
 		ret = data.frame(cbind(raw$locations, ret))
 	}
-	.Call("gstat_exit", NULL, PACKAGE = "gstat")
+	.Call("gstat_exit", NULL)
 	if (!is.null(valid.pattern) && any(valid.pattern)) {
 		ret.all = data.frame(matrix(NA, length(valid.pattern), ncol(ret)))
 		ret.all[, 1:ncol(raw$locations.all)] = raw$locations.all
