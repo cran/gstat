@@ -2790,11 +2790,18 @@ static GRIDMAP *write_surfer(GRIDMAP * m)
 	f = efopen(string_cat(m->filename, ".grd"), "w");
 	fprintf(f, "DSAA\n");		/* DSAA */
 	fprintf(f, "%d %d\n", m->cols, m->rows);	/* nx ny */
-	fprintf(f, "%g %g\n", m->x_ul + 0.5 * m->cellsizex,
-			m->x_ul + (m->cols - 0.5) * m->cellsizex);	/* xlo xhi */
-	fprintf(f, "%g %g\n",
-			m->y_ul - (m->rows - 0.5) * m->cellsizey, m->y_ul - 0.5 * m->cellsizey);	/* ylo yhi */
-	fprintf(f, "%g %g\n", m->cellmin, m->cellmax);	/* zlo zhi */
+	/* xlo xhi: */
+	fprintf(f, gl_format, m->x_ul + 0.5 * m->cellsizex);
+	fprintf(f, gl_format, m->x_ul + (m->cols - 0.5) * m->cellsizex);	
+	fprintf(f, "\n");
+	/* ylo yhi */
+	fprintf(f, gl_format, m->y_ul - (m->rows - 0.5) * m->cellsizey);
+	fprintf(f, gl_format, m->y_ul - 0.5 * m->cellsizey);	
+	fprintf(f, "\n");
+	/* zlo zhi */
+	fprintf(f, gl_format, m->cellmin);
+	fprintf(f, gl_format, m->cellmax);	
+	fprintf(f, "\n");
 	n = m->rows * m->cols;
 	for (i = 0; i < n; i++) {
 		row = m->rows - (i / m->cols) - 1;	/* from bottom to top */

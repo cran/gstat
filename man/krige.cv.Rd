@@ -7,8 +7,8 @@ point (co)kriging, kriging in a local neighbourhood.  }
 \usage{
 gstat.cv(object, nfold, remove.all = FALSE, verbose = FALSE, 
 	all.residuals = FALSE, ...)
-krige.cv(formula, locations, data, model = NULL, beta = NULL, nmax = Inf, 
-	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE, ...)
+krige.cv(formula, locations, data, model = NULL, ..., beta = NULL, nmax = Inf, 
+	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE)
 }
 \arguments{
   \item{object}{ object of class gstat; see function \link{gstat}}

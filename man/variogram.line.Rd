@@ -4,7 +4,7 @@
 \description{ Generates a semivariance values given a variogram model }
 \usage{
 variogram.line(object, maxdist, n = 200, min = 1.0e-6 * maxdist, 
-	dir = c(1,0,0), covariance = FALSE, ...)
+	dir = c(1,0,0), covariance = FALSE, ..., debug.level = 0)
 }
 \arguments{
 \item{object}{ variogram model for which we want semivariance function values }
@@ -18,6 +18,7 @@ x (East-West), y (North-South) and z (Up-Down) }
 \item{covariance}{logical; if TRUE return covariance values, otherwise
 return semivariance values }
 \item{...}{ignored}
+\item{debug.level}{gstat internal debug level}
 }
 \value{
 a data frame of dimension (\code{n} x 2), with columns distance and gamma

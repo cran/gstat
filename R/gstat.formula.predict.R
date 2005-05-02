@@ -1,7 +1,19 @@
 "gstat.formula.predict" <-
 function (formula, locations, newdata, na.action) 
 {
-	if (has.coordinates(newdata)) {
+	#if (is(locations, "Spatial")) {
+	#	if (!require(sp))
+	#		stop("package sp required to deal with Spatial classes")
+	#	newdata = locations
+	#}
+	if (is(newdata, "SpatialRings") && require(sp)) {
+		locs = t(sapply(getSRpolygonsSlot(newdata), function(x) getSringsLabptSlot(x)))
+		colnames(locs) = c("x", "y")
+		if (is(newdata, "SpatialRingsDataFrame"))
+			newdata = as.data.frame(newdata)
+		else
+			newdata = data.frame(a = rep(1, nrow(locs)))
+	} else if (has.coordinates(newdata)) {
 		locs = coordinates(newdata)
 		newdata = as.data.frame(newdata)
 	} else {

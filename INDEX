@@ -11,16 +11,17 @@ get.contr               Calculate contrasts from multivariable
                         predictions
 gstat                   Create gstat objects, or subset it
 image                   Image Gridded Coordinates in Data Frame
+jura                    Jura data set
 krige                   Simple, Ordinary or Universal, global or
                         local, Point or Block Kriging, or simulation.
 krige.cv                (co)kriging cross validation, n-fold or
                         leave-one-out
 makegrid                make regular grid with square cells and round
                         numbers
-map.to.lev              rearrange data frame for plotting with
-                        levelplot
 mapasp                  Calculate plot aspect ratio for geographic
                         maps
+map.to.lev              rearrange data frame for plotting with
+                        levelplot
 meuse                   Meuse river data set
 meuse.all               Meuse river data set -- original, full data
                         set
@@ -50,5 +51,6 @@ variogram               Calculate Sample or Residual Variogram or
 variogram.line          Semivariance Values For a Given Variogram
                         Model
 vgm                     Generate, or Add to Variogram Model
+walker                  Walker Lake sample data set
 zerodist                find point pairs with equal spatial
                         coordinates
