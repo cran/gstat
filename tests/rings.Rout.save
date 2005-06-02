@@ -1,6 +1,6 @@
 
 R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.1.0 beta (2005-04-10), ISBN 3-900051-07-0
+Version 2.1.0  (2005-04-18), ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -35,7 +35,10 @@ Type 'q()' to quit R.
 + 
 + ring = cbind(c(0,bl[1],bl[1],0,0), c(0,0,bl[2],bl[2],0))
 + r1 = SpatialRings(list(Srings(list(Sring(ring)), ID = "xx")))
-+ r1df = SpatialRingsDataFrame(r1, data.frame(a=1))
++ a = data.frame(a = 1, b = 2)
++ rownames(a) = "xx"
++ r1df = SpatialRingsDataFrame(r1, a)
++ 
 + g = gstat(formula=z~1, data=d, model=vgm(1, "Exp", 1))
 + args = list(type = "regular", n=16, offset=c(0.5,0.5))
 + yy = predict(g, r1df, block = bl, sps.args = args)
@@ -59,7 +62,10 @@ Type 'q()' to quit R.
 + 	Srings(list(Sring(ring3)), ID = "x3"),
 + 	Srings(list(Sring(ring4)), ID = "x4"),
 + 	))
-+ r1df = SpatialRingsDataFrame(r1, data.frame(a=rep(1,5)))
++ df = data.frame(a=rep(1,5), b= rep(1,5))
++ rownames(df) = c("x0", "x1", "x2", "x3", "x4")
++ r1df = SpatialRingsDataFrame(r1, df)
++ 
 + yy = predict(g, r1, block = bl, sps.args = args)
 + all.equal(as.data.frame(xx), as.data.frame(yy))
 + 
@@ -88,7 +94,10 @@ Type 'q()' to quit R.
 + 	Srings(list(Sring(ring1)), ID = "x1"),
 + 	Srings(list(Sring(ring2)), ID = "x2"),
 + 	))
-+ r1df = SpatialRingsDataFrame(r1, data.frame(a=rep(1,3)))
++ df = data.frame(a = rep(1,3), b = rep(1,3))
++ rownames(df) = c("x0", "x1", "x2")
++ r1df = SpatialRingsDataFrame(r1, df)
++ 
 + args = list(type = "regular", n=16, offset=c(0.5,0.5))
 + yy = predict(g, r1df, block = bl, sps.args = args)
 + xx = rbind(as.data.frame(xx1), as.data.frame(xx2), as.data.frame(xx3))
@@ -103,7 +112,7 @@ Attaching package: 'gstat'
 
 	The following object(s) are masked from package:sp :
 
-	 bpy.colors bubble makegrid mapasp map.to.lev point.in.polygon select.spatial zerodist 
+	 bpy.colors bubble makegrid map.to.lev mapasp point.in.polygon select.spatial zerodist 
 
 [using ordinary kriging]
 [using ordinary kriging]

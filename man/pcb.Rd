@@ -36,7 +36,7 @@ nor in the paper below. }
 Edzer J. Pebesma, Richard N.M. Duin, 2004.  Spatio-temporal mapping of sea
 floor sediment pollution in the North Sea. Paper presented at GeoENV2004,
 Oct 12-14, 2004, Neuchatel; proceedings to be published by Springer. A copy
-of the paper can be requested from \url{mailto:e.pebesma@geog.uu.nl}
+of the paper can be requested from \url{mailto:e.pebesma@geo.uu.nl}
 }
 
 \seealso{\link{ncp.grid}}

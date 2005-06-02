@@ -18,10 +18,10 @@ krige.cv                (co)kriging cross validation, n-fold or
                         leave-one-out
 makegrid                make regular grid with square cells and round
                         numbers
-mapasp                  Calculate plot aspect ratio for geographic
-                        maps
 map.to.lev              rearrange data frame for plotting with
                         levelplot
+mapasp                  Calculate plot aspect ratio for geographic
+                        maps
 meuse                   Meuse river data set
 meuse.all               Meuse river data set -- original, full data
                         set

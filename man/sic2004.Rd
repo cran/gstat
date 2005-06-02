@@ -96,9 +96,8 @@ Data: the German Federal Office for Radiation Protection (BfS),
 by Edzer J. Pebesma.  }
 
 \references{ 
-
-\url{http:/www.ai-geostats.org/}
-
+\url{http:/www.ai-geostats.org/},
+\url{http://www.ai-geostats.org/resources/sic2004_data.htm},
 \url{http://www.ai-geostats.org/events/sic2004/index.htm}
 }
 

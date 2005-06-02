@@ -98,7 +98,7 @@ function(x, np = FALSE, skip, threshold, ...) {
 		start = 2 
 	else
 		start = 1 
-	idx = seq(start, NCOL(x@data), by=2)
+	idx = seq(start, ncol(x@data), by=2)
 	n = floor(sqrt(length(idx) * 2))
     if (missing(skip)) {
         skip = NULL

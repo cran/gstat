@@ -508,6 +508,8 @@ static double inverse_dist(DATA *data, DPOINT *where, double idPow) {
 
 	if (data->n_sel <= 0)
 		ErrMsg(ER_IMPOSVAL, "zero neighbourhood in inverse_dist()");
+	if (data->n_sel == 1)
+		return data->sel[0]->attr;
 	blockd = block_discr(blockd, get_block_p(), where);
 	for (i = 0, value = 0.0; i < blockd->n_list; i++) {
 		for (j = 0, sumweights = sumvals = 0.0; j < data->n_sel; j++) {
