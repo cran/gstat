@@ -1,5 +1,3 @@
-
-
 \name{oxford}
 \alias{oxford}
 \title{Oxford soil samples}
@@ -9,7 +7,7 @@ and 21 rows. Grid is oriented with long axis North-north-west to
 South-south-east Origin of grid is South-south-east point, 100m outside
 grid.
 
-Original data are part of a soil survey carried out by P A. Burrough in
+Original data are part of a soil survey carried out by P.A. Burrough in
 1967. The survey area is located on the chalk downlands on the Berkshire
 Downs in Oxfordshire, UK. Three soil profile units were recognised on
 the shallow Rendzina soils; these are Ia - very shallow, grey calcareous

@@ -524,7 +524,6 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 			for (j = 0; j < gl_nsim; j++) 
 				for (k = 0; k < n; k++)
 					NUMERIC_POINTER(retvector)[pos++] = msim[i][k][j];
-		free_simulations();
 		NUMERIC_POINTER(retvector_dim)[1] = nvars * gl_nsim; /* ncols */
 	} else {
 		PROTECT(retvector = NEW_NUMERIC(n * nest));
@@ -544,6 +543,8 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		}
 		NUMERIC_POINTER(retvector_dim)[1] = nest; /* ncols */
 	}
+	if (gl_nsim > 0)
+		free_simulations();
 	SET_DIM(retvector, retvector_dim);
 	SET_ELEMENT(ret, 0, retvector);
 	for (i = 0; i < n; i++)
