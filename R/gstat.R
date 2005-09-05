@@ -3,14 +3,14 @@
 }
 
 try.coordinates <- function(data) {
-	if (is(data, "SpatialPoints"))
+	if (is(data, "SpatialPoints") && require(sp))
 		coordinates(data)
 	else
 		NULL
 }
 
 has.coordinates <- function(data) {
-	is(data, "SpatialPoints")
+	is(data, "SpatialPoints") && require(sp)
 }
 
 try.gridparameters <- function(data) {

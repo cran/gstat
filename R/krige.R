@@ -19,3 +19,12 @@ function (formula, locations = try.coordinates(data), data = sys.frame(sys.paren
     predict.gstat(g, newdata = newdata, block = block, nsim = nsim,
 		indicators = indicators, na.action = na.action)
 }
+
+idw <-
+function (formula, locations = try.coordinates(data), data = sys.frame(sys.parent()), 
+		newdata, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
+		na.action = na.pass, idp = 2.0) {
+	krige(formula, locations, data, nmax = nmax, nmin = nmin,
+		maxdist = maxdist, block = block, na.action = na.action,
+		set = list(idp = 2))
+}

@@ -1,3 +1,4 @@
+library(gstat)
 if (require(sp)) {
 set.seed(13331)
 
@@ -7,7 +8,6 @@ z = rnorm(10)
 d = data.frame(x=x,y=y,z=z)
 bl = c(1,1)
 
-library(gstat)
 nd = data.frame(x=.5, y=.5)
 
 # single block:
@@ -18,10 +18,10 @@ xx = krige(z~1, d, nd, model=vgm(1, "Exp", 1), block = bl,
 	set = list(nb=4))
 
 ring = cbind(c(0,bl[1],bl[1],0,0), c(0,0,bl[2],bl[2],0))
-r1 = SpatialRings(list(Srings(list(Sring(ring)), ID = "xx")))
+r1 = SpatialPolygons(list(Polygons(list(Polygon(ring)), ID = "xx")))
 a = data.frame(a = 1, b = 2)
 rownames(a) = "xx"
-r1df = SpatialRingsDataFrame(r1, a)
+r1df = SpatialPolygonsDataFrame(r1, a)
 
 g = gstat(formula=z~1, data=d, model=vgm(1, "Exp", 1))
 args = list(type = "regular", n=16, offset=c(0.5,0.5))
@@ -39,16 +39,16 @@ ring1 = cbind(c(1+0,1+bl[1],1+bl[1],1+0,1+0), c(0,0,bl[2],bl[2],0))
 ring2 = cbind(c(2+0,2+bl[1],2+bl[1],2+0,2+0), c(0,0,bl[2],bl[2],0))
 ring3 = cbind(c(3+0,3+bl[1],3+bl[1],3+0,3+0), c(0,0,bl[2],bl[2],0))
 ring4 = cbind(c(4+0,4+bl[1],4+bl[1],4+0,4+0), c(0,0,bl[2],bl[2],0))
-r1 = SpatialRings(list(
-	Srings(list(Sring(ring0)), ID = "x0"),
-	Srings(list(Sring(ring1)), ID = "x1"),
-	Srings(list(Sring(ring2)), ID = "x2"),
-	Srings(list(Sring(ring3)), ID = "x3"),
-	Srings(list(Sring(ring4)), ID = "x4"),
+r1 = SpatialPolygons(list(
+	Polygons(list(Polygon(ring0)), ID = "x0"),
+	Polygons(list(Polygon(ring1)), ID = "x1"),
+	Polygons(list(Polygon(ring2)), ID = "x2"),
+	Polygons(list(Polygon(ring3)), ID = "x3"),
+	Polygons(list(Polygon(ring4)), ID = "x4"),
 	))
 df = data.frame(a=rep(1,5), b= rep(1,5))
 rownames(df) = c("x0", "x1", "x2", "x3", "x4")
-r1df = SpatialRingsDataFrame(r1, df)
+r1df = SpatialPolygonsDataFrame(r1, df)
 
 yy = predict(g, r1, block = bl, sps.args = args)
 all.equal(as.data.frame(xx), as.data.frame(yy))
@@ -73,14 +73,14 @@ bl = c(3,3)
 ring2 = cbind(c(3+0,3+bl[1],3+bl[1],3+0,3+0), c(0,0,bl[2],bl[2],0))
 xx3 = krige(z~1, d, nd[3], model=vgm(1, "Exp", 1), block = bl,
 	set = list(nb=4))
-r1 = SpatialRings(list(
-	Srings(list(Sring(ring0)), ID = "x0"),
-	Srings(list(Sring(ring1)), ID = "x1"),
-	Srings(list(Sring(ring2)), ID = "x2"),
+r1 = SpatialPolygons(list(
+	Polygons(list(Polygon(ring0)), ID = "x0"),
+	Polygons(list(Polygon(ring1)), ID = "x1"),
+	Polygons(list(Polygon(ring2)), ID = "x2"),
 	))
 df = data.frame(a = rep(1,3), b = rep(1,3))
 rownames(df) = c("x0", "x1", "x2")
-r1df = SpatialRingsDataFrame(r1, df)
+r1df = SpatialPolygonsDataFrame(r1, df)
 
 args = list(type = "regular", n=16, offset=c(0.5,0.5))
 yy = predict(g, r1df, block = bl, sps.args = args)

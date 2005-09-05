@@ -6,10 +6,10 @@ function (formula, locations, newdata, na.action)
 	#		stop("package sp required to deal with Spatial classes")
 	#	newdata = locations
 	#}
-	if (is(newdata, "SpatialRings") && require(sp)) {
-		locs = t(sapply(getSRpolygonsSlot(newdata), function(x) getSringsLabptSlot(x)))
+	if (is(newdata, "SpatialPolygons") && require(sp)) {
+		locs = t(sapply(getSpPpolygonsSlot(newdata), function(x) getPolygonsLabptSlot(x)))
 		colnames(locs) = c("x", "y")
-		if (is(newdata, "SpatialRingsDataFrame"))
+		if (is(newdata, "SpatialPolygonsDataFrame"))
 			newdata = as.data.frame(newdata)
 		else
 			newdata = data.frame(a = rep(1, nrow(locs)))
