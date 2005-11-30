@@ -107,7 +107,7 @@ function(x, np = FALSE, skip, threshold, ...) {
                 skip = c(skip, row < col)
     }
 	if (!(missing(threshold)))
-		x = x[x@data[,2] >= threshold, ]
+		x = x[x[[2]] >= threshold, ]
 
 	levelplot(values ~ dx + dy | ind, as.data.frame(stack(x, select = idx)),
 		asp = mapasp(x), layout = c(n, n), skip = skip, ...)

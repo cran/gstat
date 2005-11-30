@@ -1,6 +1,18 @@
 \name{krige}
+\docType{methods}
 \alias{krige}
+\alias{krige.locations}
+\alias{krige.spatial}
 \alias{idw}
+\alias{idw.locations}
+\alias{idw.spatial}
+\alias{krige-methods}
+\alias{idw-methods}
+\alias{krige,formula,formula-method}
+\alias{krige,formula,Spatial-method}
+\alias{krige,formula,NULL-method}
+\alias{idw,formula,formula-method}
+\alias{idw,formula,Spatial-method}
 \title{ Simple, Ordinary or Universal, global or local, Point or Block Kriging,
 or simulation. }
 \description{
@@ -11,11 +23,19 @@ conditional (Gaussian or indicator) simulation equivalents for all kriging
 varieties, and function for inverse distance weighted interpolation. 
 For multivariable prediction, see \link{gstat} and \link{predict.gstat}
 }
-\usage{krige(formula, locations, data, newdata, model, ..., beta, nmax
+\usage{
+krige(formula, locations, ...)
+krige.locations(formula, locations, data, newdata, model, ..., beta, nmax
 = Inf, nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
 na.action = na.pass)
-idw(formula, locations, data, newdata, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0),
-na.action = na.pass, idp = 2.0)
+krige.spatial(formula, locations, newdata, model, ..., beta, nmax
+= Inf, nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
+na.action = na.pass)
+idw(formula, locations, ...)
+idw.locations(formula, locations, data, newdata, nmax = Inf, 
+	nmin = 0, maxdist = Inf, block, na.action = na.pass, idp = 2.0)
+idw.spatial(formula, locations, newdata, nmax = Inf, nmin = 0, 
+    maxdist = Inf, block = numeric(0), na.action = na.pass, idp = 2.0)
 }
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear
@@ -24,15 +44,15 @@ na.action = na.pass, idp = 2.0)
   for simple kriging also define \code{beta} (see below); for universal
   kriging, suppose \code{z} is linearly dependent on \code{x} and \code{y},
   use the formula \code{z~x+y}}
- \item{locations}{ formula with only independent variables that define the
-  spatial data locations (coordinates), e.g. \code{~x+y}; if \code{data}
-  is of class \code{spatial.data.frame}, this argument may be ignored, as
-  it can be derived from the data }
- \item{data}{ data frame; should contain the dependent variable, independent
-  variables, and coordinates. }
- \item{newdata}{ data frame with prediction/simulation locations; should 
-  contain columns with the independent variables (if present) and the
-  coordinates with names as defined in \code{locations} }
+  \item{locations}{ formula with only independent variables that define the
+  spatial data locations (coordinates), e.g. \code{~x+y}, or object of
+  class \code{Spatial}}
+ \item{data}{ data frame: should contain the dependent variable, independent
+  variables, and coordinates, should be missing if locations contains data. }
+ \item{newdata}{ data frame or Spatial object with prediction/simulation 
+  locations; should 
+  contain attribute columns with the independent variables (if present) and 
+  (if locations is a formula) the coordinates with names as defined in \code{locations} }
  \item{model}{ variogram model of dependent variable (or its residuals), 
   defined by a call to \link{vgm} or \link{fit.variogram}}
  \item{beta}{ only for simple kriging (and simulation based on simple
@@ -68,8 +88,19 @@ na.action = na.pass, idp = 2.0)
  \item{\dots}{ other arguments that will be passed to \link{gstat}}
  \item{idp}{numeric; specify the inverse distance weighting power}
 }
+\section{Methods}{
+\describe{
+\item{formula = "formula", locations = "formula"}{ 
+locations specifies which coordinates in \code{data} refer to spatial coordinates
+}
+\item{formula = "formula", locations = "Spatial"}{ 
+Object locations knows about its own spatial locations
+}
+\item{formula = "formula", locations = "NULL"}{ used in case of unconditional simulations;
+newdata needs to be of class Spatial }
+}}
 \details{
-Function \code{krige} is a simple wrapper function around \link{gstat}
+Function \code{krige} is a simple wrapper method around \link{gstat}
 and \link{predict.gstat} for univariate kriging prediction and conditional
 simulation methods available in gstat. For multivariate prediction or
 simulation, or for other interpolation methods provided by gstat (such as
@@ -116,9 +147,9 @@ m <- vgm(.59, "Sph", 874, .04)
 # ordinary kriging:
 x <- krige(log(zinc)~1, ~x+y, model = m, data = meuse, newd = meuse.grid)
 library(lattice)
-levelplot(var1.pred~x+y, x, aspect = mapasp(x),
+levelplot(var1.pred~x+y, x, aspect = "iso",
 	main = "ordinary kriging predictions")
-levelplot(var1.var~x+y, x, aspect = mapasp(x),
+levelplot(var1.var~x+y, x, aspect = "iso",
 	main = "ordinary kriging variance")
 # simple kriging:
 x <- krige(log(zinc)~1, ~x+y, model = m, data = meuse, newdata = meuse.grid, 
@@ -128,10 +159,10 @@ m <- vgm(.4, "Sph", 954, .06)
 # universal block kriging:
 x <- krige(log(zinc)~x+y, ~x+y, model = m, data = meuse, newdata = 
 	meuse.grid, block = c(40,40))
-levelplot(var1.pred~x+y, x, aspect = mapasp(x),
+levelplot(var1.pred~x+y, x, aspect = "iso",
 	main = "universal kriging predictions")
 # add grid:
-levelplot(var1.var~x+y, x, aspect = mapasp(x),
+levelplot(var1.var~x+y, x, aspect = "iso",
 		panel = function(...) {
 			panel.levelplot(...)
 			panel.abline(h = 0:3*1000 + 330000, v= 0:2*1000 + 179000, col = "grey")

@@ -9,8 +9,10 @@ function(x, data, xcol = data$x, ycol = data$y, xlab = "x coordinate",
 		ycol = cc[,2]
 		xlab = colnames(cc)[1]
 		ylab = colnames(cc)[2]
-	}
-	xyplot(ycol ~ xcol, aspect = mapasp(x = xcol, y = ycol), 
+		asp = mapasp(data)
+	} else
+		asp = "iso"
+	xyplot(ycol ~ xcol, aspect = asp,
 		panel = panel.pointPairs, xlab = xlab, ylab = ylab, pairs = x,
 		col.line = col.line, line.pch = line.pch, main = main, ...)
 }

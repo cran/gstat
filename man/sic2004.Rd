@@ -80,7 +80,7 @@ are nanoSieverts/hour}
 \note{
 the data set sic.grid provides a set of points on a regular grid (almost
 10000 points) covering the area; this is convenient for interpolation;
-see the function \link{makegrid} in package gstat (may be moved to sp).
+see the function \code{makegrid} in package sp.
 
 The coordinates have been projected around a point located in the
 South West of Germany. Hence, a few coordinates have negative values as

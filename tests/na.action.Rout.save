@@ -1,6 +1,7 @@
 
-R : Copyright 2004, The R Foundation for Statistical Computing
-Version 2.0.0  (2004-10-04), ISBN 3-900051-07-0
+R : Copyright 2005, The R Foundation for Statistical Computing
+Version 2.2.0  (2005-10-06 r35749)
+ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -15,7 +16,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library(gstat)
-Loading required package: lattice 
+Loading required package: sp
 > 
 > data(meuse)
 > data(meuse.grid)
@@ -27,44 +28,15 @@ Loading required package: lattice
 > m = meuse.grid[sample(nrow(meuse.grid), 10), ]
 > m[c(2,8), "x"] = NA
 > 
-> krige(log(zinc)~1,~x+y,meuse,m, na.action = na.pass)
-[inverse distance weighted interpolation]
-        x      y var1.pred var1.var
-1  180300 330260  6.305297       NA
-2      NA 329980        NA       NA
-3  179380 331460  6.095475       NA
-4  179180 330820  6.164926       NA
-5  179500 331220  5.885419       NA
-6  181180 332500  5.530612       NA
-7  179060 329820  5.944555       NA
-8      NA 333420        NA       NA
-9  180820 333020  6.068761       NA
-10 180460 330380  6.082566       NA
-> krige(log(zinc)~1,~x+y,meuse,m, na.action = na.omit)
-[inverse distance weighted interpolation]
-          x      y var1.pred var1.var
-2621 180300 330260  6.305297       NA
-1338 179380 331460  6.095475       NA
-1926 179180 330820  6.164926       NA
-1554 179500 331220  5.885419       NA
-515  181180 332500  5.530612       NA
-2997 179060 329820  5.944555       NA
-234  180820 333020  6.068761       NA
-2467 180460 330380  6.082566       NA
-> krige(log(zinc)~1,~x+y,meuse,m, na.action = na.exclude)
-[inverse distance weighted interpolation]
-          x      y var1.pred var1.var
-2621 180300 330260  6.305297       NA
-1338 179380 331460  6.095475       NA
-1926 179180 330820  6.164926       NA
-1554 179500 331220  5.885419       NA
-515  181180 332500  5.530612       NA
-2997 179060 329820  5.944555       NA
-234  180820 333020  6.068761       NA
-2467 180460 330380  6.082566       NA
+> ## this is not allowed anymore:
+> try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.pass))
+Error in validityMethod(object) : number of rows in data.frame and SpatialPoints don't match
+> try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.omit))
+Error in validityMethod(object) : number of rows in data.frame and SpatialPoints don't match
+> try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.exclude))
+Error in validityMethod(object) : number of rows in data.frame and SpatialPoints don't match
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.fail))
-Error in na.fail.default(list(x = c(180300, NA, 179380, 179180, 179500,  : 
-	missing values in object
+Error in validityMethod(object) : number of rows in data.frame and SpatialPoints don't match
 > 
 > # select 10 random rows;
 > # create two missing values in the regressor variable:
@@ -85,26 +57,26 @@ Error in na.fail.default(list(x = c(180300, NA, 179380, 179180, 179500,  :
 10 179540 329900  6.314501 0.2402659
 > krige(log(zinc)~dist,~x+y,meuse,m, na.action = na.omit)
 [ordinary or weighted least squares prediction]
-          x      y var1.pred  var1.var
-1121 180260 331740  5.110655 0.2425253
-1613 180420 331180  4.024709 0.2580362
-2684 178780 330180  5.815051 0.2392971
-134  180900 333220  6.343871 0.2404070
-1251 179980 331580  5.272101 0.2413105
-2757 180660 330140  6.462357 0.2410713
-1149 179980 331700  5.345455 0.2408518
-2951 179540 329900  6.314501 0.2402659
+       x      y var1.pred  var1.var
+1 180260 331740  5.110655 0.2425253
+2 180420 331180  4.024709 0.2580362
+3 178780 330180  5.815051 0.2392971
+4 180900 333220  6.343871 0.2404070
+5 179980 331580  5.272101 0.2413105
+6 180660 330140  6.462357 0.2410713
+7 179980 331700  5.345455 0.2408518
+8 179540 329900  6.314501 0.2402659
 > krige(log(zinc)~dist,~x+y,meuse,m, na.action = na.exclude)
 [ordinary or weighted least squares prediction]
-          x      y var1.pred  var1.var
-1121 180260 331740  5.110655 0.2425253
-1613 180420 331180  4.024709 0.2580362
-2684 178780 330180  5.815051 0.2392971
-134  180900 333220  6.343871 0.2404070
-1251 179980 331580  5.272101 0.2413105
-2757 180660 330140  6.462357 0.2410713
-1149 179980 331700  5.345455 0.2408518
-2951 179540 329900  6.314501 0.2402659
+       x      y var1.pred  var1.var
+1 180260 331740  5.110655 0.2425253
+2 180420 331180  4.024709 0.2580362
+3 178780 330180  5.815051 0.2392971
+4 180900 333220  6.343871 0.2404070
+5 179980 331580  5.272101 0.2413105
+6 180660 330140  6.462357 0.2410713
+7 179980 331700  5.345455 0.2408518
+8 179540 329900  6.314501 0.2402659
 > try(krige(log(zinc)~dist,~x+y,meuse,m, na.action = na.fail))
 Error in na.fail.default(list(dist = c(0.527108, 0.929323, NA, 0.266212,  : 
 	missing values in object

@@ -1,6 +1,7 @@
 
 R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.1.1  (2005-06-20), ISBN 3-900051-07-0
+Version 2.2.0  (2005-10-06 r35749)
+ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -15,6 +16,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library(gstat)
+Loading required package: sp
 > if (require(sp)) {
 + set.seed(13331)
 + 
@@ -105,15 +107,6 @@ Type 'q()' to quit R.
 + print(all.equal(as.data.frame(xx), as.data.frame(yy)))
 + } else
 + 	print("this test only runs if package sp is installed")
-Loading required package: sp
-
-Attaching package: 'sp'
-
-
-	The following object(s) are masked from package:gstat :
-
-	 bpy.colors bubble makegrid mapasp point.in.polygon select.spatial zerodist 
-
 [using ordinary kriging]
 [using ordinary kriging]
 [1] TRUE

@@ -1,6 +1,7 @@
 
 R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.1.0 beta (2005-04-10), ISBN 3-900051-07-0
+Version 2.2.0  (2005-10-06 r35749)
+ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -15,6 +16,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library(gstat)
+Loading required package: sp
 > d=expand.grid(x=c(-.5,.5), y=c(-.5,.5))
 > d$z=1:4
 > vv=vgm(model = "Tab",  covtable = 
@@ -33,12 +35,12 @@ covariance table:
 [using ordinary kriging]
   x y var1.pred var1.var
 1 0 0       2.5 1.017863
-> krige(z~1,~x,d[1:2,],data.frame(x=0,y=0),vgm(1, "Sph", 1))
+> krige(z~1,~x+y,d[1:2,],data.frame(x=0,y=0),vgm(1, "Sph", 1))
 [using ordinary kriging]
-  x var1.pred var1.var
-1 0       1.5    0.875
-> krige(z~1,~x,d[1:2,],data.frame(x=0,y=0),vv)
+  x y var1.pred var1.var
+1 0 0       1.5 1.267767
+> krige(z~1,~x+y,d[1:2,],data.frame(x=0,y=0),vv)
 [using ordinary kriging]
-  x var1.pred  var1.var
-1 0       1.5 0.8751125
+  x y var1.pred var1.var
+1 0 0       1.5 1.267863
 > 

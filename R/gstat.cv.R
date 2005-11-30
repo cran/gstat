@@ -7,12 +7,12 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 	var1 = object$data[[1]]
 	data = var1$data
 	formula = var1$formula
-	locations = var1$locations
-	if (all.residuals)
+	if (all.residuals) {
 		nc = length(object$data)
-	else
-		nc = 2 + length(attr(terms(locations), "term.labels"))
-	ret = data.frame(matrix(NA, nrow(data), nc))
+		ret = data.frame(matrix(NA, nrow(data), nc))
+	} else
+		ret = SpatialPointsDataFrame(coordinates(data), 
+			data.frame(matrix(as.numeric(NA), nrow(data), 2)))
 	if (missing(nfold)) 
 		nfold = nrow(data)
 	if (nfold < nrow(data)) 
@@ -32,15 +32,12 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 			for (v in 2:length(object$data)) {
 				varv = object$data[[v]]
 				varv$data = all.data[[v]]
-				atv = gstat.formula(varv$formula, varv$locations, 
-				  varv$data)$locations
-				at1 = gstat.formula(formula, locations, data[sel, 
-				  ])$locations
-				all = rbind(atv, at1)
-				if (length(attr(terms(~x+y), "term.labels")) == 2) # 2-D
-					zd = zerodist(all[, 1], all[, 2])
-				else 
-					zd = zerodist(all[, 1], all[, 2], all[, 3])
+				#atv = gstat.formula(varv$formula, varv$data)$locations
+				#at1 = gstat.formula(formula, data[sel, ])$locations
+				atv = coordinates(varv$data)
+				at1 = coordinates(data[sel,])
+				all = SpatialPoints(rbind(atv, at1))
+				zd = zerodist(all)
 				skip = zd[, 1]
 				object$data[[v]]$data = varv$data[-skip, ]
 			}
@@ -53,28 +50,30 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 				var.i = object$data[[i]]
 				data.i = all.data[[i]]
 				formula.i = var.i$formula
-				locations.i = var.i$locations
-				observed = gstat.formula(formula.i, locations.i, data.i)$y[sel]
+				observed = gstat.formula(formula.i, data.i)$y[sel]
 				pred.name = paste(names(object$data)[i], "pred", sep = ".")
-				residual = as.numeric(observed - x[pred.name])
+				residual = as.numeric(observed - x[[pred.name]])
 				ret[sel, i] = residual
 			}
-		} else 
-			ret[sel, 1:nc] = x[, 1:nc]
+		} else {
+			ret[[1]][sel] = x[[1]]
+			ret[[2]][sel] = x[[2]]
+		}
 	}
 
 	if (! all.residuals) {
-		names(ret) = names(x)[1:nc]
-		observed = gstat.formula(formula, locations, data)$y
+		names(ret) = names(x)[1:2]
+		ret$observed = gstat.formula(formula, data)$y
 		pred.name = paste(names(object$data)[1], "pred", sep = ".")
-		residual = observed - ret[pred.name]
+		ret$residual = ret$observed - ret[[pred.name]]
 		var.name = paste(names(object$data)[1], "var", sep = ".")
-		zscore = residual/sqrt(ret[var.name])
-		ret = data.frame(ret, observed = observed, residual = residual, 
-			zscore = zscore, fold = fold)
-		names(ret) = c(names(x)[1:nc], "observed", "residual", "zscore", "fold")
-	} else {
+		ret$zscore = ret$residual/sqrt(ret[[var.name]])
+		ret$fold = fold
+	} else
 		names(ret) = names(object$data)
-	}
+
+	if (!is.null(object$locations))
+		ret = as.data.frame(ret)
+
 	ret
 }

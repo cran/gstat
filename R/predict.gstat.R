@@ -7,10 +7,18 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		stop("no data available")
 	if (!inherits(object, "gstat"))
 		stop("first argument should be of class gstat")
-	if (is(newdata, "SpatialPoints") && require(sp))
-		use.sdf = TRUE
-	else
-		use.sdf = FALSE
+	if (!is.null(object$locations) && inherits(object$locations, "formula") 
+			&& !(is(newdata, "Spatial"))) {
+		coordinates(newdata) = object$locations
+		return.sp = FALSE
+	} else
+		return.sp = TRUE
+	
+	if (!is.null(object$data[[1]]$data)) {
+		if (!equal.projections(object$data[[1]]$data, newdata))
+			stop("data items in gstat object and newdata have different coordinate reference systems")
+	}
+
 	.Call("gstat_init", as.integer(debug.level))
 	if (!missing(mask)) {
 		cat("argument mask is deprecated:")
@@ -29,12 +37,13 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			maxdist = as.numeric(-1)
 		else maxdist = d$maxdist
 		if (d$dummy) {
-			tr = terms(d$locations)
+			# tr = terms(d$locations)
 			if (is.null(d$beta) || length(d$beta) == 0)
 				stop("dummy data should have beta defined")
 			if (d$degree != 0)
 				stop("dummy data cannot have non-zero degree arg; use formula")
-			loc.dim = length(attr(tr, "term.labels"))
+			# loc.dim = length(attr(tr, "term.labels"))
+			loc.dim = dim(coordinates(newdata))[[2]]
 			.Call("gstat_new_dummy_data", as.integer(loc.dim), 
 				as.integer(d$has.intercept), as.double(d$beta), 
 				nmax, nmin, maxdist, as.integer(d$vfn))
@@ -43,7 +52,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 				w = numeric(0)
 			else
 				w = d$weights
-			raw = gstat.formula(d$formula, d$locations, d$data)
+			raw = gstat.formula(d$formula, d$data)
 			.Call("gstat_new_data", as.double(raw$y), as.double(raw$locations),
 				as.double(raw$X), as.integer(raw$has.intercept),
 				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
@@ -51,8 +60,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		}
 		if (!is.null(object$model[[name]])) 
 			load.variogram.model(object$model[[name]], c(i - 1, i - 1))
-		raw = gstat.formula.predict(d$formula, d$locations, newdata, 
-				na.action = na.action)
+		raw = gstat.formula.predict(d$formula, newdata, na.action = na.action)
 		if (is.null(new.X)) 
 			new.X = raw$X
 		else new.X = cbind(new.X, raw$X)
@@ -69,7 +77,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		gstat.load.set(object$set)
 	if (!is.null(object$merge)) 
 		gstat.load.merge(object)
-	if (is(newdata, "SpatialPolygons") && require(sp)) {
+	if (is(newdata, "SpatialPolygons")) {
 		pol = getSpPpolygonsSlot(newdata)
 		if (length(pol) != nrow(raw$locations))
 			stop("polygons and center points length mismatch")
@@ -111,9 +119,12 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			as.vector(raw$locations[perm, ]), as.vector(new.X[perm,]), 
 			as.integer(block.cols), as.vector(block), 
 			as.integer(nsim), as.integer(BLUE))[[1]]
+		if (nsim == 1)
+			colsel = seq(1, by=2, length.out=nvars) # pred1 var1 pred2 var2 ...
+		else
+			colsel = TRUE
 		ret = data.frame(cbind(raw$locations, 
-		matrix(ret[order(perm),], nrow(as.matrix(new.X)), 
-		max(2, abs(nsim) * nvars))))
+			matrix(ret[order(perm), colsel], nrow(as.matrix(new.X)), abs(nsim) * nvars)))
 	}
 	else {
 		ret = .Call("gstat_predict", as.integer(nrow(as.matrix(new.X))),
@@ -133,18 +144,22 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		if (length(names.vars) > 1) 
 			names.vars = paste(rep(names.vars, each = abs(nsim)), 
 				paste("sim", 1:abs(nsim), sep = ""), sep = ".")
-		else names.vars = paste("sim", 1:abs(nsim), sep = "")
-		if (abs(nsim) == 1) 
-			ret = ret[, 1:(ncol(ret) - 1)]
+		else
+			names.vars = paste("sim", 1:abs(nsim), sep = "")
 	} else
 		names.vars = create.gstat.names(names(object$data))
 	names(ret) = c(dimnames(raw$locations)[[2]], names.vars)
-	if (use.sdf) {
-		coordinates(ret) = dimnames(raw$locations)[[2]]
-		gridded(ret) = gridded(newdata)
-	} else if (is(newdata, "SpatialPolygons"))
-		ret = SpatialPolygonsDataFrame(as(newdata, "SpatialPolygons"), ret,
-			match.ID = FALSE)
+
+	if (return.sp) {
+		if (is(newdata, "SpatialPolygons")) {
+			ret = SpatialPolygonsDataFrame(as(newdata, "SpatialPolygons"), ret,
+				match.ID = FALSE)
+		} else {
+			coordinates(ret) = dimnames(raw$locations)[[2]]
+			gridded(ret) = gridded(newdata)
+		}
+	}
+
 	return(ret)
 }
 

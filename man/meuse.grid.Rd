@@ -36,6 +36,6 @@ See the \link{meuse} documentation
 \examples{
 data(meuse.grid)
 library(lattice)
-xyplot(y~x, meuse.grid, asp=mapasp(meuse.grid), pch="+")
+xyplot(y~x, meuse.grid, asp="iso", pch="+")
 }
 \keyword{datasets}

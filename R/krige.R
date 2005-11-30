@@ -1,30 +1,57 @@
-"krige" <-
-function (formula, locations = try.coordinates(data), data = sys.frame(sys.parent()), 
+if (!isGeneric("krige"))
+	setGeneric("krige", function(formula, locations, ...)
+		standardGeneric("krige"))
+
+"krige.locations" <-
+function (formula, locations, data = sys.frame(sys.parent()), 
 	newdata, model = NULL, ..., beta = NULL, nmax = Inf, nmin = 0, 
 	maxdist = Inf, block = numeric(0), nsim = 0, indicators = FALSE, 
 	na.action = na.pass)
 {
-	if (has.coordinates(locations)) { # shift arguments:
-		if (!is(data, "Spatial")) # another shift:
-			stop("if data derives from Spatial, so should newdata")
-		if (!missing(newdata) && is(newdata, "variogramModel"))
-			model = newdata
-		newdata = data
-		data = locations
-		locations = coordinates(data)
-	}
-    g = gstat(formula = formula, locations = locations, model = model,
-		data = data, beta = beta, nmax = nmax, nmin = nmin, 
+    g = gstat(formula = formula, locations = locations, data = data, 
+		model = model, beta = beta, nmax = nmax, nmin = nmin, 
 		maxdist = maxdist, ...)
     predict.gstat(g, newdata = newdata, block = block, nsim = nsim,
 		indicators = indicators, na.action = na.action)
 }
+setMethod("krige", c("formula", "formula"), krige.locations)
 
-idw <-
-function (formula, locations = try.coordinates(data), data = sys.frame(sys.parent()), 
+
+krige.spatial <- function(formula, locations, newdata, model = NULL, ..., 
+	beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
+	nsim = 0, indicators = FALSE, na.action = na.pass)
+{
+	# locations = coordinates(arg2)
+    g = gstat(formula = formula, # locations = locations, 
+		data = locations, 
+		model = model, beta = beta, nmax = nmax, nmin = nmin, 
+		maxdist = maxdist, ...)
+    predict.gstat(g, newdata = newdata, block = block, nsim = nsim,
+		indicators = indicators, na.action = na.action)
+}
+setMethod("krige", c("formula", "Spatial"), krige.spatial)
+setMethod("krige", c("formula", "NULL"), krige.spatial)
+
+if (!isGeneric("idw"))
+	setGeneric("idw", function(formula, locations, ...)
+		standardGeneric("idw"))
+
+idw.locations <-
+function (formula, locations, data = sys.frame(sys.parent()), 
 		newdata, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
 		na.action = na.pass, idp = 2.0) {
-	krige(formula, locations, data, nmax = nmax, nmin = nmin,
+	krige(formula, locations, data, newdata, nmax = nmax, nmin = nmin,
 		maxdist = maxdist, block = block, na.action = na.action,
-		set = list(idp = 2))
+		set = list(idp = idp))
 }
+setMethod("idw", c("formula", "formula"), idw.locations)
+
+idw.spatial <-
+function (formula, locations, 
+		newdata, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
+		na.action = na.pass, idp = 2.0) {
+	krige(formula, locations, newdata, nmax = nmax, nmin = nmin,
+		maxdist = maxdist, block = block, na.action = na.action,
+		set = list(idp = idp))
+}
+setMethod("idw", c("formula", "Spatial"), idw.spatial)

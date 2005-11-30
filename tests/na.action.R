@@ -10,9 +10,10 @@ set.seed(13131) # reproduce results
 m = meuse.grid[sample(nrow(meuse.grid), 10), ]
 m[c(2,8), "x"] = NA
 
-krige(log(zinc)~1,~x+y,meuse,m, na.action = na.pass)
-krige(log(zinc)~1,~x+y,meuse,m, na.action = na.omit)
-krige(log(zinc)~1,~x+y,meuse,m, na.action = na.exclude)
+## this is not allowed anymore:
+try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.pass))
+try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.omit))
+try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.exclude))
 try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.fail))
 
 # select 10 random rows;
