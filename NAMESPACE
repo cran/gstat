@@ -1,12 +1,9 @@
 useDynLib(gstat)
 
-## once lattice has a NAMESPACE, remove require(lattice) from .onLoad 
-## and uncomment the following line:
 import(lattice)
+import(sp)
 
-export(bpy.colors, 
-	bubble,
-	cross.name,
+export(cross.name,
 	fit.lmc,
 	fit.variogram,
 	fit.variogram.reml,
@@ -14,25 +11,19 @@ export(bpy.colors,
 	gstat,
 	gstat.cv,
 	"[.gstat",
-	idw,
-	krige, 
+	# idw,
+	# krige, 
 	krige.cv, 
-	makegrid, 
 	map.to.lev,
-	mapasp,
 	ossfim,
-	point.in.polygon,
 	predict.gstat,
-	select.spatial,
 	show.vgms,
 	variogram,
 	variogram.line,
 	vgm,
-	xyz2img,
-	zerodist
-	)
+	xyz2img)
 
-# exportMethod(krige, variogram)
+exportMethods(krige, idw)
 
 S3method(image, data.frame)
 

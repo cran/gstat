@@ -34,8 +34,8 @@ print.gstat(x, ...)
   use the formula \code{z~x+y}}
   \item{locations}{ formula with only independent variables that define the
   spatial data locations (coordinates), e.g. \code{~x+y}; if \code{data}
-  is of class \code{spatial.data.frame}, this argument may be ignored, as 
-  it can be derived from the data }
+  has a \code{coordinates} method to extract its coordinates this argument 
+  can be ignored (see package sp for classes for point or grid data). }
   \item{data}{ data frame; contains the dependent variable, independent
   variables, and locations. }
   \item{model}{ variogram model for this \code{id}; defined by a call to 
@@ -163,7 +163,7 @@ meuse.gstat <- gstat(id = "zinc", formula = zinc ~ 1, locations = ~ x + y,
 meuse.gstat
 z <- predict(meuse.gstat, meuse.grid)
 library(lattice) # for levelplot
-levelplot(zinc.pred~x+y, z, aspect = mapasp(z))
+levelplot(zinc.pred~x+y, z, aspect = "iso")
 # see demo(cokriging) and demo(examples) for further examples, 
 # and the manuals for predict.gstat and image
 

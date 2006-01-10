@@ -1,5 +1,5 @@
 "variogram.formula" <-
-function (object, locations = try.coordinates(data), data, ...) 
+function (object, locations = coordinates(data), data, ...) 
 {
 	# gstat.formula takes care of the case where locations contains
 	# both data and coordinates --- see there.

@@ -74,7 +74,7 @@ par(pin = c(oldpin[2]*ratio,oldpin[2]))
 image(x, main="Exactly square cells, using par(pin)")
 par(pin = oldpin)
 library(lattice)
-levelplot(var1.var~x+y, x, aspect = mapasp(x), main = "kriging variance")
+levelplot(var1.var~x+y, x, aspect = "iso", main = "kriging variance")
 }
 
 \keyword{dplot}

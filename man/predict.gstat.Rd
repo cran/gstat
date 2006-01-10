@@ -166,7 +166,7 @@ sim <- krige(formula = log(zinc)~1, locations = ~x+y, model = m, data
 # show all 5 simulation, using map.to.lev to rearrange sim:
 if (require(sp) == FALSE) {
 library(lattice)
-levelplot(z~x+y|name, map.to.lev(sim, z=c(3:7)), aspect = mapasp(sim))
+levelplot(z~x+y|name, map.to.lev(sim, z=c(3:7)), aspect = "iso")
 
 # calculate generalised least squares residuals w.r.t. constant trend:
 g <- gstat(id = "log.zinc", formula = log(zinc)~1, locations = ~x+y, 
@@ -192,9 +192,9 @@ g.dummy <- gstat(formula = z~1, locations = ~x+y, dummy = TRUE, beta = 0,
 	model = vgm(1,"Exp",15), nmax = 20)
 yy <- predict(g.dummy, newdata = xy, nsim = 4)
 # show one realisation:
-levelplot(sim1~x+y, yy, aspect = mapasp(yy))
+levelplot(sim1~x+y, yy, aspect = "iso")
 # show all four:
-levelplot(z~x+y|name, map.to.lev(yy, z=c(3:6)), aspect = mapasp(yy))
+levelplot(z~x+y|name, map.to.lev(yy, z=c(3:6)), aspect = "iso")
 }
 
 }

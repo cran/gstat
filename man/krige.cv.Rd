@@ -30,8 +30,8 @@ krige.cv(formula, locations, data, model = NULL, ..., beta = NULL, nmax = Inf,
   use the formula \code{z~x+y}}
   \item{locations}{ formula with only independent variables that define the
   spatial data locations (coordinates), e.g. \code{~x+y}; if \code{data}
-  is of class \code{spatial.data.frame}, this argument may be ignored, as
-  it can be derived from the data }
+  has a \code{coordinates} method to extract its coordinates this argument 
+  can be ignored (see package sp for classes for point or grid data). }
   \item{data}{ data frame; should contain the dependent variable, independent
   variables, and coordinates. }
   \item{model}{ variogram model of dependent variable (or its residuals), 
@@ -79,9 +79,10 @@ data around from R to gstat. }
 
 \examples{
 data(meuse)
+coordinates(meuse) <- ~x+y
 m <- vgm(.59, "Sph", 874, .04)
 # five-fold cross validation:
-x <- krige.cv(log(zinc)~1, ~x+y, model = m, data = meuse, nmax = 40, nfold=5)
-bubble(x, z = "residual", main = "log(zinc): 5-fold CV residuals")
+x <- krige.cv(log(zinc)~1, model = m, data = meuse, nmax = 40, nfold=5)
+bubble(x, "residual", main = "log(zinc): 5-fold CV residuals")
 }
 \keyword{ models }

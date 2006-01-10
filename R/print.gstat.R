@@ -8,8 +8,8 @@ function (x, ...)
         cat("data:\n")
     for (n in data.names) {
         fstr = paste(x$data[[n]]$formula[c(2, 1, 3)], collapse = "")
-        lstr = paste(x$data[[n]]$locations[c(1, 2)], collapse = "")
-        cat(n, ": formula =", fstr, "; locations =", lstr, ";")
+        #lstr = paste(x$data[[n]]$locations[c(1, 2)], collapse = "")
+        cat(n, ": formula =", fstr, ";")
         if (!is.null(x$data[[n]]$data)) {
             data.dim = dim(x$data[[n]]$data)
             cat(" data dim =", data.dim[1], "x", data.dim[2])
@@ -69,5 +69,7 @@ function (x, ...)
         s = gstat.set(x$set)
         for (i in 1:length(s)) cat(s[i], "\n")
     }
+    if (!is.null(x$locations))
+		print(x$locations)
     invisible(x)
 }

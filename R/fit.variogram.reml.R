@@ -3,16 +3,18 @@ function (formula, locations, data, model, debug.level = 1, set, degree = 0)
 {
     if (missing(formula)) 
         stop("nothing to fit to")
-    if (class(formula) != "formula") 
+    if (!inherits(formula, "formula"))
         stop("formula should be of class formula")
     if (missing(model)) 
         stop("no model to fit")
     if (!inherits(model, "variogramModel"))
         stop("model should be of class variogramModel (use vgm)")
+	if (inherits(locations, "formula"))
+		coordinates(data) = locations
     fit.sills = rep(TRUE, length(model$model))
     fit.ranges = rep(FALSE, length(model$model))
     .Call("gstat_init", as.integer(debug.level))
-    ret = gstat.formula(formula, locations, data)
+    ret = gstat.formula(formula, data)
     ret$y <- residuals(lm(formula, data))
     .Call("gstat_new_data", as.double(ret$y), as.double(ret$locations),
 		as.double(ret$X), as.integer(1), double(0), as.integer(-1), 

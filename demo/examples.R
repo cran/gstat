@@ -6,11 +6,12 @@
 
 par(ask = TRUE)
 data(meuse)
-x <- variogram(zinc ~ 1, ~ x + y, meuse)
+coordinates(meuse)=~x+y
+x <- variogram(zinc ~ 1, meuse)
 v <- vgm(140000, "Sph", 800, nug = 10000)
 plot(x, model = v)
 plot(x, model = fit.variogram(x, model = v))
-x <- variogram(log(zinc) ~ 1, ~ x + y, meuse)
+x <- variogram(log(zinc) ~ 1, meuse)
 v <- vgm(.5, "Sph", 800, nug = .1)
 plot(x, model = v)
 plot(x, model = fit.variogram(x, model = v))
@@ -20,11 +21,12 @@ plot(x, model = fit.variogram(x, model = v))
 ## Inverse distance interpolation on a mask map
 ##
 data(meuse.grid)
-x <- krige(zinc ~ 1, ~ x + y, meuse, meuse.grid, model = NULL)
+gridded(meuse.grid) = ~x+y
+x <- krige(zinc ~ 1, meuse, meuse.grid, model = NULL)
 
 library(lattice)
 
-levelplot(var1.pred ~ x + y, x, aspect = mapasp(x))
+spplot(x[1])
 
 ##
 ## ex04.cmd 
@@ -32,9 +34,9 @@ levelplot(var1.pred ~ x + y, x, aspect = mapasp(x))
 ##
 ## the gstat "classic" radius maps into the gstat "S" maxdist argument
 ##
-new.locs <- data.frame(x = c(181170, 180310, 180205, 178673, 178770, 178270),
-	y = c(333250, 332189, 331707, 330066, 330675, 331075))
-krige(zinc ~ 1, ~ x + y, meuse, newdata = new.locs, 
+new.locs <- SpatialPoints(cbind(x = c(181170, 180310, 180205, 178673, 178770, 178270),
+	y = c(333250, 332189, 331707, 330066, 330675, 331075)))
+krige(zinc ~ 1, meuse, new.locs, 
 		model = vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
 		block = c(40,40), nmax = 40, nmin = 20, 
 		maxdist = 1000)
@@ -45,12 +47,11 @@ krige(zinc ~ 1, ~ x + y, meuse, newdata = new.locs,
 ## Local simple point kriging on a mask map
 ##
 v <- vgm(0.581, "Sph", 900, nug = 0.0554)
-x <- krige(log(zinc) ~ 1, ~ x + y, meuse, meuse.grid, model = v, 
+x <- krige(log(zinc) ~ 1, meuse, meuse.grid, model = v, 
 	nmax = 40, nmin = 20, maxdist = 1000, beta = 5.9)
-levelplot(var1.pred ~ x + y, x, aspect = mapasp(x), 
-	main = "log(zinc) simple kriging prediction")
-levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x), 
-	main = "log(zinc) simple kriging standard errors")
+spplot(x[1], main = "log(zinc) simple kriging prediction")
+x$se = sqrt(x$var1.var)
+spplot(x["se"], main = "log(zinc) simple kriging standard errors")
 
 ##
 ## ex06.cmd 
@@ -58,10 +59,9 @@ levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
 ## Unconditional Gaussian simulation on a mask
 ## (local neigbourhoods, simple kriging)
 ##
-x <- krige(log(zinc) ~ 1, ~ x + y, data = NULL, newdata = meuse.grid, 
+x <- krige(log(zinc) ~ 1, locations = NULL, newdata = meuse.grid, 
 	model = v, nmax = 20, beta = c(5.9), nsim = 5, dummy = TRUE)
-levelplot(z ~ x + y | name, map.to.lev(x, z=c(3:7)), aspect = mapasp(x),
-	main = "five unconditional realisations of a correlated Gaussian field")
+spplot(x, main = "five unconditional realisations of a correlated Gaussian field")
 
 ##
 ## ex07.cmd 
@@ -69,23 +69,21 @@ levelplot(z ~ x + y | name, map.to.lev(x, z=c(3:7)), aspect = mapasp(x),
 ## Gaussian simulation, conditional upon data
 ## (local neighbourhoods, simple and ordinary kriging)
 ##
-x <- krige(log(zinc) ~ 1, ~ x + y, meuse, meuse.grid, 
+x <- krige(log(zinc) ~ 1, meuse, meuse.grid, 
 	model = v, nmax = 20, beta = c(5.9), nsim = 5)
-levelplot(z ~ x + y | name, map.to.lev(x, z=c(3:7)), aspect = mapasp(x),
-	main = "five conditional realisations of a correlated Gaussian field")
+spplot(x, main = "five conditional realisations of a correlated Gaussian field")
 
 ##
 ## ex08.cmd 
 ##
 ## Change of support: local ordinary block kriging on a mask
 ##
-x <- krige(log(zinc) ~ 1, ~ x + y, meuse, meuse.grid, 
+x <- krige(log(zinc) ~ 1, meuse, meuse.grid, 
 	model = v, nmax = 40, nmin = 20, maxdist = 1000,
 	block = c(40,40))
-levelplot(var1.pred ~ x + y, x, aspect = mapasp(x),
-	main = "ordinary block kriging predictions")
-levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
-	main = "ordinary block kriging prediction standard errors")
+spplot(x[1], main = "ordinary block kriging predictions")
+x$se = sqrt(x$var1.var)
+spplot(x["se"], main = "ordinary block kriging prediction standard errors")
 
 ##
 ## ex09.cmd 
@@ -96,9 +94,9 @@ levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
 # we trick here by using inv.weighted distance interpolation, using the
 # single nearest observation. It will not fail on points outside the grid.
 # Note that we reversed meuse.grid and meuse to get these results.
-x <- krige(part.a ~ 1, ~ x + y, meuse.grid, meuse, model = NULL, nmax = 1)
+x <- krige(part.a ~ 1, meuse.grid, meuse, model = NULL, nmax = 1)
 meuse$part.a = x$var1.pred
-x <- krige(part.b ~ 1, ~ x + y, meuse.grid, meuse, model = NULL, nmax = 1)
+x <- krige(part.b ~ 1, meuse.grid, meuse, model = NULL, nmax = 1)
 meuse$part.b = x$var1.pred
 
 ##
@@ -108,24 +106,22 @@ meuse$part.b = x$var1.pred
 ## (ordinary kriging of two variables)
 ## (note that zinc_map.eas wass obtained through ex09.gst)
 ##
-x <- variogram(dist~1,~x+y,meuse)
+x <- variogram(dist~1,meuse)
 v.dist <- fit.variogram(x, model = vgm(1,"Gau",100))
 plot(x, model = v.dist)
-g <- gstat(id = "ln.zinc", form = log(zinc) ~ 1, loc = ~ x + y, 
+g <- gstat(id = "ln.zinc", form = log(zinc) ~ 1,
 	data = meuse, nmax = 40, nmin = 20, maxdist = 1000, model = v)
-g <- gstat(g, id = "dist", form = dist ~ 1, loc = ~ x + y, 
+g <- gstat(g, id = "dist", form = dist ~ 1, 
 	data = meuse, nmax = 40, nmin = 20, maxdist = 1000,
 	model = vgm(.01, "Nug", 0, add.to = v.dist))
 # the added nugget variance is necessary to avoid near-singular covariances
 x <- predict(g, meuse.grid)
-levelplot(ln.zinc.pred ~ x + y, x, aspect = mapasp(x),
-	main = "log(zinc) ordinary kriging predictions")
-levelplot(sqrt(ln.zinc.var) ~ x + y, x, aspect = mapasp(x),
-	main = "log(zinc) ordinary kriging prediction standard errors")
-levelplot(dist.pred ~ x + y, x, aspect = mapasp(x),
-	main = "dist ordinary kriging predictions")
-levelplot(sqrt(dist.var) ~ x + y, x, aspect = mapasp(x),
-	main = "dist ordinary kriging prediction standard errors")
+spplot(x["ln.zinc.pred"], main = "log(zinc) ordinary kriging predictions")
+x$ln.zinc.se = sqrt(x$ln.zinc.var)
+spplot(x["ln.zinc.se"], main = "log(zinc) ordinary kriging prediction standard errors")
+spplot(x["dist.pred"], main = "dist ordinary kriging predictions")
+x$dist.se = sqrt(x$dist.var)
+spplot(x["dist.se"], main = "dist ordinary kriging prediction standard errors")
 
 ##
 ## ex11.cmd 
@@ -133,24 +129,22 @@ levelplot(sqrt(dist.var) ~ x + y, x, aspect = mapasp(x),
 ## Multivariable kriging: ordinary local cokriging of two variables
 ## For examples of fitting an LMC: see demo(cokriging)
 ##
-g <- gstat(id = "ln.zinc", form = log(zinc) ~ 1, loc = ~ x + y, 
+g <- gstat(id = "ln.zinc", form = log(zinc) ~ 1, 
 	data = meuse, nmax = 40, nmin = 20, maxdist = 1000,
 	model = vgm(0.581, "Sph", 900, 0.0554))
-g <- gstat(g, id = "sq.dist", form = sqrt(dist) ~ 1, loc = ~ x + y, 
+g <- gstat(g, id = "sq.dist", form = sqrt(dist) ~ 1, 
 	data = meuse, nmax = 40, nmin = 20, maxdist = 1000,
 	model = vgm(0.0631, "Sph", 900, 0.0001))
 g <- gstat(g, id = c("ln.zinc", "sq.dist"), 
 	model = vgm(-0.156, "Sph", 900, 1e-5))
 # small nugget necessary to let gstat recognize LMC
 x <- predict(g, meuse.grid)
-levelplot(ln.zinc.pred ~ x + y, x, aspect = mapasp(x),
-	main = "log(zinc) ordinary cokriging predictions")
-levelplot(sqrt(ln.zinc.var) ~ x + y, x, aspect = mapasp(x),
-	main = "log(zinc) ordinary cokriging prediction standard errors")
-levelplot(sq.dist.pred ~ x + y, x, aspect = mapasp(x),
-	main = "dist ordinary cokriging predictions")
-levelplot(sqrt(sq.dist.var) ~ x + y, x, aspect = mapasp(x),
-	main = "dist ordinary cokriging prediction standard errors")
+spplot(x["ln.zinc.pred"], main = "log(zinc) ordinary cokriging predictions")
+x$ln.zinc.se = sqrt(x$ln.zinc.var)
+spplot(x["ln.zinc.se"], main = "log(zinc) ordinary cokriging prediction standard errors")
+spplot(x["sq.dist.pred"], main = "dist ordinary cokriging predictions")
+x$sq.dist.se = sqrt(x$sq.dist.var)
+spplot(x["sq.dist.se"], main = "dist ordinary cokriging prediction standard errors")
 
 ##
 ## ex12.cmd 
@@ -159,16 +153,16 @@ levelplot(sqrt(sq.dist.var) ~ x + y, x, aspect = mapasp(x),
 ##
 
 # find out in which part the data are:
-meuse$part.a = krige(part.a~1, ~x+y, meuse.grid, meuse, nmax=1)$var1.pred
-x1 = krige(log(zinc)~1, ~x+y, meuse[meuse$part.a == 0,], 
+meuse$part.a = krige(part.a~1, meuse.grid, meuse, nmax=1)$var1.pred
+x1 = krige(log(zinc)~1, meuse[meuse$part.a == 0,], 
 	meuse.grid[meuse.grid$part.a == 0,], model = vgm(.548, "Sph", 900, .0654), 
 	nmin = 20, nmax = 40, maxdist = 1000)
-x2 = krige(log(zinc)~1, ~x+y, meuse[meuse$part.a == 1,], 
+x2 = krige(log(zinc)~1, meuse[meuse$part.a == 1,], 
 	meuse.grid[meuse.grid$part.a == 1,], model = vgm(.716, "Sph", 900), 
 	nmin = 20, nmax = 40, maxdist = 1000)
-x = rbind(x1, x2)
-levelplot(var1.pred~x+y, x, aspect = mapasp(x),
-	main = "stratified kriging predictions")
+x = rbind(as.data.frame(x1), as.data.frame(x2))
+gridded(x) = ~x+y
+spplot(x["var1.pred"], main = "stratified kriging predictions")
 
 ##
 ## ex13.cmd 
@@ -176,13 +170,12 @@ levelplot(var1.pred~x+y, x, aspect = mapasp(x),
 ## Local universal kriging, using one continuous variable
 ###
 ## the variogram should be that of the residual:
-x <- krige(log(zinc) ~ sqrt(dist), ~ x + y, meuse, meuse.grid, 
+x <- krige(log(zinc) ~ sqrt(dist), meuse, meuse.grid, 
 	model = vgm(.149, "Sph", 700, .0674), 
 	nmax = 40, nmin = 20, maxdist = 1000)
-levelplot(var1.pred ~ x + y, x, aspect = mapasp(x),
-	main = "universal kriging predictions")
-levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
-	main = "universal kriging prediction standard errors")
+spplot(x["var1.pred"], main = "universal kriging predictions")
+x$var1.se = sqrt(x$var1.var)
+spplot(x["var1.se"], main = "universal kriging prediction standard errors")
 
 ##
 ## ex14.cmd 
@@ -191,14 +184,11 @@ levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
 ## two binary variables.
 ##
 x <- krige(log(zinc) ~ -1 + sqrt(dist)+ part.a + part.b, 
-	~ x + y, meuse, meuse.grid, 
-	model = vgm(.149, "Sph", 700, .0674))
-levelplot(part.a ~ x + y, meuse.grid, aspect = mapasp(meuse.grid),
-	main = "the areas defining part.a (1) and part.b (0)")
-levelplot(var1.pred ~ x + y, x, aspect = mapasp(x),
-	main = "universal kriging predictions")
-levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
-	main = "universal kriging prediction standard errors")
+	meuse, meuse.grid, model = vgm(.149, "Sph", 700, .0674))
+spplot(meuse.grid["part.a"], main = "the areas defining part.a (1) and part.b (0)")
+spplot(x["var1.pred"], main = "universal kriging predictions")
+x$var1.se = sqrt(x$var1.var)
+spplot(x["var1.se"], main = "universal kriging prediction standard errors")
 
 ##
 ## ex14a.cmd 
@@ -211,12 +201,11 @@ levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
 ##
 ## Local linear model, using one continuous variable
 ##
-x <- krige(log(zinc) ~ sqrt(dist), ~ x + y, meuse, meuse.grid, 
+x <- krige(log(zinc) ~ sqrt(dist), meuse, meuse.grid, 
 	model = NULL, nmax = 40, nmin = 20, maxdist = 1000)
-levelplot(var1.pred ~ x + y, x, aspect = mapasp(x),
-	main = "IID local linear model kriging predictions")
-levelplot(sqrt(var1.var) ~ x + y, x, aspect = mapasp(x),
-	main = "IID local linear model prediction standard errors")
+spplot(x["var1.pred"], main = "IID local linear model kriging predictions")
+x$var1.se = sqrt(x$var1.var)
+spplot(x["var1.se"], main = "IID local linear model prediction standard errors")
 
 ##
 ## ex16.cmd 

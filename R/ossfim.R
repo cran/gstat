@@ -11,10 +11,12 @@ function(spacings = 1:5, block.sizes = 1:5, model, nmax = 25, debug = 0)
 			data.grid = data.frame(expand.grid(x * sp, x * sp),
 				z = rep(1, length(x)^2))
 			names(data.grid) = c("x", "y", "z")
-			kr = krige(z~1, ~x+y, data.grid, data.frame(x=0, y=0), 
+			gridded(data.grid) = c("x", "y")
+			x0 = SpatialPoints(matrix(0, 1, 2))
+			kr = krige(z~1, data.grid, x0,
 				block = c(bl, bl), model = model, nmax = nmax,
 				set = list(debug = debug))
-			ret[r, ] = c(sp, bl, sqrt(kr[1,"var1.var"]))
+			ret[r, ] = c(sp, bl, sqrt(kr[["var1.var"]][1]))
 			r = r + 1
 		}
 	}

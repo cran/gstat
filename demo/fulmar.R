@@ -29,12 +29,14 @@ h <- gstat(h, id = c("fulmar98","fulmar99"),
 # predict block means for blocks in ncp.grid$area (table 2; cokriging)
 library(maptools)
 library(sp)
-areas.shp = read.shape(system.file("external/ncp.shp", package="gstat"))
-areas.r <- as.SpatialRings.Shapes(areas.shp$Shapes, areas.shp$att.data$WSVGEB_)
+areas.r = readShapePoly(system.file("external/ncp.shp", package="gstat"))
+#areas.r <- as.SpatialRings.Shapes(areas.shp$Shapes, areas.shp$att.data$WSVGEB_)
 coordinates(pr) = ~x+y
 pr.df = overlay(pr, areas.r, fn = mean)
 # match non-empty (and relevant) areas:
-areas = SpatialRingsDataFrame(areas.r[c(2,3,4,16)], pr.df[c(1,2,3,5),])
+#areas = SpatialPolygonsDataFrame(areas.r[c(2,3,4,16),"WSVGEB_"], pr.df[c(1,2,3,5),])#,match.ID=F)
+areas = SpatialPolygonsDataFrame(areas.r[c(1,2,12,7),"WSVGEB_"], pr.df[c(1,2,3,5),],match.ID=F)
+# areas ID's 0 1 2 14
 sk = predict(g, areas)
 cok = predict(h, areas)
 spplot(cok, c(3,5), names.attr = c("1998", "1999"), 

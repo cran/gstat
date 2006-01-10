@@ -2,32 +2,27 @@
     paste(id1, id2, sep = ".")
 }
 
-try.coordinates <- function(data) {
-	if (is(data, "SpatialPoints") && require(sp))
-		coordinates(data)
-	else
-		NULL
-}
-
-has.coordinates <- function(data) {
-	is(data, "SpatialPoints") && require(sp)
-}
-
-try.gridparameters <- function(data) {
-	ret = try(grd <- gridparameters(data), silent = TRUE)
-	if (!inherits(ret, "try-error"))
-		return(grd)
-	numeric(0)
+equal.projections = function(x, y) {
+	px = proj4string(x)
+	py = proj4string(y)
+	if (is.na(px) && is.na(py))
+		return(TRUE)
+	if (is.na(px) || is.na(py))
+		return(FALSE)
+	return(px == py)
 }
 
 "gstat" <-
-function (g, id, formula, locations = try.coordinates(data), 
+function (g, id, formula, locations,
 	data = NULL, model = NULL, beta, nmax = Inf, nmin = 0, maxdist = Inf, 
 	dummy = FALSE, set, fill.all = FALSE, fill.cross = TRUE, 
 	variance = "identity", weights = NULL, merge, degree = 0) 
 {
 	call = match.call()
-	if (has.coordinates(locations)) { # shift arguments:
+	if (!missing(locations) && inherits(locations, "formula")) {
+		coordinates(data) = locations
+		# locations = NULL
+	} else if (missing(data) && !missing(locations) && is(locations, "Spatial")) {
 		data = locations
 		locations = NULL
 	}
@@ -66,11 +61,11 @@ function (g, id, formula, locations = try.coordinates(data),
 			stop("id should have length 1 or 2")
         g$model[[nm]] = model
         return(g)
-    }
-    if (!inherits(formula, "formula"))
+    } 
+	if (!inherits(formula, "formula"))
         stop("argument formula should be of class formula")
-    if (!inherits(locations, "formula") && !has.coordinates(data))
-        stop("argument locations should be of class formula or matrix")
+    #if (!inherits(locations, "formula") && !has.coordinates(data))
+    #	stop("argument locations should be of class formula or matrix")
     if (missing(beta) || is.null(beta)) 
         beta = numeric(0)
 	vfn = pmatch(variance, c("identity", "mu", "mu(1-mu)", "mu^2", "mu^3"))
@@ -78,18 +73,27 @@ function (g, id, formula, locations = try.coordinates(data),
 		stop("unknown value for variance function")
 	if (vfn > 1 && length(beta) == 0)
 		stop("non-identity variance function only allowed if beta is supplied")
-    if (missing(g)) {
+    if (missing(g) || is.null(g)) {
         g = list()
         g[["data"]] = list()
         g[["model"]] = list()
-    }
+    } else # add
+		if (!dummy && !equal.projections(g$data[[1]]$data, data))
+			stop("data items in gstat object have different coordinate reference systems")
+	if (!is.null(data)) {
+		isp = is.projected(data)
+		if (!is.na(isp) && !isp)
+			warning("gstat will NOT calculate great circle distances from long/lat coordinates")
+	}
     if (missing(id)) 
         id = paste("var", length(g$data) + 1, sep = "")
-    g$data[[id]] = list(formula = formula, locations = locations, 
+    g$data[[id]] = list(formula = formula, # locations = locations, 
         data = data, has.intercept = attr(terms(formula), "intercept"),
 		beta = beta, nmax = nmax, nmin = nmin, maxdist = maxdist, 
 		dummy = dummy, vfn = vfn, weights = weights, degree = degree)
     g$model[[id]] = model
+	if (!missing(locations))
+		g$locations = locations
     if (!missing(set)) {
         if (!is.list(set)) 
             stop("argument set should be a list")

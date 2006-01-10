@@ -10,7 +10,7 @@ print(xyplot(y ~ x | as.factor(year), groups = sqrt(PCB138)/3, data = pcb,
     xlab = "x-coordinate", ylab = "y-coordinate",
     key = list(corner = c(0,0), x=0.8, y=0.25, points = list(pch = 1, col = 1,
         cex = sqrt(classes)/3), text = list(as.character(classes))),
-	aspect = mapasp(ncp.grid), as.table = T,
+	aspect = "iso", as.table = T,
 	xlim = c(464000, 739000), ylim = c(5696500, 6131500),
 	scales = list(draw = F)))
 
@@ -95,7 +95,7 @@ print(PCB.cor, digits=3)
 pcb.cok = predict(g, newdata = ncp.grid, debug.level = 0)
 levs = c(.1,.2,.5,1,2,5,10,20)
 
-print(levelplot(z~x+y|name, map.to.lev(pcb.cok, z=c(3,5,7,9)),asp=mapasp(pcb.cok),
+print(levelplot(z~x+y|name, map.to.lev(pcb.cok, z=c(3,5,7,9)),asp="iso",
 	as.table=T, col.regions = bpy.colors(7),
 	at = log(levs),
 	colorkey = list(at = log(levs), labels = as.character(levs),
@@ -111,7 +111,7 @@ print(levelplot(sqrt(z)~x+y|name,
 	skip=c(F,T,T,T,F,F,T,T,F,F,F,T,F,F,F,F),
 	as.table=T,
 	layout=c(4,4),
-	asp=mapasp(pcb.cok),
+	asp="iso",
 	col.regions = bpy.colors(),
 	scales = list(draw = F),
 	xlab = "", ylab = ""
@@ -128,12 +128,12 @@ pcb.contr = get.contr(pcb.cok, g, X=lambda[2, ])
 # copy coordinates
 pcb.contr$x = pcb.cok$x
 pcb.contr$y = pcb.cok$y
-pl1 = levelplot(beta.1~x+y, pcb.contr, asp=mapasp(pcb.contr),
+pl1 = levelplot(beta.1~x+y, pcb.contr, asp="iso",
 	main = "log-PCB138: change estimate",
 	scales = list(draw = FALSE),
 	col.regions = bpy.colors(100),
 	xlab = "", ylab = "")
-pl2 = levelplot(beta.1/sqrt(var.beta.1)~x+y, pcb.contr, asp=mapasp(pcb.contr),
+pl2 = levelplot(beta.1/sqrt(var.beta.1)~x+y, pcb.contr, asp="iso",
 	main = "log-PCB138 change/SE",
 	scales = list(draw = FALSE),
 	col.regions = bpy.colors(100),

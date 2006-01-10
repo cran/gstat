@@ -40,9 +40,11 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
             if (!is.null(trend.beta) && length(trend.beta) > 0) 
                 t.beta = trend.beta[[i]]
             else t.beta = numeric(0)
-			if (missing(grid) || !is.list(grid))
+			if (missing(grid) || !is.list(grid)) {
+				if (!is.null(g) && gridded(g$data[i]$data))
+					grd = unlist(gridparameters(g$data[i]$data))
 				grd = numeric(0)
-			else
+			} else
 				grd = grid[[i]]
             .Call("gstat_new_data", as.double(object[[i]]), 
 				as.double(locations[[i]]), as.double(Xloc), 
