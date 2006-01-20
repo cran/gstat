@@ -17,7 +17,7 @@
 \usage{
 data(fulmar)
 }
-\authors{ Dutch National Institute for Coastal and Marine Management (RIKZ),
+\author{ Dutch National Institute for Coastal and Marine Management (RIKZ),
 \url{http://www.rikz.nl/}}
 \references{ 
 }

@@ -11,9 +11,6 @@ export(cross.name,
 	gstat,
 	gstat.cv,
 	"[.gstat",
-	# idw,
-	# krige, 
-	krige.cv, 
 	map.to.lev,
 	ossfim,
 	predict.gstat,
@@ -23,7 +20,7 @@ export(cross.name,
 	vgm,
 	xyz2img)
 
-exportMethods(krige, idw)
+exportMethods(krige, idw, krige.cv)
 
 S3method(image, data.frame)
 

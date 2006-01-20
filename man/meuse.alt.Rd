@@ -19,7 +19,7 @@ data(meuse.alt)
 \references{ 
 \url{http:/www.gstat.org/} 
 }
-\seealso{\link{meuse}}
+\seealso{\link{meuse.all}}
 \keyword{datasets}
 \examples{
 data(meuse.alt)

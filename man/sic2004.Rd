@@ -90,7 +90,7 @@ can be guessed from the Figures below.
 \usage{
 data(sic2004) # 
 }
-\authors{ 
+\author{ 
 Data: the German Federal Office for Radiation Protection (BfS),
 \url{http://www.bfs.de/}, data provided by Gregoire Dubois, R compilation
 by Edzer J. Pebesma.  }
