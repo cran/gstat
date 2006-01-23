@@ -16,7 +16,8 @@
 \usage{
 data(ncp.grid)
 }
-\authors{Dutch National Institute for Coastal and Marine Management (RIKZ)}
+\author{Dutch National Institute for Coastal and Marine Management (RIKZ);
+data compiled for R by Edzer J. Pebesma }
 \references{ 
 }
 \note{ }

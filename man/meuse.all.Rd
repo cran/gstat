@@ -43,8 +43,8 @@ x 15 m.
 \usage{
 data(meuse.all)
 }
-\authors{ The actual field data were collected by Ruud van Rijn and
-Mathieu Rikken }
+\author{ The actual field data were collected by Ruud van Rijn and
+Mathieu Rikken; data compiled for R by Edzer J. Pebesma }
 \references{ 
 P.A. Burrough, R.A. McDonnell, 1998. Principles of Geographical Information
 Systems. Oxford University Press.
@@ -56,7 +56,7 @@ were left out because they were not indicative for the metal content of
 the soil. They were taken in an old pit. One sample contains an outlying
 zinc value, which was also discarded for the meuse (155) data set.
 }
-\seealso{\link{meuse}}
+\seealso{\link{meuse.alt}}
 \keyword{datasets}
 \examples{
 data(meuse.all)

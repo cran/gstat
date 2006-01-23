@@ -1,13 +1,21 @@
 \name{krige.cv}
+\docType{methods}
 \alias{krige.cv}
+\alias{krige.cv.spatial}
+\alias{krige.cv.locations}
 \alias{gstat.cv}
+\alias{krige.cv,formula,formula-method}
+\alias{krige.cv,formula,Spatial-method}
 \title{ (co)kriging cross validation, n-fold or leave-one-out }
 \description{ Cross validation functions for simple, ordinary or universal
 point (co)kriging, kriging in a local neighbourhood.  }
 \usage{
 gstat.cv(object, nfold, remove.all = FALSE, verbose = FALSE, 
 	all.residuals = FALSE, ...)
-krige.cv(formula, locations, data, model = NULL, ..., beta = NULL, nmax = Inf, 
+krige.cv(formula, locations, ...)
+krige.cv.locations(formula, locations, data, model = NULL, ..., beta = NULL, nmax = Inf, 
+	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE)
+krige.cv.spatial(formula, locations, model = NULL, ..., beta = NULL, nmax = Inf, 
 	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE)
 }
 \arguments{
@@ -29,11 +37,11 @@ krige.cv(formula, locations, data, model = NULL, ..., beta = NULL, nmax = Inf,
   kriging, suppose \code{z} is linearly dependent on \code{x} and \code{y},
   use the formula \code{z~x+y}}
   \item{locations}{ formula with only independent variables that define the
-  spatial data locations (coordinates), e.g. \code{~x+y}; if \code{data}
-  has a \code{coordinates} method to extract its coordinates this argument 
-  can be ignored (see package sp for classes for point or grid data). }
+  spatial data locations (coordinates), e.g. \code{~x+y}, OR data object
+  deriving from class \code{Spatial}, which has a
+  \code{coordinates} method to extract its coordinates. }
   \item{data}{ data frame; should contain the dependent variable, independent
-  variables, and coordinates. }
+  variables, and coordinates; only to be provided if \code{locations} is a formula}
   \item{model}{ variogram model of dependent variable (or its residuals), 
   defined by a call to \link{vgm} or \link{fit.variogram}}
   \item{beta}{ only for simple kriging (and simulation based on simple
@@ -51,6 +59,16 @@ krige.cv(formula, locations, data, model = NULL, ..., beta = NULL, nmax = Inf,
   of \code{maxdist} from the prediction location are used for prediction
   or simulation; if combined with \code{nmax}, both criteria apply }
 }
+
+\section{Methods}{
+\describe{
+\item{formula = "formula", locations = "formula"}{ 
+locations specifies which coordinates in \code{data} refer to spatial coordinates
+}
+\item{formula = "formula", locations = "Spatial"}{ 
+Object locations knows about its own spatial locations
+}
+}}
 
 \details{ Leave-one-out cross validation (LOOCV) visits a data point, and
 predicts the value at that location by leaving out the observed value,
@@ -82,7 +100,7 @@ data(meuse)
 coordinates(meuse) <- ~x+y
 m <- vgm(.59, "Sph", 874, .04)
 # five-fold cross validation:
-x <- krige.cv(log(zinc)~1, model = m, data = meuse, nmax = 40, nfold=5)
+x <- krige.cv(log(zinc)~1, meuse, m, nmax = 40, nfold=5)
 bubble(x, "residual", main = "log(zinc): 5-fold CV residuals")
 }
 \keyword{ models }
