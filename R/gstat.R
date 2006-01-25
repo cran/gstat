@@ -20,7 +20,8 @@ function (g, id, formula, locations,
 {
 	call = match.call()
 	if (!missing(locations) && inherits(locations, "formula")) {
-		coordinates(data) = locations
+		if (!is.null(data))
+			coordinates(data) = locations
 		# locations = NULL
 	} else if (missing(data) && !missing(locations) && is(locations, "Spatial")) {
 		data = locations
