@@ -56,7 +56,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			.Call("gstat_new_data", as.double(raw$y), as.double(raw$locations),
 				as.double(raw$X), as.integer(raw$has.intercept),
 				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
-				as.numeric(w), double(0), as.integer(d$degree))
+				as.numeric(w), double(0.0), as.integer(d$degree))
 		}
 		if (!is.null(object$model[[name]])) 
 			load.variogram.model(object$model[[name]], c(i - 1, i - 1))
@@ -116,8 +116,9 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	# random path: randomly permute row indices
 		perm = sample(seq(along = new.X[, 1]))
 		ret = .Call("gstat_predict", as.integer(nrow(as.matrix(new.X))),
-			as.vector(raw$locations[perm, ]), as.vector(new.X[perm,]), 
-			as.integer(block.cols), as.vector(block), 
+			as.double(as.vector(raw$locations[perm, ])),
+			as.double(as.vector(new.X[perm,])),
+			as.integer(block.cols), as.vector(block),
 			as.integer(nsim), as.integer(BLUE))[[1]]
 		if (nsim == 1)
 			colsel = seq(1, by=2, length.out=nvars) # pred1 var1 pred2 var2 ...
@@ -128,7 +129,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	}
 	else {
 		ret = .Call("gstat_predict", as.integer(nrow(as.matrix(new.X))),
-			as.vector(raw$locations), as.vector(new.X), as.integer(block.cols), 
+			as.double(as.vector(raw$locations)), as.vector(new.X), as.integer(block.cols), 
 			as.vector(block), as.integer(nsim), as.integer(BLUE))[[1]]
 		ret = data.frame(cbind(raw$locations, ret))
 	}
