@@ -1,3 +1,4 @@
+% $Id: plot.variogramCloud.Rd,v 1.4 2006-02-10 19:03:27 edzer Exp $
 \name{plot.variogramCloud}
 \alias{plot.variogramCloud}
 \title{

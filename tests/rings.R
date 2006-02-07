@@ -1,5 +1,5 @@
+# $Id: rings.R,v 1.5 2006-02-10 19:08:13 edzer Exp $
 library(gstat)
-if (require(sp)) {
 set.seed(13331)
 
 x = runif(10)
@@ -27,7 +27,10 @@ g = gstat(formula=z~1, data=d, model=vgm(1, "Exp", 1))
 args = list(type = "regular", n=16, offset=c(0.5,0.5))
 yy = predict(g, r1df, block = bl, sps.args = args)
 
-print(all.equal(as.data.frame(xx), as.data.frame(yy)))
+xx = as.data.frame(xx)
+yy = as.data.frame(yy)
+row.names(xx) = row.names(yy)
+print(all.equal(xx,yy))
 
 ## multiple blocks of equal size:
 nd = data.frame(x= 0:4 + .5, y=rep(.5,5))
@@ -51,12 +54,18 @@ rownames(df) = c("x0", "x1", "x2", "x3", "x4")
 r1df = SpatialPolygonsDataFrame(r1, df)
 
 yy = predict(g, r1, block = bl, sps.args = args)
-all.equal(as.data.frame(xx), as.data.frame(yy))
+xx = as.data.frame(xx)
+yy = as.data.frame(yy)
+row.names(xx) = row.names(yy)
+all.equal(xx, yy)
 
 ## multiple blocks of equal size:
 args = list(type = "regular", cellsize=.25, offset=c(0.5,0.5))
 yy = predict(g, r1, block = bl, sps.args = args)
-print(all.equal(as.data.frame(xx), as.data.frame(yy)))
+xx = as.data.frame(xx)
+yy = as.data.frame(yy)
+row.names(xx) = row.names(yy)
+print(all.equal(xx, yy))
 
 ## multiple blocks of varying size:
 nd = data.frame(x=c(0.5, 2, 4.5), y=c(0.5, 1, 1.5))
@@ -86,6 +95,7 @@ args = list(type = "regular", n=16, offset=c(0.5,0.5))
 yy = predict(g, r1df, block = bl, sps.args = args)
 xx = rbind(as.data.frame(xx1), as.data.frame(xx2), as.data.frame(xx3))
 row.names(xx) = 1:3
-print(all.equal(as.data.frame(xx), as.data.frame(yy)))
-} else
-	print("this test only runs if package sp is installed")
+xx = as.data.frame(xx)
+yy = as.data.frame(yy)
+row.names(xx) = row.names(yy)
+print(all.equal(xx, yy))

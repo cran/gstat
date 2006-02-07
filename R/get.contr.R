@@ -1,3 +1,5 @@
+# $Id: get.contr.q,v 1.7 2006-03-15 09:10:52 edzer Exp $
+
 "get.contr" <-
 function (data, gstat.object, X, ids = names(gstat.object$data)) 
 {
@@ -56,7 +58,13 @@ function (data, gstat.object, X, ids = names(gstat.object$data))
     names(res) = col.names
     if (is(data, "data.frame"))
 		row.names(res) = row.names(data)
-	if (is(data, "SpatialPoints"))
+	else if (is(data, "SpatialPolygonsDataFrame")) {
+		rownames(res) = sapply(data@polygons, function(x) slot(x, "ID"))
+		res = SpatialPolygonsDataFrame(as(data, "SpatialPolygons"), res,
+				match.ID = TRUE)
+	} else if (is(data, "Spatial")) {
 		coordinates(res) = coordinates(data)
-    return(res)
+		gridded(res) = gridded(data)
+	}
+    res
 }

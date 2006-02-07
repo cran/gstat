@@ -1,3 +1,4 @@
+# $Id: krige.R,v 1.4 2006-02-10 19:05:02 edzer Exp $
 data(meuse)
 data(meuse.grid)
 

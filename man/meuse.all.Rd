@@ -1,3 +1,4 @@
+% $Id: meuse.all.Rd,v 1.5 2006-02-10 19:03:27 edzer Exp $
 \name{meuse.all}
 \alias{meuse.all}
 \title{Meuse river data set -- original, full data set}

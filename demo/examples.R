@@ -1,3 +1,4 @@
+# $Id: examples.R,v 1.6 2006-02-10 19:05:02 edzer Exp $
 ## ex01.cmd, ex02.cmd:
 ##
 ## Two variables with (initial estimates of) variograms,

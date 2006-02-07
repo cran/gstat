@@ -1,3 +1,4 @@
+# $Id: fulmar.R,v 1.3 2006-02-10 19:05:02 edzer Exp $
 library(gstat)
 data(fulmar)
 data(ncp.grid)
@@ -28,7 +29,6 @@ h <- gstat(h, id = c("fulmar98","fulmar99"),
 
 # predict block means for blocks in ncp.grid$area (table 2; cokriging)
 library(maptools)
-library(sp)
 areas.r = readShapePoly(system.file("external/ncp.shp", package="gstat"))
 #areas.r <- as.SpatialRings.Shapes(areas.shp$Shapes, areas.shp$att.data$WSVGEB_)
 coordinates(pr) = ~x+y

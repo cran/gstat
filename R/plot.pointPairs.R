@@ -1,3 +1,5 @@
+# $Id: plot.pointPairs.q,v 1.4 2006-02-10 19:01:07 edzer Exp $
+
 "plot.pointPairs" <-
 function(x, data, xcol = data$x, ycol = data$y, xlab = "x coordinate",
 	ylab = "y coordinate", col.line = 2, line.pch = 0, 

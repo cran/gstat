@@ -1,3 +1,5 @@
+# $Id: variogram.default.q,v 1.22 2006-02-10 19:01:07 edzer Exp $
+
 "variogram.default" <-
 function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0, 
     beta = 0, tol.hor = 90/length(alpha), tol.ver = 90/length(beta), 

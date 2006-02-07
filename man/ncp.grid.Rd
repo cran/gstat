@@ -1,3 +1,4 @@
+% $Id: ncp.grid.Rd,v 1.3 2006-02-10 19:03:27 edzer Exp $
 \name{ncp.grid}
 \alias{ncp.grid}
 \title{Grid for the NCP, the Dutch part of the North Sea}

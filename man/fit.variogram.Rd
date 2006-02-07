@@ -1,3 +1,4 @@
+% $Id: fit.variogram.Rd,v 1.6 2006-02-10 19:03:27 edzer Exp $
 \name{fit.variogram}
 \alias{fit.variogram}
 \title{ Fit a Variogram Model to a Sample Variogram }

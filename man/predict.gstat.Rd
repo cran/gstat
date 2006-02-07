@@ -1,3 +1,4 @@
+% $Id: predict.gstat.Rd,v 1.15 2006-02-10 19:03:27 edzer Exp $
 \name{predict.gstat}
 \alias{predict.gstat}
 \title{ Multivariable Geostatistical Prediction and Simulation }

@@ -1,3 +1,5 @@
+# $Id: variogram.line.q,v 1.6 2006-02-10 19:01:07 edzer Exp $
+
 "variogram.line" <-
 function(object, maxdist, n=200, min=1.0e-6 * maxdist, dir = c(1,0,0), 
 	covariance = FALSE,	..., debug.level = 0)

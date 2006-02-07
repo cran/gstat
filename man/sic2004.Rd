@@ -1,3 +1,4 @@
+% $Id: sic2004.Rd,v 1.11 2006-02-10 19:03:27 edzer Exp $
 \name{sic2004}
 \alias{sic2004}
 \alias{sic.train}

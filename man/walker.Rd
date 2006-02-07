@@ -1,3 +1,4 @@
+% $Id: walker.Rd,v 1.2 2006-02-10 19:03:27 edzer Exp $
 \name{walker}
 \alias{walker}
 \title{Walker Lake sample data set}

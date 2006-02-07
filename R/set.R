@@ -1,3 +1,5 @@
+# $Id: set.q,v 1.5 2006-02-10 19:01:07 edzer Exp $
+
 gstat.set <- function(set) {
 	if(!is.list(set))
 		stop("set should be a list")

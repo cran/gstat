@@ -1,3 +1,4 @@
+% $Id: plot.pointPairs.Rd,v 1.3 2006-02-10 19:03:27 edzer Exp $
 \name{plot.pointPairs}
 \alias{plot.pointPairs}
 \title{

@@ -1,3 +1,5 @@
+# $Id: krige.cv.q,v 1.14 2006-02-10 19:01:07 edzer Exp $
+
 if (!isGeneric("krige.cv"))
 	setGeneric("krige.cv", function(formula, locations, ...)
 		standardGeneric("krige.cv"))

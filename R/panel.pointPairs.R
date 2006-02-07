@@ -1,3 +1,5 @@
+# $Id: panel.pointPairs.q,v 1.2 2006-02-10 19:01:07 edzer Exp $
+
 "panel.pointPairs" <-
 function (x, y, type = "p", pch = plot.symbol$pch, col, col.line = 
 	plot.line$col, col.symbol = plot.symbol$col, lty = plot.line$lty, 

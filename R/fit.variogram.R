@@ -1,3 +1,5 @@
+# $Id: fit.variogram.q,v 1.6 2006-02-10 19:01:07 edzer Exp $
+
 "fit.variogram" <-
 function (object, model, fit.sills = TRUE, fit.ranges = TRUE, 
     fit.method = 7, debug.level = 1, warn.if.neg = FALSE) 

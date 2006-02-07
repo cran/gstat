@@ -1,3 +1,5 @@
+# $Id: vgm.panel.q,v 1.4 2006-02-10 19:01:07 edzer Exp $
+
 "get.direction.unitv" <- function(alpha, beta) {
 	cb = cos(beta)
 	c(cb * sin(alpha), cb * cos(alpha), sin(beta))

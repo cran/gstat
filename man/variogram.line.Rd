@@ -1,3 +1,4 @@
+% $Id: variogram.line.Rd,v 1.6 2006-02-10 19:03:27 edzer Exp $
 \name{variogram.line}
 \alias{variogram.line}
 \title{ Semivariance Values For a Given Variogram Model }

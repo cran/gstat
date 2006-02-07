@@ -1,3 +1,5 @@
+# $Id: show.vgms.q,v 1.4 2006-02-10 19:01:07 edzer Exp $
+
 "show.vgms" <-
 function(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
 	models = as.character(vgm()$short[c(1:17)]), nugget = 0, kappa.range = 0.5,

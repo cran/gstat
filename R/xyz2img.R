@@ -1,3 +1,5 @@
+# $Id: xyz2img.q,v 1.4 2006-02-10 19:01:07 edzer Exp $
+
 "xyz2img" <-
 function (xyz, zcol = 3, xcol = 1, ycol = 2, tolerance = 10 * .Machine$double.eps) 
 {

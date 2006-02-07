@@ -1,5 +1,5 @@
+# $Id: uisim.R,v 1.3 2006-02-10 19:05:02 edzer Exp $
 library(gstat)
-library(sp)
 
 # prediction grid:
 data(meuse.grid)
