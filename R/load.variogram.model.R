@@ -1,3 +1,5 @@
+# $Id: load.variogram.model.q,v 1.6 2006-02-10 19:01:07 edzer Exp $
+
 "load.variogram.model" <- function(model, ids = c(0, 0)) {
 	if (missing(model))
 		stop("model is missing");

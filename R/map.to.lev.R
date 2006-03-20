@@ -1,3 +1,5 @@
+# $Id: map.to.lev.q,v 1.2 2006-02-10 19:01:07 edzer Exp $
+
 "map.to.lev" <-
 function (data, xcol = 1, ycol = 2, zcol = c(3, 4), ns = names(data)[zcol]) 
 {

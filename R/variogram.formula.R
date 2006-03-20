@@ -1,3 +1,5 @@
+# $Id: variogram.formula.q,v 1.8 2006-02-10 19:01:07 edzer Exp $
+
 "variogram.formula" <-
 function (object, locations = coordinates(data), data, ...) 
 {

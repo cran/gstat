@@ -1,3 +1,4 @@
+% $Id: fit.variogram.reml.Rd,v 1.3 2006-02-10 19:03:27 edzer Exp $
 \name{fit.variogram.reml}
 \alias{fit.variogram.reml}
 \title{ REML Fit Direct Variogram Partial Sills to Data }

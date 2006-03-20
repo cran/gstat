@@ -1,3 +1,5 @@
+# $Id: gstat.cv.q,v 1.6 2006-02-10 19:01:07 edzer Exp $
+
 "gstat.cv" <-
 function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE, 
 	verbose = FALSE, all.residuals = FALSE, ...) 

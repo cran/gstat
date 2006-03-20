@@ -1,3 +1,5 @@
+# $Id: ossfim.q,v 1.3 2006-02-10 19:01:07 edzer Exp $
+
 "ossfim" <-
 function(spacings = 1:5, block.sizes = 1:5, model, nmax = 25, debug = 0)
 {

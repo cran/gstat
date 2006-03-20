@@ -1,3 +1,4 @@
+% $Id: oxford.Rd,v 1.5 2006-02-10 19:03:27 edzer Exp $
 \name{oxford}
 \alias{oxford}
 \title{Oxford soil samples}

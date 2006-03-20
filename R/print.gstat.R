@@ -1,3 +1,5 @@
+# $Id: print.gstat.q,v 1.7 2006-02-10 19:01:07 edzer Exp $
+
 "print.gstat" <-
 function (x, ...) 
 {

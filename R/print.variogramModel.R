@@ -1,3 +1,5 @@
+# $Id: print.variogramModel.q,v 1.4 2006-02-10 19:01:07 edzer Exp $
+
 "print.variogramModel" =
 function (x, ...) 
 {

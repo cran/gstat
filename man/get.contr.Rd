@@ -1,3 +1,4 @@
+% $Id: get.contr.Rd,v 1.4 2006-02-10 19:03:27 edzer Exp $
 \name{get.contr}
 \alias{get.contr}
 \title{ Calculate contrasts from multivariable predictions }

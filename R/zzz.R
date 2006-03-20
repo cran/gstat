@@ -1,3 +1,5 @@
+# $Id: zzz.q,v 1.10 2006-02-10 19:01:07 edzer Exp $
+
 ### NAMESPACE VERSION:
 
 .onLoad <- function(lib, pkg) {

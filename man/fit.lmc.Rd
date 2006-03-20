@@ -1,3 +1,4 @@
+% $Id: fit.lmc.Rd,v 1.3 2006-02-10 19:03:27 edzer Exp $
 \name{fit.lmc}
 \alias{fit.lmc}
 \title{ Fit a Linear Model of Coregionalization to a Multivariable Sample Variogram }

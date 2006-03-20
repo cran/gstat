@@ -1,3 +1,4 @@
+% $Id: vgm.Rd,v 1.9 2006-02-10 19:03:27 edzer Exp $
 \name{vgm}
 \alias{vgm}
 \alias{print.variogramModel}

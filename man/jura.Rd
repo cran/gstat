@@ -1,3 +1,4 @@
+% $Id: jura.Rd,v 1.2 2006-02-10 19:03:27 edzer Exp $
 \name{jura}
 \alias{jura}
 \alias{prediction.dat}

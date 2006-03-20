@@ -1,3 +1,4 @@
+% $Id: map.to.lev.Rd,v 1.4 2006-02-10 19:03:27 edzer Exp $
 \name{map.to.lev}
 \alias{map.to.lev}
 \title{ rearrange data frame for plotting with levelplot }

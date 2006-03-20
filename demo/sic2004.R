@@ -1,3 +1,4 @@
+# $Id: sic2004.R,v 1.3 2006-02-10 19:05:02 edzer Exp $
 # compared to the original submission, two errors
 # were found; one was corrected (dayx~x -> dayx~1), the other not.
 

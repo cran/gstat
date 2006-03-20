@@ -1,3 +1,5 @@
+# $Id: fit.variogram.reml.q,v 1.9 2006-02-10 19:01:07 edzer Exp $
+
 "fit.variogram.reml" <-
 function (formula, locations, data, model, debug.level = 1, set, degree = 0)
 {

@@ -1,3 +1,4 @@
+% $Id: ossfim.Rd,v 1.3 2006-02-10 19:03:27 edzer Exp $
 \name{ossfim}
 \alias{ossfim}
 \title{ Kriging standard errors as function of grid spacing and block size}

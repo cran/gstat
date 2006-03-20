@@ -1,3 +1,5 @@
+# $Id: gstat.formula.predict.q,v 1.9 2006-02-10 19:01:07 edzer Exp $
+
 "gstat.formula.predict" <-
 function (formula, newdata, na.action) 
 {

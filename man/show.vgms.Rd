@@ -1,3 +1,4 @@
+% $Id: show.vgms.Rd,v 1.4 2006-02-10 19:03:27 edzer Exp $
 \name{show.vgms}
 \alias{show.vgms}
 \title{

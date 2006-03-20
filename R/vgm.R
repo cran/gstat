@@ -1,3 +1,5 @@
+# $Id: vgm.q,v 1.9 2006-02-10 19:01:07 edzer Exp $
+
 "vgm" <-
 function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
 		..., covtable) {

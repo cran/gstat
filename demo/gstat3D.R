@@ -1,3 +1,4 @@
+# $Id: gstat3D.R,v 1.4 2006-02-10 19:05:02 edzer Exp $
 # simple demo of 3D interpolation of 50 points with random normal values,
 # randomly located in the unit cube
 n <- 50

@@ -1,3 +1,5 @@
+# $Id: predict.gstat.q,v 1.22 2006-02-10 19:01:07 edzer Exp $
+
 predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	BLUE = FALSE, debug.level = 1, mask, na.action = na.pass, sps.args = 
@@ -153,8 +155,9 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 
 	if (return.sp) {
 		if (is(newdata, "SpatialPolygons")) {
+			row.names(ret) = sapply(newdata@polygons, function(x) slot(x, "ID"))
 			ret = SpatialPolygonsDataFrame(as(newdata, "SpatialPolygons"), ret,
-				match.ID = FALSE)
+				match.ID = TRUE)
 		} else {
 			coordinates(ret) = dimnames(raw$locations)[[2]]
 			gridded(ret) = gridded(newdata)

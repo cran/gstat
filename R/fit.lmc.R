@@ -1,3 +1,5 @@
+# $Id: fit.lmc.q,v 1.6 2006-02-10 19:01:07 edzer Exp $
+
 "fit.lmc" <-
 function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges, 
     correct.diagonal = 1.0, ...) 

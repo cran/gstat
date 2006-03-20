@@ -1,3 +1,4 @@
+% $Id: pcb.Rd,v 1.5 2006-02-10 19:03:27 edzer Exp $
 \name{pcb}
 \alias{pcb}
 \title{PCB138 measurements in sediment at the NCP, the Dutch part of the North Sea}

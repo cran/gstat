@@ -1,3 +1,4 @@
+% $Id: image.Rd,v 1.8 2006-02-10 19:03:27 edzer Exp $
 \name{image}
 \alias{image.data.frame}
 \alias{image}

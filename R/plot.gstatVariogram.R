@@ -1,3 +1,5 @@
+# $Id: plot.gstatVariogram.q,v 1.13 2006-02-10 19:01:07 edzer Exp $
+
 "plot.gstatVariogram" <-
 function (x, model = NULL, ylim, xlim, xlab = "distance", 
 	ylab = "semivariance", multipanel = TRUE, plot.numbers = FALSE, scales, 

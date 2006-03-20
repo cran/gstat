@@ -1,3 +1,4 @@
+# $Id: grass.R,v 1.4 2006-02-10 19:05:02 edzer Exp $
 # this demo assumes quite a lot:
 #  a. it assumes GRASS gis is running
 #  b. it assumes that the meuse data zinc variable is available as a site list

@@ -1,3 +1,5 @@
+# $Id: plot.variogramCloud.q,v 1.3 2006-02-10 19:01:07 edzer Exp $
+
 "plot.variogramCloud" <-
 function (x, identify = FALSE, digitize = FALSE, 
 	xlim = c(0, max(x$dist)), ylim = c(0, max(x$gamma)), 

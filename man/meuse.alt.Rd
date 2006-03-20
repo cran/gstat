@@ -1,3 +1,4 @@
+% $Id: meuse.alt.Rd,v 1.6 2006-02-10 19:03:27 edzer Exp $
 \name{meuse.alt}
 \alias{meuse.alt}
 \title{Meuse river altitude data set}

@@ -1,3 +1,4 @@
+% $Id: krige.Rd,v 1.16 2006-02-10 19:03:27 edzer Exp $
 \name{krige}
 \docType{methods}
 \alias{krige}
