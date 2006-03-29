@@ -30,7 +30,6 @@
  */
 #include <stdio.h>
 #include <math.h>
-#include <errno.h>
 #include <string.h>
 
 #include "defs.h"

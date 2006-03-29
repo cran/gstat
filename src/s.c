@@ -835,8 +835,9 @@ SEXP gstat_load_command(SEXP commands) {
 		cmd = CHARACTER_POINTER(commands)[i];
 #endif
 		if (parse_cmd(cmd, NULL)) {
+			Rprintf("internal gstat string parse error on [%s]", cmd);
 			INTEGER_POINTER(error)[0] = i+1;
-			return(error);
+			return(error); 
 		}
 	}
 	UNPROTECT(1);
@@ -974,33 +975,6 @@ SEXP gstat_fit_variogram(SEXP fit, SEXP fit_sill, SEXP fit_range) {
 	SET_ELEMENT(ret, 3, SSErr);
 
 	UNPROTECT(5);
-	return(ret);
-}
-
-SEXP gstat_pip(SEXP px, SEXP py, SEXP polx, SEXP poly) {
-	int i;
-	PLOT_POINT p;
-	POLYGON pol;
-	SEXP ret;
-
-	pol.lines = LENGTH(polx); /* check later that first == last */
-	pol.p = (PLOT_POINT *) emalloc(pol.lines * sizeof(PLOT_POINT));
-	for (i = 0; i < LENGTH(polx); i++) {
-		pol.p[i].x = NUMERIC_POINTER(polx)[i];
-		pol.p[i].y = NUMERIC_POINTER(poly)[i];
-	}
-    pol.close = (pol.p[0].x == pol.p[pol.lines - 1].x && 
-			pol.p[0].y == pol.p[pol.lines - 1].y);
-	setup_poly_minmax(&pol);
-
-	PROTECT(ret = NEW_NUMERIC(LENGTH(px)));
-	for (i = 0; i < LENGTH(px); i++) {
-		p.x = NUMERIC_POINTER(px)[i];
-		p.y = NUMERIC_POINTER(py)[i];
-		NUMERIC_POINTER(ret)[i] = point_in_polygon(p, &pol);
-	}
-	efree(pol.p);
-	UNPROTECT(1);
 	return(ret);
 }
 

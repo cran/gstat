@@ -733,7 +733,10 @@ static void convert_C(MAT *C, VEC *mu, double (*fn)(double)) {
 	assert(C->m == mu->dim);
 
 	for (i = 0; i < mu->dim; i++) {
-		assert(mu->ve[i] >= 0.0);
+		/* assert(mu->ve[i] >= 0.0); */
+		/* be more friendly: */
+		if (mu->ve[i] < 0.0)
+			ErrMsg(ER_IMPOSVAL, "can not take square root of negative mean values!");
 		C->me[i][i] *= fn(mu->ve[i]);
 		sqrtfni = sqrt(fn(mu->ve[i]));
 		for (j = 0; j < i; j++)

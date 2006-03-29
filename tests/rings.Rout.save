@@ -15,7 +15,6 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-> # $Id: rings.R,v 1.5 2006-02-10 19:08:13 edzer Exp $
 > library(gstat)
 Loading required package: sp
 > set.seed(13331)

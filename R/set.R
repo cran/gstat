@@ -1,4 +1,4 @@
-# $Id: set.q,v 1.5 2006-02-10 19:01:07 edzer Exp $
+# $Id: set.q,v 1.6 2006-03-28 12:38:51 edzer Exp $
 
 gstat.set <- function(set) {
 	if(!is.list(set))
@@ -21,8 +21,10 @@ gstat.load.set <- function(set) {
 	str = gstat.set(set)
 	if (!is.null(str)) {
 		ret = .Call("gstat_load_command", str)
-		if (ret != 0)
+		if (ret != 0) {
+			print(list(class = class(ret), value = ret))
 			stop(paste("error occured when parsing command:", str[ret]))
+		}
 	}
 	invisible()
 }
@@ -53,8 +55,10 @@ gstat.load.merge <- function(obj) {
 	if (is.list(obj$merge)) {
 		str = gstat.merge(obj)
 		ret = .Call("gstat_load_command", str)
-		if (ret != 0)
+		if (ret != 0) {
+			print(list(class = class(ret), value = ret))
 			stop(paste("error occured when parsing command:", str[ret]))
+		}
 	} else 
 		stop("merge argument should be list or character vector of lenght 2")
 }

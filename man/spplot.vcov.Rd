@@ -1,4 +1,4 @@
-% $Id: spplot.R,v 1.1 2006-03-14 15:15:15 edzer Exp $
+% $Id: spplot.vcov.Rd,v 1.1 2006-03-20 15:17:28 edzer Exp $
 \name{spplot.vcov}
 \alias{spplot.vcov}
 \title{ Plot map matrix of prediction error variances and covariances }
