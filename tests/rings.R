@@ -1,4 +1,3 @@
-# $Id: rings.R,v 1.5 2006-02-10 19:08:13 edzer Exp $
 library(gstat)
 set.seed(13331)
 

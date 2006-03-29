@@ -1,4 +1,4 @@
-# $Id: get.contr.q,v 1.7 2006-03-15 09:10:52 edzer Exp $
+# $Id: get.contr.q,v 1.8 2006-03-20 15:18:14 edzer Exp $
 
 "get.contr" <-
 function (data, gstat.object, X, ids = names(gstat.object$data)) 

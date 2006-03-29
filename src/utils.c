@@ -32,7 +32,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <errno.h>
 #include <time.h>
 #include <ctype.h> /* tolower(), isspace() */
 #include <math.h> /* floor() */
@@ -163,9 +162,6 @@ void edfree(void *p, char *file, int line) {
 				" Line: ", line);
 	else /* little point in calling free(NULL) */
 		free(p);
-	/* if (errno)
-		perror(strerror(errno));
-	*/
 }
 
 void *edmalloc(size_t size, char *file, int line) {
@@ -184,10 +180,6 @@ void *edmalloc(size_t size, char *file, int line) {
 				" LINE: ", line, " SIZE : ", size);
 		ErrMsg(ER_MEMORY, "");
 	}
-	/*
-	if (errno)
-		perror(strerror(errno));
-	*/
 	return p;
 }
 
@@ -203,10 +195,6 @@ void *edcalloc(size_t nobj, size_t size, char *file, int line) {
 				" LINE: ", line, " SIZE : ", size);
 		ErrMsg(ER_MEMORY, "");
 	}
-	/*
-	if (errno)
-		perror(strerror(errno));
-	*/
 	return p;
 }
 
@@ -223,10 +211,6 @@ void *edrealloc(void *p, size_t size, char *file, int line) {
 				" LINE: ", line, " SIZE : ", size);
 		ErrMsg(ER_MEMORY, "");
 	}
-	/*
-	if (errno)
-		perror(strerror(errno));
-	*/
 	return p;
 }
 

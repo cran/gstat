@@ -92,6 +92,7 @@ int read_double(const char *s, double *d) {
 		set_mv_double(d);
 		return 0;
 	}
+	errno = 0;
 	*d = strtod(s, &cp);
 	if (errno == ERANGE) {
 		message("value outside valid range +/-[%g, %g]\n", DBL_MIN, DBL_MAX);
@@ -109,7 +110,7 @@ int read_double(const char *s, double *d) {
 
 int read_int(const char *s, int *i) {
 /* return 1 on error, 0 on no error */
-	long l;
+	long int l;
 	int warning = 0;
 
 	warning = read_long(s, &l);
@@ -139,7 +140,7 @@ int read_uint(const char *s, unsigned int *u) {
 	return warning;
 }
 
-int read_long(const char *s, long *l) {
+int read_long(const char *s, long int *l) {
 /* return 1 on error, 0 on no error */
 	char *cp;
 
@@ -147,6 +148,7 @@ int read_long(const char *s, long *l) {
 		ErrMsg(ER_NULL, "read_long()");
 	if (s[0] == '\0') 
 		ErrMsg(ER_IMPOSVAL, "read_long(): empty string");
+	errno = 0;
 	*l = strtol(s, &cp, 10);
 	if (errno == ERANGE) {
 		message("value outside valid range [%ld, %ld]\n", LONG_MIN, LONG_MAX);
@@ -170,6 +172,7 @@ int read_ulong(const char *s, unsigned long *u) {
 		ErrMsg(ER_NULL, "read_long()");
 	if (s[0] == '\0') 
 		ErrMsg(ER_IMPOSVAL, "read_long(): empty string");
+	errno = 0;
 	*u = strtoul(s, &cp, 10);
 	if (errno == ERANGE) {
 		message("value outside valid range [0, %lu]\n", ULONG_MAX);
