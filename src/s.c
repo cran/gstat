@@ -96,7 +96,7 @@ SEXP gstat_init(SEXP s_debug_level) {
 	set_gstat_progress_handler(S_no_progress);
 	set_gstat_error_handler(s_gstat_error);
 	set_gstat_log_handler(s_gstat_printlog);
-	setup_meschach_error_handler();
+	setup_meschach_error_handler(1);
 	init_global_variables();
 	init_data_minmax();
 	RANDIN; /* load R/S seed into rng */
@@ -881,7 +881,11 @@ void s_gstat_progress(unsigned int current, unsigned int total) {
 }
 
 void s_gstat_error(const char *mess, int level) {
-		PROBLEM error_messages[level], mess ERROR;
+	/*	PROBLEM error_messages[level], mess ERROR; */
+	if (mess == NULL)
+		PROBLEM "<NULL> message" ERROR
+	else
+		PROBLEM "%s", mess ERROR
 }
 
 void s_gstat_warning(const char *mess) {

@@ -376,15 +376,16 @@ fitting method."
 data values, variograms or coordinates. Try to rescale them to a\n\
 reasonable range."
 
-void setup_meschach_error_handler(void) {
+void setup_meschach_error_handler(int using_R) {
  	int code;
  	char *err, *hint = "", buf[100];
 
 #ifndef PCRCALC
  	/* set up meschach error handler: */
- 	if ((code = setjmp(restart)) == 0)
- 		set_err_flag(EF_JUMP); /* make meschach jump on errors */
- 	else {
+ 	if ((code = setjmp(restart)) == 0) {
+		set_err_flag(using_R ? EF_R_ERROR /* avoid longjmp */
+			: EF_JUMP /* make meschach jump on errors */  );
+ 	} else {
  		/* setjmp() returned non-zero, so we returned from a longjmp(): */
  		switch (code) {
  			case E_MEM:  /* run out of memory */
