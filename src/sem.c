@@ -35,8 +35,11 @@
 #include <time.h>
 #include <limits.h>
 
+#include "config.h"
+
 #ifdef USING_R
-# include "R.h"
+# include <R.h>
+# include <Rdefines.h>
 #endif
 
 #include "defs.h"

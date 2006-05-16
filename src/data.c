@@ -1364,6 +1364,7 @@ void push_point(DATA *d, const DPOINT *p) {
 #endif
 
 	if (d->n_X > 0 && !intercept_only(d)) { 
+#define SLOW 1
 #ifdef SLOW
 	/* slow... copy X row */
 		for (i = 0; i < d->n_X; i++)

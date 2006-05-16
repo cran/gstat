@@ -329,12 +329,6 @@ int set_gstat_log_file(FILE *f) {
 	return 0;
 }
 
-void no_progress(unsigned int current, unsigned int total) {
-#ifdef USING_R
-	R_CheckUserInterrupt();
-#endif
-}
-
 void default_progress(unsigned int current, unsigned int total) {
 	static int perc_last = -1, sec_last = -1;
 	int perc, sec;
@@ -424,3 +418,7 @@ void setup_meschach_error_handler(void) {
 #endif /* PCRCALC */
 }
 #endif
+
+void no_progress(unsigned int current, unsigned int total) {
+	return;
+}
