@@ -1,4 +1,4 @@
-% $Id: krige.cv.Rd,v 1.11 2006-02-10 19:03:27 edzer Exp $
+% $Id: krige.cv.Rd,v 1.12 2006-05-16 12:29:44 edzer Exp $
 \name{krige.cv}
 \docType{methods}
 \alias{krige.cv}
@@ -17,7 +17,7 @@ krige.cv(formula, locations, ...)
 krige.cv.locations(formula, locations, data, model = NULL, ..., beta = NULL, nmax = Inf, 
 	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE)
 krige.cv.spatial(formula, locations, model = NULL, ..., beta = NULL, nmax = Inf, 
-	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE)
+	nmin = 0, maxdist = Inf, nfold = nrow(locations), verbose = FALSE)
 }
 \arguments{
   \item{object}{ object of class gstat; see function \link{gstat}}

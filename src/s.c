@@ -38,6 +38,7 @@
 #ifdef USING_R
 # include <R.h>
 # include <Rdefines.h>
+/* # include <R_ext/Utils.h> */
 /* # include <Rinternals.h> */
 # define R_UNIFORM unif_rand()
 # define R_NORMAL  norm_rand()
@@ -83,6 +84,7 @@ double s_r_normal(void);
 static int seed_is_in = 0;
 static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams);
 static void gstat_set_block(long i, SEXP block, SEXP block_cols, DPOINT *current);
+static void S_no_progress(unsigned int current, unsigned int total);
 
 SEXP gstat_init(SEXP s_debug_level) {
 
@@ -91,7 +93,7 @@ SEXP gstat_init(SEXP s_debug_level) {
 	remove_all();
 	init_userio(1);  
 	/* 1: set up for stdio */
-	set_gstat_progress_handler(no_progress);
+	set_gstat_progress_handler(S_no_progress);
 	set_gstat_error_handler(s_gstat_error);
 	set_gstat_log_handler(s_gstat_printlog);
 	setup_meschach_error_handler();
@@ -157,7 +159,6 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	X = NUMERIC_POINTER(sX);
 
 	assert(n_X > 0);
-	current.X = (double *) emalloc(n_X * sizeof(double));
 	current.z = 0.0;
 	current.bitfield = 0;
 
@@ -230,6 +231,8 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		}
 		setup_polynomial_X(d[id]); /* standardized coordinate polynomials */
 	}
+	assert(n_X <= d[id]->n_X);
+	current.X = (double *) emalloc(d[id]->n_X * sizeof(double));
 
 	SET_POINT(&current);
 	current.u.stratum = 0;
@@ -262,6 +265,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	}
 	check_global_variables();
 	d[id]->n_original = d[id]->n_list;
+	efree(current.X);
 	return(sy);
 }
 
@@ -1030,4 +1034,10 @@ static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams) {
 	fflush(stdout);
 	*/
 	return gsetup_gridmap(x_ul, y_ul, cellsizex, cellsizey, rows, cols);
+}
+
+static void S_no_progress(unsigned int current, unsigned int total) {
+#ifdef USING_R
+	R_CheckUserInterrupt();
+#endif
 }
