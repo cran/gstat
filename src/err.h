@@ -82,6 +82,7 @@ extern  int err_list_free(int list_num);   /* freeing a list of errors */
 #define	EF_ABORT	1	/* abort (dump core) on error */
 #define	EF_JUMP		2	/* jump on error */
 #define	EF_SILENT	3	/* jump, but don't print message */
+#define	EF_R_ERROR 	4   /* don't jump; use R error handling */
 #define	ERREXIT()	set_err_flag(EF_EXIT)
 #define	ERRABORT()	set_err_flag(EF_ABORT)
 /* don't print message */

@@ -48,7 +48,7 @@ void print_to_logfile_if_open(const char *mess);
 
 enum Gstat_errno get_gstat_errno(void);
 void reset_gstat_errno(void);
-void setup_meschach_error_handler(void);
+void setup_meschach_error_handler(int using_R);
 
 void set_gstat_warning_handler(void (*warning_fn)(const char *message));
 void set_gstat_error_handler(void (*error_fn)(const char *message, int level));

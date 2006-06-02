@@ -36,8 +36,13 @@ static	char	rcsid[] = "$Id: err.c,v 1.1.1.1 2003/06/23 18:31:35 cees Exp $";
 #include	<stdio.h>
 #include	<setjmp.h>
 #include	<ctype.h>
-#include        "err.h"
+#include   "err.h"
 
+#include "../src/config.h" /* EJP */
+#ifdef USING_R
+void Rprintf(char*, ...);
+void s_gstat_error(char *, int);
+#endif
 
 #ifdef SYSV
 /* AT&T System V */
@@ -56,6 +61,7 @@ static	char	rcsid[] = "$Id: err.c,v 1.1.1.1 2003/06/23 18:31:35 cees Exp $";
 #define	EF_ABORT	1
 #define	EF_JUMP		2
 #define	EF_SILENT	3
+#define	EF_R_ERROR 	4   /* EJP: don't jump; use R error handling */
 
 /* The only error caught in this file! */
 #define	E_SIGNAL	16
@@ -294,6 +300,14 @@ int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)
 		       file,line_num,err_list[list_num].listp[num],
 		       isascii(*fn_name) ? fn_name : "???");
 	   longjmp(restart,(err_num==0)? -1 : err_num);
+	   break;
+	   case EF_R_ERROR:
+#ifdef USING_R /* EJP */
+	   Rprintf("\n\"%s\", line %d: %s in function %s()\n",
+		   file,line_num,err_list[list_num].listp[num],
+		   isascii(*fn_name) ? fn_name : "???");
+		s_gstat_error(isascii(*fn_name) ? fn_name : "???", 0);
+#endif
 	   break;
 	   default:
 	   fprintf(stderr,"\n\"%s\", line %d: %s in function %s()\n\n",
