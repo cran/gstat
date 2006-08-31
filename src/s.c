@@ -735,7 +735,7 @@ SEXP gstat_load_variogram(SEXP s_ids, SEXP s_model, SEXP s_sills, SEXP s_ranges,
 	n = LENGTH(s_sills);
 	for (i = 0; i < n; i++) {
 #ifdef USING_R
-		model = CHAR(VECTOR_ELT(s_model, i));
+		model = CHAR(STRING_ELT(s_model, i));
 #else
 		model = CHARACTER_POINTER(s_model)[i];
 #endif
@@ -834,7 +834,7 @@ SEXP gstat_load_command(SEXP commands) {
 	INTEGER_POINTER(error)[0] = 0;
 	for (i = 0; i < LENGTH(commands); i++) {
 #ifdef USING_R
-		cmd = CHAR(VECTOR_ELT(commands, i));
+		cmd = CHAR(STRING_ELT(commands, i));
 #else
 		cmd = CHARACTER_POINTER(commands)[i];
 #endif
