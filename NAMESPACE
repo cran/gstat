@@ -1,5 +1,6 @@
 useDynLib(gstat)
 
+import(methods)
 import(lattice)
 import(sp)
 

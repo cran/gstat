@@ -46,7 +46,7 @@ r1 = SpatialPolygons(list(
 	Polygons(list(Polygon(ring1)), ID = "x1"),
 	Polygons(list(Polygon(ring2)), ID = "x2"),
 	Polygons(list(Polygon(ring3)), ID = "x3"),
-	Polygons(list(Polygon(ring4)), ID = "x4"),
+	Polygons(list(Polygon(ring4)), ID = "x4")
 	))
 df = data.frame(a=rep(1,5), b= rep(1,5))
 rownames(df) = c("x0", "x1", "x2", "x3", "x4")
@@ -84,7 +84,7 @@ xx3 = krige(z~1, d, nd[3], model=vgm(1, "Exp", 1), block = bl,
 r1 = SpatialPolygons(list(
 	Polygons(list(Polygon(ring0)), ID = "x0"),
 	Polygons(list(Polygon(ring1)), ID = "x1"),
-	Polygons(list(Polygon(ring2)), ID = "x2"),
+	Polygons(list(Polygon(ring2)), ID = "x2")
 	))
 df = data.frame(a = rep(1,3), b = rep(1,3))
 rownames(df) = c("x0", "x1", "x2")
