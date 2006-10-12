@@ -59,7 +59,7 @@ row.names(xx) = row.names(yy)
 all.equal(xx, yy)
 
 ## multiple blocks of equal size:
-args = list(type = "regular", cellsize=.25, offset=c(0.5,0.5))
+args = list(type = "regular", cellsize=.25, offset=c(0.5,0.5), n=16)
 yy = predict(g, r1, block = bl, sps.args = args)
 xx = as.data.frame(xx)
 yy = as.data.frame(yy)

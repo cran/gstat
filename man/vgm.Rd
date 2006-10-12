@@ -1,7 +1,8 @@
-% $Id: vgm.Rd,v 1.9 2006-02-10 19:03:27 edzer Exp $
+% $Id: vgm.Rd,v 1.10 2006-10-13 14:44:24 edzer Exp $
 \name{vgm}
 \alias{vgm}
 \alias{print.variogramModel}
+\alias{as.vgm.variomodel}
 \title{
 Generate, or Add to Variogram Model
 }
@@ -12,6 +13,7 @@ Generates a variogram model, or adds to an existing model.
 \usage{
 vgm(psill, model, range, nugget, add.to, anis, kappa = 0.5, ..., covtable)
 print.variogramModel(x, ...)
+as.vgm.variomodel(m)
 }
 \arguments{
 \item{psill}{ (partial) sill of the variogram model component }
@@ -29,14 +31,17 @@ compontent to the model) }
 (see examples) }
 \item{covtable}{ if model is \code{Tab}, instead of model parameters a covariance
 table can be passed here. See covtable.R in tests (experimental). }
+\item{m}{ object of class \code{variomodel}, see \pkg{geoR}}
 }
 \value{
 an object of class \code{variogramModel}, which extends data.frame.
 
-When alled without a model argument, a data.frame with available models
+When called without a model argument, a data.frame with available models
 is returned, having two columns: short (abbreviated names, to be used
 as model argument: "Exp", "Sph" etc) and long (with some description).
 
+as.vgm.variomodel tries to convert an object of class variomodel (geoR)
+to vgm.
 }
 \references{ 
 Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.

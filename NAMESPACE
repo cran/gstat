@@ -4,7 +4,8 @@ import(methods)
 import(lattice)
 import(sp)
 
-export(cross.name,
+export(as.vgm.variomodel,
+	cross.name,
 	fit.lmc,
 	fit.variogram,
 	fit.variogram.reml,

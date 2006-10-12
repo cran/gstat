@@ -1,4 +1,4 @@
-% $Id: plot.gstatVariogram.Rd,v 1.7 2006-02-10 19:03:27 edzer Exp $
+% $Id: plot.gstatVariogram.Rd,v 1.8 2006-10-13 13:16:25 edzer Exp $
 \name{plot.gstatVariogram}
 \alias{plot.gstatVariogram}
 \alias{plot.variogramMap}
@@ -28,8 +28,10 @@ cross variograms: a list with variogram models }
 \item{multipanel}{ logical; if TRUE, directional variograms are plotted in
 different panels, if FALSE, directional variograms are plotted in the same
 graph, using color, colored lines and symbols to distinguish them }
-\item{plot.numbers}{ logical; if TRUE, plot number of point pairs next to
-each plotted semivariance symbol }
+\item{plot.numbers}{ logical or numeric; if TRUE, plot number of point pairs next to
+each plotted semivariance symbol, if FALSE these are omitted. 
+If numeric, TRUE is assumed and the value is passed as the relative distance to be used between symbols
+and numeric text values (default 0.03). }
 \item{scales}{ optional argument that will be passed to \code{xyplot} in
 case of the plotting of variograms and cross variograms; use the value
 \code{list(relation = "same")} if y-axes need to share scales }
