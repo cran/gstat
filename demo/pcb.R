@@ -1,4 +1,4 @@
-# $Id: pcb.R,v 1.5 2006-10-16 17:19:41 edzer Exp $
+# $Id: pcb.R,v 1.7 2006-12-08 23:39:07 edzer Exp $
 # FIGURE 1:
 library(gstat)
 library(lattice)
@@ -45,14 +45,14 @@ print(plot(v3, model = vgm(.224,"Exp",17247,.08), plot.numbers = TRUE))
 
 # FIGURE 4:
 # next
-g = NULL
+g.pcb = NULL
 merge = list(c("1986", 2, "1991", 2), c("1986", 2, "1996", 2),
 		c("1986", 2, "2000", 2))
 for (f in levels(pcb$yf)[c(1,4,6,7)])
-    g = gstat(g, as.character(f), log(PCB138)~depth, ~x+y, pcb[pcb$yf == f,],
+    g.pcb= gstat(g.pcb, as.character(f), log(PCB138)~depth, ~x+y, pcb[pcb$yf == f,],
 		merge = merge)
-g = gstat(g, model = vgm(.224,"Exp",17247,.08), fill.all=T)
-v = variogram(g, cutoff=1e5)
+g.pcb = gstat(g.pcb, model = vgm(.224,"Exp",17247,.08), fill.all=T)
+v = variogram(g.pcb, cutoff=1e5)
 #plot(v, model = fit.lmc(v, g))
 #plot(v, model = g,plot.numbers = TRUE)
 PCB.cor = matrix(NA, 4,4)
@@ -80,20 +80,20 @@ for (x in levels(pcb$yf)[c(1,4,6,7)]) {
     for (y in levels(pcb$yf)[c(1,4,6,7)]) {
         if (j > i) {
             name = paste(x, y, sep = ".")
-            g$model[[name]]["psill"] = g$model[[name]]["psill"]  * PCB.cor[i,j]
+            g.pcb$model[[name]]["psill"] = g.pcb$model[[name]]["psill"]  * PCB.cor[i,j]
         }
         j = j + 1
     }
     i = i + 1
 }
-print(plot(v, model = g, plot.numbers = FALSE))
+print(plot(v, model = g.pcb, plot.numbers = FALSE))
 
 print(PCB.cor.ns, digits=3)
 
 print(PCB.cor, digits=3)
 
 # FIGURE 5:
-pcb.cok = predict(g, newdata = ncp.grid, debug.level = 0)
+pcb.cok = predict(g.pcb, newdata = ncp.grid, debug.level = 0)
 levs = c(.1,.2,.5,1,2,5,10,20)
 
 print(levelplot(z~x+y|name, map.to.lev(pcb.cok, z=c(3,5,7,9)),asp="iso",
@@ -125,7 +125,7 @@ dimnames(lambda) = list(NULL, c(1986, 1991, 1996, 2000))
 print(lambda[2, ], digits=3)
 
 # FIGURE 7:
-pcb.contr = get.contr(pcb.cok, g, X=lambda[2, ])
+pcb.contr = get.contr(pcb.cok, g.pcb, X=lambda[2, ])
 # copy coordinates
 pcb.contr$x = pcb.cok$x
 pcb.contr$y = pcb.cok$y
@@ -141,7 +141,7 @@ pl2 = levelplot(beta.1/sqrt(var.beta.1)~x+y, pcb.contr, asp="iso",
 	xlab = "", ylab = "")
 print(pl1, position=c(0,0,0.5,1), more = TRUE)
 print(pl2, position=c(0.5,0,1,1), more = FALSE)
-cat("source\n")
+cat("source:\n\n")
 cat("Edzer J. Pebesma, Richard N.M. Duin (2005) Spatio-temporal mapping of\n")
 cat("sea floor sediment pollution in the North Sea.  In: Ph. Renard, and\n")
 cat("R. Froidevaux, eds. Proceedings GeoENV 2004 -- Fifth European Conference\n")

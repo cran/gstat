@@ -1,4 +1,4 @@
-% $Id: predict.gstat.Rd,v 1.15 2006-02-10 19:03:27 edzer Exp $
+% $Id: predict.gstat.Rd,v 1.16 2006-12-12 12:38:05 edzer Exp $
 \name{predict.gstat}
 \alias{predict.gstat}
 \title{ Multivariable Geostatistical Prediction and Simulation }
@@ -130,6 +130,11 @@ for each prediction location. To combine settings, sum their respective
 values. Negative values for \code{debug.level} are equal to positive,
 but cause the progress counter to work.
 
+For data with longitude/latitude coordinates (checked by
+\code{is.projected}), gstat uses great circle distances in km to compute
+spatial distances. The user should make sure that the semivariogram
+model used is positive definite on a sphere.
+
 }
 
 \value{
@@ -157,31 +162,29 @@ For bucket PR quadtrees, excellent demos are found at
 \examples{
 # generate 5 conditional simulations
 data(meuse)
-data(meuse.grid)
-v <- variogram(log(zinc)~1,~x+y, meuse)
+coordinates(meuse) = ~x+y
+v <- variogram(log(zinc)~1, meuse)
 m <- fit.variogram(v, vgm(1, "Sph", 300, 1))
 plot(v, model = m)
 set.seed(131)
-sim <- krige(formula = log(zinc)~1, locations = ~x+y, model = m, data 
-	= meuse, newdata = meuse.grid, nmax = 15, beta = 5.9, nsim = 5)
-# show all 5 simulation, using map.to.lev to rearrange sim:
-if (require(sp) == FALSE) {
-library(lattice)
-levelplot(z~x+y|name, map.to.lev(sim, z=c(3:7)), aspect = "iso")
+data(meuse.grid)
+gridded(meuse.grid) = ~x+y
+sim <- krige(formula = log(zinc)~1, meuse, meuse.grid, model = m, 
+	nmax = 15, beta = 5.9, nsim = 5)
+# show all 5 simulation
+spplot(sim)
 
 # calculate generalised least squares residuals w.r.t. constant trend:
-g <- gstat(id = "log.zinc", formula = log(zinc)~1, locations = ~x+y, 
-     model = m, data = meuse)
+g <- gstat(NULL, "log.zinc", log(zinc)~1, meuse, model = m)
 blue0 <- predict(g, newdata = meuse, BLUE = TRUE)
 blue0$blue.res <- log(meuse$zinc) - blue0$log.zinc.pred
 bubble(blue0, zcol = "blue.res", main = "GLS residuals w.r.t. constant")
 
 # calculate generalised least squares residuals w.r.t. linear trend:
-m <- fit.variogram(variogram(log(zinc)~sqrt(dist.m),~x+y, meuse), 
+m <- fit.variogram(variogram(log(zinc)~sqrt(dist.m), meuse), 
 	vgm(1, "Sph", 300, 1))
-g <- gstat(id = "log.zinc", formula = log(zinc)~sqrt(dist.m), 
-	locations = ~x+y, model = m, data = meuse)
-blue1 <- predict(g, newdata = meuse, BLUE = TRUE)
+g <- gstat(NULL, "log.zinc", log(zinc)~sqrt(dist.m), meuse, model = m)
+blue1 <- predict(g, meuse, BLUE = TRUE)
 blue1$blue.res <- log(meuse$zinc) - blue1$log.zinc.pred
 bubble(blue1, zcol = "blue.res", 
 	main = "GLS residuals w.r.t. linear trend")
@@ -193,10 +196,10 @@ g.dummy <- gstat(formula = z~1, locations = ~x+y, dummy = TRUE, beta = 0,
 	model = vgm(1,"Exp",15), nmax = 20)
 yy <- predict(g.dummy, newdata = xy, nsim = 4)
 # show one realisation:
-levelplot(sim1~x+y, yy, aspect = "iso")
+gridded(yy) = ~x+y
+spplot(yy[1])
 # show all four:
-levelplot(z~x+y|name, map.to.lev(yy, z=c(3:6)), aspect = "iso")
-}
+spplot(yy)
 
 }
 

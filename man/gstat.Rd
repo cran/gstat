@@ -1,4 +1,4 @@
-% $Id: gstat.Rd,v 1.19 2006-02-10 19:03:27 edzer Exp $
+% $Id: gstat.Rd,v 1.20 2006-10-25 08:17:29 edzer Exp $
 \name{gstat}
 \alias{gstat}
 \alias{print.gstat}
@@ -15,7 +15,7 @@ gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
 	nmin = 0, maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, 
 	fill.cross = TRUE, variance = "identity", weights = NULL, merge, 
 	degree = 0)
-print.gstat(x, ...)
+\method{print}{gstat}(x, ...)
 }
 \arguments{
   \item{g}{ gstat object to append to; if missing, a new gstat object

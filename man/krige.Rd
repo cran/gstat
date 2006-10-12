@@ -1,4 +1,4 @@
-% $Id: krige.Rd,v 1.16 2006-02-10 19:03:27 edzer Exp $
+% $Id: krige.Rd,v 1.17 2006-12-12 12:38:05 edzer Exp $
 \name{krige}
 \docType{methods}
 \alias{krige}
@@ -143,32 +143,28 @@ I consider "krige" to be to "kriging" what "predict" is to "prediction".
 
 \examples{
 data(meuse)
+coordinates(meuse) = ~x+y
 data(meuse.grid)
+gridded(meuse.grid) = ~x+y
 m <- vgm(.59, "Sph", 874, .04)
 # ordinary kriging:
-x <- krige(log(zinc)~1, ~x+y, model = m, data = meuse, newd = meuse.grid)
-library(lattice)
-levelplot(var1.pred~x+y, x, aspect = "iso",
-	main = "ordinary kriging predictions")
-levelplot(var1.var~x+y, x, aspect = "iso",
-	main = "ordinary kriging variance")
+x <- krige(log(zinc)~1, meuse, meuse.grid, model = m)
+spplot(x["var1.pred"], main = "ordinary kriging predictions")
+spplot(x["var1.var"],  main = "ordinary kriging variance")
 # simple kriging:
-x <- krige(log(zinc)~1, ~x+y, model = m, data = meuse, newdata = meuse.grid, 
-	beta=5.9)
+x <- krige(log(zinc)~1, meuse, meuse.grid, model = m, beta = 5.9)
 # residual variogram:
 m <- vgm(.4, "Sph", 954, .06)
 # universal block kriging:
-x <- krige(log(zinc)~x+y, ~x+y, model = m, data = meuse, newdata = 
-	meuse.grid, block = c(40,40))
-levelplot(var1.pred~x+y, x, aspect = "iso",
-	main = "universal kriging predictions")
+x <- krige(log(zinc)~x+y, meuse, meuse.grid, model = m, block = c(40,40))
+spplot(x["var1.pred"], main = "universal kriging predictions")
 # add grid:
-levelplot(var1.var~x+y, x, aspect = "iso",
-		panel = function(...) {
-			panel.levelplot(...)
-			panel.abline(h = 0:3*1000 + 330000, v= 0:2*1000 + 179000, col = "grey")
-		},
-	main = "universal kriging variance")
+#levelplot(var1.var~x+y, as.data.frame(x), aspect = "iso",
+#		panel = function(...) {
+#			panel.levelplot(...)
+#			panel.abline(h = 0:3*1000 + 330000, v= 0:2*1000 + 179000, col = "grey")
+#		},
+#	main = "universal kriging variance")
 
 }
 \keyword{ models }

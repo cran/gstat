@@ -1,4 +1,4 @@
-% $Id: plot.pointPairs.Rd,v 1.3 2006-02-10 19:03:27 edzer Exp $
+% $Id: plot.pointPairs.Rd,v 1.5 2006-12-12 20:44:07 edzer Exp $
 \name{plot.pointPairs}
 \alias{plot.pointPairs}
 \title{
@@ -8,7 +8,7 @@ Plot a point pairs, identified from a variogram cloud
 Plot a point pairs, identified from a variogram cloud
 }
 \usage{
-plot.pointPairs(x, data, xcol = data$x, ycol = data$y, xlab = "x coordinate", 
+\method{plot}{pointPairs}(x, data, xcol = data$x, ycol = data$y, xlab = "x coordinate", 
 ylab = "y coordinate", col.line = 2, line.pch = 0, main = "selected point pairs", ...) 
 }
 \arguments{
@@ -40,7 +40,8 @@ plots the data locations, with lines connecting the point pairs identified
 \examples{
 ### The following requires interaction, and is therefore outcommented
 #data(meuse)
-#vgm1 <- variogram(log(zinc)~1, ~x+y, meuse, cloud = TRUE)
+#coordinates(meuse) = ~x+y
+#vgm1 <- variogram(log(zinc)~1, meuse, cloud = TRUE)
 #pp <- plot(vgm1, id = TRUE)
 ### Identify the point pairs
 #plot(pp, data = meuse) # meuse has x and y as coordinates

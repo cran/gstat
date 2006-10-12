@@ -1,4 +1,4 @@
-# $Id: fit.variogram.reml.q,v 1.11 2006-10-16 17:19:06 edzer Exp $
+# $Id: fit.variogram.reml.q,v 1.12 2006-12-10 14:17:17 edzer Exp $
 
 "fit.variogram.reml" <-
 function (formula, locations, data, model, debug.level = 1, set, degree = 0)
@@ -27,7 +27,8 @@ function (formula, locations, data, model, debug.level = 1, set, degree = 0)
     .Call("gstat_new_data", as.double(ret$y), as.double(ret$locations),
 		as.double(ret$X), as.integer(1), double(0), as.integer(-1), 
 		as.integer(0), as.double(-1), as.integer(1), 
-		double(0), double(0), as.integer(degree))
+		double(0), double(0), as.integer(degree),
+		as.integer(is.projected(data)))
     load.variogram.model(model)
     if (!missing(set))
     	gstat.load.set(set)

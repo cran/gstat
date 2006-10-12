@@ -13,7 +13,7 @@
    Gstat, a program for geostatistical modelling, prediction and simulation
    Copyright 1992-1998 (C) Edzer J. Pebesma
 
-   Edzer J. Pebesma (E.Pebesma@geog.uu.nl)
+   Edzer J. Pebesma (E.Pebesma@geo.uu.nl)
    Landscape and environmental research group
    Faculty of geographical sciences
    University of Amsterdam
@@ -343,7 +343,9 @@ static QTREE_NODE *qtree_expand(const DPOINT *where, QTREE_NODE *root) {
 	int i;
 
 	old_bb = root->bb;
-	if (old_bb.mode & Y_BIT_SET)
+	old_centre.x = old_centre.y = old_centre.z = 0.0;
+	
+	if (old_bb.mode & X_BIT_SET)
 		old_centre.x = old_bb.x + old_bb.size / 2.0;
 	if (old_bb.mode & Y_BIT_SET)
 		old_centre.y = old_bb.y + old_bb.size / 2.0;

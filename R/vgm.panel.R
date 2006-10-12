@@ -1,4 +1,4 @@
-# $Id: vgm.panel.q,v 1.5 2006-10-13 13:16:25 edzer Exp $
+# $Id: vgm.panel.q,v 1.6 2006-10-31 13:25:16 edzer Exp $
 
 "get.direction.unitv" <- function(alpha, beta) {
 	cb = cos(beta)
@@ -30,7 +30,7 @@ function (x, y, type = "p", pch = plot.symbol$pch, col,
             ang.hor <- pi * (direction[1]/180)
 			ang.ver <- pi * (direction[2]/180)
             dir <- get.direction.unitv(ang.hor, ang.ver)
-            ret <- variogram.line(model, max(x), dir = dir)
+            ret <- variogramLine(model, max(x), dir = dir)
             llines(x = ret$dist, y = ret$gamma, lty = lty, col = col.line, 
                 lwd = lwd)
         }
@@ -69,7 +69,7 @@ function (x, y, subscripts, type = "p", pch = plot.symbol$pch,
                 ang.hor <- pi * (direction[1]/180)
 				ang.ver <- pi * (direction[2]/180)
                 dir <- get.direction.unitv(ang.hor, ang.ver)
-				ret <- variogram.line(m[[id]], max(x), dir = dir)
+				ret <- variogramLine(m[[id]], max(x), dir = dir)
 				llines(x = ret$dist, y = ret$gamma, lty = lty, col = col.line, 
 					lwd = lwd)
 			}
@@ -103,7 +103,7 @@ function (x, y, subscripts, type = "p", pch = plot.symbol$pch,
                 ang.hor <- pi * (dir.hor[subscripts][1]/180.0)
                 dir <- get.direction.unitv(ang.hor, 0)
             }
-            ret <- variogram.line(model, max = max(x), dir = dir)
+            ret <- variogramLine(model, max = max(x), dir = dir)
             llines(x = ret$dist, y = ret$gamma, lty = lty, col = col.line, 
                 lwd = lwd)
         }

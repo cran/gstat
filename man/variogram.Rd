@@ -1,9 +1,10 @@
-% $Id: variogram.Rd,v 1.13 2006-02-10 19:03:27 edzer Exp $
+% $Id: variogram.Rd,v 1.19 2006-12-12 12:38:05 edzer Exp $
 \name{variogram}
 \alias{variogram}
 \alias{variogram.gstat}
 \alias{variogram.formula}
 \alias{variogram.default}
+\alias{variogram.line}
 \alias{print.gstatVariogram}
 \alias{print.variogramCloud}
 \title{ Calculate Sample or Residual Variogram or Variogram Cloud }
@@ -14,16 +15,16 @@ and pooled variogram, and for irregular distance intervals.
 }
 \synopsis{ variogram(object, ...) }
 \usage{
-variogram.formula(object, ...)
-variogram.gstat(formula, locations, data, ...)
-variogram.default(y, locations, X, cutoff, width = cutoff/15, alpha =
+\method{variogram}{formula}(object, ...)
+\method{variogram}{gstat}(formula, locations, data, ...)
+\method{variogram}{default}(y, locations, X, cutoff, width = cutoff/15, alpha =
 	0, beta = 0, tol.hor = 90/length(alpha), tol.ver =
 	90/length(beta), cressie = FALSE, dX = numeric(0), boundaries =
 	numeric(0), cloud = FALSE, trend.beta = NULL, debug.level = 1,
-	cross = TRUE, grid, map = FALSE, g = NULL, ...)
-
-print.gstatVariogram(v, ...)
-print.variogramCloud(v, ...)
+	cross = TRUE, grid, map = FALSE, g = NULL, ..., projected = TRUE)
+\method{variogram}{line}(..., deprecate = TRUE)
+\method{print}{gstatVariogram}(v, ...)
+\method{print}{variogramCloud}(v, ...)
 }
 \arguments{
 \item{object}{object of class \code{gstat}; in this form, direct
@@ -40,8 +41,8 @@ For variogram.default: list with coordinate matrices, each with the number
 of rows matching that of corresponding vectors in y; the number of columns
 should match the number of spatial dimensions spanned by the data (1
 (x), 2 (x,y) or 3 (x,y,z)).  }
-\item{...}{any other arguments that will be passed to 
-\link{variogram.default}}
+\item{...}{any other arguments that will be passed to
+\link{variogram.default} (ignored)}
 \item{y}{ list with for each variable the vector with responses }
 \item{X}{ (optional) list with for each variable the matrix with
 regressors/covariates; the number of rows should match that of the
@@ -83,13 +84,22 @@ to be printed}
 are given, a variogram map is returned. This requires package
 sp. Alternatively, a map can be passed, of class SpatialDataFrameGrid
 (see sp docs) }
+\item{deprecate}{logical; if TRUE, a message will be printed to say
+that this function is deprecated. Function \code{variogram.line} will
+be deprecated in favour of the identical \code{variogramLine}}
 \item{g}{ NULL or object of class gstat; may be used to pass settable
 parameters and/or variograms; see example }
-% \item{...}{arguments that get passed to \code{print}, e.g. digits}
-}
-\value{ 
-If map is TRUE (or a map is passed), a grid map is returned containing
-the (cross) variogram map(s). See package sp.
+\item{projected}{logical; if FALSE, data are assumed to be unprojected,
+meaning decimal longitude/latitude. For projected data, Euclidian
+distances are computed, for unprojected great circle distances
+(km). In \code{variogram.formula} or \code{variogram.gstat}, for data
+deriving from class Spatial, projection is detected automatically using
+\code{is.projected}}
+
+} 
+
+\value{ If map is TRUE (or a map is passed), a grid map is returned
+containing the (cross) variogram map(s). See package sp.
 
 In other cases, an object of class "gstatVariogram" with the 
 following fields:
@@ -129,6 +139,9 @@ Computers \& Geosciences, 30: 683-691.
 }
 \author{ Edzer J. Pebesma }
 \note{
+\code{variogram.line} is DEPRECATED; it is and was never meant as a variogram
+method, but works automatically as such by the R dispatch system. Use
+variogramLine instead.
 }
 \seealso{
 \link{print.gstatVariogram},
@@ -141,20 +154,27 @@ to fit a variogram model to a sample variogram:
 \examples{
 data(meuse)
 # no trend:
-variogram(log(zinc)~1, loc=~x+y, meuse)
+coordinates(meuse) = ~x+y
+variogram(log(zinc)~1, meuse)
 # residual variogram w.r.t. a linear trend:
-variogram(log(zinc)~x+y, loc=~x+y, meuse)
+variogram(log(zinc)~x+y, meuse)
 # directional variogram:
-variogram(log(zinc)~x+y, loc=~x+y, meuse, alpha=c(0,45,90,135))
+variogram(log(zinc)~x+y, meuse, alpha=c(0,45,90,135))
 
 # GLS residual variogram:
-v = variogram(log(zinc)~x+y,~x+y,meuse)
+v = variogram(log(zinc)~x+y, meuse)
 v.fit = fit.variogram(v, vgm(1, "Sph", 700, 1))
 v.fit
 set = list(gls=1)
 v
-g = gstat(NULL, "log-zinc", log(zinc)~x+y,~x+y, meuse, model=v.fit, set = set)
+g = gstat(NULL, "log-zinc", log(zinc)~x+y, meuse, model=v.fit, set = set)
 variogram(g)
-}
 
+library(rgdal)
+proj4string(meuse) = CRS("+init=epsg:28992")
+meuse.ll = spTransform(meuse, CRS("+proj=longlat"))
+# variogram of unprojected data, km as units, great-circle distances
+variogram(log(zinc) ~ 1, meuse.ll)
+
+}
 \keyword{models}

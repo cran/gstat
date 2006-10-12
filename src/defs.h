@@ -29,10 +29,10 @@
 #endif
 
 #define GSTAT_NAME      "gstat"
-#define GSTAT_CR        "Copyright (C) 1992, 2004 Edzer J. Pebesma"
-#define GSTAT_EMAIL     "e.pebesma@geog.uu.nl"
-#define GSTAT_INFO      "gstat-info@geog.uu.nl"
-#define GSTAT_ANNOUNCE  "gstat-announce@geog.uu.nl"
+#define GSTAT_CR        "Copyright (C) 1992, 2006 Edzer J. Pebesma"
+#define GSTAT_EMAIL     "e.pebesma@geo.uu.nl"
+#define GSTAT_INFO      "gstat-info@geo.uu.nl"
+#define GSTAT_ANNOUNCE  "gstat-announce@geo.uu.nl"
 #define GSTAT_HOME      "http://www.gstat.org/"
 #define USAGE           "usage: gstat [options] [file [file ...]]"
 
@@ -118,7 +118,7 @@ you or third parties or a failure of the program to operate with any other\n\
 programs), even if such holder or other party has been advised of the\n\
 possibility of such damages.\n"
 
-#define COPYRIGHT "Copyright 1992-1999 (C) Edzer J. Pebesma\n\
+#define COPYRIGHT "Copyright 1992-2006 (C) Edzer J. Pebesma\n\
 \n\
 This program is free software; you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License as published by\n\

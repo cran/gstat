@@ -2,7 +2,7 @@
     Gstat, a program for geostatistical modelling, prediction and
     simulation Copyright 1992, 2003 (C) Edzer J. Pebesma
 
-    Edzer J. Pebesma, e.pebesma@geog.uu.nl
+    Edzer J. Pebesma, e.pebesma@geo.uu.nl
     Department of physical geography, Utrecht University
     P.O. Box 80.115, 3508 TC Utrecht, The Netherlands
 

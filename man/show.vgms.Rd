@@ -1,4 +1,4 @@
-% $Id: show.vgms.Rd,v 1.4 2006-02-10 19:03:27 edzer Exp $
+% $Id: show.vgms.Rd,v 1.5 2006-10-31 13:25:22 edzer Exp $
 \name{show.vgms}
 \alias{show.vgms}
 \title{
@@ -44,7 +44,7 @@ is being returned.
 function may be discontinuous at distance zero, surely when a positive
 nugget is present. }
 \seealso{
-\link{vgm}, \link{variogram.line},
+\link{vgm}, \link{variogramLine},
 }
 \examples{
 show.vgms()

@@ -1,4 +1,4 @@
-# $Id: plot.variogramCloud.q,v 1.4 2006-10-16 09:27:11 edzer Exp $
+# $Id: plot.variogramCloud.q,v 1.5 2006-12-12 12:38:19 edzer Exp $
 
 "plot.variogramCloud" <-
 function (x, identify = FALSE, digitize = FALSE, 
@@ -14,14 +14,15 @@ function (x, identify = FALSE, digitize = FALSE,
 			print("mouse-left identifies, mouse-right stops")
         	labs = paste(head, tail, sep = ",")
         	sel = identify(x$dist, x$gamma, labs, pos = keep)
+			ret = data.frame(cbind(head, tail)[sel, ])
 		} else {
 			print("mouse-left digitizes, mouse-right closes polygon")
 			poly = locator(n = 512, type = "l")
 			if (!is.null(poly))
 				sel = point.in.polygon(x$dist, x$gamma, poly$x, poly$y)
 			else stop("digitized selection is empty")
+			ret = data.frame(cbind(head, tail)[sel == 1, ])
 		}
-		ret = data.frame(cbind(head, tail)[sel == 1, ])
 		class(ret) = c("pointPairs", "data.frame")
         if (keep) {
 			if (identify) {

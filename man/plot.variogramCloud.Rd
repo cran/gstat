@@ -1,4 +1,4 @@
-% $Id: plot.variogramCloud.Rd,v 1.4 2006-02-10 19:03:27 edzer Exp $
+% $Id: plot.variogramCloud.Rd,v 1.6 2006-12-12 20:44:07 edzer Exp $
 \name{plot.variogramCloud}
 \alias{plot.variogramCloud}
 \title{
@@ -9,7 +9,7 @@ Plot a sample variogram cloud, possibly with identification of
 individual point pairs
 }
 \usage{
-plot.variogramCloud(x, identify = FALSE, digitize = FALSE, xlim, ylim, xlab, ylab, 
+\method{plot}{variogramCloud}(x, identify = FALSE, digitize = FALSE, xlim, ylim, xlab, ylab, 
 	keep = FALSE, ...)
 }
 \arguments{
@@ -63,10 +63,11 @@ class \code{pointPairs} is present, containing the point pairs identified.
 }
 \examples{
 data(meuse)
-plot(variogram(log(zinc)~1, loc=~x+y, data=meuse, cloud=TRUE))
+coordinates(meuse) = ~x+y
+plot(variogram(log(zinc)~1, meuse, cloud=TRUE))
 ## commands that require interaction:
 # x <- variogram(log(zinc)~1, loc=~x+y, data=meuse, cloud=TRUE)
-# plot(plot(x, idendify = TRUE), meuse)
+# plot(plot(x, identify = TRUE), meuse)
 # plot(plot(x, digitize = TRUE), meuse)
 }
 

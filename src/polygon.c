@@ -3,7 +3,7 @@
     Gstat, a program for geostatistical modelling, prediction and simulation
     1992, 2003, by Edzer J. Pebesma
 
-    Authors: Edzer J. Pebesma (E.Pebesma@geog.uu.nl)
+    Authors: Edzer J. Pebesma (E.Pebesma@geo.uu.nl)
              Steve Joyce  (steve.joyce@resgeom.slu.se)
              Konstantin Malakhanov (malakhanov@iwwl.rwth-aachen.de)
              
@@ -21,7 +21,7 @@
     not removed.
     --------------------------------------------------------------------
 
-    Edzer J. Pebesma (e.pebesma@geog.uu.nl)
+    Edzer J. Pebesma (e.pebesma@geo.uu.nl)
     Department of physical geography, Utrecht University
     P.O. Box 80.115, 3508 TC Utrecht, The Netherlands
 

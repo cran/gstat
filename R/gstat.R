@@ -1,4 +1,4 @@
-# $Id: gstat.q,v 1.24 2006-02-10 18:58:43 edzer Exp $
+# $Id: gstat.q,v 1.25 2006-12-10 14:17:17 edzer Exp $
 
 "cross.name" <- function(id1, id2) {
     paste(id1, id2, sep = ".")
@@ -80,14 +80,8 @@ function (g, id, formula, locations,
         g = list()
         g[["data"]] = list()
         g[["model"]] = list()
-    } else # add
-		if (!dummy && !equal.projections(g$data[[1]]$data, data))
-			stop("data items in gstat object have different coordinate reference systems")
-	if (!is.null(data)) {
-		isp = is.projected(data)
-		if (!is.na(isp) && !isp)
-			warning("gstat will NOT calculate great circle distances from long/lat coordinates")
-	}
+    } else if (!dummy && !equal.projections(g$data[[1]]$data, data))
+		stop("data items in gstat object have different coordinate reference systems")
     if (missing(id)) 
         id = paste("var", length(g$data) + 1, sep = "")
     g$data[[id]] = list(formula = formula, # locations = locations, 

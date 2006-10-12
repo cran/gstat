@@ -1,0 +1,92 @@
+
+R version 2.4.0 Patched (2006-11-25 r39997)
+Copyright (C) 2006 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(rgdal)
+Loading required package: sp
+Geospatial Data Abstraction Library extensions to R successfully loaded
+> data(meuse)
+> coordinates(meuse) = ~x+y
+> proj4string(meuse) = CRS("+init=epsg:28992")
+> meuse.ll = spTransform(meuse, CRS("+proj=longlat"))
+> library(gstat)
+> variogram(log(zinc)~1, meuse.ll)
+    np      dist     gamma dir.hor dir.ver   id
+1   33 0.0852488 0.1162626       0       0 var1
+2  183 0.1667421 0.1733652       0       0 var1
+3  295 0.2666674 0.2705489       0       0 var1
+4  350 0.3702410 0.3136916       0       0 var1
+5  404 0.4791941 0.4197277       0       0 var1
+6  418 0.5844470 0.4756632       0       0 var1
+7  434 0.6930836 0.4949831       0       0 var1
+8  465 0.7995899 0.5829090       0       0 var1
+9  447 0.9055354 0.6056674       0       0 var1
+10 448 1.0112183 0.6207780       0       0 var1
+11 467 1.1175161 0.7147535       0       0 var1
+12 447 1.2204065 0.6196667       0       0 var1
+13 429 1.3282554 0.6665218       0       0 var1
+14 407 1.4388795 0.6417914       0       0 var1
+15 385 1.5417832 0.6649328       0       0 var1
+> 
+> cloud1 = variogram(log(zinc)~1, meuse, cloud=T, cutoff=6000)
+> cloud2 = variogram(log(zinc)~1, meuse.ll, cloud=T, cutoff=6)
+> 
+> plot(cloud1$dist/1000, cloud2$dist, xlab="Amersfoort, km", ylab = "Long/lat")
+> abline(0,1)
+> 
+> library(fields)
+fields is loaded use help(fields) for an overview of this library
+> data(ozone2)
+> oz = SpatialPointsDataFrame(ozone2$lon.lat, 
++ 		data.frame(t(ozone2$y)), 
++ 		proj4string=CRS("+proj=longlat"))
+> variogram(X870731~1,oz[!is.na(oz$X870731),])
+    np      dist    gamma dir.hor dir.ver   id
+1  165  17.94557 134.4549       0       0 var1
+2  224  40.19353 205.3034       0       0 var1
+3  182  68.28877 121.2588       0       0 var1
+4  226  96.24366 180.7044       0       0 var1
+5  229 124.01684 217.5520       0       0 var1
+6  286 150.89352 289.3542       0       0 var1
+7  330 178.99865 287.4515       0       0 var1
+8  339 205.47014 298.6861       0       0 var1
+9  328 233.28835 368.9042       0       0 var1
+10 375 261.03164 309.5130       0       0 var1
+11 358 288.27523 317.4055       0       0 var1
+12 417 315.62579 339.1011       0       0 var1
+13 408 342.40121 335.1704       0       0 var1
+14 379 370.39744 367.9748       0       0 var1
+15 449 398.56984 366.2130       0       0 var1
+> utm16 = CRS("+proj=utm +zone=16")
+> oz.utm = spTransform(oz, utm16)
+> variogram(X870731~1,oz.utm[!is.na(oz$X870731),])
+    np      dist    gamma dir.hor dir.ver   id
+1  197  17443.99 143.5037       0       0 var1
+2  245  40383.30 180.5144       0       0 var1
+3  211  69178.16 134.2920       0       0 var1
+4  278  97068.08 174.2017       0       0 var1
+5  283 123380.15 232.2221       0       0 var1
+6  393 151741.31 318.7762       0       0 var1
+7  356 178620.56 312.9364       0       0 var1
+8  400 206865.15 314.7740       0       0 var1
+9  485 234294.31 340.8188       0       0 var1
+10 476 261547.41 331.8010       0       0 var1
+11 427 288749.42 267.5269       0       0 var1
+12 452 317219.28 308.6634       0       0 var1
+13 467 344418.75 365.8126       0       0 var1
+14 596 372513.02 395.8868       0       0 var1
+15 784 399259.25 490.6399       0       0 var1
+> 

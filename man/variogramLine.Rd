@@ -1,10 +1,10 @@
-% $Id: variogram.line.Rd,v 1.6 2006-02-10 19:03:27 edzer Exp $
-\name{variogram.line}
-\alias{variogram.line}
+% $Id: variogramLine.Rd,v 1.1 2006-10-31 13:25:22 edzer Exp $
+\name{variogramLine}
+\alias{variogramLine}
 \title{ Semivariance Values For a Given Variogram Model }
 \description{ Generates a semivariance values given a variogram model }
 \usage{
-variogram.line(object, maxdist, n = 200, min = 1.0e-6 * maxdist, 
+variogramLine(object, maxdist, n = 200, min = 1.0e-6 * maxdist, 
 	dir = c(1,0,0), covariance = FALSE, ..., debug.level = 0)
 }
 \arguments{
@@ -24,16 +24,16 @@ return semivariance values }
 \value{
 a data frame of dimension (\code{n} x 2), with columns distance and gamma
 }
-\note{this function is used to plot a variogram model}
+\note{this function is used to generate data for plotting a variogram model}
 \author{ Edzer J. Pebesma }
 \seealso{ \link{plot.gstatVariogram}}
 
 \examples{
-variogram.line(vgm(5, "Exp", 10, 5), 10, 10)
+variogramLine(vgm(5, "Exp", 10, 5), 10, 10)
 # anisotropic variogram, plotted in E-W direction:
-variogram.line(vgm(1, "Sph", 10, anis=c(0,0.5)), 10, 10)
+variogramLine(vgm(1, "Sph", 10, anis=c(0,0.5)), 10, 10)
 # anisotropic variogram, plotted in N-S direction:
-variogram.line(vgm(1, "Sph", 10, anis=c(0,0.5)), 10, 10, dir=c(0,1,0))
+variogramLine(vgm(1, "Sph", 10, anis=c(0,0.5)), 10, 10, dir=c(0,1,0))
 }
 
 \keyword{models}
