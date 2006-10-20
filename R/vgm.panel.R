@@ -1,4 +1,4 @@
-# $Id: vgm.panel.q,v 1.4 2006-02-10 19:01:07 edzer Exp $
+# $Id: vgm.panel.q,v 1.5 2006-10-13 13:16:25 edzer Exp $
 
 "get.direction.unitv" <- function(alpha, beta) {
 	cb = cos(beta)
@@ -22,7 +22,10 @@ function (x, y, type = "p", pch = plot.symbol$pch, col,
         }
         plot.symbol <- trellis.par.get("plot.symbol")
         plot.line <- trellis.par.get("plot.line")
-        lpoints(x = x, y = y, cex = cex, col = col.symbol, pch = pch)
+		#if (type == "l" || type == "b")
+        	#llines(x = x, y = y, col = col.line, lty = lty, lwd = lwd, ...)
+		#else
+        lpoints(x = x, y = y, cex = cex, col = col.symbol, pch = pch, type = type, ...)
         if (!missing(model) && !is.null(model)) {
             ang.hor <- pi * (direction[1]/180)
 			ang.ver <- pi * (direction[2]/180)

@@ -1,4 +1,4 @@
-# $Id: vgm.q,v 1.9 2006-02-10 19:01:07 edzer Exp $
+# $Id: vgm.q,v 1.11 2006-10-16 17:19:41 edzer Exp $
 
 "vgm" <-
 function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
@@ -63,3 +63,46 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
 	class(ret) = c("variogramModel", "data.frame")
 	ret
 }
+
+as.vgm.variomodel = function(m) {
+	model = NULL
+	if (m$cov.model == "exponential")
+		model = "Exp"
+	else if (m$cov.model == "circular")
+		model = "Cir"
+	else if (m$cov.model == "gaussian")
+		model = "Gau"
+	else if (m$cov.model == "linear")
+		# model = "Lin"
+		stop("no correct conversion available; use power model with power 1?")
+	else if (m$cov.model == "matern")
+		model = "Mat"
+	else if (m$cov.model == "power")
+		model = "Pow"
+	else if (m$cov.model == "spherical")
+		model = "Sph"
+	else if (m$cov.model == "pure.nugget")
+		return(vgm(m$nugget + m$cov.pars[1], "Nug", 0))
+	else
+		stop("variogram model not supported")
+# "cauchy",
+#,"cubic",
+#            "gneiting",
+#			"gneiting.matern",
+#			"powered.exponential",
+#			"wave") ) {
+	vgm(m$cov.pars[1], model, m$cov.pars[2], m$nugget, kappa = m$kappa)
+}
+
+#$lambda
+#[1] 1
+
+#$trend
+#[1] "cte"
+
+#$max.dist
+#[1] 1441.83
+
+#attr(,"class")
+#[1] "variomodel"
+

@@ -1,4 +1,4 @@
-# $Id: krige.q,v 1.12 2006-02-10 19:01:07 edzer Exp $
+# $Id: krige.q,v 1.13 2006-10-16 17:19:41 edzer Exp $
 
 if (!isGeneric("krige"))
 	setGeneric("krige", function(formula, locations, ...)
@@ -17,7 +17,6 @@ function (formula, locations, data = sys.frame(sys.parent()),
 		indicators = indicators, na.action = na.action)
 }
 setMethod("krige", c("formula", "formula"), krige.locations)
-
 
 krige.spatial <- function(formula, locations, newdata, model = NULL, ..., 
 	beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
@@ -54,6 +53,6 @@ function (formula, locations,
 		na.action = na.pass, idp = 2.0) {
 	krige(formula, locations, newdata, nmax = nmax, nmin = nmin,
 		maxdist = maxdist, block = block, na.action = na.action,
-		set = list(idp = idp))
+		set = list(idp = idp), model = NULL)
 }
 setMethod("idw", c("formula", "Spatial"), idw.spatial)

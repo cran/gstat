@@ -1,4 +1,4 @@
-# $Id: fit.variogram.reml.q,v 1.9 2006-02-10 19:01:07 edzer Exp $
+# $Id: fit.variogram.reml.q,v 1.11 2006-10-16 17:19:06 edzer Exp $
 
 "fit.variogram.reml" <-
 function (formula, locations, data, model, debug.level = 1, set, degree = 0)
@@ -6,13 +6,19 @@ function (formula, locations, data, model, debug.level = 1, set, degree = 0)
     if (missing(formula)) 
         stop("nothing to fit to")
     if (!inherits(formula, "formula"))
-        stop("formula should be of class formula")
+		stop("first argument should be of class formula")
+	if (!missing(locations)) {
+    	if (inherits(locations, "formula"))
+			coordinates(data) = locations
+		else if (is(locations, "Spatial"))
+			data = as(locations, "SpatialPointsDataFrame")
+	}
+    if (!is(data, "SpatialPointsDataFrame"))
+        stop("data should (now) be of class SpatialPointsDataFrame")
     if (missing(model)) 
         stop("no model to fit")
     if (!inherits(model, "variogramModel"))
         stop("model should be of class variogramModel (use vgm)")
-	if (inherits(locations, "formula"))
-		coordinates(data) = locations
     fit.sills = rep(TRUE, length(model$model))
     fit.ranges = rep(FALSE, length(model$model))
     .Call("gstat_init", as.integer(debug.level))

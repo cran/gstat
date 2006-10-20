@@ -1,4 +1,4 @@
-# $Id: plot.variogramCloud.q,v 1.3 2006-02-10 19:01:07 edzer Exp $
+# $Id: plot.variogramCloud.q,v 1.4 2006-10-16 09:27:11 edzer Exp $
 
 "plot.variogramCloud" <-
 function (x, identify = FALSE, digitize = FALSE, 
@@ -8,8 +8,8 @@ function (x, identify = FALSE, digitize = FALSE,
     if (identify || digitize) {
         plot(x$dist, x$gamma, xlim = xlim, ylim = ylim, xlab = xlab, 
             ylab = ylab, ...)
-        head = floor(x$np/2^16) + 1
-        tail = floor(x$np%%2^16) + 1
+        head = floor(x$np %/% 2^16) + 1
+        tail = floor(x$np %% 2^16) + 1
 		if (identify) {
 			print("mouse-left identifies, mouse-right stops")
         	labs = paste(head, tail, sep = ",")
@@ -21,7 +21,7 @@ function (x, identify = FALSE, digitize = FALSE,
 				sel = point.in.polygon(x$dist, x$gamma, poly$x, poly$y)
 			else stop("digitized selection is empty")
 		}
-		ret = data.frame(cbind(head, tail)[sel, ])
+		ret = data.frame(cbind(head, tail)[sel == 1, ])
 		class(ret) = c("pointPairs", "data.frame")
         if (keep) {
 			if (identify) {
