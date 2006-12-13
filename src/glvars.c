@@ -2,7 +2,7 @@
     Gstat, a program for geostatistical modelling, prediction and simulation
     Copyright 1992, 2003 (C) Edzer J. Pebesma
 
-    Edzer J. Pebesma, e.pebesma@geog.uu.nl
+    Edzer J. Pebesma, e.pebesma@geo.uu.nl
     Department of physical geography, Utrecht University
     P.O. Box 80.115, 3508 TC Utrecht, The Netherlands
 
@@ -71,6 +71,7 @@ int gl_gauss; /* gaussian quadr. block covariances ? */
 int gl_iter; /* max. n. iter for mivque estimates */
 int gl_jgraph; /* do jgraph plot in batch mode ? */
 int gl_lhs; /* apply Latin hypercube sampling to Gaussian simulations */
+int gl_longlat; /* apply Latin hypercube sampling to Gaussian simulations */
 int gl_nblockdiscr; /* block discrimination in each dimension */
 int gl_n_intervals; /* n variogram intervals */
 int gl_n_marginals; /* the n marginal distributions */
@@ -184,6 +185,7 @@ int init_global_variables(void) {
 	gl_iter            = DEF_iter;
 	gl_jgraph          = DEF_jgraph;
 	gl_lhs             = DEF_lhs;
+	gl_longlat         = DEF_longlat;
 	gl_nblockdiscr     = DEF_nblockdiscr;
 	gl_n_intervals     = DEF_intervals;
 	gl_n_marginals     = DEF_n_marginals;

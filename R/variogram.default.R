@@ -1,11 +1,11 @@
-# $Id: variogram.default.q,v 1.22 2006-02-10 19:01:07 edzer Exp $
+# $Id: variogram.default.q,v 1.23 2006-12-10 14:17:17 edzer Exp $
 
 "variogram.default" <-
 function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0, 
     beta = 0, tol.hor = 90/length(alpha), tol.ver = 90/length(beta), 
     cressie = FALSE, dX = numeric(0), boundaries = numeric(0), 
     cloud = FALSE, trend.beta = NULL, debug.level = 1, cross = TRUE, 
-	grid, map = FALSE, g = NULL, ...) 
+	grid, map = FALSE, g = NULL, ..., projected = TRUE) 
 {
     id1 = id2 = 0
     ret = NULL
@@ -52,7 +52,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 				as.double(locations[[i]]), as.double(Xloc), 
 				as.integer(1), as.double(t.beta), as.integer(-1),
 				as.integer(0), as.double(-1), as.integer(1), 
-				double(0), grd, as.integer(0))
+				double(0), grd, as.integer(0), as.integer(projected))
 			if (!is.null(g) && !is.null(g$model[[id.names[i]]])) 
 				load.variogram.model(g$model[[id.names[i]]], c(i - 1, i - 1))
         }

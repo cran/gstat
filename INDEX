@@ -37,6 +37,6 @@ spplot.vcov             Plot map matrix of prediction error variances
                         and covariances
 variogram               Calculate Sample or Residual Variogram or
                         Variogram Cloud
-variogram.line          Semivariance Values For a Given Variogram Model
+variogramLine           Semivariance Values For a Given Variogram Model
 vgm                     Generate, or Add to Variogram Model
 walker                  Walker Lake sample data set

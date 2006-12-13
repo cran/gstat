@@ -1,4 +1,4 @@
-# $Id: gstat.formula.predict.q,v 1.9 2006-02-10 19:01:07 edzer Exp $
+# $Id: gstat.formula.predict.q,v 1.10 2006-12-08 21:48:32 edzer Exp $
 
 "gstat.formula.predict" <-
 function (formula, newdata, na.action) 
@@ -11,6 +11,8 @@ function (formula, newdata, na.action)
 		else
 			newdata = data.frame(a = rep(1, nrow(locs)))
 	} else {
+		if (gridded(newdata))
+			fullgrid(newdata) = FALSE
 		locs = coordinates(newdata)
 		newdata = as.data.frame(newdata)
 	} 

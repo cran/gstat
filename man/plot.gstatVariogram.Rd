@@ -1,4 +1,4 @@
-% $Id: plot.gstatVariogram.Rd,v 1.8 2006-10-13 13:16:25 edzer Exp $
+% $Id: plot.gstatVariogram.Rd,v 1.11 2006-12-12 20:44:07 edzer Exp $
 \name{plot.gstatVariogram}
 \alias{plot.gstatVariogram}
 \alias{plot.variogramMap}
@@ -9,10 +9,10 @@ Plot a Sample Variogram
 Creates a variogram plot
 }
 \usage{
-plot.gstatVariogram(x, model = NULL, ylim, xlim, xlab = "distance", 
+\method{plot}{gstatVariogram}(x, model = NULL, ylim, xlim, xlab = "distance", 
 	ylab = "semivariance", multipanel = TRUE, plot.numbers = FALSE, 
 	scales, ids = x$id, group.id = TRUE, skip, layout, ...)
-plot.variogramMap(x, np = FALSE, skip, threshold, ...)
+\method{plot}{variogramMap}(x, np = FALSE, skip, threshold, ...)
 }
 \arguments{
 \item{x}{ object of class "gstatVariogram", obtained from the function 
@@ -62,24 +62,25 @@ correctly. }
 \link{variogram},
 \link{fit.variogram}, 
 \link{vgm}
-\link{variogram.line},
+\link{variogramLine},
 }
 \examples{
 data(meuse)
-vgm1 <- variogram(log(zinc)~1, ~x+y, meuse)
+coordinates(meuse) = ~x+y
+vgm1 <- variogram(log(zinc)~1, meuse)
 plot(vgm1)
 model.1 <- fit.variogram(vgm1,vgm(1,"Sph",300,1))
 plot(vgm1, model=model.1)
 plot(vgm1, plot.numbers = TRUE, pch = "+")
-vgm2 <- variogram(log(zinc)~1, ~x+y, meuse, alpha=c(0,45,90,135))
+vgm2 <- variogram(log(zinc)~1, meuse, alpha=c(0,45,90,135))
 plot(vgm2)
 # the following demonstrates plotting of directional models:
 model.2 <- vgm(.59,"Sph",926,.06,anis=c(0,0.3))
 plot(vgm2, model=model.2)
  
-g = gstat(id="zinc < 200", form=I(zinc<200)~1,loc=~x+y,data=meuse)
-g = gstat(g, id="zinc < 400", form=I(zinc<400)~1,loc=~x+y,data=meuse)
-g = gstat(g, id="zinc < 800", form=I(zinc<800)~1,loc=~x+y,data=meuse)
+g = gstat(NULL, "zinc < 200", I(zinc<200)~1, meuse)
+g = gstat(g, "zinc < 400", I(zinc<400)~1, meuse)
+g = gstat(g, "zinc < 800", I(zinc<800)~1, meuse)
 # calculate multivariable, directional variogram:
 v = variogram(g, alpha=c(0,45,90,135))
 plot(v, group.id = FALSE, auto.key = TRUE) # id and id pairs panels

@@ -1,4 +1,4 @@
-# $Id: predict.gstat.q,v 1.23 2006-03-20 15:18:14 edzer Exp $
+# $Id: predict.gstat.q,v 1.25 2006-12-10 14:17:17 edzer Exp $
 
 predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
@@ -16,11 +16,6 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	} else
 		return.sp = TRUE
 	
-	if (!is.null(object$data[[1]]$data)) {
-		if (!equal.projections(object$data[[1]]$data, newdata))
-			stop("data items in gstat object and newdata have different coordinate reference systems")
-	}
-
 	.Call("gstat_init", as.integer(debug.level))
 	if (!missing(mask)) {
 		cat("argument mask is deprecated:")
@@ -31,6 +26,10 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	for (i in 1:length(object$data)) {
 		name = names(object$data)[i]
 		d = object$data[[i]]
+		if (!is.null(d$data)) {
+			if (!equal.projections(d$data, newdata))
+				stop(paste(name, ": data item in gstat object and newdata have different coordinate reference systems"))
+		}
 		if (d$nmax == Inf) 
 			nmax = as.integer(-1)
 		else nmax = as.integer(d$nmax)
@@ -48,7 +47,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			loc.dim = dim(coordinates(newdata))[[2]]
 			.Call("gstat_new_dummy_data", as.integer(loc.dim), 
 				as.integer(d$has.intercept), as.double(d$beta), 
-				nmax, nmin, maxdist, as.integer(d$vfn))
+				nmax, nmin, maxdist, as.integer(d$vfn), 
+				as.integer(is.projected(newdata)))
 		} else {
 			if (is.null(d$weights))
 				w = numeric(0)
@@ -58,7 +58,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			.Call("gstat_new_data", as.double(raw$y), as.double(raw$locations),
 				as.double(raw$X), as.integer(raw$has.intercept),
 				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
-				as.numeric(w), double(0.0), as.integer(d$degree))
+				as.numeric(w), double(0.0), as.integer(d$degree),
+				as.integer(is.projected(d$data)))
 		}
 		if (!is.null(object$model[[name]])) 
 			load.variogram.model(object$model[[name]], c(i - 1, i - 1))
@@ -162,6 +163,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			coordinates(ret) = dimnames(raw$locations)[[2]]
 			gridded(ret) = gridded(newdata)
 		}
+		proj4string(ret) = CRS(proj4string(newdata))
 	}
 
 	return(ret)

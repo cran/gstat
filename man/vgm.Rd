@@ -1,4 +1,4 @@
-% $Id: vgm.Rd,v 1.10 2006-10-13 14:44:24 edzer Exp $
+% $Id: vgm.Rd,v 1.13 2006-12-12 12:38:05 edzer Exp $
 \name{vgm}
 \alias{vgm}
 \alias{print.variogramModel}
@@ -12,7 +12,7 @@ Generates a variogram model, or adds to an existing model.
 }
 \usage{
 vgm(psill, model, range, nugget, add.to, anis, kappa = 0.5, ..., covtable)
-print.variogramModel(x, ...)
+\method{print}{variogramModel}(x, ...)
 as.vgm.variomodel(m)
 }
 \arguments{
@@ -29,8 +29,8 @@ compontent to the model) }
 \item{x}{ a variogram model to print }
 \item{...}{ arguments that will be passed to \code{print}, e.g. \code{digits}
 (see examples) }
-\item{covtable}{ if model is \code{Tab}, instead of model parameters a covariance
-table can be passed here. See covtable.R in tests (experimental). }
+\item{covtable}{ if model is \code{Tab}, instead of model parameters a one-dimensional 
+covariance table can be passed here. See covtable.R in tests directory, and example below. }
 \item{m}{ object of class \code{variomodel}, see \pkg{geoR}}
 }
 \value{
@@ -86,7 +86,7 @@ is in error, but I have not corrected anything afterwards.
 \seealso{
 \link{show.vgms} to view the available models,
 \link{fit.variogram},
-\link{variogram.line},
+\link{variogramLine},
 \link{variogram} for the sample variogram.
 }
 \examples{
@@ -106,6 +106,8 @@ x
 print(x, digits = 3);
 # to see all components, do
 print.data.frame(x)
+vv=vgm(model = "Tab",  covtable = 
+	variogramLine(vgm(1, "Sph", 1), 1, n=1e4, min = 0, covariance = TRUE))
 }
 
 \keyword{models}

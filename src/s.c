@@ -2,7 +2,7 @@
     Gstat, a program for geostatistical modelling, prediction and simulation
     Copyright 1992, 2003 (C) Edzer J. Pebesma
 
-    Edzer J. Pebesma, e.pebesma@geog.uu.nl
+    Edzer J. Pebesma, e.pebesma@geo.uu.nl
     Department of physical geography, Utrecht University
     P.O. Box 80.115, 3508 TC Utrecht, The Netherlands
 
@@ -124,7 +124,7 @@ SEXP gstat_exit(SEXP x) {
 
 SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
 			SEXP beta, SEXP nmax, SEXP nmin, SEXP maxdist, 
-			SEXP vfn, SEXP sw, SEXP grid, SEXP degree) {
+			SEXP vfn, SEXP sw, SEXP grid, SEXP degree, SEXP is_projected) {
 	double *y, *locs, *X, *w = NULL;
 	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
@@ -204,6 +204,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		default: PROBLEM "unknown variance function %d", 
 				 	INTEGER_POINTER(vfn)[0] ERROR;
 	}
+	gl_longlat = (INTEGER_POINTER(is_projected)[0] == 0);
 	d[id]->mode = X_BIT_SET | V_BIT_SET;
 	if (dim > 1)
 		d[id]->mode = d[id]->mode | Y_BIT_SET;
@@ -270,7 +271,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 }
 
 SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta, 
-		SEXP nmax, SEXP nmin, SEXP maxdist, SEXP vfn) {
+		SEXP nmax, SEXP nmin, SEXP maxdist, SEXP vfn, SEXP is_projected) {
 	int i, id, dim, has_int;
 	char name[20];
 	DATA **d = NULL;
@@ -320,6 +321,7 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 		default: PROBLEM "unknown variance function %d", 
 				 	INTEGER_POINTER(vfn)[0] ERROR;
 	}
+	gl_longlat = (INTEGER_POINTER(is_projected)[0] == 0);
 	d[id]->mode = X_BIT_SET | V_BIT_SET;
 	if (dim > 1)
 		d[id]->mode = d[id]->mode | Y_BIT_SET;

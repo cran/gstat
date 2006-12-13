@@ -1,4 +1,4 @@
-% $Id: image.Rd,v 1.8 2006-02-10 19:03:27 edzer Exp $
+% $Id: image.Rd,v 1.9 2006-12-12 20:44:07 edzer Exp $
 \name{image}
 \alias{image.data.frame}
 \alias{image}
@@ -11,7 +11,7 @@ Image gridded data, held in a data frame, keeping the
 right aspect ratio for axes, and the right cell shape
 }
 \usage{
-image.data.frame(x, zcol = 3, xcol = 1, ycol = 2, asp = 1, ...)
+\method{image}{data.frame}(x, zcol = 3, xcol = 1, ycol = 2, asp = 1, ...)
 xyz2img(xyz, zcol = 3, xcol = 1, ycol = 2, tolerance = 10 * .Machine$double.eps)
 }
 \arguments{

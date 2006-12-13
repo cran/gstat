@@ -32,6 +32,7 @@
 #define DEF_iwidth         -1.0
 #define DEF_jgraph            0
 #define DEF_lhs               0
+#define DEF_longlat           0
 #define DEF_n_marginals       0
 #define DEF_nocheck           0 /* do check */
 #define DEF_marginal_names NULL

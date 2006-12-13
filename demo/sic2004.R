@@ -1,4 +1,4 @@
-# $Id: sic2004.R,v 1.3 2006-02-10 19:05:02 edzer Exp $
+# $Id: sic2004.R,v 1.4 2006-11-22 12:54:16 edzer Exp $
 # compared to the original submission, two errors
 # were found; one was corrected (dayx~x -> dayx~1), the other not.
 
@@ -92,12 +92,12 @@ panel.sic = function(...){
 	lpoints(sic.pred$x, sic.pred$y, pch="+", cex=1, col=1)
 }
 cp1 = contourplot(z~x+y|name, map.to.lev(grid1,z=c(3,5),
-    ns=c("data set 1","data set 2")), asp=mapasp(grid1),
+    ns=c("data set 1","data set 2")), asp="iso",
     col.regions=rgb(greys/255,greys/255,greys/255),
     at=50+(0:16)*10,region=TRUE,labels=FALSE,
     xlab = "", ylab = "",scales=list(draw=F),panel=panel.sic)
 cp2 = contourplot(sqrt(z)~x+y|name, map.to.lev(grid1,z=4,
-    ns="standard error"), asp=mapasp(grid1),scales=list(draw=F),
+    ns="standard error"), asp="iso",scales=list(draw=F),
     col.regions=rgb(greys/255,greys/255,greys/255),
     region=TRUE,labels=FALSE, xlab = "", ylab = "", panel=panel.sic)
 print(cp1, c(0,0,0.625,1), more=T)

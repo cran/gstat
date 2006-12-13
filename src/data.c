@@ -2,7 +2,7 @@
     Gstat, a program for geostatistical modelling, prediction and simulation
     Copyright 1992, 2003 (C) Edzer J. Pebesma
 
-    Edzer J. Pebesma, e.pebesma@geog.uu.nl
+    Edzer J. Pebesma, e.pebesma@geo.uu.nl
     Department of physical geography, Utrecht University
     P.O. Box 80.115, 3508 TC Utrecht, The Netherlands
 
@@ -108,6 +108,13 @@ static double point_norm_3D(const DPOINT *p);
 static double pp_norm_1D(const DPOINT *a, const DPOINT *b);
 static double pp_norm_2D(const DPOINT *a, const DPOINT *b);
 static double pp_norm_3D(const DPOINT *a, const DPOINT *b);
+
+/* great circle distances: */
+static double point_norm_gc(const DPOINT *p);
+static double pp_norm_gc(const DPOINT *a, const DPOINT *b);
+static double pb_norm_gc(const DPOINT *where, BBOX bbox);
+static double gstat_gcdist(double lon1, double lon2, double lat1, double lat2);
+
 static void free_data_gridmap(DATA_GRIDMAP *t);
 static void logprint_data_header(const DATA *d);
 
@@ -262,9 +269,18 @@ void set_norm_fns(DATA *d) {
 		d->pp_norm2 = pp_norm_3D;
 		d->pb_norm2 = pb_norm_3D;
 	} else if (d->mode & Y_BIT_SET) {
-		d->point_norm = point_norm_2D;
-		d->pp_norm2 = pp_norm_2D;
-		d->pb_norm2 = pb_norm_2D;
+		if (gl_longlat) {
+			d->point_norm = point_norm_gc;
+			d->pp_norm2 = pp_norm_gc;
+			d->pb_norm2 = pb_norm_gc;
+			if (gl_split != DEF_split)
+				pr_warning("longlat data cannot do quadtree, setting split to %d", gl_split);
+			gl_split = INT_MAX;
+		} else {
+			d->point_norm = point_norm_2D;
+			d->pp_norm2 = pp_norm_2D;
+			d->pb_norm2 = pb_norm_2D;
+		}
 	} else {
 		d->point_norm = point_norm_1D;
 		d->pp_norm2 = pp_norm_1D;
@@ -1461,6 +1477,65 @@ static double pp_norm_3D(const DPOINT *a, const DPOINT *b) {
 	return dx * dx + dy * dy + dz * dz;
 }
 
+static double point_norm_gc(const DPOINT *p) {
+/* calculate norm of vector (p->x, p->y, p->z) */
+	return gstat_gcdist(p->x, 0.0, p->y, 0.0);
+}
+
+static double pp_norm_gc(const DPOINT *a, const DPOINT *b) {
+	return pow(gstat_gcdist(a->x, b->x, a->y, b->y), 2.0); /* squared dist */
+}
+
+static double pb_norm_gc(const DPOINT *where, BBOX bbox) {
+	/* ErrMsg(ER_IMPOSVAL, "great circle distances cannot be combined with quadtree"); */
+	return 0.0; /* always inside, no quadtree */
+}
+
+static double gstat_gcdist(double lon1, double lon2, double lat1, double lat2) {
+/* http://home.att.net/~srschmitt/script_greatcircle.html */
+/* Copyright by Roger Bivand (C) 2005  */
+	
+    double F, G, L, sinG2, cosG2, sinF2, cosF2, sinL2, cosL2, S, C;
+    double w, R, a, f, D, H1, H2;
+    double lat1R, lat2R, lon1R, lon2R, DE2RA;
+    
+    DE2RA = M_PI/180;
+    a = 6378.137;              /* WGS-84 equatorial radius in km */
+    f = 1.0/298.257223563;     /* WGS-84 ellipsoid flattening factor */
+    
+    lat1R = lat1*DE2RA;
+    lat2R = lat2*DE2RA;
+    lon1R = lon1*DE2RA;
+    lon2R = lon2*DE2RA;
+    
+    F = ( lat1R + lat2R )/2.0;
+    G = ( lat1R - lat2R )/2.0;
+    L = ( lon1R - lon2R )/2.0;
+
+	/*
+    printf("%g %g %g %g; %g %g %g\n",  *lon1, *lon2, *lat1, *lat2, F, G, L);
+	*/
+
+    sinG2 = pow( sin( G ), 2 );
+    cosG2 = pow( cos( G ), 2 );
+    sinF2 = pow( sin( F ), 2 );
+    cosF2 = pow( cos( F ), 2 );
+    sinL2 = pow( sin( L ), 2 );
+    cosL2 = pow( cos( L ), 2 );
+
+    S = sinG2*cosL2 + cosF2*sinL2;
+    C = cosG2*cosL2 + sinF2*sinL2;
+
+    w = atan( sqrt( S/C ) );
+    R = sqrt( S*C )/w;
+
+    D = 2*w*a;
+    H1 = ( 3*R - 1 )/( 2*C );
+    H2 = ( 3*R + 2 )/( 2*S );
+
+    return(D*( 1 + f*H1*sinF2*cosG2 - f*H2*cosF2*sinG2 )); 
+}
+
 int coordinates_are_equal(const DATA *a, const DATA *b) {
 	int i, equal = 1 /* try to disprove equality */;
 
@@ -2125,14 +2200,25 @@ void datagrid_rebuild(DATA *d, int adjust_to_gridcentres) {
 }
 
 double data_block_diagonal(DATA *data) {
-	double dx = 0.0, dy = 0.0, dz = 0.0;
+	DPOINT a, b;
 
-	dx = data->maxX - data->minX;
-	if (data->mode & Y_BIT_SET)
-		dy = data->maxY - data->minY;
-	if (data->mode & Z_BIT_SET)
-		dz = data->maxZ - data->minZ;
-	return sqrt(dx * dx + dy * dy + dz * dz);
+	a.x = data->maxX;
+	b.x = data->minX;
+	if (data->mode & Y_BIT_SET) {
+		a.y = data->maxY;
+		b.y = data->minY;
+	} else {
+		a.y = 0.0;
+		b.y = 0.0;
+	}
+	if (data->mode & Z_BIT_SET) {
+		a.z = data->maxZ;
+		b.z = data->minZ;
+	} else {
+		a.z = 0.0;
+		b.z = 0.0;
+	}
+	return sqrt(data->pp_norm2(&a, &b));
 }
 
 D_VECTOR *push_d_vector(double d, D_VECTOR *v) {

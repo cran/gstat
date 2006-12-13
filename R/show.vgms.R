@@ -1,4 +1,4 @@
-# $Id: show.vgms.q,v 1.4 2006-02-10 19:01:07 edzer Exp $
+# $Id: show.vgms.q,v 1.5 2006-10-31 13:25:15 edzer Exp $
 
 "show.vgms" <-
 function(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
@@ -16,9 +16,9 @@ function(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
 		v.level = rep("", n * length(kappa.range))
 		for (kappa in kappa.range) {
 			v = vgm(sill, models, range, nugget = nugget, kappa = kappa)
-			x = variogram.line(v, 0, 1, 0)
+			x = variogramLine(v, 0, 1, 0)
 			data[(i*n+1), ] = as.matrix(x)
-			x = variogram.line(v, max, n - 1, min)
+			x = variogramLine(v, max, n - 1, min)
 			data[(i*n+2):((i+1)*n), ] = as.matrix(x)
 			m.name = paste("vgm(", sill, ",\"", models, "\",", range, sep = "")
 			if (nugget > 0)
@@ -33,9 +33,9 @@ function(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
 		for (m in models) {
 			this.range = ifelse(!is.na(pmatch(m,zero.range.models)), 0, range)
 			v = vgm(sill, m, this.range, nugget = nugget, kappa = kappa.range)
-			x = variogram.line(v, 0, 1, 0)
+			x = variogramLine(v, 0, 1, 0)
 			data[(i*n+1), ] = as.matrix(x)
-			x = variogram.line(v, max, n - 1, min)
+			x = variogramLine(v, max, n - 1, min)
 			data[(i*n+2):((i+1)*n), ] = as.matrix(x)
 			m.name = paste("vgm(", sill, ",\"", m, "\",", this.range, sep = "")
 			if (nugget > 0)

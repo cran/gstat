@@ -20,6 +20,7 @@ export(as.vgm.variomodel,
 	spplot.vcov,
 	variogram,
 	variogram.line,
+	variogramLine,
 	vgm,
 	xyz2img)
 
