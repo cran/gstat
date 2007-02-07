@@ -1,31 +1,28 @@
-# $Id: krige.R,v 1.4 2006-02-10 19:05:02 edzer Exp $
+# $Id: krige.R,v 1.5 2007-02-27 22:09:31 edzer Exp $
 data(meuse)
+coordinates(meuse) = ~x+y
 data(meuse.grid)
+gridded(meuse.grid) = ~x+y
 
 # ordinary kriging
-v <- variogram(log(zinc)~1,~x+y, meuse)
+v <- variogram(log(zinc)~1, meuse)
 m <- fit.variogram(v, vgm(1, "Sph", 300, 1))
 plot(v, model = m)
-lzn.kr <- krige(formula = log(zinc)~1, locations = ~x+y, model = m, 
-	data = meuse, newdata = meuse.grid)
+lzn.kr <- krige(formula = log(zinc)~1, meuse, meuse.grid, model = m)
 
-library(lattice)
 
-pl1 <- levelplot(var1.pred ~ x + y, lzn.kr, aspect = "iso",
-	main = "ordinary kriging prediction of log-zinc")
-pl2 <- levelplot(sqrt(var1.var) ~ x + y, lzn.kr, aspect = "iso",
-	main = "ordinary kriging prediction error")
+pl1 <- spplot(lzn.kr[1], main = "ordinary kriging prediction of log-zinc")
+lzn.kr$se = sqrt(lzn.kr$var1.var)
+pl2 <- spplot(lzn.kr["se"], main = "ordinary kriging prediction error")
 
 # universal kriging
-v <- variogram(log(zinc)~sqrt(dist),~x+y, meuse)
+v <- variogram(log(zinc)~sqrt(dist), meuse)
 m <- fit.variogram(v, vgm(1, "Exp", 300, 1))
 plot(v, model = m)
-lzn.kr <- krige(formula = log(zinc)~sqrt(dist), locations = ~x+y, model = m, 
-	data = meuse, newdata = meuse.grid)
-pl3 <- levelplot(var1.pred ~ x + y, lzn.kr, aspect = "iso",
-	main = "universal kriging prediction of log-zinc")
-pl4 <- levelplot(sqrt(var1.var) ~ x + y, lzn.kr, aspect = "iso",
-	main = "universal kriging prediction error")
+lzn.kr <- krige(log(zinc)~sqrt(dist), meuse, meuse.grid, model = m)
+pl3 <- spplot(lzn.kr[1], main = "universal kriging prediction of log-zinc")
+lzn.kr$se = sqrt(lzn.kr$var1.var)
+pl4 <- spplot(lzn.kr["se"], main = "universal kriging prediction error")
 print(pl1, split = c(1,1,2,2), more = T)
 print(pl2, split = c(1,2,2,2), more = T)
 print(pl3, split = c(2,1,2,2), more = T)

@@ -1,4 +1,4 @@
-# $Id: krige.q,v 1.13 2006-10-16 17:19:41 edzer Exp $
+# $Id: krige.q,v 1.14 2007-02-27 22:09:32 edzer Exp $
 
 if (!isGeneric("krige"))
 	setGeneric("krige", function(formula, locations, ...)
@@ -8,19 +8,19 @@ if (!isGeneric("krige"))
 function (formula, locations, data = sys.frame(sys.parent()), 
 	newdata, model = NULL, ..., beta = NULL, nmax = Inf, nmin = 0, 
 	maxdist = Inf, block = numeric(0), nsim = 0, indicators = FALSE, 
-	na.action = na.pass)
+	na.action = na.pass, debug.level = 1)
 {
     g = gstat(formula = formula, locations = locations, data = data, 
 		model = model, beta = beta, nmax = nmax, nmin = nmin, 
 		maxdist = maxdist, ...)
     predict.gstat(g, newdata = newdata, block = block, nsim = nsim,
-		indicators = indicators, na.action = na.action)
+		indicators = indicators, na.action = na.action, debug.level = debug.level)
 }
 setMethod("krige", c("formula", "formula"), krige.locations)
 
 krige.spatial <- function(formula, locations, newdata, model = NULL, ..., 
 	beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
-	nsim = 0, indicators = FALSE, na.action = na.pass)
+	nsim = 0, indicators = FALSE, na.action = na.pass, debug.level = 1)
 {
 	# locations = coordinates(arg2)
     g = gstat(formula = formula, # locations = locations, 
@@ -28,7 +28,7 @@ krige.spatial <- function(formula, locations, newdata, model = NULL, ...,
 		model = model, beta = beta, nmax = nmax, nmin = nmin, 
 		maxdist = maxdist, ...)
     predict.gstat(g, newdata = newdata, block = block, nsim = nsim,
-		indicators = indicators, na.action = na.action)
+		indicators = indicators, na.action = na.action, debug.level = debug.level)
 }
 setMethod("krige", c("formula", "Spatial"), krige.spatial)
 setMethod("krige", c("formula", "NULL"), krige.spatial)

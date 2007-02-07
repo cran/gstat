@@ -45,7 +45,8 @@ in newdata, and masked rows will be filled with NA's. }
 \item{na.action}{ function determining what should be done with missing
 values in 'newdata'.  The default is to predict 'NA'.  Missing values 
 in coordinates and predictors are both dealt with. }
-\item{sps.args}{ when newdata is of class \code{SpatialRings} this
+\item{sps.args}{ when newdata is of class \code{SpatialPolygons} 
+or \code{SpatialPolygonsDataFrame} this
 argument list gets passed to \code{spsample} in package \code{sp} to
 control the discretizing of polygons }
 \item{...}{ ignored (but necessary for the S3 generic/method consistency) }
@@ -64,13 +65,14 @@ to the block argument. Although passing the uncentered block and (0,0)
 as newdata may work for global neighbourhoods, neighbourhood selection
 is always done relative to the centroid values in newdata.
 
-If newdata is of class \code{SpatialRings} (see package sp), then
-the block average for each of the rings (sets) is calculated, using
-\code{spsample} to discretize the rings. \code{sps.args} controls the
-parameters used for \code{spsample}. The "location" with respect to
-which neighbourhood selection is done is for each polygon the Srings
-label point; if you use local neighbourhoods you should check out where
-these points are---this may be well outside the ring itself.
+If newdata is of class \code{SpatialPolygons}  or
+\code{SpatialPolygonsDataFrame} (see package sp), then the block average
+for each of the polygons or polygon sets is calculated, using \code{spsample}
+to discretize the polygon(s). \code{sps.args} controls the parameters used
+for \code{spsample}. The "location" with respect to which neighbourhood
+selection is done is for each polygon the SpatialPolygons polygon label point; if you use
+local neighbourhoods you should check out where these points are---this
+may be well outside the ring itself.
 
 The algorithm used by gstat for simulation random fields is the
 sequential simulation algorithm. This algorithm scales well to large or

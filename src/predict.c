@@ -276,6 +276,10 @@ static DPOINT *next_location(DPOINT *loc, PRED_AT what, int random_path,
 
 	switch (what) {
 		case AT_POINTS:
+			if (DEBUG_TRACE) {
+				nr++;
+				printlog("\rbusy with loc: %3u", nr);
+			}
 			return get_point_location(random_path);
 		case AT_GRIDMAP:
 			if (get_map_location(loc, random_path, row, col)) {

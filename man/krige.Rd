@@ -1,4 +1,4 @@
-% $Id: krige.Rd,v 1.17 2006-12-12 12:38:05 edzer Exp $
+% $Id: krige.Rd,v 1.18 2007-02-27 22:09:32 edzer Exp $
 \name{krige}
 \docType{methods}
 \alias{krige}
@@ -28,10 +28,10 @@ For multivariable prediction, see \link{gstat} and \link{predict.gstat}
 krige(formula, locations, ...)
 krige.locations(formula, locations, data, newdata, model, ..., beta, nmax
 = Inf, nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
-na.action = na.pass)
+na.action = na.pass, debug.level = 1)
 krige.spatial(formula, locations, newdata, model, ..., beta, nmax
 = Inf, nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
-na.action = na.pass)
+na.action = na.pass, debug.level = 1)
 idw(formula, locations, ...)
 idw.locations(formula, locations, data, newdata, nmax = Inf, 
 	nmin = 0, maxdist = Inf, block, na.action = na.pass, idp = 2.0)
@@ -86,6 +86,8 @@ idw.spatial(formula, locations, newdata, nmax = Inf, nmin = 0,
  \item{na.action}{ function determining what should be done with missing
   values in 'newdata'.  The default is to predict 'NA'.  Missing values 
   in coordinates and predictors are both dealt with. }
+ \item{debug.level}{debug level, passed to \link{predict.gstat}; use -1 
+ to see progress in percentage}
  \item{\dots}{ other arguments that will be passed to \link{gstat}}
  \item{idp}{numeric; specify the inverse distance weighting power}
 }

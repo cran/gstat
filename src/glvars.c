@@ -71,7 +71,7 @@ int gl_gauss; /* gaussian quadr. block covariances ? */
 int gl_iter; /* max. n. iter for mivque estimates */
 int gl_jgraph; /* do jgraph plot in batch mode ? */
 int gl_lhs; /* apply Latin hypercube sampling to Gaussian simulations */
-int gl_longlat; /* apply Latin hypercube sampling to Gaussian simulations */
+int gl_longlat; /* indicates whether coordinates are longitude/latitude, or Euclidian */
 int gl_nblockdiscr; /* block discrimination in each dimension */
 int gl_n_intervals; /* n variogram intervals */
 int gl_n_marginals; /* the n marginal distributions */
