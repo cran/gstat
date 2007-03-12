@@ -1,4 +1,6 @@
-# $Id: vgm.q,v 1.11 2006-10-16 17:19:41 edzer Exp $
+# $Id: vgm.q,v 1.12 2007-02-27 22:09:32 edzer Exp $
+
+warn.angle3 = TRUE
 
 "vgm" <-
 function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
@@ -36,6 +38,10 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
 		anis = c(anis[1], 0, 0, anis[2], 1)
 	else if (length(anis) != 5)
 		stop("anis vector should have length 2 (2D) or 5 (3D)")
+	if (warn.angle3 && anis[3] != 0.0) {
+		warn.angle3 = FALSE
+		warning("you are using the third rotation angle; this code is based on the GSLIB2 code\nand must contain the bug described at the end of http://pangea.stanford.edu/ERE/research/scrf/software/gslib/bug/")
+	}
 	if (model != "Nug") {
 		if (model != "Lin" && model != "Err" && model != "Int")
 			if (range <= 0.0) stop("range should be positive")
