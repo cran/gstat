@@ -1,4 +1,4 @@
-# $Id: fit.variogram.q,v 1.6 2006-02-10 19:01:07 edzer Exp $
+# $Id: fit.variogram.q,v 1.7 2007-03-13 21:59:03 edzer Exp $
 
 "fit.variogram" <-
 function (object, model, fit.sills = TRUE, fit.ranges = TRUE, 
@@ -7,7 +7,7 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
     if (missing(object)) 
         stop("nothing to fit to")
 	if (!inherits(object, "gstatVariogram"))
-		stop("object should be of class variogram")
+		stop("object should be of class gstatVariogram")
 	if (length(unique(object$id)) > 1)
 		stop("to use fit.variogram, variogram object should be univariable")
     if (missing(model)) 

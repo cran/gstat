@@ -1,4 +1,4 @@
-% $Id: vgm.Rd,v 1.13 2006-12-12 12:38:05 edzer Exp $
+% $Id: vgm.Rd,v 1.15 2007-03-13 21:59:03 edzer Exp $
 \name{vgm}
 \alias{vgm}
 \alias{print.variogramModel}
@@ -43,10 +43,6 @@ as model argument: "Exp", "Sph" etc) and long (with some description).
 as.vgm.variomodel tries to convert an object of class variomodel (geoR)
 to vgm.
 }
-\references{ 
-Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
-Computers \& Geosciences, 30: 683-691.
-}
 \author{ Edzer J. Pebesma }
 \note{ 
 Geometric anisotropy can be modelled for each individual simple model
@@ -74,7 +70,16 @@ in positive degrees up from horizontal), $r$ is the third rotation angle
 to rotate the two minor directions around the principal direction defined
 by $p$ and $q$. A positive angle acts counter-clockwise while looking
 in the principal direction. Anisotropy ratios $s$ and $t$ are the ratios
-between the major range and each of the two minor ranges. 
+between the major range and each of the two minor ranges. The anisotropy code
+was taken from GSLIB. Note that in
+\url{http://pangea.stanford.edu/ERE/research/scrf/software/gslib/bug/#ANGLE}
+(end of page) it is reported that this code has a bug. Quoting from this
+site: ``The third angle in all GSLIB programs operates in the opposite
+direction than specified in the GSLIB book.  Explanation - The books
+says (pp27) the angle is measured clockwise when looking toward
+the origin (from the postive principal direction), but it should be
+counter-clockwise. This is a documentation error. Although rarely used,
+the correct specification of the third angle is critical if used.''
 
 (Note that \code{anis = c(p,s)} is equivalent to \code{anis = c(p,0,0,s,1)}.)
 
@@ -82,6 +87,14 @@ The implementation in gstat for 2D and 3D anisotropy was taken from
 the gslib (probably 1992) code.  I have seen a paper where it is argued
 that the 3D anisotropy code implemented in gslib (and so in gstat)
 is in error, but I have not corrected anything afterwards.
+}
+\references{ \url{http://www.gstat.org/} 
+
+Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
+Computers \& Geosciences, 30: 683-691.
+
+Deutsch, C.V. and Journel, A.G., 1998.  GSLIB: Geostatistical software
+library and user's guide, second edition, Oxford University Press.
 }
 \seealso{
 \link{show.vgms} to view the available models,

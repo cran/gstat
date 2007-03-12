@@ -1,4 +1,4 @@
-% $Id: predict.gstat.Rd,v 1.16 2006-12-12 12:38:05 edzer Exp $
+% $Id: predict.gstat.Rd,v 1.17 2007-03-12 12:10:45 edzer Exp $
 \name{predict.gstat}
 \alias{predict.gstat}
 \title{ Multivariable Geostatistical Prediction and Simulation }

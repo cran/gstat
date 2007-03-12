@@ -274,7 +274,7 @@ void set_norm_fns(DATA *d) {
 			d->pp_norm2 = pp_norm_gc;
 			d->pb_norm2 = pb_norm_gc;
 			if (gl_split != DEF_split)
-				pr_warning("longlat data cannot do quadtree, setting split to %d", INT_MAX);
+				pr_warning("longlat data cannot do quadtree, setting split to %d", gl_split);
 			gl_split = INT_MAX;
 		} else {
 			d->point_norm = point_norm_2D;
@@ -1493,7 +1493,7 @@ static double pb_norm_gc(const DPOINT *where, BBOX bbox) {
 
 static double gstat_gcdist(double lon1, double lon2, double lat1, double lat2) {
 /* http://home.att.net/~srschmitt/script_greatcircle.html */
-/* taken from R package sp source; Copyright by Roger Bivand (C) 2005  */
+/* Copyright by Roger Bivand (C) 2005  */
 	
     double F, G, L, sinG2, cosG2, sinF2, cosF2, sinL2, cosL2, S, C;
     double w, R, a, f, D, H1, H2;
@@ -1503,37 +1503,37 @@ static double gstat_gcdist(double lon1, double lon2, double lat1, double lat2) {
     a = 6378.137;              /* WGS-84 equatorial radius in km */
     f = 1.0/298.257223563;     /* WGS-84 ellipsoid flattening factor */
     
-    lat1R = lat1 * DE2RA;
-    lat2R = lat2 * DE2RA;
-    lon1R = lon1 * DE2RA;
-    lon2R = lon2 * DE2RA;
+    lat1R = lat1*DE2RA;
+    lat2R = lat2*DE2RA;
+    lon1R = lon1*DE2RA;
+    lon2R = lon2*DE2RA;
     
-    F = (lat1R + lat2R) / 2.0;
-    G = (lat1R - lat2R) / 2.0;
-    L = (lon1R - lon2R) / 2.0;
+    F = ( lat1R + lat2R )/2.0;
+    G = ( lat1R - lat2R )/2.0;
+    L = ( lon1R - lon2R )/2.0;
 
 	/*
     printf("%g %g %g %g; %g %g %g\n",  *lon1, *lon2, *lat1, *lat2, F, G, L);
 	*/
 
-    sinG2 = pow(sin(G), 2);
-    cosG2 = pow(cos(G), 2);
-    sinF2 = pow(sin(F), 2);
-    cosF2 = pow(cos(F), 2);
-    sinL2 = pow(sin(L), 2);
-    cosL2 = pow(cos(L), 2);
+    sinG2 = pow( sin( G ), 2 );
+    cosG2 = pow( cos( G ), 2 );
+    sinF2 = pow( sin( F ), 2 );
+    cosF2 = pow( cos( F ), 2 );
+    sinL2 = pow( sin( L ), 2 );
+    cosL2 = pow( cos( L ), 2 );
 
-    S = sinG2 * cosL2 + cosF2 * sinL2;
-    C = cosG2 * cosL2 + sinF2 * sinL2;
+    S = sinG2*cosL2 + cosF2*sinL2;
+    C = cosG2*cosL2 + sinF2*sinL2;
 
-    w = atan(sqrt(S / C));
-    R = sqrt(S * C) / w;
+    w = atan( sqrt( S/C ) );
+    R = sqrt( S*C )/w;
 
-    D = 2 * w * a;
-    H1 = (3 * R - 1)/(2 * C);
-    H2 = (3 * R + 2)/(2 * S);
+    D = 2*w*a;
+    H1 = ( 3*R - 1 )/( 2*C );
+    H2 = ( 3*R + 2 )/( 2*S );
 
-    return D * (1 + f * H1 * sinF2 * cosG2 - f * H2 * cosF2 * sinG2); 
+    return(D*( 1 + f*H1*sinF2*cosG2 - f*H2*cosF2*sinG2 )); 
 }
 
 int coordinates_are_equal(const DATA *a, const DATA *b) {

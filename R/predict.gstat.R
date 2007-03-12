@@ -1,4 +1,4 @@
-# $Id: predict.gstat.q,v 1.25 2006-12-10 14:17:17 edzer Exp $
+# $Id: predict.gstat.q,v 1.26 2007-03-13 21:59:03 edzer Exp $
 
 predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
@@ -97,6 +97,23 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		}
 		if (length(pol) == 1)
 			block.cols = 2
+	} else if (is(newdata, "SpatialLines")) {
+		lin = getSLlinesSlot(newdata)
+		if (length(lin) != nrow(raw$locations))
+			stop("lines and line midpoints length mismatch")
+		block = matrix(NA, 0, 2)
+		nd = as(newdata, "SpatialLines")
+		block.cols = rep(as.numeric(NA), length(lin))
+		for (i in seq(along = lin)) {
+			sps.args$x = nd[i]
+			cc = coordinates(do.call("spsample", sps.args))
+			cc[,1] = cc[,1] - raw$locations[i,1]
+			cc[,2] = cc[,2] - raw$locations[i,2]
+			block.cols[i] = nrow(block) + 1
+			block = rbind(block, cc)
+		}
+		if (length(lin) == 1)
+			block.cols = 2
 	} else if (!is.null(dim(block))) { # i.e., block is data.frame or matrix
 		block = data.matrix(block) # converts to numeric
 		block.cols = ncol(block)
@@ -158,6 +175,10 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		if (is(newdata, "SpatialPolygons")) {
 			row.names(ret) = sapply(newdata@polygons, function(x) slot(x, "ID"))
 			ret = SpatialPolygonsDataFrame(as(newdata, "SpatialPolygons"), ret,
+				match.ID = TRUE)
+		} else if (is(newdata, "SpatialLines")) {
+			row.names(ret) = sapply(newdata@lines, function(x) slot(x, "ID"))
+			ret = SpatialLinesDataFrame(as(newdata, "SpatialLines"), ret,
 				match.ID = TRUE)
 		} else {
 			coordinates(ret) = dimnames(raw$locations)[[2]]
