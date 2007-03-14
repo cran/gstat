@@ -1,4 +1,4 @@
-# $Id: fit.lmc.q,v 1.6 2006-02-10 19:01:07 edzer Exp $
+# $Id: fit.lmc.q,v 1.7 2007-03-13 21:59:03 edzer Exp $
 
 "fit.lmc" <-
 function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges, 
@@ -11,7 +11,7 @@ function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges,
         q$vectors %*% diag(d) %*% t(q$vectors)
     }
     if (!inherits(v, "gstatVariogram"))
-        stop("v should be of class variogram")
+        stop("v should be of class gstatVariogram")
     if (!inherits(g, "gstat"))
         stop("g should be of class gstat")
     if (!missing(model)) {

@@ -1,4 +1,4 @@
-% $Id: variogram.Rd,v 1.19 2006-12-12 12:38:05 edzer Exp $
+% $Id: variogram.Rd,v 1.20 2007-03-12 12:32:41 edzer Exp $
 \name{variogram}
 \alias{variogram}
 \alias{variogram.gstat}
@@ -49,7 +49,8 @@ regressors/covariates; the number of rows should match that of the
 correspoding element in y, the number of columns equals the number of
 regressors (including intercept) }
 \item{cutoff}{ spatial separation distance up to which point pairs
-are included in semivariance estimates }
+are included in semivariance estimates; as a default, the
+length of the diagonal of the box spanning the data is divided by three. }
 \item{width}{ the width of subsequent distance intervals into which
 data point pairs are grouped for semivariance estimates }
 \item{alpha}{ direction in  plane (x,y), in positive degrees clockwise

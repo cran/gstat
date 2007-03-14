@@ -1,4 +1,4 @@
-% $Id: plot.gstatVariogram.Rd,v 1.11 2006-12-12 20:44:07 edzer Exp $
+% $Id: plot.gstatVariogram.Rd,v 1.12 2007-03-12 13:04:10 edzer Exp $
 \name{plot.gstatVariogram}
 \alias{plot.gstatVariogram}
 \alias{plot.variogramMap}
@@ -86,13 +86,11 @@ v = variogram(g, alpha=c(0,45,90,135))
 plot(v, group.id = FALSE, auto.key = TRUE) # id and id pairs panels
 plot(v, group.id = TRUE, auto.key = TRUE)  # direction panels
 
-if (require(sp)) {
-  plot(variogram(g, cutoff=1000, width=100, map=TRUE),
-  	main = "(cross) semivariance maps")
-  plot(variogram(g, cutoff=1000, width=100, map=TRUE), np=TRUE,
-  	main = "number of point pairs")
-}
-
+# variogram maps:
+plot(variogram(g, cutoff=1000, width=100, map=TRUE),
+    main = "(cross) semivariance maps")
+plot(variogram(g, cutoff=1000, width=100, map=TRUE), np=TRUE,
+    main = "number of point pairs")
 }
 
 \keyword{dplot}

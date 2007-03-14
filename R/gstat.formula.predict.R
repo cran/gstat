@@ -1,12 +1,19 @@
-# $Id: gstat.formula.predict.q,v 1.10 2006-12-08 21:48:32 edzer Exp $
+# $Id: gstat.formula.predict.q,v 1.11 2007-03-13 21:59:03 edzer Exp $
 
 "gstat.formula.predict" <-
 function (formula, newdata, na.action) 
 {
 	if (is(newdata, "SpatialPolygons")) {
-		locs = t(sapply(slot(newdata, "polygons"), function(x) slot(x, "labpt")))
+		locs = coordinates(getSpatialPolygonsLabelPoints(newdata))
 		colnames(locs) = c("x", "y")
 		if (is(newdata, "SpatialPolygonsDataFrame"))
+			newdata = as.data.frame(newdata)
+		else
+			newdata = data.frame(a = rep(1, nrow(locs)))
+	} else if (is(newdata, "SpatialLines")) {
+		locs = coordinates(getSpatialLinesMidPoints(newdata))
+		colnames(locs) = c("x", "y")
+		if (is(newdata, "SpatialLinesDataFrame"))
 			newdata = as.data.frame(newdata)
 		else
 			newdata = data.frame(a = rep(1, nrow(locs)))
