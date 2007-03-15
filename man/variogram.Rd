@@ -1,4 +1,4 @@
-% $Id: variogram.Rd,v 1.20 2007-03-12 12:32:41 edzer Exp $
+% $Id: variogram.Rd,v 1.21 2007-04-13 08:00:14 edzer Exp $
 \name{variogram}
 \alias{variogram}
 \alias{variogram.gstat}
@@ -171,11 +171,12 @@ v
 g = gstat(NULL, "log-zinc", log(zinc)~x+y, meuse, model=v.fit, set = set)
 variogram(g)
 
-library(rgdal)
-proj4string(meuse) = CRS("+init=epsg:28992")
-meuse.ll = spTransform(meuse, CRS("+proj=longlat"))
-# variogram of unprojected data, km as units, great-circle distances
-variogram(log(zinc) ~ 1, meuse.ll)
+if (require(rgdal)) {
+  proj4string(meuse) = CRS("+init=epsg:28992")
+  meuse.ll = spTransform(meuse, CRS("+proj=longlat"))
+# variogram of unprojected data, using great-circle distances, returning km as units
+  variogram(log(zinc) ~ 1, meuse.ll)
+}
 
 }
 \keyword{models}

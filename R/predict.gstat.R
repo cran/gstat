@@ -1,4 +1,4 @@
-# $Id: predict.gstat.q,v 1.26 2007-03-13 21:59:03 edzer Exp $
+# $Id: predict.gstat.q,v 1.28 2007-04-06 11:29:58 edzer Exp $
 
 predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
@@ -27,7 +27,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		name = names(object$data)[i]
 		d = object$data[[i]]
 		if (!is.null(d$data)) {
-			if (!equal.projections(d$data, newdata))
+			if (!identical(proj4string(d$data), proj4string(newdata)))
 				stop(paste(name, ": data item in gstat object and newdata have different coordinate reference systems"))
 		}
 		if (d$nmax == Inf) 
