@@ -1,17 +1,7 @@
-# $Id: gstat.q,v 1.25 2006-12-10 14:17:17 edzer Exp $
+# $Id: gstat.q,v 1.26 2007-04-06 11:29:58 edzer Exp $
 
 "cross.name" <- function(id1, id2) {
     paste(id1, id2, sep = ".")
-}
-
-equal.projections = function(x, y) {
-	px = proj4string(x)
-	py = proj4string(y)
-	if (is.na(px) && is.na(py))
-		return(TRUE)
-	if (is.na(px) || is.na(py))
-		return(FALSE)
-	return(px == py)
 }
 
 "gstat" <-
@@ -80,7 +70,7 @@ function (g, id, formula, locations,
         g = list()
         g[["data"]] = list()
         g[["model"]] = list()
-    } else if (!dummy && !equal.projections(g$data[[1]]$data, data))
+    } else if (!dummy && !identical(proj4string(g$data[[1]]$data), proj4string(data)))
 		stop("data items in gstat object have different coordinate reference systems")
     if (missing(id)) 
         id = paste("var", length(g$data) + 1, sep = "")

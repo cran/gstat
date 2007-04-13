@@ -843,6 +843,7 @@ SEXP gstat_load_command(SEXP commands) {
 		if (parse_cmd(cmd, NULL)) {
 			Rprintf("internal gstat string parse error on [%s]", cmd);
 			INTEGER_POINTER(error)[0] = i+1;
+			UNPROTECT(1);
 			return(error); 
 		}
 	}

@@ -669,12 +669,14 @@ static DPOINT *get_nearest_point(QUEUE *q, DPOINT *where, DATA *d) {
 	QUEUE_NODE head;
 	static QUEUE_NODE *el = NULL; /* temporary storage for dequeued elements */
 	QTREE_NODE *node;
-	int i, n, max;
+	int i, n, max, max_split;
 
-	max = MAX(gl_split, 8);
+	max_split = MIN(gl_split, d->n_list);
+	max = MAX(max_split, 8);
+	/* printf("\nmax is %d\n", max): */
 	if (el == NULL)
 		el = (QUEUE_NODE *) emalloc(max * sizeof(QUEUE_NODE));
-		/* 8 -- or 4 in 2D, or 2 in 1D but who cares... */
+		/* 8 -- or 4 in 2D, or 2 in 1D but who cares now... */
 	while (q->length > 0) {  /* try: */
 		/* logprint_queue(q); */
 		head = dequeue(q);

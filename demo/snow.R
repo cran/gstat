@@ -4,6 +4,7 @@ gridded(meuse.grid) = ~x+y
 data(meuse)
 coordinates(meuse) = ~x+y
 
+ncell = 100000
 # sampel 100000 points over meuse.grid:
 newd = spsample(meuse.grid, ncell, type="regular")
 ncell = dim(coordinates(newd))[1]
