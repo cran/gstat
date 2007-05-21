@@ -1,4 +1,6 @@
-library(rgdal)
+if (require(rgdal) == FALSE)
+	q()
+
 data(meuse)
 coordinates(meuse) = ~x+y
 proj4string(meuse) = CRS("+init=epsg:28992")

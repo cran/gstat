@@ -65,7 +65,8 @@ design optimization.
 Package \code{gstat} assumes that data are projected, i.e. they should
 not be provided as lattitude/longitude. As an example, we will look
 at the meuse data set, which is a regular data frame that comes with
-package \code{gstat}:
+package \code{gstat} (remove the 88 from the colour strings to make
+a plot without alpha transparency on windows or X11):
 
 <<fig=FALSE>>=
 library(gstat)
