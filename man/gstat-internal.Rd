@@ -1,8 +1,6 @@
 % $Id: gstat-internal.Rd,v 1.4 2006-02-10 19:03:27 edzer Exp $
 \name{gstat-internal}
 \alias{vgm.panel.xyplot}
-\alias{xvgm.panel.xyplot}
-\alias{vgm.dir.panel.xyplot}
 \alias{load.variogram.model}
 \alias{gstat.formula}
 \alias{gstat.formula.predict}

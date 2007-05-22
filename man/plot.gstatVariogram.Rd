@@ -10,7 +10,7 @@ Creates a variogram plot
 }
 \usage{
 \method{plot}{gstatVariogram}(x, model = NULL, ylim, xlim, xlab = "distance", 
-	ylab = "semivariance", multipanel = TRUE, plot.numbers = FALSE, 
+	ylab = "semivariance", panel = vgm.panel.xyplot, multipanel = TRUE, plot.numbers = FALSE, 
 	scales, ids = x$id, group.id = TRUE, skip, layout, ...)
 \method{plot}{variogramMap}(x, np = FALSE, skip, threshold, ...)
 }
@@ -25,6 +25,7 @@ cross variograms: a list with variogram models }
 \item{xlim}{ numeric vector of length 2, limits of the x-axis}
 \item{xlab}{ x-axis label }
 \item{ylab}{ y-axis label }
+\item{panel}{ panel function }
 \item{multipanel}{ logical; if TRUE, directional variograms are plotted in
 different panels, if FALSE, directional variograms are plotted in the same
 graph, using color, colored lines and symbols to distinguish them }

@@ -15,9 +15,11 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-> library(rgdal)
+> if (require(rgdal) == FALSE)
++ 	q()
 Loading required package: sp
 Geospatial Data Abstraction Library extensions to R successfully loaded
+>
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > proj4string(meuse) = CRS("+init=epsg:28992")

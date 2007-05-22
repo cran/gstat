@@ -1,8 +1,8 @@
 # $Id: plot.gstatVariogram.q,v 1.13 2006-02-10 19:01:07 edzer Exp $
 
 "plot.gstatVariogram" <-
-function (x, model = NULL, ylim, xlim, xlab = "distance", 
-	ylab = "semivariance", multipanel = TRUE, plot.numbers = FALSE, scales, 
+function (x, model = NULL, ylim, xlim, xlab = "distance", ylab = "semivariance", 
+	panel = vgm.panel.xyplot, multipanel = TRUE, plot.numbers = FALSE, scales, 
 	ids = x$id, group.id = TRUE, skip, layout, ...) 
 {
     if (missing(ylim)) {
@@ -31,9 +31,9 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 					ylab = ylab, groups = id, ...)
 			} else # univariate directional, multipanel:
 				xyplot(gamma ~ dist | as.factor(dir.hor), subscripts = TRUE, 
-                	panel = vgm.dir.panel.xyplot, data = x, xlim = xlim, 
+                	panel = panel, data = x, xlim = xlim, 
                 	ylim = ylim, xlab = xlab, ylab = ylab, dir.hor = x$dir.hor, 
-                	labels = labels, model = model, shift = shift, ...)
+                	labels = labels, model = model, shift = shift, mode = "directional", ...)
         } else { # univariate directional, using symbol/color to distinguish
             pch = as.integer(as.factor(x$dir.hor))
             xyplot(gamma ~ dist, data = x, type = c("p", "l"), 
@@ -71,24 +71,26 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 			if (ylim.set) {
         		xyplot(gamma ~ dist | id, data = x, xlim = xlim, 
             		ylim = ylim, xlab = xlab, ylab = ylab, ids = ids, 
-            		panel= xvgm.panel.xyplot, labels = labels, scales = scales, 
+            		panel= panel, labels = labels, scales = scales, 
             		layout = layout, skip = skip, prepanel = function(x, y) 
 					list(ylim = c(min(0, y), max(0, y))), model = model, 
-					direction = c(x$dir.hor[1], x$dir.ver[1]), shift = shift, ...)
+					direction = c(x$dir.hor[1], x$dir.ver[1]), shift = shift, 
+					mode = "cross", ...)
 			} else {
         		xyplot(gamma ~ dist | id, data = x, xlim = xlim, 
             		xlab = xlab, ylab = ylab, ids = ids, 
-            		panel =xvgm.panel.xyplot, labels = labels, scales = scales, 
+            		panel = panel, labels = labels, scales = scales, 
             		layout = layout, skip = skip, prepanel = function(x, 
                 		y) list(ylim = c(min(0, y), max(0, y))), 
 					model = model, direction = c(x$dir.hor[1], x$dir.ver[1]), 
-					shift = shift, ...)
+					shift = shift, mode = "cross", ...)
 			}
 		}
     } else  # non multi-directional, univariable -- mostly used of all:
-		xyplot(gamma ~ dist, data = x, panel = vgm.panel.xyplot, xlim = xlim, 
+		xyplot(gamma ~ dist, data = x, panel = panel, xlim = xlim, 
 			ylim = ylim, xlab = xlab, ylab = ylab, labels = labels, model = model, 
-			direction = c(x$dir.hor[1], x$dir.ver[1]), shift = shift, ...)
+			direction = c(x$dir.hor[1], x$dir.ver[1]), shift = shift, 
+			mode = "direct", ...)
 }
 
 "plot.variogramMap" <-
