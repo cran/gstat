@@ -1,4 +1,4 @@
-# $Id: vgm.panel.q,v 1.6 2006-10-31 13:25:16 edzer Exp $
+# $Id: vgm.panel.q,v 1.7 2007-06-08 06:45:52 edzer Exp $
 
 "get.direction.unitv" <- function(alpha, beta) {
 	cb = cos(beta)

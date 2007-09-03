@@ -1,4 +1,4 @@
-# $Id: plot.gstatVariogram.q,v 1.13 2006-02-10 19:01:07 edzer Exp $
+# $Id: plot.gstatVariogram.q,v 1.15 2007-06-08 18:03:25 edzer Exp $
 
 "plot.gstatVariogram" <-
 function (x, model = NULL, ylim, xlim, xlab = "distance", ylab = "semivariance", 
@@ -28,11 +28,11 @@ function (x, model = NULL, ylim, xlim, xlab = "distance", ylab = "semivariance",
             if (length(levels(ids)) > 1) { # multivariate directional:
 				xyplot(gamma ~ dist | as.factor(dir.hor), data = x, 
 					type = c("p", "l"), xlim = xlim, ylim = ylim, xlab = xlab, 
-					ylab = ylab, groups = id, ...)
+					ylab = ylab, groups = ids, ...)
 			} else # univariate directional, multipanel:
 				xyplot(gamma ~ dist | as.factor(dir.hor), subscripts = TRUE, 
                 	panel = panel, data = x, xlim = xlim, 
-                	ylim = ylim, xlab = xlab, ylab = ylab, dir.hor = x$dir.hor, 
+                	ylim = ylim, xlab = xlab, ylab = ylab, direction = x$dir.hor, 
                 	labels = labels, model = model, shift = shift, mode = "directional", ...)
         } else { # univariate directional, using symbol/color to distinguish
             pch = as.integer(as.factor(x$dir.hor))
@@ -59,12 +59,12 @@ function (x, model = NULL, ylim, xlim, xlab = "distance", ylab = "semivariance",
 			if (ylim.set) {
             	xyplot(gamma ~ dist | id, data = x, type = c("p", 
                 	"l"), xlim = xlim, ylim = ylim, xlab = xlab, 
-                	ylab = ylab, groups = as.factor(dir.hor), layout = layout,
+                	ylab = ylab, groups = as.factor(x$dir.hor), layout = layout,
                   	skip = skip, scales = scales, ...)
 			} else {
             	xyplot(gamma ~ dist | id, data = x, type = c("p", 
                 	"l"), xlim = xlim, xlab = xlab, 
-                	ylab = ylab, groups = as.factor(dir.hor), layout = layout,
+                	ylab = ylab, groups = as.factor(x$dir.hor), layout = layout,
                   	skip = skip, scales = scales, ...)
 			}
 		} else { # non-multi-directional, multivariable

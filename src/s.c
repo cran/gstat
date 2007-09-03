@@ -709,7 +709,7 @@ SEXP gstat_load_variogram(SEXP s_ids, SEXP s_model, SEXP s_sills, SEXP s_ranges,
 	long i, n, id1, id2, max_id;
 	double anis[5] = {0.0, 0.0, 0.0, 1.0, 1.0}, rpars[2], *sills, *ranges, 
 		*kappas, *anis_all;
-	char *model;
+	const char *model;
 
 	sills = NUMERIC_POINTER(s_sills);
 	ranges = NUMERIC_POINTER(s_ranges);
@@ -829,7 +829,7 @@ SEXP gstat_get_variogram_models(SEXP dolong) {
 
 SEXP gstat_load_command(SEXP commands) {
 	int i;
-	char *cmd;
+	const char *cmd;
 	SEXP error;
 
 	PROTECT(error = NEW_INTEGER(1));

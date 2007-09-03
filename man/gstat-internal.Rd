@@ -1,4 +1,4 @@
-% $Id: gstat-internal.Rd,v 1.4 2006-02-10 19:03:27 edzer Exp $
+% $Id: gstat-internal.Rd,v 1.5 2007-06-08 06:45:51 edzer Exp $
 \name{gstat-internal}
 \alias{vgm.panel.xyplot}
 \alias{load.variogram.model}
