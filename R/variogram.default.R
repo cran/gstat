@@ -1,4 +1,4 @@
-# $Id: variogram.default.q,v 1.23 2006-12-10 14:17:17 edzer Exp $
+# $Id: variogram.default.q,v 1.25 2007-10-18 10:13:13 edzer Exp $
 
 "variogram.default" <-
 function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0, 
@@ -83,7 +83,6 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 						as.numeric(cutoff), as.numeric(width), 
                     	as.numeric(direction), as.integer(cressie), 
                     	as.numeric(dX), as.numeric(boundaries), map)
-				  boundaries = numeric(0)
                   if (is.logical(map) && map == FALSE) {
                     np = ret.call[[1]]
                     sel = np > 0
@@ -121,9 +120,10 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 	if (is.logical(map) && map == FALSE) {
     	ret$id = factor(ids, levels = unique(ids))
 		attr(ret, "direct") = data.frame(id = unique(ids), is.direct = is.direct)
-    	if (cloud) 
+    	if (cloud) {
         	class(ret) = c("variogramCloud", "data.frame")
-    	else 
+			attr(ret, ".BigInt") = 2^(4 * .Machine$sizeof.long)
+    	} else 
 			class(ret) = c("gstatVariogram", "data.frame")
 	} else {
 		coordinates(ret) = c("dx", "dy")
