@@ -1,10 +1,10 @@
-# $Id: gstat.formula.q,v 1.7 2006-02-10 19:01:07 edzer Exp $
+# $Id: gstat.formula.q,v 1.8 2007-06-08 06:45:52 edzer Exp $
 
 "gstat.formula" <-
 function (formula, data)
 {
     m = model.frame(terms(formula), as(data, "data.frame"))
-    Y = model.extract(m, response)
+    Y = model.extract(m, "response")
     if (length(Y) == 0)
         stop("no response variable present in formula")
     Terms = attr(m, "terms")

@@ -1,4 +1,4 @@
-% $Id: plot.gstatVariogram.Rd,v 1.12 2007-03-12 13:04:10 edzer Exp $
+% $Id: plot.gstatVariogram.Rd,v 1.13 2007-06-08 06:45:51 edzer Exp $
 \name{plot.gstatVariogram}
 \alias{plot.gstatVariogram}
 \alias{plot.variogramMap}

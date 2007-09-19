@@ -1,4 +1,4 @@
-# $Id: fit.variogram.q,v 1.7 2007-03-13 21:59:03 edzer Exp $
+# $Id: fit.variogram.q,v 1.8 2007-07-12 07:48:45 edzer Exp $
 
 "fit.variogram" <-
 function (object, model, fit.sills = TRUE, fit.ranges = TRUE, 
@@ -20,6 +20,8 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
         fit.sills = rep(fit.sills, length(model$model))
     if (length(fit.ranges) < length(model$model)) 
         fit.ranges = rep(fit.ranges, length(model$model))
+	if (fit.method == 7 && any(object$dist == 0))
+		stop("fit.method 7 will not work with zero distance semivariances; use another fit.method value")
     fit.ranges = fit.ranges & (model$model != "Nug")
     .Call("gstat_init", as.integer(debug.level))
     .Call("gstat_load_ev", object$np, object$dist, object$gamma)
