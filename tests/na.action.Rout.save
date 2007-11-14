@@ -1,6 +1,6 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.2.1  (2005-12-20 r36812)
+R version 2.6.0 (2007-10-03)
+Copyright (C) 2007 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -30,13 +30,17 @@ Loading required package: sp
 > 
 > ## this is not allowed anymore:
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.pass))
-Error in validityMethod(object) : number of rows in data.frame and SpatialPoints don't match
+Error in validityMethod(object) : 
+  number of rows in data.frame and SpatialPoints don't match
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.omit))
-Error in validityMethod(object) : number of rows in data.frame and SpatialPoints don't match
+Error in validityMethod(object) : 
+  number of rows in data.frame and SpatialPoints don't match
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.exclude))
-Error in validityMethod(object) : number of rows in data.frame and SpatialPoints don't match
+Error in validityMethod(object) : 
+  number of rows in data.frame and SpatialPoints don't match
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.fail))
-Error in validityMethod(object) : number of rows in data.frame and SpatialPoints don't match
+Error in validityMethod(object) : 
+  number of rows in data.frame and SpatialPoints don't match
 > 
 > # select 10 random rows;
 > # create two missing values in the regressor variable:
@@ -78,6 +82,6 @@ Error in validityMethod(object) : number of rows in data.frame and SpatialPoints
 7 179980 331700  5.345455 0.2408518
 8 179540 329900  6.314501 0.2402659
 > try(krige(log(zinc)~dist,~x+y,meuse,m, na.action = na.fail))
-Error in na.fail.default(list(dist = c(0.527108, 0.929323, NA, 0.266212,  : 
-	missing values in object
+Error in na.fail.default(structure(list(dist = c(0.527108, 0.929323, NA,  : 
+  missing values in object
 > 

@@ -1,7 +1,7 @@
-# $Id: gstat.formula.predict.q,v 1.11 2007-03-13 21:59:03 edzer Exp $
+# $Id: gstat.formula.predict.q,v 1.12 2007-11-13 21:34:26 edzer Exp $
 
 "gstat.formula.predict" <-
-function (formula, newdata, na.action) 
+function (formula, newdata, na.action, BLUE.estimates = FALSE) 
 {
 	if (is(newdata, "SpatialPolygons")) {
 		locs = coordinates(getSpatialPolygonsLabelPoints(newdata))
@@ -28,6 +28,18 @@ function (formula, newdata, na.action)
 	terms.f = delete.response(terms(formula))
     mf.f = model.frame(terms.f, newdata, na.action = na.action)
     X = model.matrix(terms.f, mf.f)
+
+	if (BLUE.estimates) { # fake the whole thing to get a matrix with BLUE parameter estimates:
+		cnames = colnames(X)
+		X = matrix(0, ncol(X), ncol(X))
+		diag(X) = 1
+		locs = locs[1,,drop=FALSE]
+		if (ncol(X) > 1) {
+			for (i in 2:ncol(X))
+				locs = rbind(locs, locs[1,])
+		}
+		rownames(locs) = cnames
+	}
 
 	if (NROW(locs) != NROW(X)) { 
 		# NA's were filtered in X, but not in coords:

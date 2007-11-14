@@ -1,8 +1,10 @@
-% $Id: ncp.grid.Rd,v 1.3 2006-02-10 19:03:27 edzer Exp $
+% $Id: ncp.grid.Rd,v 1.4 2007-11-13 21:34:26 edzer Exp $
 \name{ncp.grid}
 \alias{ncp.grid}
 \title{Grid for the NCP, the Dutch part of the North Sea}
 \description{
+Gridded data for the NCP, the Dutch part of the North Sea, for
+a 5 km x 5 km grid; stored as data.frame.
 }
 \format{
   This data frame contains the following columns:

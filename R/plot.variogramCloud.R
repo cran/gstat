@@ -1,4 +1,4 @@
-# $Id: plot.variogramCloud.q,v 1.5 2006-12-12 12:38:19 edzer Exp $
+# $Id: plot.variogramCloud.q,v 1.7 2007-10-18 10:13:13 edzer Exp $
 
 "plot.variogramCloud" <-
 function (x, identify = FALSE, digitize = FALSE, 
@@ -8,8 +8,9 @@ function (x, identify = FALSE, digitize = FALSE,
     if (identify || digitize) {
         plot(x$dist, x$gamma, xlim = xlim, ylim = ylim, xlab = xlab, 
             ylab = ylab, ...)
-        head = floor(x$np %/% 2^16) + 1
-        tail = floor(x$np %% 2^16) + 1
+		.BigInt = attr(x, ".BigInt")
+        head = floor(x$np %/% .BigInt) + 1
+        tail = floor(x$np %%  .BigInt) + 1
 		if (identify) {
 			print("mouse-left identifies, mouse-right stops")
         	labs = paste(head, tail, sep = ",")

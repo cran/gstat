@@ -1,4 +1,4 @@
-# $Id: predict.gstat.q,v 1.28 2007-04-06 11:29:58 edzer Exp $
+# $Id: predict.gstat.q,v 1.29 2007-11-13 21:34:26 edzer Exp $
 
 predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
@@ -63,7 +63,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		}
 		if (!is.null(object$model[[name]])) 
 			load.variogram.model(object$model[[name]], c(i - 1, i - 1))
-		raw = gstat.formula.predict(d$formula, newdata, na.action = na.action)
+		raw = gstat.formula.predict(d$formula, newdata, na.action = na.action,
+			(length(BLUE) == 2 && BLUE[2]))
 		if (is.null(new.X)) 
 			new.X = raw$X
 		else new.X = cbind(new.X, raw$X)

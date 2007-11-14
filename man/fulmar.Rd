@@ -1,8 +1,9 @@
-% $Id: fulmar.Rd,v 1.4 2006-02-10 19:03:27 edzer Exp $
+% $Id: fulmar.Rd,v 1.5 2007-11-13 21:34:26 edzer Exp $
 \name{fulmar}
 \alias{fulmar}
 \title{Fulmaris glacialis data}
-\description{
+\description{ Airborne counts of Fulmaris glacialis during the Aug/Sept 1998 and 1999
+flights on the Netherlands part of the North Sea (NCP).
 }
 \format{
   This data frame contains the following columns:
