@@ -1,4 +1,4 @@
-% $Id: ncp.grid.Rd,v 1.4 2007-11-13 21:34:26 edzer Exp $
+% $Id: ncp.grid.Rd,v 1.5 2007-11-16 12:59:47 edzer Exp $
 \name{ncp.grid}
 \alias{ncp.grid}
 \title{Grid for the NCP, the Dutch part of the North Sea}
@@ -21,9 +21,6 @@ data(ncp.grid)
 }
 \author{Dutch National Institute for Coastal and Marine Management (RIKZ);
 data compiled for R by Edzer J. Pebesma }
-\references{ 
-}
-\note{ }
 \seealso{\link{fulmar}}
 \keyword{datasets}
 \examples{

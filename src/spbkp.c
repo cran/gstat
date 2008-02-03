@@ -31,7 +31,7 @@
   Radical revision completed Mon 07th Dec 1992, 10:59:57 AM
 */
 
-static	char	rcsid[] = "$Id: spbkp.c,v 1.1.1.1 2003/06/23 18:31:55 cees Exp $";
+static	char	rcsid[] = "$Id: spbkp.c,v 1.1.1.1 2003-06-23 18:31:55 cees Exp $";
 
 #include	<stdio.h>
 #include        "sparse2.h"

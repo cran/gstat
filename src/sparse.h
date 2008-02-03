@@ -29,7 +29,7 @@
 	Basic sparse routines to be held in sparse.c
 */
 
-/* RCS id: $Id: sparse.h,v 1.1.1.1 2003/06/23 18:32:00 cees Exp $ */
+/* RCS id: $Id: sparse.h,v 1.1.1.1 2003-06-23 18:32:00 cees Exp $ */
 
 #ifndef SPARSEH
 

@@ -1,4 +1,4 @@
-% $Id: spplot.vcov.Rd,v 1.1 2006-03-20 15:17:28 edzer Exp $
+% $Id: spplot.vcov.Rd,v 1.2 2007-11-16 12:59:47 edzer Exp $
 \name{spplot.vcov}
 \alias{spplot.vcov}
 \title{ Plot map matrix of prediction error variances and covariances }
@@ -16,7 +16,5 @@ resulting from a krige call with multiple variables (cokriging }
 \value{ The plotted object, of class trellis; see \code{spplot} in
 package \pkg{sp}. }
 \author{ Edzer J. Pebesma }
-\examples{
-}
 \keyword{dplot}
 
