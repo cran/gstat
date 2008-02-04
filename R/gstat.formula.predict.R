@@ -1,4 +1,4 @@
-# $Id: gstat.formula.predict.q,v 1.12 2007-11-13 21:34:26 edzer Exp $
+# $Id: gstat.formula.predict.q,v 1.13 2007-11-13 22:00:07 edzer Exp $
 
 "gstat.formula.predict" <-
 function (formula, newdata, na.action, BLUE.estimates = FALSE) 

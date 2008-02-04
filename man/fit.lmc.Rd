@@ -1,4 +1,4 @@
-% $Id: fit.lmc.Rd,v 1.3 2006-02-10 19:03:27 edzer Exp $
+% $Id: fit.lmc.Rd,v 1.4 2007-11-16 12:59:35 edzer Exp $
 \name{fit.lmc}
 \alias{fit.lmc}
 \title{ Fit a Linear Model of Coregionalization to a Multivariable Sample Variogram }
@@ -50,6 +50,4 @@ elegant way to get around this, please let me know.
 }
 \seealso{ \link{variogram}, \link{vgm}, \link{fit.variogram},
 \code{demo(cokriging)} }
-\examples{ 
-}
 \keyword{models}

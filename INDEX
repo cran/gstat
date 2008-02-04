@@ -7,6 +7,7 @@ fulmar                  Fulmaris glacialis data
 get.contr               Calculate contrasts from multivariable
                         predictions
 gstat                   Create gstat objects, or subset it
+hscat                   Produce h-scatterplot
 image                   Image Gridded Coordinates in Data Frame
 jura                    Jura data set
 krige                   Simple, Ordinary or Universal, global or local,

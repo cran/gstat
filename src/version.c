@@ -36,7 +36,7 @@
 
 void	m_version()
 {
-	static char rcsid[] = "$Id: version.c,v 1.1.1.1 2003/06/23 18:31:42 cees Exp $";
+	static char rcsid[] = "$Id: version.c,v 1.1.1.1 2003-06-23 18:31:42 cees Exp $";
 
 	printf("Meshach matrix library version 1.2b\n");
 	printf("RCS id: %s\n",rcsid);
@@ -66,7 +66,7 @@ void	m_version()
 }
 
 /* $Log: version.c,v $
-/* Revision 1.1.1.1  2003/06/23 18:31:42  cees
+/* Revision 1.1.1.1  2003-06-23 18:31:42  cees
 /* Verbatim import gstat-2.4.2.tar.gz as downloaded from www.gstat.org
 /* at Mon Jun 23 20:52:05 CEST 2003
 /*

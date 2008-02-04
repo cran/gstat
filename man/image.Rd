@@ -1,4 +1,4 @@
-% $Id: image.Rd,v 1.9 2006-12-12 20:44:07 edzer Exp $
+% $Id: image.Rd,v 1.10 2007-11-16 12:59:47 edzer Exp $
 \name{image}
 \alias{image.data.frame}
 \alias{image}
@@ -55,9 +55,7 @@ better the approximation. Geographically correct images can be obtained
 by modifiying \code{par("pin")}. Read the examples, image a 2 x 2 grid,
 and play with \code{par("pin")} if you want to learn more about this.
 }
-\references{ }
 \author{ Edzer J. Pebesma }
-\seealso{ }
 \examples{
 data(meuse)
 data(meuse.grid)

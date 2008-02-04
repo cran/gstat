@@ -33,7 +33,7 @@ print(xyplot(log(PCB138)~depth | as.factor(year), groups = int, pcb,
             },
    scales = list(
 		y = list(at=log(c(.2, .5, 1, 2, 5, 10, 20)), 
-		labels=c(".2",".5","1","2","5","10","20"), alternating = F),
+		labels=c(".2",".5","1","2","5","10","20"), alternating = F)
 	), xlab = "water depth", ylab = "PCB138", as.table = T)
 )
 

@@ -1,4 +1,4 @@
-% $Id: predict.gstat.Rd,v 1.17 2007-03-12 12:10:45 edzer Exp $
+% $Id: predict.gstat.Rd,v 1.18 2007-11-16 12:59:47 edzer Exp $
 \name{predict.gstat}
 \alias{predict.gstat}
 \title{ Multivariable Geostatistical Prediction and Simulation }
@@ -157,7 +157,6 @@ For bucket PR quadtrees, excellent demos are found at
 \url{http://www.cs.umd.edu/~brabec/quadtree/index.html}
 }
 \author{ Edzer J. Pebesma }
-\note{  }
 
 \seealso{\link{gstat}, \link{krige}}
 

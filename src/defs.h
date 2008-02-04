@@ -29,8 +29,8 @@
 #endif
 
 #define GSTAT_NAME      "gstat"
-#define GSTAT_CR        "Copyright (C) 1992, 2006 Edzer J. Pebesma"
-#define GSTAT_EMAIL     "e.pebesma@geo.uu.nl"
+#define GSTAT_CR        "Copyright (C) 1992, 2008 Edzer J. Pebesma and others"
+#define GSTAT_EMAIL     "edzer.pebesma@uni-muenster.de"
 #define GSTAT_INFO      "gstat-info@geo.uu.nl"
 #define GSTAT_ANNOUNCE  "gstat-announce@geo.uu.nl"
 #define GSTAT_HOME      "http://www.gstat.org/"

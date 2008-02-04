@@ -33,7 +33,7 @@
 */
 
 /* hsehldr.c 1.3 10/8/87 */
-static	char	rcsid[] = "$Id: hsehldr.c,v 1.1.1.1 2003/06/23 18:31:46 cees Exp $";
+static	char	rcsid[] = "$Id: hsehldr.c,v 1.1.1.1 2003-06-23 18:31:46 cees Exp $";
 
 #include	<stdio.h>
 #include	"matrix.h"

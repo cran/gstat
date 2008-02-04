@@ -5,7 +5,7 @@ support configure fully (requiring cygwin) */
 /* Any machine specific stuff goes here */
 /* Add details necessary for your own installation here! */
 
-/* RCS id: $Id: machine.w32,v 1.1 2003/06/27 09:29:16 edzer Exp $ */
+/* RCS id: $Id: machine.w32,v 1.1 2003-06-27 09:29:16 edzer Exp $ */
 
 /* Note special macros: ANSI_C (ANSI C syntax)
 			SEGMENTED (segmented memory machine e.g. MS-DOS)

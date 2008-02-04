@@ -1,4 +1,4 @@
-% $Id: get.contr.Rd,v 1.4 2006-02-10 19:03:27 edzer Exp $
+% $Id: get.contr.Rd,v 1.5 2007-11-16 12:59:47 edzer Exp $
 \name{get.contr}
 \alias{get.contr}
 \title{ Calculate contrasts from multivariable predictions }
@@ -34,11 +34,7 @@ variances (named var.beta.1, var.beta.2, ...) and covariances
 \url{http://www.gstat.org/}
 }
 \author{ Edzer J. Pebesma }
-\note{  }
-
 \seealso{\link{predict.gstat}}
 
-\examples{
-}
 
 \keyword{ models }

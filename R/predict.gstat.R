@@ -1,4 +1,4 @@
-# $Id: predict.gstat.q,v 1.29 2007-11-13 21:34:26 edzer Exp $
+# $Id: predict.gstat.q,v 1.30 2007-11-16 14:06:07 edzer Exp $
 
 predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
@@ -82,7 +82,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	if (!is.null(object$merge)) 
 		gstat.load.merge(object)
 	if (is(newdata, "SpatialPolygons")) {
-		pol = getSpPpolygonsSlot(newdata)
+		pol = newdata@polygons
 		if (length(pol) != nrow(raw$locations))
 			stop("polygons and center points length mismatch")
 		block = matrix(NA, 0, 2)
@@ -99,7 +99,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		if (length(pol) == 1)
 			block.cols = 2
 	} else if (is(newdata, "SpatialLines")) {
-		lin = getSLlinesSlot(newdata)
+		lin = newdata@lines
 		if (length(lin) != nrow(raw$locations))
 			stop("lines and line midpoints length mismatch")
 		block = matrix(NA, 0, 2)

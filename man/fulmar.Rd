@@ -1,4 +1,4 @@
-% $Id: fulmar.Rd,v 1.5 2007-11-13 21:34:26 edzer Exp $
+% $Id: fulmar.Rd,v 1.6 2007-11-16 12:59:47 edzer Exp $
 \name{fulmar}
 \alias{fulmar}
 \title{Fulmaris glacialis data}
@@ -21,9 +21,6 @@ data(fulmar)
 }
 \author{ Dutch National Institute for Coastal and Marine Management (RIKZ),
 \url{http://www.rikz.nl/}}
-\references{ 
-}
-\note{ }
 \seealso{\link{ncp.grid}}
 \keyword{datasets}
 \examples{
