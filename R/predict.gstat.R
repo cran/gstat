@@ -1,4 +1,4 @@
-# $Id: predict.gstat.q,v 1.30 2007-11-16 14:06:07 edzer Exp $
+# $Id: predict.gstat.q,v 1.31 2008-02-13 20:22:59 edzer Exp $
 
 predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
@@ -184,6 +184,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		} else {
 			coordinates(ret) = dimnames(raw$locations)[[2]]
 			gridded(ret) = gridded(newdata)
+			if (gridded(newdata)) 
+				fullgrid(ret) = fullgrid(newdata)
 		}
 		proj4string(ret) = CRS(proj4string(newdata))
 	}

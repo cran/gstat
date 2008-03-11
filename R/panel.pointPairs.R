@@ -1,4 +1,4 @@
-# $Id: panel.pointPairs.q,v 1.2 2006-02-10 19:01:07 edzer Exp $
+# $Id: panel.pointPairs.q,v 1.3 2008-03-10 10:00:10 edzer Exp $
 
 "panel.pointPairs" <-
 function (x, y, type = "p", pch = plot.symbol$pch, col, col.line = 
@@ -17,7 +17,7 @@ function (x, y, type = "p", pch = plot.symbol$pch, col, col.line =
         }
         plot.symbol = trellis.par.get("plot.symbol")
         plot.line = trellis.par.get("plot.line")
-        lpoints(x = x, y = y, cex = cex, col = col.symbol, pch = pch)
+        lpoints(x = x, y = y, cex = cex, col = col.symbol, pch = pch, ...)
         if (!missing(pairs)) {
 			for (i in seq(along = pairs[,1])) {
 				xx = c(x[pairs[i,1]], x[pairs[i,2]])

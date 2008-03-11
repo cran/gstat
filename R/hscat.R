@@ -1,4 +1,4 @@
-hscat = function(formula, data, breaks, ...) {
+hscat = function(formula, data, breaks, pch = 3, cex = .6, ...) {
 	stopifnot(!missing(breaks))
 	x = variogram(formula, data, cloud = TRUE, ...)
 	.BigInt = attr(x, ".BigInt")

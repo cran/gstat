@@ -1,4 +1,4 @@
-% $Id: hscat.Rd,v 1.2 2008-01-07 13:25:22 edzer Exp $
+% $Id: hscat.Rd,v 1.3 2008-02-04 10:06:44 edzer Exp $
 \name{hscat}
 \alias{hscat}
 \title{
@@ -9,12 +9,14 @@ Produces h-scatterplots, where point pairs having specific separation distances
 are plotted. This function is a wrapper around xyplot.
 }
 \usage{
-hscat(formula, data, breaks, ...)
+hscat(formula, data, breaks, pch = 3, cex = .6, ...)
 }
 \arguments{
 \item{formula}{ specifies the dependent variable }
 \item{data}{ data where the variable in formula is resolved }
 \item{breaks}{ distance class boundaries }
+\item{pch}{ plotting symbol }
+\item{cex}{ plotting symbol size }
 \item{...}{ plotting parameters, passed to xyplot }
 }
 \value{

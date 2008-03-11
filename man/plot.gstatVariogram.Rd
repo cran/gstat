@@ -1,4 +1,4 @@
-% $Id: plot.gstatVariogram.Rd,v 1.13 2007-06-08 06:45:51 edzer Exp $
+% $Id: plot.gstatVariogram.Rd,v 1.14 2008-02-19 10:01:22 edzer Exp $
 \name{plot.gstatVariogram}
 \alias{plot.gstatVariogram}
 \alias{plot.variogramMap}
@@ -43,7 +43,7 @@ if TRUE, panels divide direction and colors indicate variables
 indicate direction}
 \item{skip}{ logical; can be used to arrange panels, see \code{xyplot}}
 \item{layout}{ integer vector; can be used to set panel layout: c(ncol,nrow) }
-\item{np}{ logical; if TRUE, plot number of point pairs, if FALSE plot
+\item{np}{ logical (only for plotting variogram maps); if TRUE, plot number of point pairs, if FALSE plot
 semivariances }
 \item{threshold}{semivariogram map values based on fewer point pairs
 than threshold will not be plotted}

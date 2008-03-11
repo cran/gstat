@@ -1,18 +1,32 @@
-# $Id: gstat.formula.predict.q,v 1.13 2007-11-13 22:00:07 edzer Exp $
+# $Id: gstat.formula.predict.q,v 1.14 2008-02-19 10:01:22 edzer Exp $
 
 "gstat.formula.predict" <-
 function (formula, newdata, na.action, BLUE.estimates = FALSE) 
 {
 	if (is(newdata, "SpatialPolygons")) {
-		locs = coordinates(getSpatialPolygonsLabelPoints(newdata))
+		# locs = coordinates(getSpatialPolygonsLabelPoints(newdata)) -- deprecated, now use:
+
+		locs = t(sapply(slot(newdata, "polygons"), function(x) slot(x, "labpt")))
+		SpatialPoints(locs, CRS(proj4string(newdata)))
+		locs = coordinates(locs)
+
 		colnames(locs) = c("x", "y")
 		if (is(newdata, "SpatialPolygonsDataFrame"))
 			newdata = as.data.frame(newdata)
 		else
 			newdata = data.frame(a = rep(1, nrow(locs)))
 	} else if (is(newdata, "SpatialLines")) {
-		locs = coordinates(getSpatialLinesMidPoints(newdata))
+		# locs = coordinates(getSpatialLinesMidPoints(newdata)) -- deprecated, now use:
+
+		ret = lapply(newdata@lines,
+	        	function(x) sapply(x@Lines,
+				function(X) apply(X@coords, 2, mean)
+			)
+		)
+		ret = t(sapply(ret, function(x) apply(x, 1, mean)))
+		locs = coordinates(SpatialPoints(ret, CRS(proj4string(newdata))))
 		colnames(locs) = c("x", "y")
+
 		if (is(newdata, "SpatialLinesDataFrame"))
 			newdata = as.data.frame(newdata)
 		else
