@@ -41,4 +41,6 @@ variogram               Calculate Sample or Residual Variogram or
                         Variogram Cloud
 variogramLine           Semivariance Values For a Given Variogram Model
 vgm                     Generate, or Add to Variogram Model
+vgm.panel.xyplot        panel functions for most of the variogram plots
+                        through lattice
 walker                  Walker Lake sample data set

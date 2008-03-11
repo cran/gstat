@@ -466,7 +466,7 @@ static int read_data_line(FILE *f, char *line, DATA *d, DPOINT *current,
  * reads data from line;
  * if this one is a missing value, return 1, or else 0.
  */
-	int this_one_is_mv, field, line_size, i;
+	int this_one_is_mv, field, line_size = 0, i;
 	char *token = NULL;
 	char *category = NULL;
 

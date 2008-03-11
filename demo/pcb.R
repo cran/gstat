@@ -1,4 +1,4 @@
-# $Id: pcb.R,v 1.8 2007-02-27 22:09:32 edzer Exp $
+# $Id: pcb.R,v 1.9 2008-02-01 22:39:44 edzer Exp $
 # FIGURE 1:
 library(gstat)
 library(lattice)
@@ -141,4 +141,4 @@ pl2 = levelplot(beta.1/sqrt(var.beta.1)~x+y, pcb.contr, asp="iso",
 	xlab = "", ylab = "")
 print(pl1, position=c(0,0,0.5,1), more = TRUE)
 print(pl2, position=c(0.5,0,1,1), more = FALSE)
-"source:\n\nEdzer J. Pebesma, Richard N.M. Duin (2005) Spatio-temporal mapping of\nsea floor sediment pollution in the North Sea.  In: Ph. Renard, and\nR. Froidevaux, eds. Proceedings GeoENV 2004 -- Fifth European Conference\non Geostatistics for Environmental Applications; Springer.\n"
+cat("source:\n\nEdzer J. Pebesma, Richard N.M. Duin (2005) Spatio-temporal mapping of\nsea floor sediment pollution in the North Sea.  In: Ph. Renard, and\nR. Froidevaux, eds. Proceedings GeoENV 2004 -- Fifth European Conference\non Geostatistics for Environmental Applications; Springer.\n")
