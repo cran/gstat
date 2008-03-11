@@ -1,9 +1,9 @@
 Package: gstat
-Version: 0.9-44
+Version: 0.9-45
 Date: 2008/03/11
 Title: geostatistical modelling, prediction and simulation
-Author: Edzer J. Pebesma <e.pebesma@geo.uu.nl> and others
-Maintainer: Edzer J. Pebesma <e.pebesma@geog.uu.nl>
+Author: Edzer J. Pebesma <edzer.pebesma@uni-muenster.de> and others
+Maintainer: Edzer J. Pebesma <edzer.pebesma@uni-muenster.de>
 Description: variogram modelling; simple, ordinary and universal point 
 	or block (co)kriging, sequential Gaussian or indicator (co)simulation; 
 	variogram and variogram map plotting utility functions.
@@ -12,4 +12,4 @@ Imports: lattice
 Suggests: rgdal (>= 0.5.2), fields
 License: GPL
 URL: http://www.gstat.org/
-Packaged: Tue Mar 11 07:57:00 2008; edzer
+Packaged: Tue Apr  8 13:10:21 2008; edzer
