@@ -1,3 +1,17 @@
+2008-04-10 17:32  edzer
+
+	* S/demo/blue.R: added blue.R to demos: how to get BLUE trend
+	  coefficients out of predict.gstat
+
+2008-04-08 14:20  edzer
+
+	* S/src/variogram.default.q: repaired bug related to boundaries for
+	  multivariate variogram.gstat method
+
+2008-03-25 10:20  edzer
+
+	* S/makefile: added cvs2cl in target cl
+
 2008-03-25 10:11  edzer
 
 	* cvs2cl.pl: added ChangeLog generator

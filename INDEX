@@ -37,6 +37,7 @@ sic2004                 Spatial Interpolation Comparison 2004 data set:
                         Natural Ambient Radioactivity
 spplot.vcov             Plot map matrix of prediction error variances
                         and covariances
+TULLNREG                Südliche Tullnerfeld data set
 variogram               Calculate Sample or Residual Variogram or
                         Variogram Cloud
 variogramLine           Semivariance Values For a Given Variogram Model

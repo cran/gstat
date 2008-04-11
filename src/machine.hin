@@ -68,7 +68,9 @@
 /* if the system has malloc.h */
 #ifdef HAVE_MALLOC_H
 #define	MALLOCDECL	1
-#include	<malloc.h>
+/* EJP, 06.05.2008; this is not POSIX compliant
+  #include	<malloc.h>
+*/
 #endif
 
 /* any compiler should have this header */
