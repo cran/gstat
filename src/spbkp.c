@@ -38,10 +38,6 @@ static	char	rcsid[] = "$Id: spbkp.c,v 1.1.1.1 2003-06-23 18:31:55 cees Exp $";
 #include	<math.h>
 
 
-#ifdef MALLOCDECL
-#include <malloc.h>
-#endif
-
 #define alpha	0.6403882032022076 /* = (1+sqrt(17))/8 */
 
 

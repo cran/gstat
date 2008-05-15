@@ -1,6 +1,6 @@
 Package: gstat
-Version: 0.9-46
-Date: 2008/04/11
+Version: 0.9-47
+Date: 2008/05/15
 Title: geostatistical modelling, prediction and simulation
 Author: Edzer J. Pebesma <edzer.pebesma@uni-muenster.de> and others
 Maintainer: Edzer J. Pebesma <edzer.pebesma@uni-muenster.de>
@@ -12,4 +12,4 @@ Imports: lattice
 Suggests: rgdal (>= 0.5.2), fields
 License: GPL
 URL: http://www.gstat.org/
-Packaged: Tue May  6 21:17:14 2008; edzer
+Packaged: Thu May 15 08:29:57 2008; edzer

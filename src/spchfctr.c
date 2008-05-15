@@ -37,13 +37,6 @@ static char	rcsid[] = "$Id: spchfctr.c,v 1.1.1.1 2003-06-23 18:31:51 cees Exp $"
 #include	<math.h>
 
 
-#ifndef MALLOCDECL
-#ifndef ANSI_C
-extern	char	*calloc(), *realloc();
-#endif
-#endif
-
-
 
 /* sprow_ip -- finds the (partial) inner product of a pair of sparse rows
 	-- uses a "merging" approach & assumes column ordered rows
