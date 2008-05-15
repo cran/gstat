@@ -35,6 +35,8 @@ predict.gstat           Multivariable Geostatistical Prediction and
 show.vgms               Plot Variogram Model Functions
 sic2004                 Spatial Interpolation Comparison 2004 data set:
                         Natural Ambient Radioactivity
+sic_obs                 Spatial Interpolation Comparison 1997 data set:
+                        Swiss Rainfall
 spplot.vcov             Plot map matrix of prediction error variances
                         and covariances
 TULLNREG                Südliche Tullnerfeld data set

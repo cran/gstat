@@ -13,11 +13,9 @@
 
 #undef const
 
-#undef MALLOCDECL
 #undef NOT_SEGMENTED
 #undef HAVE_MEMORY_H
 #undef HAVE_COMPLEX_H
-#undef HAVE_MALLOC_H
 #undef STDC_HEADERS
 #undef HAVE_BCOPY
 #undef HAVE_BZERO
@@ -65,13 +63,7 @@
 #define	SEGMENTED
 #endif
 
-/* if the system has malloc.h */
-#ifdef HAVE_MALLOC_H
-#define	MALLOCDECL	1
-/* EJP, 06.05.2008; this is not POSIX compliant
-  #include	<malloc.h>
-*/
-#endif
+/* EJP: removed malloc.h stuff */
 
 /* any compiler should have this header */
 /* if not, change it */

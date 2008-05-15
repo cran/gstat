@@ -94,6 +94,7 @@ cl.st$Date = rep(Chlorid92$Datum, length(names(Chlorid92))-1)
 cl.st$x = tull36[match(cl.st[,"Station"], row.names(tull36)), "x"]
 cl.st$y = tull36[match(cl.st[,"Station"], row.names(tull36)), "y"]
 # library(lattice)
+# xyplot(Chloride~Date|Station, cl.st)
 # xyplot(y~x|Date, cl.st, asp="iso", layout=c(16,11))
 summary(cl.st)
 }

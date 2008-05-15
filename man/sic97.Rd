@@ -1,0 +1,44 @@
+% $Id: sic2004.Rd,v 1.11 2006-02-10 19:03:27 edzer Exp $
+\name{sic97}
+\alias{sic_obs}
+\alias{sic_full}
+\alias{demstd}
+\title{ Spatial Interpolation Comparison 1997 data set: Swiss Rainfall}
+\description{
+The text below is copied from the data item at
+\url{http://www.ai-geostats.org/}
+
+}
+
+\format{
+  The data frames contain the following columns:
+  \describe{
+   \item{ID}{this integer value is the number (unique value) of
+   the monitoring station}
+   \item{rainfall}{ rainfall amount, in 10th of mm }
+  }
+}
+\note{
+See the pdf that accompanies the original file for a description of the data.
+The .dxf file with the Swiss border is not included here.
+}
+
+\usage{
+data(sic97) # 
+}
+\author{ 
+Gregoire Dubois and others.
+}
+
+\references{ 
+\url{http:/www.ai-geostats.org/},
+}
+
+\keyword{datasets}
+\examples{
+library(sp)
+data(sic97) 
+image(demstd)
+points(sic_full, pch=1)
+points(sic_obs, pch=3)
+}
