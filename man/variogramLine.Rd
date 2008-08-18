@@ -1,11 +1,12 @@
-% $Id: variogramLine.Rd,v 1.1 2006-10-31 13:25:22 edzer Exp $
+% $Id: variogramLine.Rd,v 1.2 2008-08-18 16:32:42 edzer Exp $
 \name{variogramLine}
 \alias{variogramLine}
+\alias{getGammas}
 \title{ Semivariance Values For a Given Variogram Model }
 \description{ Generates a semivariance values given a variogram model }
 \usage{
 variogramLine(object, maxdist, n = 200, min = 1.0e-6 * maxdist, 
-	dir = c(1,0,0), covariance = FALSE, ..., debug.level = 0)
+	dir = c(1,0,0), covariance = FALSE, ..., dist_vector, debug.level = 0)
 }
 \arguments{
 \item{object}{ variogram model for which we want semivariance function values }
@@ -19,12 +20,14 @@ x (East-West), y (North-South) and z (Up-Down) }
 \item{covariance}{logical; if TRUE return covariance values, otherwise
 return semivariance values }
 \item{...}{ignored}
+\item{dist_vector}{numeric vector with (possibly irregular) distance values}
 \item{debug.level}{gstat internal debug level}
 }
 \value{
 a data frame of dimension (\code{n} x 2), with columns distance and gamma
+(semivariances or covariances)
 }
-\note{this function is used to generate data for plotting a variogram model}
+\note{variogramLine is used to generate data for plotting a variogram model.}
 \author{ Edzer J. Pebesma }
 \seealso{ \link{plot.gstatVariogram}}
 
@@ -34,6 +37,8 @@ variogramLine(vgm(5, "Exp", 10, 5), 10, 10)
 variogramLine(vgm(1, "Sph", 10, anis=c(0,0.5)), 10, 10)
 # anisotropic variogram, plotted in N-S direction:
 variogramLine(vgm(1, "Sph", 10, anis=c(0,0.5)), 10, 10, dir=c(0,1,0))
+variogramLine(vgm(1, "Sph", 10, anis=c(0,0.5)), dir=c(0,1,0), dist_vector = 0.5)
+variogramLine(vgm(1, "Sph", 10, anis=c(0,0.5)), dir=c(0,1,0), dist_vector = c(0, 0.5, 0.75))
 }
 
 \keyword{models}

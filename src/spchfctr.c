@@ -30,7 +30,7 @@
 
 */
 
-static char	rcsid[] = "$Id: spchfctr.c,v 1.1.1.1 2003-06-23 18:31:51 cees Exp $";
+static char	rcsid[] = "$Id: spchfctr.c,v 1.2 2008-05-19 09:58:07 edzer Exp $";
 
 #include	<stdio.h>
 #include        "sparse2.h"

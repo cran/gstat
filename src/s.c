@@ -762,9 +762,9 @@ SEXP gstat_load_variogram(SEXP s_ids, SEXP s_model, SEXP s_sills, SEXP s_ranges,
 	return(s_model);
 }
 
-SEXP gstat_variogram_values(SEXP ids, SEXP pars, SEXP covariance) {
+SEXP gstat_variogram_values(SEXP ids, SEXP pars, SEXP covariance, SEXP dist_values) {
 	double from, to, n, d, x = 1.0, y = 0.0, z = 0.0;
-	int i, id1, id2, cov = 0;
+	int i, id1, id2, cov = 0, ndist = 0;
 	VARIOGRAM *vgm;
 	SEXP dist;
 	SEXP gamma;
@@ -777,6 +777,7 @@ SEXP gstat_variogram_values(SEXP ids, SEXP pars, SEXP covariance) {
 	from = NUMERIC_POINTER(pars)[0];
 	to = NUMERIC_POINTER(pars)[1];
 	n = NUMERIC_POINTER(pars)[2];
+	ndist = LENGTH(dist_values);
 	cov = INTEGER_POINTER(covariance)[0];
 	if (LENGTH(pars) == 6) {
 		x = NUMERIC_POINTER(pars)[3];
@@ -788,12 +789,58 @@ SEXP gstat_variogram_values(SEXP ids, SEXP pars, SEXP covariance) {
 	id2 = INTEGER_POINTER(ids)[1];
 	vgm = get_vgm(LTI(id1,id2));
 
-	PROTECT(dist = NEW_NUMERIC(n));
-	PROTECT(gamma = NEW_NUMERIC(n));
-	for (i = 0; i < n; i++) {
-		d = from;
-		if (i > 0) /* implies n > 1 */
-			d += (i/(n-1))*(to-from);
+	if (ndist > 0) {
+		PROTECT(dist = NEW_NUMERIC(ndist));
+		PROTECT(gamma = NEW_NUMERIC(ndist));
+		for (i = 0; i < ndist; i++) {
+			d = NUMERIC_POINTER(dist_values)[i];
+			NUMERIC_POINTER(dist)[i] = d;
+			NUMERIC_POINTER(gamma)[i] = (cov ? 
+				get_covariance(vgm, d * x, d * y, d * z) : 
+				get_semivariance(vgm, d * x, d * y, d * z));
+		}
+	} else {
+		PROTECT(dist = NEW_NUMERIC(n));
+		PROTECT(gamma = NEW_NUMERIC(n));
+		for (i = 0; i < n; i++) {
+			d = from;
+			if (i > 0) /* implies n > 1 */
+				d += (i/(n-1))*(to-from);
+			NUMERIC_POINTER(dist)[i] = d;
+			NUMERIC_POINTER(gamma)[i] = (cov ? 
+				get_covariance(vgm, d * x, d * y, d * z) : 
+				get_semivariance(vgm, d * x, d * y, d * z));
+		}
+	}
+	PROTECT(ret = NEW_LIST(2));
+	SET_ELEMENT(ret, 0, dist);
+	SET_ELEMENT(ret, 1, gamma);
+	UNPROTECT(3);
+	return(ret);
+}
+
+// Added by Paul Hiemstra, 30-06-2008
+SEXP get_covariance_list(SEXP ids, SEXP covariance, SEXP dist_list) {
+	double from, to, n, d, x = 1.0, y = 0.0, z = 0.0;
+	int i, id1, id2, cov = 0;
+	VARIOGRAM *vgm;
+	SEXP dist;
+	SEXP gamma;
+	SEXP ret;
+	int length_list = LENGTH(dist_list);
+
+	S_EVALUATOR
+
+	cov = INTEGER_POINTER(covariance)[0];
+
+	id1 = INTEGER_POINTER(ids)[0];
+	id2 = INTEGER_POINTER(ids)[1];
+	vgm = get_vgm(LTI(id1,id2));
+
+	PROTECT(dist = NEW_NUMERIC(length_list));
+	PROTECT(gamma = NEW_NUMERIC(length_list));
+	for (i = 0; i < length_list; i++) {
+		d = NUMERIC_POINTER(dist_list)[i];
 		NUMERIC_POINTER(dist)[i] = d;
 		NUMERIC_POINTER(gamma)[i] = (cov ? 
 			get_covariance(vgm, d * x, d * y, d * z) : 
