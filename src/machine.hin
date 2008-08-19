@@ -1,7 +1,7 @@
 /* Any machine specific stuff goes here */
 /* Add details necessary for your own installation here! */
 
-/* RCS id: $Id: machine.hin,v 1.1.1.1 2003-06-23 18:32:08 cees Exp $ */
+/* RCS id: $Id: machine.hin,v 1.2 2008-05-19 09:58:07 edzer Exp $ */
 
 /* Note special macros: ANSI_C (ANSI C syntax)
 			SEGMENTED (segmented memory machine e.g. MS-DOS)

@@ -1,4 +1,4 @@
-% $Id: sic2004.Rd,v 1.11 2006-02-10 19:03:27 edzer Exp $
+% $Id: sic97.Rd,v 1.1 2008-05-19 09:59:25 edzer Exp $
 \name{sic97}
 \alias{sic_obs}
 \alias{sic_full}

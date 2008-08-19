@@ -1,3 +1,75 @@
+2008-08-19 09:27  edzer
+
+	* S/makefile: version update
+
+2008-08-19 09:27  edzer
+
+	* S/man/variogramLine.Rd: minor corrections; extended examples
+
+2008-08-18 18:33  edzer
+
+	* S/R/gstat/DESCRIPTION: version update
+
+2008-08-18 18:32  edzer
+
+	* S/: man/variogramLine.Rd, src/variogramLine.q: variogramLine now
+	  also accepts irregular distances
+
+2008-07-03 13:49  edzer
+
+	* S/: makefile, R/gstat/DESCRIPTION, R/gstat/INDEX,
+	  R/gstat/configure, data/00Index: version update
+
+2008-07-03 13:49  edzer
+
+	* S/man/fulmar.Rd: added reference to environmetrics paper
+
+2008-05-19 11:59  edzer
+
+	* S/: data/sic97.rda, man/sic97.Rd: added sic97 data set
+
+2008-05-19 11:58  edzer
+
+	* S/man/tull.Rd: corrected names
+
+2008-05-19 11:58  edzer
+
+	* meschach/: machine.h, machine.hin, spbkp.c, spchfctr.c: malloc.h
+	  now posix
+
+2008-05-06 14:52  edzer
+
+	* S/man/tull.Rd: example
+
+2008-05-06 13:58  edzer
+
+	* S/demo/00Index: updated, added BLUE demo
+
+2008-05-06 13:58  edzer
+
+	* S/man/tull.Rd: repaired encoding
+
+2008-05-06 13:43  edzer
+
+	* S/man/tull.Rd: added Südliche Tullnerfeld data set
+
+2008-05-06 13:34  edzer
+
+	* S/data/tull.rda: added Chloride
+
+2008-05-06 13:23  edzer
+
+	* S/data/: 00Index, tull.rda: added Südliche Tullnerfeld data set
+
+2008-04-17 14:36  edzer
+
+	* S/demo/blue.R: bug fix
+
+2008-04-10 17:39  edzer
+
+	* S/: makefile, R/gstat/DESCRIPTION, demo/blue.R: comment in demo;
+	  version number increase
+
 2008-04-10 17:32  edzer
 
 	* S/demo/blue.R: added blue.R to demos: how to get BLUE trend
