@@ -23,3 +23,28 @@ variogram(X870731~1,oz[!is.na(oz$X870731),])
 utm16 = CRS("+proj=utm +zone=16")
 oz.utm = spTransform(oz, utm16)
 variogram(X870731~1,oz.utm[!is.na(oz$X870731),])
+
+# Timothy Hilton, r-sig-geo, Sept 14, 2008:
+
+foo <-
+structure(list(z = c(-1.95824831109744, -1.9158901643563, 4.22211761150161,
+3.23356929459598, 1.12038389231868, 0.34613850821113, 1.12589932643631,
+23.517912251617, 3.0519158690268, 3.20261431141517, -2.10947106854739
+), lon = c(-125.29228, -82.1556, -98.524722, -99.948333, -104.691741,
+-79.420833, -105.100533, -88.291867, -72.171478, -121.556944,
+-89.34765), lat = c(49.87217, 48.2167, 55.905833, 56.635833,
+53.916264, 39.063333, 48.307883, 40.0061, 42.537756, 44.448889,
+46.242017)), .Names = c("z", "lon", "lat"), row.names = c(NA,
+-11L), class = "data.frame")
+
+coordinates(foo) <- ~lon+lat
+
+proj4string(foo) <- CRS('+proj=longlat')
+
+vg.foo <- variogram(z~1, foo, cloud=TRUE, cutoff=1e10)
+
+cat('==========\nvariogram:\n')
+print(head(vg.foo))
+
+cat('==========\nspDistsN1 Distances:\n')
+print(spDistsN1(coordinates(foo), coordinates(foo)[1,], longlat=T))

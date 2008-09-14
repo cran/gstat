@@ -552,18 +552,18 @@ static double valid_distance(DPOINT *a, DPOINT *b, double max,
 	p.x = a->x - b->x;
 	p.y = a->y - b->y;
 	p.z = a->z - b->z;
-	if (map) {
+	if (map && !gl_longlat) {
 		/* transform here p to allow directional 2d cuts in a 3d world */
 		if (map_xy2rowcol(map, p.x, p.y, &row, &col))
 			return -1.0;
 		else
 			ddist = (1.0 * row) * map->cols + col + 0.5;
 	} else {
-		if (p.x > max || p.y > max || p.z > max) 
+		if (!gl_longlat && (p.x > max || p.y > max || p.z > max))
 			return -1.0;
 		/* Changed K.M. Fri Feb 27 15:56:57 1998 */
 		/* if ddist < 0.0 then we don't need to check for dX! */
-		if ((ddist = valid_direction(&p, symmetric, d1)) > max || ddist < 0.0) 
+		if ((ddist = valid_direction(a, b, symmetric, d1)) > max || ddist < 0.0) 
 			return -1.0;
 	}
 	dX = MIN(d1->dX, d2->dX);

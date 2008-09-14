@@ -1,6 +1,6 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.2.1  (2005-12-20 r36812)
+R version 2.7.0 (2008-04-22)
+Copyright (C) 2008 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -18,21 +18,22 @@ Type 'q()' to quit R.
 > library(gstat)
 Loading required package: sp
 > data(meuse)
-> new.locs <- data.frame(x = c(181170, 180310, 180205, 178673, 178770, 178270),
-+ 	y = c(333250, 332189, 331707, 330066, 330675, 331075))
-> krige(zinc ~ 1, ~ x + y, meuse, newdata = new.locs, 
-+ 		model = vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
+> coordinates(meuse) = c("x", "y")
+> new.locs <- SpatialPoints(data.frame(
++ 	x = c(181170, 180310, 180205, 178673, 178770, 178270),
++ 	y = c(333250, 332189, 331707, 330066, 330675, 331075)))
+> krige(zinc ~ 1,  meuse, new.locs, vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
 + 		block = c(40,40), nmax = 40)
 [using ordinary kriging]
-       x      y var1.pred  var1.var
-1 181170 333250  268.7576  19447.67
-2 180310 332189  663.4915  16991.33
-3 180205 331707  251.4606  21579.71
-4 178673 330066  532.5776  73807.91
-5 178770 330675  664.4039  23589.17
-6 178270 331075  565.5436 155113.23
+       coordinates var1.pred  var1.var
+1 (181170, 333250)  268.7576  19447.67
+2 (180310, 332189)  663.4915  16991.33
+3 (180205, 331707)  251.4606  21579.71
+4 (178673, 330066)  532.5776  73807.91
+5 (178770, 330675)  664.4039  23589.17
+6 (178270, 331075)  565.5436 155113.23
 > 
-> new.locs <- data.frame(x = c(181170), y = c(333250))
+> new.locs <- SpatialPoints(data.frame(x = c(181170), y = c(333250)))
 > 
 > disc = c(-15,-5,5,15)
 > block.irreg <- data.frame(expand.grid(x = disc, y = disc))
@@ -57,17 +58,22 @@ Loading required package: sp
 > 
 > # first disable default Gaussian quadrature used for block integration, by
 > # setting nblockdiscr explicitly:
-> krige(zinc ~ 1, ~ x + y, meuse, newdata = new.locs, 
-+ 		model = vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
+> krige(zinc ~ 1, meuse, new.locs, model = vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
 + 		block = c(40,40), nmax = 40, set = list(nblockdiscr=4))
 [using ordinary kriging]
-       x      y var1.pred var1.var
-1 181170 333250  268.7324 19568.76
-> # now pass the same block discretization as block.irreg
-> krige(zinc ~ 1, ~ x + y, meuse, newdata = new.locs, 
-+ 		model = vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
+       coordinates var1.pred var1.var
+1 (181170, 333250)  268.7324 19568.76
+> # now pass the same block discretization as block.irreg:
+> krige(zinc ~ 1, meuse, new.locs, vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
 + 		block = block.irreg, nmax = 40)
 [using ordinary kriging]
-       x      y var1.pred var1.var
-1 181170 333250  268.7324 19568.76
+       coordinates var1.pred var1.var
+1 (181170, 333250)  268.7324 19568.76
+> # check weights argument:
+> block.irreg <- data.frame(expand.grid(x = disc, y = disc), weights = rep(1/16, 16))
+> krige(zinc ~ 1, meuse, new.locs, vgm(1.34e5, "Sph", 800, nug = 2.42e4), 
++ 		block = block.irreg, nmax = 40)
+[using ordinary kriging]
+       coordinates var1.pred var1.var
+1 (181170, 333250)  268.7324 19568.76
 > 
