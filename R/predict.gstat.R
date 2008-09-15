@@ -17,6 +17,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		return.sp = TRUE
 	
 	.Call("gstat_init", as.integer(debug.level))
+	bl_weights = numeric(0)
 	if (!missing(mask)) {
 		cat("argument mask is deprecated:")
 		stop("use a missing value pattern in newdata instead")
@@ -116,6 +117,10 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		if (length(lin) == 1)
 			block.cols = 2
 	} else if (!is.null(dim(block))) { # i.e., block is data.frame or matrix
+		if (is.data.frame(block) && !is.null(block$weights)) {
+			bl_weights = block$weights
+			block$weights = NULL
+		} 
 		block = data.matrix(block) # converts to numeric
 		block.cols = ncol(block)
 	} else {
@@ -139,7 +144,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		ret = .Call("gstat_predict", as.integer(nrow(as.matrix(new.X))),
 			as.double(as.vector(raw$locations[perm, ])),
 			as.double(as.vector(new.X[perm,])),
-			as.integer(block.cols), as.vector(block),
+			as.integer(block.cols), as.vector(block), as.vector(bl_weights),
 			as.integer(nsim), as.integer(BLUE))[[1]]
 		if (nsim == 1)
 			colsel = seq(1, by=2, length.out=nvars) # pred1 var1 pred2 var2 ...
@@ -151,7 +156,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	else {
 		ret = .Call("gstat_predict", as.integer(nrow(as.matrix(new.X))),
 			as.double(as.vector(raw$locations)), as.vector(new.X), as.integer(block.cols), 
-			as.vector(block), as.integer(nsim), as.integer(BLUE))[[1]]
+			as.vector(block), as.vector(bl_weights), as.integer(nsim), as.integer(BLUE))[[1]]
 		ret = data.frame(cbind(raw$locations, ret))
 	}
 	.Call("gstat_exit", NULL)

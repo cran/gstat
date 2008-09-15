@@ -333,8 +333,8 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 	return(loc_dim);
 }
 
-SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
-			SEXP nsim, SEXP blue) {
+SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block, 
+			SEXP weights, SEXP nsim, SEXP blue) {
 	double *locs, **est_all, *X;
 	long i, j, k, n, nvars, nest, dim, n_X, ncols_block, 
 		nrows_block, pos;
@@ -392,6 +392,7 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		nrows_block = LENGTH(block) / ncols_block; /* nr of rows */
 		if (nrows_block > 0) {
 			area = create_data_area();
+			area->colnvariance = 0;
 			area->n_list = area->n_max = 0;
 			area->id = ID_OF_AREA;
 			area->mode = X_BIT_SET;
@@ -405,6 +406,10 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 					current.y = NUMERIC_POINTER(block)[nrows_block + i];
 				if (ncols_block > 2)
 					current.z = NUMERIC_POINTER(block)[2 * nrows_block + i];
+				if (LENGTH(weights) > 0) {
+					area->colnvariance = 1;
+					current.variance = NUMERIC_POINTER(weights)[i];
+				}
 				push_point(area, &current);
 			}
 			SET_BLOCK(&current);

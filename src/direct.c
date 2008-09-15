@@ -81,25 +81,27 @@ void set_direction_values(double a, double b, double t_h, double t_v) {
 	return;
 }
 
-double valid_direction(DPOINT *p, int symmetric, const DATA *d) {
+double valid_direction(DPOINT *a, DPOINT *b, int symmetric, const DATA *d) {
 /*
  * return distance when vector is within the tolerance section;
  * return -1.0 when vector is outside tolerance section.
  */
-	double norm, inprod, dist, px, py;
+	double norm, inprod, dist, px, py, pz;
 	/* Changed K.M. Fri Feb 27 11:06:07 1998 */
 	
-	dist = d->point_norm(p);
+	/* dist = d->point_norm(p); */
+	dist = sqrt(d->pp_norm2(a, b));
 	
 	if (all_directions == 1)
 		return dist;
 	
-	px = p->x;
-	py = p->y;
+	px = a->x - b->x;
+	py = a->y - b->y;
+	pz = a->z - b->z;
 
 	if (tol_hor >= MAX_ANG && tol_ver >= MAX_ANG)
 		return dist;
-	if (tol_hor >= MAX_ANG && p->z == 0.0)
+	if (tol_hor >= MAX_ANG && pz == 0.0)
 		return dist;
 	if (tol_ver >= MAX_ANG && px == 0.0 && py == 0.0)
 		return dist;
@@ -132,12 +134,12 @@ double valid_direction(DPOINT *p, int symmetric, const DATA *d) {
 		errors afterwards. */
 
 	}
-	if (tol_ver < MAX_ANG && (px != 0.0 || py != 0.0 || p->z != 0.0)) { 
+	if (tol_ver < MAX_ANG && (px != 0.0 || py != 0.0 || pz != 0.0)) { 
 		/* 
 		 * inproduct in <xy, z> 
 		 */
 		/* Changed K.M. Fri Feb 27 15:47:13 1998 */
-		inprod = (sqrt(px * px + py * py) * dir_v[0] + p->z * dir_v[1])/dist;
+		inprod = (sqrt(px * px + py * py) * dir_v[0] + pz * dir_v[1])/dist;
 		if (symmetric) { /* the most often case */
 			if ( fabs(inprod) < cos_tol_ver) /* if cos(alpha) < cos(tol) then alpha > tol! */
 			  return -1.0;

@@ -1,4 +1,4 @@
-% $Id: variogramLine.Rd,v 1.2 2008-08-18 16:32:42 edzer Exp $
+% $Id: variogramLine.Rd,v 1.3 2008-08-19 07:27:02 edzer Exp $
 \name{variogramLine}
 \alias{variogramLine}
 \alias{getGammas}
