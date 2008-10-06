@@ -1,4 +1,4 @@
-# $Id: predict.gstat.q,v 1.31 2008-02-13 20:22:59 edzer Exp $
+# $Id: predict.gstat.q,v 1.32 2008-09-17 13:00:07 edzer Exp $
 
 predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
