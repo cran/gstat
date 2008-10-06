@@ -143,6 +143,7 @@ static int cdf_read_grd_info(GRIDMAP * m, double *x_max, double *y_min,
 #ifdef HAVE_LIBGDAL
 #include "gdal.h"
 #include "cpl_error.h"
+#include "cpl_string.h"
 static GRIDMAP *read_gdal(GRIDMAP * m);
 static GRIDMAP *write_gdal(GRIDMAP * m);
 #endif
@@ -529,6 +530,7 @@ int map_put_cell(GRIDMAP * m,	/* pointer to GRIDMAP structure */
 GRIDMAP *map_dup(const char *fname, GRIDMAP *m)
 {
 	GRIDMAP *dup = NULL;
+	char **papszOptions = NULL, *drv = NULL;
 
 	assert(m);
 	assert(fname);
@@ -536,20 +538,26 @@ GRIDMAP *map_dup(const char *fname, GRIDMAP *m)
 	dup = new_map(WRITE_ONLY);
 	*dup = *m;					/* copy all fields; incl status */
 #ifdef HAVE_LIBGDAL
-	/* dup->GeoTransform = memcpy(emalloc(6 * sizeof(double)), m->GeoTransform,		6 * sizeof(double)); */
-	/* CPLPushErrorHandler(CPLQuietErrorHandler); */
-	dup->hDataset = GDALCreateCopy(m->hDriver, fname, m->hDataset, FALSE, NULL, NULL, NULL);
+	/*
+	if (strcmp(GDALGetDriverShortName(m->hDriver), "PCRaster") == 0) {
+		papszOptions = CSLSetNameValue( papszOptions, "PCRASTER_VALUESCALE", "VS_SCALAR" );
+		papszOptions = CSLSetNameValue( papszOptions, "PCRASTER_CELLREPRESENTATION", "CR_REAL4" );
+	}
+	*/
+	CPLPushErrorHandler(CPLQuietErrorHandler);
+	dup->hDataset = GDALCreateCopy(m->hDriver, fname, m->hDataset, FALSE, papszOptions, NULL, NULL);
 	if (dup->hDataset == NULL) {
 		CPLPopErrorHandler();
 		CPLErrorReset();
 		pr_warning("GDAL cannot CreateCopy this format; using asciigrid for %s", fname);
 		dup->is_binary = 0;
 		dup->write = write_arcgrid;
-	} 
-	CPLPopErrorHandler();
+	} else 
+		CPLPopErrorHandler();
+	/* if (GDALGetRasterAccess(dup->hDataset) != GA_Update)
+		printf("NO ACCESS 0\n");
+	*/
 
-	/* if (GDALSetGeoTransform(dup->hDataset, dup->GeoTransform) != CE_None)
-		ErrMsg(ER_IMPOSVAL, "cannot set GDALGetGeoTransform information"); */
 #endif
 	dup->cellmin = dup->cellmax = FLT_MAX;	/* re-initialize */
 	dup->CSF_MAP = NULL;		/* copying would only cause trouble! */
@@ -1680,7 +1688,9 @@ static GRIDMAP *read_gdal(GRIDMAP *m) {
 	DUMP(": trying one of GDAL formats... ");
 
 	CPLPushErrorHandler(CPLQuietErrorHandler);
-	if ((m->hDataset = GDALOpen(m->filename, GA_ReadOnly)) == NULL)
+	/* if ((m->hDataset = GDALOpen(m->filename, GA_ReadOnly)) == NULL)
+		return NULL; */
+	if ((m->hDataset = GDALOpen(m->filename, GA_Update)) == NULL)
 		return NULL;
 	CPLErrorReset();
 	CPLPopErrorHandler();
@@ -1763,6 +1773,10 @@ static GRIDMAP *write_gdal(GRIDMAP *m) {
 	int i, j;
 	unsigned char b;
 
+	/*
+	if (GDALGetRasterAccess(m->hDataset) != GA_Update)
+		printf("NO ACCESS\n");
+	*/
 	hBand = GDALGetRasterBand(m->hDataset, 1);
 	if (m->celltype != CT_UINT8) {
 		GDALSetRasterNoDataValue(hBand, m->misval);
@@ -1770,17 +1784,17 @@ static GRIDMAP *write_gdal(GRIDMAP *m) {
 			for (j = 0; j < m->cols; j++) /* { */
 				if (is_mv_float(&(m->grid[i][j])))
 					m->grid[i][j] = m->misval;
-				/* if (GDALRasterIO(hBand, GF_Write, 0, i, m->cols, 1, */
-			if (GDALRasterIO(hBand, GF_Write, 0, i, m->cols, 1, 
-				m->grid[i], m->cols, 1, GDT_Float32, 
-				0, 0 ) == CE_Failure)
+				if (GDALRasterIO(hBand, GF_Write, 0, i, m->cols, 1, 
+					m->grid[i], m->cols, 1, GDT_Float32, 0, 0 ) == CE_Failure)
 					pr_warning("error on writing %s\n", m->filename);
-				/* if (GDALRasterIO(hBand, GF_Write, j, i, 1, 1, 
+			/* 
+				if (GDALRasterIO(hBand, GF_Write, j, i, 1, 1, 
 					&(m->grid[i][j]), 1, 1, GDT_Float32, 
 					0, 0 ) == CE_Failure)
 						pr_warning("error on writing %s\n", m->filename);
-			}
-			*/
+					*/
+				/* printf("value written: [%d,%d] %g\n", i, j, m->grid[i][j]); */
+			/* } */
 		}
 	} else {
 		GDALSetRasterNoDataValue(hBand, (double) 0xFF);

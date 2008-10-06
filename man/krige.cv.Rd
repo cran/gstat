@@ -1,4 +1,4 @@
-% $Id: krige.cv.Rd,v 1.14 2008-02-13 20:22:59 edzer Exp $
+% $Id: krige.cv.Rd,v 1.15 2008-09-17 12:56:21 edzer Exp $
 \name{krige.cv}
 \docType{methods}
 \alias{krige.cv}
@@ -21,7 +21,7 @@ krige.cv.spatial(formula, locations, model = NULL, ..., beta = NULL, nmax = Inf,
 }
 \arguments{
   \item{object}{ object of class gstat; see function \link{gstat}}
-  \item{nfold}{ apply n-fold cross validation; if \code{nfold} is set
+  \item{nfold}{ integer larger than 1; apply n-fold cross validation; if \code{nfold} is set
   to \code{nrow(data)} (the default), leave-one-out cross validation is
   done; if set to e.g. 5, five-fold cross validation is done }
   \item{remove.all}{ logical; if TRUE, remove observations at cross validation

@@ -230,6 +230,7 @@ static void qtree_push(DPOINT *where, QTREE_NODE **p_node,
 
 	bb = (*p_node)->bb;
 	recursion_depth += 1;
+	/* printf("recursion_depth: %d, max %d\n", recursion_depth, MAX_RECURSION_DEPTH); */
 	/* find the leaf node where this point belongs */
 	p_leaf = qtree_find_node(where, p_node, &bb);
 
@@ -666,24 +667,23 @@ static DPOINT *get_nearest_point(QUEUE *q, DPOINT *where, DATA *d) {
  *
  * this and the following functions: Copyright (GPL) 1998 Edzer J. Pebesma
  */
-	QUEUE_NODE head;
-	static QUEUE_NODE *el = NULL; /* temporary storage for dequeued elements */
+	QUEUE_NODE head, *el = NULL /* temporary storage */ ;
 	QTREE_NODE *node;
-	int i, n, max, max_split;
+	int i, n;
 
-	max_split = MIN(gl_split, d->n_list);
-	max = MAX(max_split, 8);
-	/* printf("\nmax is %d\n", max): */
-	if (el == NULL)
-		el = (QUEUE_NODE *) emalloc(max * sizeof(QUEUE_NODE));
-		/* 8 -- or 4 in 2D, or 2 in 1D but who cares now... */
 	while (q->length > 0) {  /* try: */
 		/* logprint_queue(q); */
 		head = dequeue(q);
-		if (! head.is_node) /* nearest element is a point: */
+		if (! head.is_node) { /* nearest element is a point: */
+			if (el != NULL)
+				efree(el);
 			return head.u.p;
+		}
 		node = head.u.n;
 		if (is_leaf(node)) { /* ah, the node dequeued is a leaf: */
+			/* printf("node->n_node: %d\n", node->n_node); */
+			if (node->n_node > 0)
+				el = (QUEUE_NODE *) erealloc(el, node->n_node * sizeof(QUEUE_NODE));
 			for (i = 0; i < node->n_node; i++) { /* enqueue it's DPOINT's: */
 				el[i].is_node = 0;
 				el[i].u.p = node->u.list[i];
@@ -692,6 +692,8 @@ static DPOINT *get_nearest_point(QUEUE *q, DPOINT *where, DATA *d) {
 			}
 			n = node->n_node;
 		} else { /* nope, but enqueue its sub-nodes: */
+			if (N_NODES(node) > 0)
+				el = (QUEUE_NODE *) erealloc(el, N_NODES(node) * sizeof(QUEUE_NODE));
 			for (i = n = 0; i < N_NODES(node); i++) {
 				if (node->u.node[i] != NULL) {
 					el[n].is_node = 1;
@@ -705,6 +707,8 @@ static DPOINT *get_nearest_point(QUEUE *q, DPOINT *where, DATA *d) {
 			enqueue(q, el, n);
 	}
 	/* the while-loop terminates when the queue is empty */
+	if (el != NULL)
+		efree(el);
 	return NULL;
 }
 

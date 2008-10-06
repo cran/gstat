@@ -1,4 +1,4 @@
-# $Id: uisim.R,v 1.3 2006-02-10 19:05:02 edzer Exp $
+# $Id: uisim.R,v 1.5 2008-09-25 10:26:00 edzer Exp $
 library(gstat)
 
 # prediction grid:
@@ -29,9 +29,12 @@ for (i in 1:10) {
 	m = cbind(out[[v1]], out[[v2]], 1 - (out[[v1]]+out[[v2]]))
 	mout = factor(apply(m, 1, function(x) which(x == 1)))
 	if (i == 1)
-		out2 = SpatialPixelsDataFrame(out, data.frame(mout))
+		out2 = SpatialPixelsDataFrame(as(out, "SpatialPixels"), data.frame(mout))
 	else
 		out2[[i]] = mout
 }
 names(out2) = paste("sim", 1:10, sep="")
 spplot(out2)
+
+require(RColorBrewer)
+spplot(out2, col.regions=brewer.pal(3, "Set2"))
