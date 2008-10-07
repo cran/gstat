@@ -974,9 +974,11 @@ void check_global_variables(void) {
 		if (data[i]->sel_rad == DBL_MAX && data[i]->oct_max > 0)
 			ErrMsg(ER_IMPOSVAL, 
 				"define maximum search radius (rad) for octant search");
+#ifndef USING_R
 		if (data[i]->vdist && (vgm[LTI(i,i)] == NULL 
 				|| vgm[LTI(i,i)]->n_models <= 0))
 			ErrMsg(ER_IMPOSVAL, "define direct variogram models to use vdist");
+#endif
 		if (data[i]->vdist && data[i]->sel_rad == DBL_MAX)
 			ErrMsg(ER_IMPOSVAL, "when using vdist, radius should be set");
 		if (! data[i]->dummy && ! (data[i]->mode & V_BIT_SET)) {

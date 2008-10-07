@@ -49,7 +49,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			.Call("gstat_new_dummy_data", as.integer(loc.dim), 
 				as.integer(d$has.intercept), as.double(d$beta), 
 				nmax, nmin, maxdist, as.integer(d$vfn), 
-				as.integer(is.projected(newdata)))
+				as.integer(is.projected(newdata)), as.integer(d$vdist))
 		} else {
 			if (is.null(d$weights))
 				w = numeric(0)
@@ -60,7 +60,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 				as.double(raw$X), as.integer(raw$has.intercept),
 				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
 				as.numeric(w), double(0.0), as.integer(d$degree),
-				as.integer(is.projected(d$data)))
+				as.integer(is.projected(d$data)), as.integer(d$vdist))
 		}
 		if (!is.null(object$model[[name]])) 
 			load.variogram.model(object$model[[name]], c(i - 1, i - 1))
