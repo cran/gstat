@@ -52,7 +52,8 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 				as.double(locations[[i]]), as.double(Xloc), 
 				as.integer(1), as.double(t.beta), as.integer(-1),
 				as.integer(0), as.double(-1), as.integer(1), 
-				double(0), grd, as.integer(0), as.integer(projected))
+				double(0), grd, as.integer(0), as.integer(projected),
+				as.integer(0))
 			if (!is.null(g) && !is.null(g$model[[id.names[i]]])) 
 				load.variogram.model(g$model[[id.names[i]]], c(i - 1, i - 1))
         }

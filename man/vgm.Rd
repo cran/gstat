@@ -19,12 +19,12 @@ as.vgm.variomodel(m)
 \item{psill}{ (partial) sill of the variogram model component }
 \item{model}{ model type, e.g. "Exp", "Sph", "Gau", "Mat". Calling vgm() without
 a model argument returns a data.frame with available models. }
-\item{range}{ range of the variogram model component }
+\item{range}{ range of the variogram model component; in case of anisotropy: major range }
 \item{kappa}{ smoothness parameter for the Matern class of variogram 
 models }
 \item{nugget}{ nugget component of the variogram (this basically adds a nugget
 compontent to the model) }
-\item{add.to}{ a variogram model to which we want to add a component }
+\item{add.to}{ the variogram model to which we want to add a component (structure) }
 \item{anis}{ anisotropy parameters: see notes below }
 \item{x}{ a variogram model to print }
 \item{...}{ arguments that will be passed to \code{print}, e.g. \code{digits}
@@ -54,13 +54,13 @@ main axis), and how much shorter the range is in (the) direction(s)
 perpendicular to this main axis.
 
 In two dimensions, two parameters define an anisotropy ellipse, say
-\code{anis = c(45, 0.5)}. The first parameter, \code{30}, refers to
+\code{anis = c(30, 0.5)}. The first parameter, \code{30}, refers to
 the main axis direction: it is the angle for the principal direction
-of continuity (measured in degrees, clockwise from positive Y, North).
+of continuity (measured in degrees, clockwise from positive Y, i.e. North).
 The second parameter, \code{0.5}, is the anisotropy ratio, the ratio
 of the minor range to the major range (a value between 0 and 1).  So,
 in our example, if the range in the major direction (North-East) is 100,
-the range in the minor direction (South-East) is 50.
+the range in the minor direction (South-East) is 0.5 x 100 = 50.
 
 In three dimensions, five values should be given in the form \code{anis
 = c(p,q,r,s,t)}.  Now, $p$ is the angle for the principal direction of
@@ -121,6 +121,5 @@ print(x, digits = 3);
 print.data.frame(x)
 vv=vgm(model = "Tab",  covtable = 
 	variogramLine(vgm(1, "Sph", 1), 1, n=1e4, min = 0, covariance = TRUE))
-}
-
+} 
 \keyword{models}

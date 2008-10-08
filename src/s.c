@@ -124,7 +124,8 @@ SEXP gstat_exit(SEXP x) {
 
 SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
 			SEXP beta, SEXP nmax, SEXP nmin, SEXP maxdist, 
-			SEXP vfn, SEXP sw, SEXP grid, SEXP degree, SEXP is_projected) {
+			SEXP vfn, SEXP sw, SEXP grid, SEXP degree, SEXP is_projected,
+			SEXP vdist) {
 	double *y, *locs, *X, *w = NULL;
 	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
@@ -232,6 +233,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		}
 		setup_polynomial_X(d[id]); /* standardized coordinate polynomials */
 	}
+	d[id]->vdist = INTEGER_POINTER(vdist)[0];
 	assert(n_X <= d[id]->n_X);
 	current.X = (double *) emalloc(d[id]->n_X * sizeof(double));
 
@@ -271,7 +273,8 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 }
 
 SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta, 
-		SEXP nmax, SEXP nmin, SEXP maxdist, SEXP vfn, SEXP is_projected) {
+		SEXP nmax, SEXP nmin, SEXP maxdist, SEXP vfn, SEXP is_projected,
+		SEXP vdist) {
 	int i, id, dim, has_int;
 	char name[20];
 	DATA **d = NULL;
@@ -322,6 +325,7 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 				 	INTEGER_POINTER(vfn)[0] ERROR;
 	}
 	gl_longlat = (INTEGER_POINTER(is_projected)[0] == 0);
+	d[id]->vdist = INTEGER_POINTER(vdist)[0];
 	d[id]->mode = X_BIT_SET | V_BIT_SET;
 	if (dim > 1)
 		d[id]->mode = d[id]->mode | Y_BIT_SET;

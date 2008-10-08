@@ -28,7 +28,7 @@ function (formula, locations, data, model, debug.level = 1, set, degree = 0)
 		as.double(ret$X), as.integer(1), double(0), as.integer(-1), 
 		as.integer(0), as.double(-1), as.integer(1), 
 		double(0), double(0), as.integer(degree),
-		as.integer(is.projected(data)))
+		as.integer(is.projected(data)), as.integer(0))
     load.variogram.model(model)
     if (!missing(set))
     	gstat.load.set(set)
