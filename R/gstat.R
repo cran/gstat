@@ -1,4 +1,4 @@
-# $Id: gstat.q,v 1.26 2007-04-06 11:29:58 edzer Exp $
+# $Id: gstat.q,v 1.27 2008-10-09 14:25:20 edzer Exp $
 
 "cross.name" <- function(id1, id2) {
     paste(id1, id2, sep = ".")

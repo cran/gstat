@@ -1,4 +1,4 @@
-% $Id: vgm.Rd,v 1.15 2007-03-13 21:59:03 edzer Exp $
+% $Id: vgm.Rd,v 1.16 2008-10-09 14:25:20 edzer Exp $
 \name{vgm}
 \alias{vgm}
 \alias{print.variogramModel}

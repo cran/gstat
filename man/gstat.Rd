@@ -1,4 +1,4 @@
-% $Id: gstat.Rd,v 1.20 2006-10-25 08:17:29 edzer Exp $
+% $Id: gstat.Rd,v 1.21 2008-10-09 14:25:20 edzer Exp $
 \name{gstat}
 \alias{gstat}
 \alias{print.gstat}
@@ -70,12 +70,10 @@ gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
   covariances; "identity" does not transform, other options are "mu" (Poisson)
   and "mu(1-mu)" (binomial) }
   \item{weights}{ numeric vector; if present, covariates are present,
-  and variograms are missing weights are passed to OLS prediction routines;
-  if variograms are given, weights should be 1/variance, where variance 
-  specifies location-specific measurement error as in Delhomme, J.P.
-  Kriging in the hydrosciences.  Advances in Water Resources,
-  1(5):251-266, 1978; see also the section Kriging with known measurement
-  errors in the gstat user's manual, URL see below.  }
+  and variograms are missing weights are passed to OLS prediction routines
+  resulting in WLS; if variograms are given, weights should be 1/variance, 
+  where variance specifies location-specific measurement error; see references 
+  section below }
   \item{merge}{ either character vector of length 2, indicating two ids 
   that share a common mean; the more general gstat merging of any two
   coefficients across variables is obtained when a list is passed, with
@@ -84,7 +82,9 @@ gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
   for variable \code{id1} to the second of variable \code{id2}.}
   \item{degree}{order of trend surface in the location, between 0 and 3}
   \item{vdist}{logical; if TRUE, instead of Euclidian distance 
-  variogram distance is used for computing local neighbourhoods}
+  variogram distance is used for selecting the nmax nearest neighbours,
+  after observations within distance maxdist (Euclidian/geographic) have been 
+  pre-selected }
   \item{...}{ arguments that are passed to the printing of variogram
   models only}
 }
@@ -104,9 +104,13 @@ Its components are:
  gstat commands (look up the set command in the gstat manual for a full list)}
 }
 \references{ \url{http://www.gstat.org/} 
-
 Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
 Computers \& Geosciences, 30: 683-691.
+
+for kriging with known, varying measurement errors (\code{weights}), see e.g.
+Delhomme, J.P.  Kriging in the hydrosciences.  Advances in Water
+Resources, 1(5):251-266, 1978; see also the section Kriging with known
+measurement errors in the gstat user's manual, \url{http://www.gstat.org/}
 }
 \author{ Edzer J. Pebesma }
 \note{ 

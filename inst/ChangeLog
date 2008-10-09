@@ -1,3 +1,68 @@
+2008-10-14 14:10  edzer
+
+	* S/: data/00Index, man/tull.Rd: wind data set; typo in docs
+
+2008-10-14 14:10  edzer
+
+	* S/: data/wind.rda, man/wind.Rd: added Irish wind data set
+
+2008-10-09 16:27  edzer
+
+	* S/: demo/weight.R, tests/vdist.R: weight.R: how to obtain kriging
+	  weights, very inefficiently vdist.R: test for using
+	  variogram-based distance neighbourhood selections
+
+2008-10-09 16:25  edzer
+
+	* S/: man/gstat.Rd, man/pcb.Rd, man/vgm.Rd,
+	  src/fit.variogram.reml.q, src/gstat.q, src/predict.gstat.q,
+	  src/variogram.default.q: added vdist parameter to allow variogram
+	  distance neighbourhood selection.  improved manual page vgm for
+	  anisotropy.
+
+2008-10-09 16:24  edzer
+
+	* S/: makefile, R/gstat/DESCRIPTION: version update
+
+2008-10-09 16:23  edzer
+
+	* src/: glvars.c, mapio.c, nsearch.c, version.h: removed memory bug
+	  in quadtree when max recursion depth was reached
+
+2008-10-09 16:23  edzer
+
+	* src/s.c: added vdist parameter
+
+2008-09-25 12:26  edzer
+
+	* S/demo/uisim.R: Brewer color palette in demo
+
+2008-09-25 12:14  edzer
+
+	* S/demo/uisim.R: fixed bug in creating final 3-class factor maps
+
+2008-09-17 15:00  edzer
+
+	* S/src/predict.gstat.q: attempt to extend block kriging with
+	  weights
+
+2008-09-17 14:59  edzer
+
+	* S/: makefile, R/gstat/DESCRIPTION, tests/blockkr.R,
+	  tests/blockkr.Rout.save, tests/unproj.R, tests/unproj.Rout.save:
+	  version update; blockkr tests: update to use sp classes unproj
+	  tests: update to correctly compute great circle distances
+
+2008-09-17 14:57  edzer
+
+	* src/: direct.c, direct.h, s.c, sem.c, version.h: removed bug such
+	  that great circle distances are now correctly computed in case of
+	  sample variogram computation
+
+2008-09-17 14:56  edzer
+
+	* S/man/krige.cv.Rd: added that nfold should be larger than 1
+
 2008-08-19 09:27  edzer
 
 	* S/makefile: version update
