@@ -1,4 +1,4 @@
-# $Id: variogram.default.q,v 1.26 2008-04-08 12:20:43 edzer Exp $
+# $Id: variogram.default.q,v 1.27 2008-10-09 14:25:20 edzer Exp $
 
 "variogram.default" <-
 function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0, 

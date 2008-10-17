@@ -39,7 +39,7 @@ sic_obs                 Spatial Interpolation Comparison 1997 data set:
                         Swiss Rainfall
 spplot.vcov             Plot map matrix of prediction error variances
                         and covariances
-TULLNREG                Südliche Tullnerfeld data set
+tull                    Südliche Tullnerfeld data set
 variogram               Calculate Sample or Residual Variogram or
                         Variogram Cloud
 variogramLine           Semivariance Values For a Given Variogram Model
@@ -47,3 +47,4 @@ vgm                     Generate, or Add to Variogram Model
 vgm.panel.xyplot        panel functions for most of the variogram plots
                         through lattice
 walker                  Walker Lake sample data set
+wind                    Ireland wind data, 1961-1978

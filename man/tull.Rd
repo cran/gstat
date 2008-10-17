@@ -1,4 +1,5 @@
 \name{tull}
+\alias{tull}
 \alias{TULLNREG}
 \alias{tull36}
 \alias{Chlorid92}
@@ -97,4 +98,6 @@ cl.st$y = tull36[match(cl.st[,"Station"], row.names(tull36)), "y"]
 # xyplot(Chloride~Date|Station, cl.st)
 # xyplot(y~x|Date, cl.st, asp="iso", layout=c(16,11))
 summary(cl.st)
+plot(TULLNREG, pch=3, asp=1)
+points(y~x, cl.st, add=TRUE, pch=16)
 }
