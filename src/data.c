@@ -49,6 +49,7 @@
 #include "lm.h" /* free_lm() */
 #include "gls.h" /* free_glm() */
 #include "nsearch.h"
+#include "gcdist.h"
 
 #ifdef HAVE_EXT_DBASE
 #ifndef INCLUDED_EXT_DBASE
@@ -111,9 +112,8 @@ static double pp_norm_3D(const DPOINT *a, const DPOINT *b);
 
 /* great circle distances: */
 static double point_norm_gc(const DPOINT *p);
-static double pp_norm_gc(const DPOINT *a, const DPOINT *b);
-static double pb_norm_gc(const DPOINT *where, BBOX bbox);
-static double gstat_gcdist(double lon1, double lon2, double lat1, double lat2);
+static double pp_norm_gc2(const DPOINT *a, const DPOINT *b);
+static double pb_norm_gc2(const DPOINT *where, BBOX bbox);
 
 static void free_data_gridmap(DATA_GRIDMAP *t);
 static void logprint_data_header(const DATA *d);
@@ -271,8 +271,8 @@ void set_norm_fns(DATA *d) {
 	} else if (d->mode & Y_BIT_SET) {
 		if (gl_longlat) {
 			d->point_norm = point_norm_gc;
-			d->pp_norm2 = pp_norm_gc;
-			d->pb_norm2 = pb_norm_gc;
+			d->pp_norm2 = pp_norm_gc2;
+			d->pb_norm2 = pb_norm_gc2;
 			if (gl_split != DEF_split)
 				pr_warning("longlat data cannot do quadtree, setting split to %d", INT_MAX);
 			gl_split = INT_MAX;
@@ -1479,62 +1479,23 @@ static double pp_norm_3D(const DPOINT *a, const DPOINT *b) {
 
 static double point_norm_gc(const DPOINT *p) {
 /* calculate norm of vector (p->x, p->y, p->z) */
+	ErrMsg(ER_IMPOSVAL, "long/lat: this function should never be called?");
 	return gstat_gcdist(p->x, 0.0, p->y, 0.0);
 }
 
-static double pp_norm_gc(const DPOINT *a, const DPOINT *b) {
+double pp_norm_gc(const DPOINT *a, const DPOINT *b) {
+	return gstat_gcdist(a->x, b->x, a->y, b->y); /* dist */
+}
+
+static double pp_norm_gc2(const DPOINT *a, const DPOINT *b) {
 	return pow(gstat_gcdist(a->x, b->x, a->y, b->y), 2.0); /* squared dist */
 }
 
-static double pb_norm_gc(const DPOINT *where, BBOX bbox) {
+static double pb_norm_gc2(const DPOINT *where, BBOX bbox) {
 	/* ErrMsg(ER_IMPOSVAL, "great circle distances cannot be combined with quadtree"); */
 	return 0.0; /* always inside, no quadtree */
 }
 
-static double gstat_gcdist(double lon1, double lon2, double lat1, double lat2) {
-/* http://home.att.net/~srschmitt/script_greatcircle.html */
-/* taken from R package sp source; Copyright by Roger Bivand (C) 2005  */
-	
-    double F, G, L, sinG2, cosG2, sinF2, cosF2, sinL2, cosL2, S, C;
-    double w, R, a, f, D, H1, H2;
-    double lat1R, lat2R, lon1R, lon2R, DE2RA;
-    
-    DE2RA = M_PI/180;
-    a = 6378.137;              /* WGS-84 equatorial radius in km */
-    f = 1.0/298.257223563;     /* WGS-84 ellipsoid flattening factor */
-    
-    lat1R = lat1 * DE2RA;
-    lat2R = lat2 * DE2RA;
-    lon1R = lon1 * DE2RA;
-    lon2R = lon2 * DE2RA;
-    
-    F = (lat1R + lat2R) / 2.0;
-    G = (lat1R - lat2R) / 2.0;
-    L = (lon1R - lon2R) / 2.0;
-
-	/*
-    printf("%g %g %g %g; %g %g %g\n",  *lon1, *lon2, *lat1, *lat2, F, G, L);
-	*/
-
-    sinG2 = pow(sin(G), 2);
-    cosG2 = pow(cos(G), 2);
-    sinF2 = pow(sin(F), 2);
-    cosF2 = pow(cos(F), 2);
-    sinL2 = pow(sin(L), 2);
-    cosL2 = pow(cos(L), 2);
-
-    S = sinG2 * cosL2 + cosF2 * sinL2;
-    C = cosG2 * cosL2 + sinF2 * sinL2;
-
-    w = atan(sqrt(S / C));
-    R = sqrt(S * C) / w;
-
-    D = 2 * w * a;
-    H1 = (3 * R - 1)/(2 * C);
-    H2 = (3 * R + 2)/(2 * S);
-
-    return D * (1 + f * H1 * sinF2 * cosG2 - f * H2 * cosF2 * sinG2); 
-}
 
 int coordinates_are_equal(const DATA *a, const DATA *b) {
 	int i, equal = 1 /* try to disprove equality */;

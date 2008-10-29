@@ -1,10 +1,10 @@
 double sem_cov_ab(VARIOGRAM *v, DPOINT *a, DPOINT *b, int sem);
 /* covariance: */
-#define COVARIANCE(v,a,b) ((IS_POINT(a) && IS_POINT(b)) ? \
+#define COVARIANCE(v,a,b) ((IS_POINT(a) && IS_POINT(b) && !gl_longlat) ? \
 	(get_covariance(v,a->x - b->x,a->y - b->y, a->z - b->z)) : \
 	sem_cov_ab(v,a,b,0))
 /* generalized covariance: */
-#define GCV(v,a,b) ((IS_POINT(a) && IS_POINT(b)) ? \
+#define GCV(v,a,b) ((IS_POINT(a) && IS_POINT(b) && !gl_longlat) ? \
 	(v->max_val - get_semivariance(v,a->x - b->x,a->y - b->y, a->z - b->z)) : \
 	(v->max_val - sem_cov_ab(v,a,b,1)))
 /* 

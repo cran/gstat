@@ -84,7 +84,7 @@ static double sem_cov_blocks(VARIOGRAM *v, DATA *a, DATA *b, int sem) {
  * Side effects  : none 
  */
 	int i, j;
-	double block_value, dx, dy = 0.0, dz = 0.0, weight, dzero2;
+	double block_value, dx, dy = 0.0, dz = 0.0, dist, ret, weight, dzero2;
 	DPOINT *dpa, *dpb;
 
 	/*
@@ -95,13 +95,25 @@ static double sem_cov_blocks(VARIOGRAM *v, DATA *a, DATA *b, int sem) {
 		return sem ? get_semivariance(v, 0.0, 0.0, 0.0) : 
 				get_covariance(v, 0.0, 0.0, 0.0);
 	if (a->n_list == 1 && b->n_list == 1) { /* point--point */
-		return sem ?
-			get_semivariance(v, a->list[0]->x - b->list[0]->x,
-				a->list[0]->y - b->list[0]->y, a->list[0]->z - b->list[0]->z):
-			get_covariance(v, a->list[0]->x - b->list[0]->x,
-				a->list[0]->y - b->list[0]->y, a->list[0]->z - b->list[0]->z);
+		if (gl_longlat) {
+			if (! v->isotropic)
+				ErrMsg(ER_IMPOSVAL, "for long/lat data, anisotropy cannot be defined");
+			dist = pp_norm_gc(a->list[0], b->list[0]);
+			ret = sem ?  get_semivariance(v, dist, 0.0, 0.0):
+				get_covariance(v, dist, 0.0, 0.0);
+			/* printf("ll dist: %g, ret.val %g\n", dist, ret); */
+			return ret;
+		} else {
+			return sem ?
+				get_semivariance(v, a->list[0]->x - b->list[0]->x,
+					a->list[0]->y - b->list[0]->y, a->list[0]->z - b->list[0]->z):
+				get_covariance(v, a->list[0]->x - b->list[0]->x,
+					a->list[0]->y - b->list[0]->y, a->list[0]->z - b->list[0]->z);
+		}
 	}
 	/* now a->n_list > 1 or b->n_list > 1: block--block or point--block */
+	if (gl_longlat)
+			ErrMsg(ER_IMPOSVAL, "block kriging for long-lat data undefined");
 	if (a == b) { /* block--block for a single block */
 		if (sem && v->block_semivariance_set)
 	    	return v->block_semivariance;

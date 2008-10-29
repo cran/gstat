@@ -14,6 +14,7 @@ double fn_hole(double h, double *r);
 double fn_logarithmic(double h, double *r);
 double fn_power(double h, double *r);
 double fn_spline(double h, double *r);
+double fn_legendre(double h, double *r);
 double fn_intercept(double h, double *r);
 
 /* the following functions are not all defined */
