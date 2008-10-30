@@ -37,6 +37,7 @@
 #endif
 
 #include "userio.h"
+#include "utils.h"
 #include "vario_fn.h"
 static double bessi1(double x);
 static double bessk1(double x);
@@ -211,6 +212,17 @@ double fn_spline(double h, double *r) {
 	if (h == 0.0)
 		return 0.0;
 	return h * h * log(h); 
+}
+
+double fn_legendre(double h, double *r) {
+	/* *r is range; h is angular lag */
+	double r2, ang;
+	if (h == 0.0)
+		return 0.0;
+	r2 = r[0] * r[0];
+	ang = h / (PI * 6378.137);
+	/* printf("dist: %g, ang: %g\n", h, ang); */
+	return 2.0 - (1.0 - r2)/(1 - 2.0 * r[0] * cos(ang) + r2);
 }
 
 double fn_intercept(double h, double *r) {

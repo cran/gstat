@@ -126,6 +126,10 @@ const V_MODEL v_models[] = { /* the variogram model ``data base'': */
 		"Spl(a,x) = x == 0 ? 0 : x * x * log(x)",
 		"Spl(a,x) = x == 0 ? 1 : 1 - x * x * log(x)",
 		fn_spline, NULL },
+	{	LEGENDRE, "Leg", "Leg (Legendre)", 
+		"",
+		"",
+		fn_legendre, NULL },
 	{	MERROR, "Err", "Err (Measurement error)", 
 		"Err(a,x) = 1 # I don't let gnuplot draw what happens at x=0",
 		"Err(a,x) = 0 # I don't let gnuplot draw what happens at x=0",
@@ -356,7 +360,7 @@ void update_variogram(VARIOGRAM *vp) {
 		if (p->model == BESSEL || p->model == GAUSSIAN ||
 				p->model == EXPONENTIAL || p->model == LOGARITHMIC ||
 				p->model == POWER || p->model == PERIODIC ||
-				p->model == EXCLASS ||
+				p->model == EXCLASS || p->model == LEGENDRE ||
 #ifdef USING_R
 				p->model == MATERN ||
 #endif

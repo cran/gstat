@@ -316,6 +316,7 @@ double v_bin(double mu);
 double v_identity(double mu);
 void setup_polynomial_X(DATA *d);
 void calc_polynomial_point(DATA *d, DPOINT *pt);
+double pp_norm_gc(const DPOINT *a, const DPOINT *b);
 
 #if defined(__cplusplus)
 }

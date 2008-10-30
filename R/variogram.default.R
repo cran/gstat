@@ -120,13 +120,15 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     }
     .Call("gstat_exit", NULL)
 	if (is.logical(map) && map == FALSE) {
-    	ret$id = factor(ids, levels = unique(ids))
-		attr(ret, "direct") = data.frame(id = unique(ids), is.direct = is.direct)
-    	if (cloud) {
-        	class(ret) = c("variogramCloud", "data.frame")
-			attr(ret, ".BigInt") = 2^(4 * .Machine$sizeof.long)
-    	} else 
-			class(ret) = c("gstatVariogram", "data.frame")
+    	if (!is.null(ids)) {
+			ret$id = factor(ids, levels = unique(ids))
+			attr(ret, "direct") = data.frame(id = unique(ids), is.direct = is.direct)
+    		if (cloud) {
+        		class(ret) = c("variogramCloud", "data.frame")
+				attr(ret, ".BigInt") = 2^(4 * .Machine$sizeof.long)
+    		} else 
+				class(ret) = c("gstatVariogram", "data.frame")
+		}
 	} else {
 		coordinates(ret) = c("dx", "dy")
 		gridded(ret) = TRUE
