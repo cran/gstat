@@ -28,6 +28,7 @@
  * vario_fn.c: contains elementary variogram model functions
  */
 #include <stdio.h> /* req'd by userio.h */
+#include <float.h>
 #include <math.h>
 
 #include "defs.h" /* config.h may define USING_R */
@@ -248,6 +249,36 @@ double fn_matern(double h, double *p) {
 			pow(hr, kappa) * bessel_k(hr, kappa, 1.0);
 	/* ans was for correlation; */
     return 1.0 - ans;
+}
+
+double fn_matern2(double h, double *p) {
+/* According to Hannes Kazianka, in R this would be
+h=distance matrix
+delta=c(RANGE,KAPPA)
+maternmodel<-function(h,delta){
+	matern<-besselK(2*delta[2]^(1/2)*h/delta[1],delta[2])
+	ifelse(matern==0,0,ifelse(!is.finite(matern),1,
+	1/(2^(delta[2] -
+	1)*gamma(delta[2]))*(2*delta[2]^(1/2)*h/delta[1])^delta[2]*matern))
+}
+*/
+
+	double ans, *delta, bes;
+	if (h == 0.0)
+		return 0.0;
+	delta = p;
+	h = h / delta[0];
+	bes = bessel_k(2.0 * sqrt(delta[1]) * h, delta[1], 1.0);
+	/* 
+	if (!isfinite(bes) || bes >= DBL_MAX)
+		return 0.0;
+	if (bes == 0.0)
+		return 1.0;
+	*/
+	ans = pow(2.0, 1.0 - delta[1]) / gammafn(delta[1]) * 
+		pow((2.0 * sqrt(delta[1]) * h), delta[1]) * bes;
+	/* 1/(2^(delta[1] - 1)*gamma(delta[2]))*(2*delta[2]^(1/2)*h/delta[1])^delta[2]*matern)) */
+	return 1.0 - ans;
 }
 #endif
 

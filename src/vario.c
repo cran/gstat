@@ -86,6 +86,10 @@ const V_MODEL v_models[] = { /* the variogram model ``data base'': */
 		"# Matern model not supported by gnuplot",
 		"# Matern model not supported by gnuplot",
 		fn_matern, NULL },
+	{	STEIN, "Ste", "Mat (Matern, M. Stein's parameterization)", 
+		"# Matern model not supported by gnuplot",
+		"# Matern model not supported by gnuplot",
+		fn_matern2, NULL },
 #endif
 	{ 	CIRCULAR, "Cir", "Cir (circular)", 
 		"Cir(a,x) = (x < a ? ((2*x)/(pi*a))*sqrt(1-(x/a)**2)+(2/pi)*asin(x/a) : 1)",
@@ -363,6 +367,7 @@ void update_variogram(VARIOGRAM *vp) {
 				p->model == EXCLASS || p->model == LEGENDRE ||
 #ifdef USING_R
 				p->model == MATERN ||
+				p->model == STEIN ||
 #endif
 				(p->model == LINEAR && p->range[0] == 0)) 
 					/* sill is reached asymptotically or oscillates */
