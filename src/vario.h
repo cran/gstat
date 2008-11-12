@@ -65,6 +65,7 @@ typedef enum {
 	EXCLASS,
 #ifdef USING_R
 	MATERN,
+	STEIN,
 #endif
 	CIRCULAR,
 	LINEAR, 
