@@ -1,4 +1,4 @@
-% $Id: vgm.panel.Rd,v 1.2 2008-03-10 10:33:10 edzer Exp $
+% $Id: vgm.panel.Rd,v 1.3 2008-10-30 13:47:05 edzer Exp $
 \name{vgm.panel.xyplot}
 \alias{vgm.panel.xyplot}
 \alias{panel.pointPairs}
@@ -48,7 +48,6 @@ ignored; the enclosing function returns a plot of class \code{trellis}
 \author{ Edzer J. Pebesma }
 \seealso{ \link{plot.gstatVariogram}, \link{vgm}}
 \examples{ 
-library(sp)
 library(lattice)
 data(meuse)
 coordinates(meuse) <- c("x", "y")

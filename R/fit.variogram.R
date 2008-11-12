@@ -1,4 +1,4 @@
-# $Id: fit.variogram.q,v 1.8 2007-07-12 07:48:45 edzer Exp $
+# $Id: fit.variogram.q,v 1.9 2008-11-12 10:04:22 edzer Exp $
 
 "fit.variogram" <-
 function (object, model, fit.sills = TRUE, fit.ranges = TRUE, 
@@ -23,6 +23,7 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
 	if (fit.method == 7 && any(object$dist == 0))
 		stop("fit.method 7 will not work with zero distance semivariances; use another fit.method value")
     fit.ranges = fit.ranges & (model$model != "Nug")
+	initialRange = model$range
     .Call("gstat_init", as.integer(debug.level))
     .Call("gstat_load_ev", object$np, object$dist, object$gamma)
     load.variogram.model(model)
@@ -41,6 +42,7 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
 				warning("partial sill or nugget fixed at zero value")
 			fit.sills = model$psill > 0
 			model$psill[model$psill < 0] = 0.0
+			model$range = initialRange
 			return(fit.variogram(object, model, fit.sills = fit.sills, fit.ranges =
 				fit.ranges, fit.method = fit.method, debug.level = debug.level,
 				warn.if.neg = warn.if.neg))

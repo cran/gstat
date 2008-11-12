@@ -1,6 +1,6 @@
 
-R : Copyright 2005, The R Foundation for Statistical Computing
-Version 2.2.1  (2005-12-20 r36812)
+R version 2.8.0 (2008-10-20)
+Copyright (C) 2008 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -152,7 +152,7 @@ row 2:   -0.151962334     1.62264459     1.77460693
 
 # beta:
 Vector: dim: 3
-2.10985743e-16            0.5              4 
+             0            0.5              4 
 # Cov(beta), (X'C-1 X)-1:
 Matrix: 3 by 3
 row 0:    0.793362513   -0.225694871    0.274305129 
@@ -213,10 +213,10 @@ row 1:    0.305493523     1.08143417
 
 # kriging weights:
 Matrix: 4 by 2
-row 0:            0.5 4.16333634e-17 
-row 1:            0.5 -1.38777878e-17 
-row 2: -5.55111512e-17            0.5 
-row 3: 2.77555756e-17            0.5 
+row 0:            0.5 -9.71445147e-17 
+row 1:            0.5 8.32667268e-17 
+row 2: 1.38777878e-17            0.5 
+row 3: -2.77555756e-17            0.5 
 
 
   x y d1.pred   d1.var d2.pred   d2.var cov.d1.d2

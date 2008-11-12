@@ -86,8 +86,6 @@ summary(tull36)
 summary(TULLNREG)
 summary(Chlorid92)
 
-library(gstat)
-data(tull)
 # stack & join data to x,y,Date,Chloride form:
 cl.st = stack(Chlorid92[-1])
 names(cl.st) = c("Chloride", "Station")
