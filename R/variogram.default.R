@@ -1,4 +1,4 @@
-# $Id: variogram.default.q,v 1.27 2008-10-09 14:25:20 edzer Exp $
+# $Id: variogram.default.q,v 1.28 2008-10-30 13:33:00 edzer Exp $
 
 "variogram.default" <-
 function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0, 
@@ -26,6 +26,8 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 		grid.topology = GridTopology(rep(-cutoff, 2), rep(width, 2), rep(cells.dim, 2))
 		map = SpatialGrid(grid = grid.topology)
 	}
+	if (any(is.na(boundaries)))
+		stop("no NA values allowed in boundaries")
     .Call("gstat_init", as.integer(debug.level))
 	if (!is.null(g) && !is.null(g$set))
 		gstat.load.set(g$set)

@@ -77,6 +77,7 @@
 #include "polygon.h"
 
 void s_gstat_error(const char *mess, int level);
+void s_gstat_warning(const char *mess);
 void s_gstat_printlog(const char *mess);
 void s_gstat_progress(unsigned int current, unsigned int total);
 double s_r_uniform(void);
@@ -95,6 +96,7 @@ SEXP gstat_init(SEXP s_debug_level) {
 	/* 1: set up for stdio */
 	set_gstat_progress_handler(S_no_progress);
 	set_gstat_error_handler(s_gstat_error);
+	set_gstat_warning_handler(s_gstat_warning);
 	set_gstat_log_handler(s_gstat_printlog);
 	setup_meschach_error_handler(1);
 	init_global_variables();
@@ -649,7 +651,7 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 		d = get_gstat_data();
 		d[id1]->dX = NUMERIC_POINTER(dX)[0];
 	} 
-	for (i = 0; i < LENGTH(boundaries); i++) /* do nothing if LENGTH is 0 */
+	for (i = 0; i < LENGTH(boundaries); i++) /* does nothing if LENGTH is 0 */
 		push_bound(NUMERIC_POINTER(boundaries)[i]);
 	switch (LENGTH(grid)) {
 		case 0: case 1: break;
@@ -951,6 +953,8 @@ void s_gstat_warning(const char *mess) {
 
 	print_to_logfile_if_open(mess);
 
+	if (DEBUG_SILENT)
+		return;
 	Rprintf("gstat warning: %s\n", mess);
 	return;
 }

@@ -1,4 +1,4 @@
-% $Id: sic97.Rd,v 1.1 2008-05-19 09:59:25 edzer Exp $
+% $Id: sic97.Rd,v 1.2 2008-10-30 13:47:05 edzer Exp $
 \name{sic97}
 \alias{sic_obs}
 \alias{sic_full}
@@ -36,7 +36,6 @@ Gregoire Dubois and others.
 
 \keyword{datasets}
 \examples{
-library(sp)
 data(sic97) 
 image(demstd)
 points(sic_full, pch=1)

@@ -1,3 +1,69 @@
+2008-11-12 11:21  edzer
+
+	* S/R/gstat/DESCRIPTION: version update
+
+2008-11-12 11:16  edzer
+
+	* src/s.c: now the warning message setting is actually used; allows
+	  to suppres "singular fit" messages.
+
+2008-11-12 11:04  edzer
+
+	* S/src/: fit.variogram.q, load.variogram.model.q: bug in
+	  fit.variogram: on refitting, now uses the original/initial ranges
+	  specified, not those fitted earlier (which may have pathetic
+	  values).  load.variogram.model now stops on negative ranges.
+
+2008-10-30 15:13  edzer
+
+	* S/tests/: covtable.Rout.save, merge.Rout.save, sim.Rout.save,
+	  unproj.Rout.save: updated test results
+
+2008-10-30 14:47  edzer
+
+	* S/man/: sic97.Rd, tull.Rd, vgm.panel.Rd: removed useless package
+	  loading
+
+2008-10-30 14:36  edzer
+
+	* S/makefile: added gcdist files
+
+2008-10-30 14:34  edzer
+
+	* src/: gcdist.c, gcdist.h: great circle distance functions
+
+2008-10-30 14:33  edzer
+
+	* S/R/gstat/DESCRIPTION: version update
+
+2008-10-30 14:33  edzer
+
+	* S/src/variogram.default.q: check that boundaries does not contain
+	  NA values
+
+2008-10-30 14:32  edzer
+
+	* src/: data.c, s.c, vario_fn.c, vario_io.c, version.h: various
+	  improvements on kriging with longlat data
+
+2008-10-27 15:08  edzer
+
+	* src/: data.c, data.h, vario.c, vario.h, vario_fn.c, vario_fn.h,
+	  vario_io.c, vario_io.h: added simple Legendre variogram model for
+	  data on a sphere
+
+2008-10-17 13:47  edzer
+
+	* S/man/wind.Rd: % needed to be escaped in example section
+
+2008-10-17 13:26  edzer
+
+	* S/man/tull.Rd: T -> TRUE in example
+
+2008-10-17 09:24  edzer
+
+	* S/man/wind.Rd: further development;
+
 2008-10-14 14:10  edzer
 
 	* S/: data/00Index, man/tull.Rd: wind data set; typo in docs
@@ -1837,6 +1903,11 @@
 
 	* S/NAMESPACE: NAMESPACE moved back to S/R/gstat
 
+2003-08-28 11:20  edzer
+
+	* S/R/gstat/src/meschach/: dmacheps.c, fmacheps.c, maxint.c:
+	  removed files that are in gstat/src
+
 2003-08-28 09:24  edzer
 
 	* S/NAMESPACE: temporary move, to support R pre 1.7.0 ; see also
@@ -2158,9 +2229,12 @@
 	  S/R/gstat/cleanup, S/data/meuse.grid.R, S/R/gstat/configure,
 	  S/R/gstat/configure.in, S/R/gstat/aclocal.m4,
 	  S/R/gstat/makefile.in, S/R/gstat/src/gstat.def,
-	  S/Splus/gstat.def, S/Splus/makefile.w32, S/scripts/preproc.pl,
-	  S/scripts/qtoR, S/scripts/toSplus, S/Splus/aclocal.m4,
-	  S/Splus/configure, S/Splus/configure.in, S/Splus/makefile.in,
+	  S/R/gstat/src/meschach/dmacheps.c,
+	  S/R/gstat/src/meschach/fmacheps.c,
+	  S/R/gstat/src/meschach/maxint.c, S/Splus/gstat.def,
+	  S/Splus/makefile.w32, S/scripts/preproc.pl, S/scripts/qtoR,
+	  S/scripts/toSplus, S/Splus/aclocal.m4, S/Splus/configure,
+	  S/Splus/configure.in, S/Splus/makefile.in,
 	  S/Splus/meschach/dmacheps.c, S/Splus/meschach/fmacheps.c,
 	  S/Splus/meschach/maxint.c: Initial revision
 
@@ -2202,9 +2276,12 @@
 	  S/R/gstat/cleanup, S/data/meuse.grid.R, S/R/gstat/configure,
 	  S/R/gstat/configure.in, S/R/gstat/aclocal.m4,
 	  S/R/gstat/makefile.in, S/R/gstat/src/gstat.def,
-	  S/Splus/gstat.def, S/Splus/makefile.w32, S/scripts/preproc.pl,
-	  S/scripts/qtoR, S/scripts/toSplus, S/Splus/aclocal.m4,
-	  S/Splus/configure, S/Splus/configure.in, S/Splus/makefile.in,
+	  S/R/gstat/src/meschach/dmacheps.c,
+	  S/R/gstat/src/meschach/fmacheps.c,
+	  S/R/gstat/src/meschach/maxint.c, S/Splus/gstat.def,
+	  S/Splus/makefile.w32, S/scripts/preproc.pl, S/scripts/qtoR,
+	  S/scripts/toSplus, S/Splus/aclocal.m4, S/Splus/configure,
+	  S/Splus/configure.in, S/Splus/makefile.in,
 	  S/Splus/meschach/dmacheps.c, S/Splus/meschach/fmacheps.c,
 	  S/Splus/meschach/maxint.c: Verbatim import gstat-2.4.2.tar.gz as
 	  downloaded from www.gstat.org at Mon Jun 23 20:52:05 CEST 2003

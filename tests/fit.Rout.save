@@ -1,6 +1,6 @@
 
-R version 2.6.0 (2007-10-03)
-Copyright (C) 2007 The R Foundation for Statistical Computing
+R version 2.7.0 (2008-04-22)
+Copyright (C) 2008 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -23,12 +23,12 @@ Loading required package: sp
 > fit.variogram(v, vgm(1, "Sph", 300, 0),warn.if.neg=TRUE)
   model    psill    range
 1   Nug 0.000000    0.000
-2   Sph 7.874468 1567.017
+2   Sph 7.878087 1567.749
 Warning message:
 In fit.variogram(v, vgm(1, "Sph", 300, 0), warn.if.neg = TRUE) :
   partial sill or nugget fixed at zero value
 > fit.variogram(v, vgm(1, "Sph", 300, 0),warn.if.neg=FALSE)
   model    psill    range
 1   Nug 0.000000    0.000
-2   Sph 7.874468 1567.017
+2   Sph 7.878087 1567.749
 > 
