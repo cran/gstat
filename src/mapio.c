@@ -2812,14 +2812,17 @@ static GRIDMAP *write_surfer(GRIDMAP * m)
 	fprintf(f, "%d %d\n", m->cols, m->rows);	/* nx ny */
 	/* xlo xhi: */
 	fprintf(f, gl_format, m->x_ul + 0.5 * m->cellsizex);
+	fprintf(f, " ");
 	fprintf(f, gl_format, m->x_ul + (m->cols - 0.5) * m->cellsizex);	
 	fprintf(f, "\n");
 	/* ylo yhi */
 	fprintf(f, gl_format, m->y_ul - (m->rows - 0.5) * m->cellsizey);
+	fprintf(f, " ");
 	fprintf(f, gl_format, m->y_ul - 0.5 * m->cellsizey);	
 	fprintf(f, "\n");
 	/* zlo zhi */
 	fprintf(f, gl_format, m->cellmin);
+	fprintf(f, " ");
 	fprintf(f, gl_format, m->cellmax);	
 	fprintf(f, "\n");
 	n = m->rows * m->cols;

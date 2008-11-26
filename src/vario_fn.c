@@ -251,8 +251,10 @@ double fn_matern(double h, double *p) {
     return 1.0 - ans;
 }
 
-double fn_matern2(double h, double *p) {
-/* According to Hannes Kazianka, in R this would be
+/* 
+ * Ste: M. Stein's representation of the Matern model
+ *
+ * According to Hannes Kazianka, in R this would be
 h=distance matrix
 delta=c(RANGE,KAPPA)
 maternmodel<-function(h,delta){
@@ -261,24 +263,37 @@ maternmodel<-function(h,delta){
 	1/(2^(delta[2] -
 	1)*gamma(delta[2]))*(2*delta[2]^(1/2)*h/delta[1])^delta[2]*matern))
 }
-*/
+delta<-c(RANGE,KAPPA)
+h=Distance Matrix
 
-	double ans, *delta, bes;
+maternmodel<-function(h,delta){
+	matern<-besselK(2*delta[2]^(1/2)*h/delta[1],delta[2])
+	multipl<-1/(2^(delta[2] - 1)*gamma(delta[2]))*(2*delta[2]^(1/2)*h/delta[1])^delta[2]
+	ifelse(matern==0 | !is.finite(multipl),0,ifelse(!is.finite(matern),1,
+	multipl*matern))
+}
+
+Now 0*Inf is impossible.
+
+Hannes
+*/
+double fn_matern2(double h, double *p) {
+
+	double *delta, bes, mult;
 	if (h == 0.0)
 		return 0.0;
 	delta = p;
 	h = h / delta[0];
 	bes = bessel_k(2.0 * sqrt(delta[1]) * h, delta[1], 1.0);
-	/* 
-	if (!isfinite(bes) || bes >= DBL_MAX)
+	if (!isfinite(bes))
 		return 0.0;
 	if (bes == 0.0)
 		return 1.0;
-	*/
-	ans = pow(2.0, 1.0 - delta[1]) / gammafn(delta[1]) * 
-		pow((2.0 * sqrt(delta[1]) * h), delta[1]) * bes;
-	/* 1/(2^(delta[1] - 1)*gamma(delta[2]))*(2*delta[2]^(1/2)*h/delta[1])^delta[2]*matern)) */
-	return 1.0 - ans;
+	mult = pow(2.0, 1.0 - delta[1]) / gammafn(delta[1]) * 
+		pow((2.0 * sqrt(delta[1]) * h), delta[1]);
+	if (!isfinite(mult))
+		return 1.0;
+	return 1.0 - bes * mult;
 }
 #endif
 

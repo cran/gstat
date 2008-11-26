@@ -617,7 +617,7 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 	SEXP sx;
 	SEXP sy;
 	/* SEXP y; */
-	long i, id1, id2;
+	long i, id1, id2, nest;
 	VARIOGRAM *vgm;
 	DATA **d;
 
@@ -694,13 +694,17 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 		SET_ELEMENT(ret, 3, gamma);
 		UNPROTECT(5);
 	} else {
+		if (vgm->ev->cloud)
+			nest = vgm->ev->n_est;
+		else
+			nest = vgm->ev->n_est - 1;
 		PROTECT(ret = NEW_LIST(3));
-		if (vgm->ev->n_est <= 1)
+		if (nest <= 0)
 			return(ret);
-		PROTECT(np = NEW_NUMERIC(vgm->ev->n_est - 1));
-		PROTECT(dist = NEW_NUMERIC(vgm->ev->n_est - 1));
-		PROTECT(gamma = NEW_NUMERIC(vgm->ev->n_est - 1));
-		for (i = 0; i < vgm->ev->n_est - 1; i++) {
+		PROTECT(np = NEW_NUMERIC(nest));
+		PROTECT(dist = NEW_NUMERIC(nest));
+		PROTECT(gamma = NEW_NUMERIC(nest));
+		for (i = 0; i < nest; i++) {
 			NUMERIC_POINTER(np)[i] = vgm->ev->nh[i];
 			NUMERIC_POINTER(dist)[i] = vgm->ev->dist[i];
 			NUMERIC_POINTER(gamma)[i] = vgm->ev->gamma[i];
@@ -955,7 +959,7 @@ void s_gstat_warning(const char *mess) {
 
 	if (DEBUG_SILENT)
 		return;
-	Rprintf("gstat warning: %s\n", mess);
+	Rprintf("%s\n", mess);
 	return;
 }
 

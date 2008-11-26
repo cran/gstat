@@ -1016,6 +1016,13 @@ void push_to_v(VARIOGRAM *v, const char *mod, double sill, double *range,
 	vm.fit_range = fit_range;
 	if (d != NULL && d[0] != -9999.0)
 		vm.tm_range = get_tm(d);
+#ifdef USING_R
+	if (vm.model == STEIN && range[1] > 100.0) {
+		vm.model = GAUSSIAN;
+		vm.range[1] = 0.0;
+		pr_warning("kappa values over 100 overflow gammafn: taking Gaussian approximation");
+	}
+#endif
 	push_variogram_model(v, vm);
 }
 
