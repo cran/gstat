@@ -3,7 +3,7 @@
 "show.vgms" <-
 function(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
 	models = as.character(vgm()$short[c(1:17)]), nugget = 0, kappa.range = 0.5,
-	plot = TRUE) 
+	plot = TRUE, ...) 
 {
 
 	zero.range.models = c("Nug", "Int", "Lin", "Err")
@@ -56,5 +56,5 @@ function(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
 		dframe
 	else
 		xyplot(semivariance ~ distance | model, dframe, 
-			panel = vgm.panel, as.table = TRUE)
+			panel = vgm.panel, as.table = TRUE, ...)
 }
