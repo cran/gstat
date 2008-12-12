@@ -1,4 +1,4 @@
-% $Id: show.vgms.Rd,v 1.5 2006-10-31 13:25:22 edzer Exp $
+% $Id: show.vgms.Rd,v 1.6 2008-12-01 10:10:36 edzer Exp $
 \name{show.vgms}
 \alias{show.vgms}
 \title{
@@ -11,7 +11,7 @@ and optionally a set of Matern models with varying smoothness.
 \usage{
 show.vgms(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
     models = as.character(vgm()$short[c(1:17)]), nugget = 0, kappa.range = 0.5,
-	plot = TRUE)
+	plot = TRUE, ...)
 }
 \arguments{
 \item{min}{ numeric; start distance value for semivariance calculation 
@@ -28,6 +28,7 @@ element, only a range of Matern models is plotted with these kappa
 values }
 \item{plot}{ logical; if TRUE, a plot is returned with the models
 specified; if FALSE, the data prepared for this plot is returned }
+\item{...}{ passed on to the call to xyplot }
 }
 \value{
 returns a (Trellis) plot of the variogram models requested; see

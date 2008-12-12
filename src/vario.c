@@ -365,6 +365,7 @@ void update_variogram(VARIOGRAM *vp) {
 				p->model == EXPONENTIAL || p->model == LOGARITHMIC ||
 				p->model == POWER || p->model == PERIODIC ||
 				p->model == EXCLASS || p->model == LEGENDRE ||
+				p->model == HOLE || /* more??? */
 #ifdef USING_R
 				p->model == MATERN ||
 				p->model == STEIN ||

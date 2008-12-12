@@ -48,5 +48,10 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
 				warn.if.neg = warn.if.neg))
 		}
 	}
+	if (attr(model, "singular") && debug.level) {
+		rat = mean(object$gamma) / mean(object$dist) 
+		if (rat > 1e6 || rat < 1e-6)
+			print("a possible solution MIGHT be to scale semivariances and/or distances")
+	}
     model
 }
