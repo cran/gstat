@@ -1,4 +1,4 @@
-% $Id: krige.Rd,v 1.18 2007-02-27 22:09:32 edzer Exp $
+% $Id: krige.Rd,v 1.19 2008-12-15 14:27:29 edzer Exp $
 \name{krige}
 \docType{methods}
 \alias{krige}
@@ -34,9 +34,11 @@ krige.spatial(formula, locations, newdata, model, ..., beta, nmax
 na.action = na.pass, debug.level = 1)
 idw(formula, locations, ...)
 idw.locations(formula, locations, data, newdata, nmax = Inf, 
-	nmin = 0, maxdist = Inf, block, na.action = na.pass, idp = 2.0)
+	nmin = 0, maxdist = Inf, block, na.action = na.pass, idp = 2.0,
+	debug.level = 1)
 idw.spatial(formula, locations, newdata, nmax = Inf, nmin = 0, 
-    maxdist = Inf, block = numeric(0), na.action = na.pass, idp = 2.0)
+    maxdist = Inf, block = numeric(0), na.action = na.pass, idp = 2.0,
+	debug.level = 1)
 }
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear
@@ -87,7 +89,7 @@ idw.spatial(formula, locations, newdata, nmax = Inf, nmin = 0,
   values in 'newdata'.  The default is to predict 'NA'.  Missing values 
   in coordinates and predictors are both dealt with. }
  \item{debug.level}{debug level, passed to \link{predict.gstat}; use -1 
- to see progress in percentage}
+ to see progress in percentage, and 0 to suppress all printed information }
  \item{\dots}{ other arguments that will be passed to \link{gstat}}
  \item{idp}{numeric; specify the inverse distance weighting power}
 }

@@ -18,7 +18,7 @@ coordinate variables in the right hand (dependent variable) side. }
 are to be found}
 \item{model}{variogram model to be fitted, output of \code{vgm}}
 \item{debug.level}{debug level; set to 65 to see the iteration trace and
-log likelyhood}
+log likelihood}
 \item{set}{additional options that can be set; use \code{set=list(iter=100)}
 to set the max. number of iterations to 100.  }
 \item{degree}{order of trend surface in the location, between 0 and 3}
@@ -36,9 +36,9 @@ Regionalized Variables, Mathematical Geology 17 (2), 195--208, 1985 }
 \author{ Edzer J. Pebesma }
 \note{
 This implementation only uses REML fitting of sill parameters. For each
-iteration, an $n \times n$ matrix is inverted, with $n$ the number of
-observations, so for large data sets this method becomes rather, ehm,
-demanding. I guess there is much more to likelyhood variogram fitting in 
+iteration, an \eqn{n \times n}{n x n} matrix is inverted, with $n$ the number of
+observations, so for large data sets this method becomes 
+demanding. I guess there is much more to likelihood variogram fitting in 
 package \code{geoR}, and probably also in \code{nlme}.
 }
 \seealso{

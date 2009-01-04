@@ -1,4 +1,4 @@
-% $Id: gstat.Rd,v 1.21 2008-10-09 14:25:20 edzer Exp $
+% $Id: gstat.Rd,v 1.22 2009-01-05 14:49:13 edzer Exp $
 \name{gstat}
 \alias{gstat}
 \alias{print.gstat}
@@ -130,9 +130,10 @@ look for standardised ordinary kriging in the 1992 Deutsch and Journel
 or Isaaks and Srivastava. In these cases, two variables share a common
 mean parameter. Gstat generalises this case: any two variables may share
 any of the regression coefficients; allowing for instance analysis of
-covariance models, when variograms left out (see e.g. R. Christensen's
-``Plane answers'' book on linear models. The tests directory of the
-package contains examples in file merge.R.
+covariance models, when variograms were left out (see e.g. R. Christensen's
+``Plane answers'' book on linear models). The tests directory of the
+package contains examples in file merge.R. There is also \code{demo(pcb)}
+which merges slopes across years, but with year-dependent intercept.
 
 }
 

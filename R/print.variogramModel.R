@@ -4,7 +4,7 @@
 function (x, ...) 
 {
     df = data.frame(x)
-	shape.models = c("Mat", "Exc", "Cau")
+	shape.models = c("Mat", "Exc", "Cau", "Ste")
 	if (!any(match(df[, "model"], shape.models, nomatch=0)))
 		df$kappa = NULL
     if (!any(df[, "anis2"] != 1))  {

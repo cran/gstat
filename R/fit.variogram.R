@@ -1,4 +1,4 @@
-# $Id: fit.variogram.q,v 1.9 2008-11-12 10:04:22 edzer Exp $
+# $Id: fit.variogram.q,v 1.10 2008-12-15 14:27:29 edzer Exp $
 
 "fit.variogram" <-
 function (object, model, fit.sills = TRUE, fit.ranges = TRUE, 

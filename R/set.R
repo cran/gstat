@@ -1,4 +1,4 @@
-# $Id: set.q,v 1.6 2006-03-28 12:38:51 edzer Exp $
+# $Id: set.q,v 1.7 2008-12-16 14:59:22 edzer Exp $
 
 gstat.set <- function(set) {
 	if(!is.list(set))
@@ -9,9 +9,13 @@ gstat.set <- function(set) {
 	n = names(set)
 	for (i in (1:length(set))) {
 		val = set[[i]]
-		if (is.character(val))
-			val = paste("'", val, "'", sep = "")
-		str = paste("set ", n[i], " = ", val, ";", sep="")
+		if (n[i] == "method")
+			str = paste("method: ", val, ";", sep="")
+		else {
+			if (is.character(val))
+				val = paste("'", val, "'", sep = "")
+			str = paste("set ", n[i], " = ", val, ";", sep="")
+		}
 		ret = c(ret, str)
 	}
 	ret

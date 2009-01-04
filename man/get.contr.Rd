@@ -17,10 +17,10 @@ is a matrix. }
 }
 
 \details{ 
-From data, we can extract the $(n \times 1)$ vector with multivariable
-predictions, say $y$, and its $(n \times n)$ covariance matrix $V$. Given
-a contrast matrix in $X$, this function computes the contrast vector is
-$C=X'y$ and $Var(C)=X'V X$.
+From data, we can extract the \eqn{n \times 1}{n x 1} vector with multivariable
+predictions, say $y$, and its \eqn{n \times n}{n x n} covariance matrix $V$. Given
+a contrast matrix in $X$, this function computes the contrast vector 
+$C=X'y$ and its variance $Var(C)=X'V X$.
 }
 
 \value{
