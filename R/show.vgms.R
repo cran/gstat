@@ -1,4 +1,4 @@
-# $Id: show.vgms.q,v 1.5 2006-10-31 13:25:15 edzer Exp $
+# $Id: show.vgms.q,v 1.6 2008-12-15 14:27:29 edzer Exp $
 
 "show.vgms" <-
 function(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,

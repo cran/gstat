@@ -478,9 +478,10 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 
 	/* so far for the faking; now let's see what gstat makes out of this: */
 	if (INTEGER_POINTER(nsim)[0] == 0) {
-		if (INTEGER_POINTER(blue)[0] == 0) /* FALSE */
-			set_method(get_default_method());
-		else 
+		if (INTEGER_POINTER(blue)[0] == 0) { /* FALSE */
+			if (get_method() == NSP) /* choose default */
+				set_method(get_default_method());
+		} else 
 			set_method(LSLM);
 	} else {
 		if (INTEGER_POINTER(nsim)[0] < 0) {

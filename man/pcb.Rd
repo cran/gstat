@@ -1,4 +1,4 @@
-% $Id: pcb.Rd,v 1.6 2008-10-09 14:25:20 edzer Exp $
+% $Id: pcb.Rd,v 1.7 2009-01-05 14:49:13 edzer Exp $
 \name{pcb}
 \alias{pcb}
 \title{PCB138 measurements in sediment at the NCP, the Dutch part of the North Sea}
@@ -34,10 +34,12 @@ nor in the paper below. }
 
 \references{ \url{http:/www.gstat.org/}, \url{http://www.rikz.nl/} 
 
-Edzer J. Pebesma, Richard N.M. Duin, 2004.  Spatio-temporal mapping of sea
-floor sediment pollution in the North Sea. Paper presented at GeoENV2004,
-Oct 12-14, 2004, Neuchatel; proceedings to be published by Springer. A copy
-of the paper can be requested from \url{mailto:edzer.pebesma@uni-muenster.de}
+Pebesma, E. J., & Duin, R. N. M. (2005). Spatial patterns of temporal
+change in North Sea sediment quality on different spatial scales. In
+P. Renard, H. Demougeot-Renard & R. Froidevaux (Eds.), Geostatistics for
+Environmental Applications: Proceedings of the Fifth European Conference
+on Geostatistics for Environmental Applications (pp. 367-378): Springer.
+
 }
 
 \seealso{\link{ncp.grid}}

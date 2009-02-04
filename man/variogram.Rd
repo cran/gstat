@@ -115,7 +115,7 @@ for this estimate}
 If cloud is TRUE: an object of class \code{variogramCloud}, with the field
 \code{np} encoding the numbers of the point pair that contributed to a
 variogram cloud estimate, as follows. The first point is found by the
-integer division of np by $2^{16}$, the second point by the remainder
+integer division of np by \eqn{2^{16}}{2**16}, the second point by the remainder
 of that division. \link{print.variogramCloud} shows no \code{np} field,
 but does show in addition:
 \item{left}{for variogramCloud: data id (row number) of one of 

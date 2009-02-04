@@ -40,19 +40,19 @@ if (!isGeneric("idw"))
 idw.locations <-
 function (formula, locations, data = sys.frame(sys.parent()), 
 		newdata, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
-		na.action = na.pass, idp = 2.0) {
+		na.action = na.pass, idp = 2.0, debug.level = 1) {
 	krige(formula, locations, data, newdata, nmax = nmax, nmin = nmin,
 		maxdist = maxdist, block = block, na.action = na.action,
-		set = list(idp = idp))
+		set = list(idp = idp), debug.level = debug.level)
 }
 setMethod("idw", c("formula", "formula"), idw.locations)
 
 idw.spatial <-
 function (formula, locations, 
 		newdata, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
-		na.action = na.pass, idp = 2.0) {
+		na.action = na.pass, idp = 2.0, debug.level = 1) {
 	krige(formula, locations, newdata, nmax = nmax, nmin = nmin,
 		maxdist = maxdist, block = block, na.action = na.action,
-		set = list(idp = idp), model = NULL)
+		set = list(idp = idp), debug.level = debug.level, model = NULL)
 }
 setMethod("idw", c("formula", "Spatial"), idw.spatial)
