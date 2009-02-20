@@ -1,4 +1,4 @@
-% $Id: krige.cv.Rd,v 1.15 2008-09-17 12:56:21 edzer Exp $
+% $Id: krige.cv.Rd,v 1.16 2009-02-20 10:34:35 edzer Exp $
 \name{krige.cv}
 \docType{methods}
 \alias{krige.cv}
@@ -21,9 +21,10 @@ krige.cv.spatial(formula, locations, model = NULL, ..., beta = NULL, nmax = Inf,
 }
 \arguments{
   \item{object}{ object of class gstat; see function \link{gstat}}
-  \item{nfold}{ integer larger than 1; apply n-fold cross validation; if \code{nfold} is set
-  to \code{nrow(data)} (the default), leave-one-out cross validation is
-  done; if set to e.g. 5, five-fold cross validation is done }
+  \item{nfold}{ integer; if larger than 1, then apply n-fold cross validation; 
+  if \code{nfold} equals \code{nrow(data)} (the default), apply leave-one-out cross 
+  validation; if set to e.g. 5, five-fold cross validation is done. To specify the
+  folds, pass an integer vector of length \code{nrow(data)} with fold indexes. }
   \item{remove.all}{ logical; if TRUE, remove observations at cross validation
   locations not only for the first, but for all subsequent variables as well }
   \item{verbose}{ logical; if TRUE, progress is printed }
@@ -111,6 +112,8 @@ meuse.g <- gstat(meuse.g, model = vgm(1, "Sph", 900, 1), fill.all = TRUE)
 x <- variogram(meuse.g, cutoff = 1000)
 meuse.fit = fit.lmc(x, meuse.g)
 out = gstat.cv(meuse.fit, nmax = 40, nfold = 5) 
+summary(out)
+out = gstat.cv(meuse.fit, nmax = 40, nfold = c(rep(1,100), rep(2,55))) 
 summary(out)
 # mean error, ideally 0:
 mean(out$residual)

@@ -1,4 +1,4 @@
-# $Id: gstat.cv.q,v 1.6 2006-02-10 19:01:07 edzer Exp $
+# $Id: gstat.cv.q,v 1.7 2009-02-20 10:27:26 edzer Exp $
 
 "gstat.cv" <-
 function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE, 
@@ -17,7 +17,9 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 			data.frame(matrix(as.numeric(NA), nrow(data), 2)))
 	if (missing(nfold)) 
 		nfold = nrow(data)
-	if (nfold < nrow(data)) 
+	else if (length(nfold) == nrow(data))
+		fold = nfold
+	else if (nfold < nrow(data)) 
 		fold = sample(nfold, nrow(data), replace = TRUE)
 	else fold = 1:nrow(data)
 

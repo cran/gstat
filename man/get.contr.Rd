@@ -1,4 +1,4 @@
-% $Id: get.contr.Rd,v 1.5 2007-11-16 12:59:47 edzer Exp $
+% $Id: get.contr.Rd,v 1.6 2009-02-20 13:53:38 edzer Exp $
 \name{get.contr}
 \alias{get.contr}
 \title{ Calculate contrasts from multivariable predictions }

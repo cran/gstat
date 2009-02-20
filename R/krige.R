@@ -1,4 +1,4 @@
-# $Id: krige.q,v 1.14 2007-02-27 22:09:32 edzer Exp $
+# $Id: krige.q,v 1.15 2009-02-20 13:53:38 edzer Exp $
 
 if (!isGeneric("krige"))
 	setGeneric("krige", function(formula, locations, ...)
