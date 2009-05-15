@@ -1,4 +1,4 @@
-% $Id: krige.Rd,v 1.19 2008-12-15 14:27:29 edzer Exp $
+% $Id: krige.Rd,v 1.21 2009-02-20 16:52:57 edzer Exp $
 \name{krige}
 \docType{methods}
 \alias{krige}
@@ -47,9 +47,8 @@ idw.spatial(formula, locations, newdata, nmax = Inf, nmin = 0,
   for simple kriging also define \code{beta} (see below); for universal
   kriging, suppose \code{z} is linearly dependent on \code{x} and \code{y},
   use the formula \code{z~x+y}}
-  \item{locations}{ formula with only independent variables that define the
-  spatial data locations (coordinates), e.g. \code{~x+y}, or object of
-  class \code{Spatial}}
+  \item{locations}{ object of class \code{Spatial}, or (deprecated)
+  formula defines the spatial data locations (coordinates) such as \code{~x+y}}
  \item{data}{ data frame: should contain the dependent variable, independent
   variables, and coordinates, should be missing if locations contains data. }
  \item{newdata}{ data frame or Spatial object with prediction/simulation 
@@ -120,8 +119,10 @@ For further details, see \link{predict.gstat}.
 }
 
 \value{
-a data frame containing the coordinates of \code{newdata}, and columns
-of prediction and prediction variance (in case of kriging) or the
+if \code{locations} is not a formula, object of the same class as
+\code{newdata} (deriving from \code{Spatial}); else a data frame
+containing the coordinates of \code{newdata}. Attributes columns
+contain prediction and prediction variance (in case of kriging) or the
 \code{abs(nsim)} columns of the conditional Gaussian or indicator
 simulations }
 

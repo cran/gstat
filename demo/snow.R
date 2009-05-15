@@ -32,5 +32,5 @@ system.time(out.clus <- do.call("rbind", parLapply(cl, newdlst, function(lst)
 	krige(log(zinc)~1, meuse, lst, v)
 )))
 all.equal(out.clus, out.noclus)
-gridded(out) = TRUE
-image(out)
+gridded(out.clus) = TRUE
+image(out.clus)
