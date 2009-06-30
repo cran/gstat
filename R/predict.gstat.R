@@ -1,4 +1,4 @@
-# $Id: predict.gstat.q,v 1.33 2008-10-09 14:25:20 edzer Exp $
+# $Id: predict.gstat.q,v 1.34 2009-07-01 15:38:33 edzer Exp $
 
 predict.gstat <-
 function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
@@ -56,7 +56,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			else
 				w = d$weights
 			raw = gstat.formula(d$formula, d$data)
-			.Call("gstat_new_data", as.double(raw$y), as.double(raw$locations),
+			.Call("gstat_new_data", as.double(raw$y), 
+				as.double(raw$locations),
 				as.double(raw$X), as.integer(raw$has.intercept),
 				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
 				as.numeric(w), double(0.0), as.integer(d$degree),
