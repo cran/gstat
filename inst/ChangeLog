@@ -1,3 +1,134 @@
+2009-07-01 18:14  edzer
+
+	* S/: makefile, man/krigeTg.Rd, src/krigeTg.q: version update; typo
+
+2009-07-01 18:02  edzer
+
+	* S/man/krigeTg.Rd: hat
+
+2009-07-01 17:55  edzer
+
+	* S/man/krigeTg.Rd: forgot lambda
+
+2009-07-01 17:51  edzer
+
+	* S/: man/krigeTg.Rd, src/krigeTg.q: typo
+
+2009-07-01 17:48  edzer
+
+	* S/man/krigeTg.Rd: typo
+
+2009-07-01 17:45  edzer
+
+	* S/man/krigeTg.Rd: krigeTg documentation
+
+2009-07-01 17:40  edzer
+
+	* S/: R/gstat/DESCRIPTION, src/krigeTg.q: version update; added
+	  krigeTg file
+
+2009-07-01 17:38  edzer
+
+	* S/: makefile, R/gstat/DESCRIPTION, R/gstat/INDEX,
+	  R/gstat/NAMESPACE, src/predict.gstat.q: added krigeTg for
+	  transGaussian kriging
+
+2009-03-03 13:38  edzer
+
+	* src/sem.c: corrected progress overflow
+
+2009-02-20 17:52  edzer
+
+	* S/man/krige.Rd: corrected return value description
+
+2009-02-20 14:53  edzer
+
+	* S/: makefile, R/gstat/DESCRIPTION, man/fit.variogram.reml.Rd,
+	  man/get.contr.Rd, man/krige.Rd, man/variogram.Rd, src/krige.q,
+	  src/print.variogramModel.q: R version requirements update to man
+	  pages; version update
+
+2009-02-20 11:34  edzer
+
+	* S/man/krige.cv.Rd: nfold documentation
+
+2009-02-20 11:27  edzer
+
+	* S/src/gstat.cv.q: allowed nfold to specify the folds (needs to be
+	  of length nrow(data))
+
+2009-02-18 13:53  edzer
+
+	* src/: defs.h, version.h: version number update
+
+2009-01-19 17:23  edzer
+
+	* S/demo/snow.R: wrong name
+
+2009-01-05 15:49  edzer
+
+	* S/man/: gstat.Rd, pcb.Rd: man pages updates
+
+2008-12-16 15:59  edzer
+
+	* S/src/set.q, src/s.c: allowed method: xx; as set command.
+
+2008-12-15 15:27  edzer
+
+	* S/makefile, S/R/gstat/DESCRIPTION, S/man/krige.Rd,
+	  S/man/show.vgms.Rd, S/src/fit.variogram.q, S/src/show.vgms.q,
+	  cmd/locs.eas, cmd/mask_map, doc/tex/q2.sed, meschach/machine.h,
+	  src/vario.c: version update; bug fix for Hol variogram model.
+
+2008-12-15 10:17  edzer
+
+	* src/makefile.in: added gcdist.o as target
+
+2008-12-01 11:10  edzer
+
+	* S/R/gstat/: DESCRIPTION, INDEX: version update
+
+2008-12-01 11:10  edzer
+
+	* S/makefile, S/man/show.vgms.Rd, src/mapio.c, src/s.c: variogram
+	  cloud mistake
+
+2008-11-13 10:15  edzer
+
+	* src/vario_fn.c: further improvement of Ste model
+
+2008-11-12 17:37  edzer
+
+	* src/s.c: changed warning
+
+2008-11-12 17:03  edzer
+
+	* src/vario.c: same.
+
+2008-11-12 17:00  edzer
+
+	* src/vario.c: Ste models with kappa > 100 are now replaced by
+	  Gaussian ones.
+
+2008-11-12 16:30  edzer
+
+	* src/vario_fn.c: attempts on lgammafn in fn_matern2
+
+2008-11-12 16:06  edzer
+
+	* S/: makefile, R/gstat/DESCRIPTION: version update
+
+2008-11-12 16:05  edzer
+
+	* src/: vario.c, vario.h, vario_fn.c, vario_fn.h: added Ste
+	  variogram model for M. Stein's parameterization of the Matern
+	  model (M.L. Stein, 1999, Interpolation of Spatial Data, Springer,
+	  p. 50)
+
+2008-11-12 11:29  edzer
+
+	* S/tests/: fit.Rout.save, unproj.Rout.save: updated test results
+
 2008-11-12 11:21  edzer
 
 	* S/R/gstat/DESCRIPTION: version update

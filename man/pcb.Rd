@@ -15,7 +15,7 @@ This data set gives a point set with altitudes, digitized from the
     \item{coast}{ distance to coast, m.}
     \item{depth}{ sea water depth, m. }
     \item{PCB138}{ PCB-138, measured on the sediment fraction smaller than
-	63 $\mu$m, in $\mu$g/kg dry matter; BUT SEE NOTE BELOW }
+	63 \eqn{\mu}{mu}, in \eqn{\mu g/kg}{mu g/kg} dry matter; BUT SEE NOTE BELOW }
 	\item{yf}{ year; as factor}
   }
 }
