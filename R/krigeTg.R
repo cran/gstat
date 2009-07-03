@@ -35,6 +35,12 @@ krigeTg <- function(formula, locations, newdata, model = NULL, ...,
 		maxdist = maxdist, block = block, nsim = nsim,
 		na.action = na.action, debug.level = debug.level, ...)
 
+   if (nsim > 0) {
+     OK@data = as.data.frame(phi(OK@data,lambda))
+     return(OK)
+   } 
+
+	# else:
 	# estimate mu:
     g = gstat(formula = value ~ 1, # locations = locations, 
 		data = locations, model = model, nmax = nmax, nmin = nmin, 

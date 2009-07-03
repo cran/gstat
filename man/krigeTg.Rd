@@ -1,4 +1,4 @@
-% $Id: krigeTg.Rd,v 1.7 2009-07-01 16:30:46 edzer Exp $
+% $Id: krigeTg.Rd,v 1.9 2009-07-03 13:33:50 edzer Exp $
 \name{krigeTg}
 \docType{methods}
 \alias{krigeTg}
@@ -15,13 +15,14 @@ krigeTg(formula, locations, newdata, model = NULL, ...,
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear
   model of independent variables; suppose the dependent variable has name
-  \code{z}, for ordinary and use a formula like \code{z~1}
+  \code{z}, for ordinary and use a formula like \code{z~1}; the dependent
+  variable should be NOT transformed.
   }
  \item{locations}{ object of class \code{Spatial}, with observations }
  \item{newdata}{ Spatial object with prediction/simulation locations; 
   the coordinates should have names as defined in \code{locations} }
- \item{model}{ variogram model of dependent variable (or its residuals), 
-  defined by a call to \link{vgm} or \link{fit.variogram}}
+ \item{model}{ variogram model of the TRANSFORMED dependent variable, 
+  see \link{vgm}, or \link{fit.variogram}}
  \item{nmax}{ for local kriging: the number of nearest observations that
   should be used for a kriging prediction or simulation, where nearest
   is defined in terms of the space of the spatial locations. By default,
@@ -60,8 +61,6 @@ an SpatialPointsDataFrame object containing the fields:
 \code{m} for the m (Lagrange) parameter for each location;
 \code{var1SK.pred} the \eqn{c_0 C^{-1}}{c0 Cinv} correction obtained by
 \code{muhat} for the mean estimate at each location;
-\code{var1SK.pred} the \eqn{ c_0 C^{-1} }{c0 Cinv}
-correction obtained by simple kriging;
 \code{var1SK.var} the simple kriging variance;
 \code{var1.pred} the OK prediction on the transformed scale;
 \code{var1.var} the OK kriging variance on the transformed scale;

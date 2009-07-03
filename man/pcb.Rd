@@ -1,4 +1,4 @@
-% $Id: pcb.Rd,v 1.7 2009-01-05 14:49:13 edzer Exp $
+% $Id: pcb.Rd,v 1.8 2009-07-03 12:10:55 edzer Exp $
 \name{pcb}
 \alias{pcb}
 \title{PCB138 measurements in sediment at the NCP, the Dutch part of the North Sea}
