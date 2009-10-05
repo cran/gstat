@@ -1890,10 +1890,9 @@ static int read_idrisi32_point_data(DATA *d, const char *fname) {
             read(fb,n_points2,4);
             read(fb, tmp, 256);
 			*/
-			if (fread(tmp, 1, 1, f) != 1 ||
-				fread(n_points2, 4, 1, f) != 1 ||
-				fread(tmp, 256, 1, f) != 1)
-					ErrMsg(ER_READ, fname);
+			fread(tmp, 1, 1, f);
+			fread(n_points2, 4, 1, f);
+			fread(tmp, 256, 1, f);
 
             efree(n_points2); 
 			efree(tmp);
@@ -1901,8 +1900,7 @@ static int read_idrisi32_point_data(DATA *d, const char *fname) {
 
             if (total < 65520) {
             	/* KS: read(fb,vecptr,total); */
-				if (fread(vecptr, (unsigned int) total, 1, f) != 1)
-					ErrMsg(ER_READ, fname);
+				fread(vecptr, (unsigned int) total, 1, f);
             	total = (int)(total/8);
             	i = 0;
     			while (i < total) {

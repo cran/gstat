@@ -1,4 +1,4 @@
-# $Id: krigeTg.q,v 1.3 2009-07-01 16:14:59 edzer Exp $
+# $Id: krigeTg.q,v 1.4 2009-07-07 15:42:39 edzer Exp $
 
 phiInv <- function (x, lambda)
      if (lambda==0) log(x) else (x^lambda-1)/lambda

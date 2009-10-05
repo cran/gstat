@@ -221,12 +221,12 @@ static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev) {
 	unsigned int total_steps;
 	double gamma, ddist;
 
-	while (d->n_sel / divide_by > sqrt(INT_MAX))
+	while (d->n_sel / divide_by > 0.5 * sqrt(INT_MAX))
 		divide_by <<= 1; /* prevent overflow on calculating total_steps */
 
 	total_steps = (d->n_sel / divide_by) * (d->n_sel - 1) / 2;
 	print_progress(0, total_steps);
-
+	
 	if (DEBUG_DUMP)
 		printlog("Calculating semivariogram from %d points...\n", d->n_sel);
 

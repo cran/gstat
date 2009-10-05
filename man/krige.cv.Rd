@@ -15,9 +15,9 @@ gstat.cv(object, nfold, remove.all = FALSE, verbose = FALSE,
 	all.residuals = FALSE, ...)
 krige.cv(formula, locations, ...)
 krige.cv.locations(formula, locations, data, model = NULL, ..., beta = NULL, nmax = Inf, 
-	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE)
+	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE, debug.level = 1)
 krige.cv.spatial(formula, locations, model = NULL, ..., beta = NULL, nmax = Inf, 
-	nmin = 0, maxdist = Inf, nfold = nrow(locations), verbose = FALSE)
+	nmin = 0, maxdist = Inf, nfold = nrow(locations), verbose = FALSE, debug.level = 1)
 }
 \arguments{
   \item{object}{ object of class gstat; see function \link{gstat}}
@@ -60,6 +60,8 @@ krige.cv.spatial(formula, locations, model = NULL, ..., beta = NULL, nmax = Inf,
   \item{maxdist}{ for local kriging: only observations within a distance
   of \code{maxdist} from the prediction location are used for prediction
   or simulation; if combined with \code{nmax}, both criteria apply }
+  \item{debug.level}{ print more debuggin information, or suppress (0)
+  progress information }
 }
 
 \section{Methods}{

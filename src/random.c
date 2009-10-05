@@ -110,7 +110,7 @@ void set_rng_functions(
 		const char *name) {
 	my_rng.r_unif = unif;
 	my_rng.r_normal = norm;
-	sprintf(start_up, "%s", name);
+	sprintf(start_up, name);
 	init = 1; /* the caller's responsibility, obviously */
 	return;
 }

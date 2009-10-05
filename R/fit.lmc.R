@@ -8,7 +8,7 @@ function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges,
         q = eigen(X)
         d = q$values
         d[d < 0] = 0
-        q$vectors %*% diag(d) %*% t(q$vectors)
+        q$vectors %*% diag(d, nrow = length(d)) %*% t(q$vectors)
     }
     if (!inherits(v, "gstatVariogram"))
         stop("v should be of class gstatVariogram")
