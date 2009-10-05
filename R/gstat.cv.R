@@ -1,4 +1,4 @@
-# $Id: gstat.cv.q,v 1.7 2009-02-20 10:27:26 edzer Exp $
+# $Id: gstat.cv.q,v 1.8 2009-08-17 14:38:28 edzer Exp $
 
 "gstat.cv" <-
 function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE, 
@@ -46,7 +46,7 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 				object$data[[v]]$data = varv$data[-skip, ]
 			}
 		}
-		x = predict.gstat(object, newdata = data[sel, ], ...)
+		x = predict(object, newdata = data[sel, ], ...)
 		if (verbose) 
 			print(paste("fold", i))
 		if (all.residuals) {

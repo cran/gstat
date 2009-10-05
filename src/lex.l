@@ -351,8 +351,7 @@ static char *bquote(char *command) {
 	size = file_size(fn);
 	cp = (char *) erealloc(cp, (size + 1) * sizeof(char));
 	f = efopen(fn, "r");
-	if (fread(cp, 1, size, f) != size)
-		ErrMsg(ER_READ, fn);
+	fread(cp, 1, size, f);
 	efclose(f);
 	eremove(fn);
 #else
