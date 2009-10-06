@@ -245,8 +245,7 @@ int init_global_variables(void) {
 	/* EJPXX 
 	 * 	if (valdata == NULL)
 	 * 	*/
-	valdata = (DATA *) emalloc(sizeof(DATA));
-	init_one_data(valdata);
+	valdata = init_one_data(valdata);
 	block.x = block.y = block.z = 0.0;
 	set_mv_double(&gl_zmap);
 	get_covariance(NULL, 0, 0, 0);
@@ -1054,14 +1053,19 @@ void check_global_variables(void) {
 
 void remove_all(void) {
 
+	int i;
 	while (n_vars)
 		remove_id(0); /* hard way */
-		/* remove_id(n_vars - 1);  */
+	/* for (i = n_vars-1; i >= 0; i--)
+		remove_id(i);
+	*/
+	/* remove_id(n_vars - 1);  */
 	/* the hard way; remove_id(n_vars-1) would be the ``easy'' alternative */
 	gls(NULL, 0, GLS_INIT, NULL, NULL); /* cleans up static arrays */
 	what_is_outfile(-1); /* cleans up static array */
 	reset_block_discr(); /* resets block settings */
 	max_block_dimension(1); /* reset */
+	valdata = NULL;
 }
 
 int remove_id(const int id) {

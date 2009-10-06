@@ -8,7 +8,8 @@
 function (g, id, formula, locations,
 	data = NULL, model = NULL, beta, nmax = Inf, nmin = 0, maxdist = Inf, 
 	dummy = FALSE, set, fill.all = FALSE, fill.cross = TRUE, 
-	variance = "identity", weights = NULL, merge, degree = 0, vdist = FALSE) 
+	variance = "identity", weights = NULL, merge, degree = 0, vdist = FALSE,
+	lambda = 1.0) 
 {
 	call = match.call()
 	if (!missing(locations) && inherits(locations, "formula")) {
@@ -78,7 +79,7 @@ function (g, id, formula, locations,
         data = data, has.intercept = attr(terms(formula), "intercept"),
 		beta = beta, nmax = nmax, nmin = nmin, maxdist = maxdist, 
 		dummy = dummy, vfn = vfn, weights = weights, degree = degree, 
-		vdist = vdist)
+		vdist = vdist, lambda = lambda)
     g$model[[id]] = model
 	if (!missing(locations))
 		g$locations = locations

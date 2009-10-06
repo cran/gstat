@@ -5,7 +5,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     beta = 0, tol.hor = 90/length(alpha), tol.ver = 90/length(beta), 
     cressie = FALSE, dX = numeric(0), boundaries = numeric(0), 
     cloud = FALSE, trend.beta = NULL, debug.level = 1, cross = TRUE, 
-	grid, map = FALSE, g = NULL, ..., projected = TRUE) 
+	grid, map = FALSE, g = NULL, ..., projected = TRUE, lambda = 1.0) 
 {
     id1 = id2 = 0
     ret = NULL
@@ -55,7 +55,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 				as.integer(1), as.double(t.beta), as.integer(-1),
 				as.integer(0), as.double(-1), as.integer(1), 
 				double(0), grd, as.integer(0), as.integer(projected),
-				as.integer(0))
+				as.integer(0), as.double(lambda))
 			if (!is.null(g) && !is.null(g$model[[id.names[i]]])) 
 				load.variogram.model(g$model[[id.names[i]]], c(i - 1, i - 1))
         }

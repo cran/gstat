@@ -1,4 +1,4 @@
-% $Id: krige.cv.Rd,v 1.16 2009-02-20 10:34:35 edzer Exp $
+% $Id: krige.cv.Rd,v 1.18 2009-10-30 16:11:21 edzer Exp $
 \name{krige.cv}
 \docType{methods}
 \alias{krige.cv}
@@ -15,9 +15,9 @@ gstat.cv(object, nfold, remove.all = FALSE, verbose = FALSE,
 	all.residuals = FALSE, ...)
 krige.cv(formula, locations, ...)
 krige.cv.locations(formula, locations, data, model = NULL, ..., beta = NULL, nmax = Inf, 
-	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = FALSE, debug.level = 1)
+	nmin = 0, maxdist = Inf, nfold = nrow(data), verbose = TRUE, debug.level = 0)
 krige.cv.spatial(formula, locations, model = NULL, ..., beta = NULL, nmax = Inf, 
-	nmin = 0, maxdist = Inf, nfold = nrow(locations), verbose = FALSE, debug.level = 1)
+	nmin = 0, maxdist = Inf, nfold = nrow(locations), verbose = TRUE, debug.level = 0)
 }
 \arguments{
   \item{object}{ object of class gstat; see function \link{gstat}}
@@ -27,7 +27,7 @@ krige.cv.spatial(formula, locations, model = NULL, ..., beta = NULL, nmax = Inf,
   folds, pass an integer vector of length \code{nrow(data)} with fold indexes. }
   \item{remove.all}{ logical; if TRUE, remove observations at cross validation
   locations not only for the first, but for all subsequent variables as well }
-  \item{verbose}{ logical; if TRUE, progress is printed }
+  \item{verbose}{ logical; if FALSE, progress bar is suppressed }
   \item{all.residuals}{ logical; if TRUE, residuals for all variables are
   returned instead of for the first variable only}
   \item{\dots}{ other arguments that will be passed to \link{predict.gstat}
@@ -60,8 +60,8 @@ krige.cv.spatial(formula, locations, model = NULL, ..., beta = NULL, nmax = Inf,
   \item{maxdist}{ for local kriging: only observations within a distance
   of \code{maxdist} from the prediction location are used for prediction
   or simulation; if combined with \code{nmax}, both criteria apply }
-  \item{debug.level}{ print more debuggin information, or suppress (0)
-  progress information }
+  \item{debug.level}{ print debugging information; 0 suppresses
+  debug information }
 }
 
 \section{Methods}{

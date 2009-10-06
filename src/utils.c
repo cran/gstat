@@ -133,9 +133,9 @@ void *erealloc(void *p, size_t size) {
 		pr_warning("erealloc(): size 0 requested");
 		return NULL;
 	}
-	if (p == NULL) {
+	if (p == NULL)
 		p = (void *) malloc(size);
-	} else
+	else
 		p = (void *) realloc(p, size);
 	if (p == NULL) {
 		if (DEBUG_DUMP)

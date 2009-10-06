@@ -61,7 +61,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 				as.double(raw$X), as.integer(raw$has.intercept),
 				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
 				as.numeric(w), double(0.0), as.integer(d$degree),
-				as.integer(is.projected(d$data)), as.integer(d$vdist))
+				as.integer(is.projected(d$data)), as.integer(d$vdist),
+				as.double(d$lambda))
 		}
 		if (!is.null(object$model[[name]])) 
 			load.variogram.model(object$model[[name]], c(i - 1, i - 1))

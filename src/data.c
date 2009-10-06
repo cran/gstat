@@ -1076,8 +1076,11 @@ void free_data(DATA *d) {
 		efree(d->sel);
 	if (d->list) 
 		efree(d->list);
+	if (d->colX) 
+		efree(d->colX);
 
-	qtree_free(d->qtree_root);
+	if (d->qtree_root != NULL)
+		qtree_free(d->qtree_root);
 
 	if (d->lm) 
 		free_lm(d->lm);
@@ -1149,6 +1152,7 @@ DATA *init_one_data(DATA *data) {
 	data->offset = 0;
 	data->skip = 0;
 	data->prob = 1.0;
+	data->lambda = 1.0;
 	data->calc_residuals = 1;
 	data->is_residual = 0;
 	data->polynomial_degree = 0;

@@ -1,4 +1,4 @@
-# $Id: fit.lmc.q,v 1.7 2007-03-13 21:59:03 edzer Exp $
+# $Id: fit.lmc.q,v 1.8 2009-10-06 07:52:00 edzer Exp $
 
 "fit.lmc" <-
 function (v, g, model, fit.ranges = FALSE, fit.lmc = !fit.ranges, 

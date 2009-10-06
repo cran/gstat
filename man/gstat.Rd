@@ -14,7 +14,7 @@ gstat object can be subsetted. }
 gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
 	nmin = 0, maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, 
 	fill.cross = TRUE, variance = "identity", weights = NULL, merge, 
-	degree = 0, vdist = FALSE)
+	degree = 0, vdist = FALSE, lambda = 1.0)
 \method{print}{gstat}(x, ...)
 }
 \arguments{
@@ -85,6 +85,7 @@ gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
   variogram distance is used for selecting the nmax nearest neighbours,
   after observations within distance maxdist (Euclidian/geographic) have been 
   pre-selected }
+  \item{lambda}{test feature; doesn't do anything (yet)}
   \item{...}{ arguments that are passed to the printing of variogram
   models only}
 }

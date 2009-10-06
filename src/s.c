@@ -120,14 +120,14 @@ SEXP gstat_exit(SEXP x) {
 	RANDOUT; /* write seed back to R/S engine */
 	seed_is_in = 0;
 	remove_all();
-	init_global_variables();
+	/* init_global_variables(); */
 	return(x);
 }
 
 SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
 			SEXP beta, SEXP nmax, SEXP nmin, SEXP maxdist, 
 			SEXP vfn, SEXP sw, SEXP grid, SEXP degree, SEXP is_projected,
-			SEXP vdist) {
+			SEXP vdist, SEXP lambda) {
 	double *y, *locs, *X, *w = NULL;
 	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
@@ -185,6 +185,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	d[id]->z_coord = "z (S-plus)";
 	d[id]->variable = "S-plus data";
 	d[id]->fname = "S-plus data";
+	d[id]->lambda = NUMERIC_POINTER(lambda)[0];
 	has_int = INTEGER_POINTER(has_intercept)[0];
 	/* increase d[id]->n_X and set d[id]->colX[i]: */
 	for (i = d[id]->n_X = 0; i < n_X; i++) 

@@ -52,7 +52,7 @@ typedef struct { 		/* structure to hold one point value: */
 } DPOINT;
 
 /* qtree_search structs (nsearch.c): */
-typedef struct {	/* four coordinates for a rectangular bounding box */
+typedef struct {	/* defining a rectangular bounding box */
 	double 	x, y, z, size;
 	int mode;
 } BBOX;
@@ -61,8 +61,8 @@ typedef struct qnode {	/* the struct used to define nodes in the search tree */
 	int n_node;			/* >= 0: number of data points in this node */
 					 	/* negative (-1) if u is a node list */
 	union {
-		struct qnode **node;/* pointers to 4 other nodes */			
-		DPOINT **list; 	    /* or pointers to data points */
+		struct qnode **node;/* pointers to 4 or 8 other nodes */			
+		DPOINT **list; 	    /* or pointers to data points within this leaf */
 	} u;
 	BBOX bb;
 } QTREE_NODE;
@@ -215,7 +215,8 @@ typedef struct {		/* structure that holds data info and lists */
 		minvariance, maxvariance, /* min/max variance */
 		mv,				/* missing value */
 		dX,				/* max. vector norm X-space distance */
-		prob;			/* inclusion probability (to sample data file) */
+		prob,			/* inclusion probability (to sample data file) */
+		lambda;			/* lambda value for box-cox transform */
 	int  minstratum, maxstratum; /* min/max stratum */
 	double mean, std;	/* sample mean and st.dev. of attribute */
 

@@ -1,4 +1,4 @@
-# $Id: gstat.cv.q,v 1.8 2009-08-17 14:38:28 edzer Exp $
+# $Id: gstat.cv.q,v 1.9 2009-10-30 16:11:21 edzer Exp $
 
 "gstat.cv" <-
 function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE, 
@@ -29,7 +29,12 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 			all.data[[v]] = object$data[[v]]$data
 	}
 
+	if (verbose)
+		pb <- txtProgressBar(1,length(unique(fold)),style=3)
+
 	for (i in sort(unique(fold))) {
+		if (verbose)
+			setTxtProgressBar(pb, i) 
 		sel = which(fold == i)
 		object$data[[1]]$data = data[-sel, ]
 		if (remove.all && length(object$data) > 1) {
@@ -47,8 +52,6 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 			}
 		}
 		x = predict(object, newdata = data[sel, ], ...)
-		if (verbose) 
-			print(paste("fold", i))
 		if (all.residuals) {
 			for (i in 1:length(object$data)) {
 				var.i = object$data[[i]]
@@ -64,6 +67,8 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 			ret[[2]][sel] = x[[2]]
 		}
 	}
+	if (verbose)
+		cat("\n")
 
 	if (! all.residuals) {
 		names(ret) = names(x)[1:2]
