@@ -11,7 +11,7 @@
    as a component of:
 
    Gstat, a program for geostatistical modelling, prediction and simulation
-   Copyright 1992-1998 (C) Edzer J. Pebesma
+   Copyright 1992-2009 (C) Edzer J. Pebesma
 
    Edzer J. Pebesma (E.Pebesma@geo.uu.nl)
    Landscape and environmental research group
@@ -141,12 +141,12 @@ static void init_qtree(DATA *d) {
 			bbox = bbox_from_data(d);
 	} else
 		bbox = bbox_from_data(d);
-	init_qnode(&(d->qtree_root), d->n_list < gl_split, bbox);
+	init_qnode(&(d->qtree_root), d->n_list < gl_split, bbox); /* ML1 */
 	
 	mode = bbox.mode;
 
 	for (i = 0; i < d->n_list; i++)
-		qtree_push_point(d, d->list[i]); /* now they won't be rejected */
+		qtree_push_point(d, d->list[i]); /* now they won't be rejected */ /* ML2 */
 
 	if (DEBUG_DUMP) {
 		printlog("top level search tree statistics for data(%s):\n",
@@ -172,7 +172,7 @@ static void init_qnode(QTREE_NODE **p_node, int isleaf, BBOX bb) {
 	int i;
 
 	if (*p_node == NULL) {
-		*p_node = (QTREE_NODE *) emalloc(sizeof(QTREE_NODE));
+		*p_node = (QTREE_NODE *) emalloc(sizeof(QTREE_NODE)); /* ML1 */
 		(*p_node)->bb = bb;
 	}
 
@@ -246,11 +246,12 @@ static void qtree_push(DPOINT *where, QTREE_NODE **p_node,
 		return;
 	}
 
+	/* XXX */
 	if (node->n_node == 0)
 		node->u.list = (DPOINT **) emalloc(sizeof(DPOINT *));
 	else
 		node->u.list = (DPOINT **) erealloc(node->u.list,
-			(node->n_node + 1) * sizeof(DPOINT *));
+			(node->n_node + 1) * sizeof(DPOINT *)); /* ML2 */
 	node->u.list[node->n_node] = where;
 	node->n_node++;
 	return;
@@ -305,10 +306,10 @@ void qtree_free(QTREE_NODE *node) {
 	if (!is_leaf(node)) {
 		for (i = 0; i < N_NODES(node); i++)
 			qtree_free(node->u.node[i]);
-	} else {
+		efree(node->u.node);
+	} else
 		efree(node->u.list);
-		efree(node);
-	}
+	efree(node);
 	return;
 }
 
@@ -329,7 +330,7 @@ static void qtree_split_node(QTREE_NODE *node, BBOX bbox, int rec_level) {
 	/* redistribute the points into the child nodes where they belong */
 	for (i = 0; i < n; i++)
 		qtree_push(list[i], &node, rec_level);
-
+	efree(list); 
 	return;
 }
 

@@ -21,7 +21,7 @@ and pooled variogram, and for irregular distance intervals.
 	0, beta = 0, tol.hor = 90/length(alpha), tol.ver =
 	90/length(beta), cressie = FALSE, dX = numeric(0), boundaries =
 	numeric(0), cloud = FALSE, trend.beta = NULL, debug.level = 1,
-	cross = TRUE, grid, map = FALSE, g = NULL, ..., projected = TRUE)
+	cross = TRUE, grid, map = FALSE, g = NULL, ..., projected = TRUE, lambda = 1.0)
 \method{variogram}{line}(..., deprecate = TRUE)
 \method{print}{gstatVariogram}(v, ...)
 \method{print}{variogramCloud}(v, ...)
@@ -96,7 +96,7 @@ distances are computed, for unprojected great circle distances
 (km). In \code{variogram.formula} or \code{variogram.gstat}, for data
 deriving from class Spatial, projection is detected automatically using
 \code{is.projected}}
-
+\item{lambda}{test feature; not working (yet)}
 } 
 
 \value{ If map is TRUE (or a map is passed), a grid map is returned

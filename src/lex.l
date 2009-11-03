@@ -159,7 +159,10 @@ NL				"\n"
 				return(QSTR);
 			}
 {IDENT}     {	/* SCANNED("IDENT"); */
+				/* was:
 				yylval.sval = string_dup((char *) yytext);
+				*/
+				yylval.sval = (char *) yytext;
 				if (almost_equals((char *) yytext, "data") ||
 						almost_equals((char *) yytext, "points")) {
 					SCANNED("data"); return(ID_DATA);

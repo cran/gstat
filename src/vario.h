@@ -89,10 +89,11 @@ typedef struct {
 } V_MODEL;
 extern const V_MODEL v_models[];
 
+#define NRANGEPARS 2 /* number of range parameters in variogram models */
 typedef struct {
 	VGM_MODEL_TYPE model;
 	int fit_sill, fit_range, id;
-	double *range, sill,
+	double range[NRANGEPARS], sill,
 	(*fnct)(double h, double *r), /* (partial) unit variogram function */
 	(*da_fnct)(double h, double *r); /* (partial) derivative to range of unit variogram */
 	ANIS_TM *tm_range;
@@ -166,8 +167,6 @@ typedef struct {
 #define MODELHASNORANGE(m) (m == NUGGET || m == INTERCEPT)
 #define PARTHASNORANGE(m) (m->model == NUGGET || m->model == INTERCEPT || \
 	(m->model == LINEAR && m->range == 0.0))
-
-#define NRANGEPARS 2 /* number of range parameters in variogram models */
 
 #if defined(__cplusplus)
 extern "C" {

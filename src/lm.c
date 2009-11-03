@@ -157,6 +157,8 @@ void free_lm(void *v_lm) {
 		m_free(lm->X);
 	if (lm->Chol)
 		m_free(lm->Chol);
+	if (lm->Cov)
+		m_free(lm->Cov);
 	efree(lm);
 }
 

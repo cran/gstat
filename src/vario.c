@@ -54,7 +54,7 @@ static int is_valid_cs(const VARIOGRAM *aa, const VARIOGRAM *bb,
 static int is_posdef(MAT *m);
 static void strcat_tm(char *cp, ANIS_TM *tm);
 static ANIS_TM *get_tm(double anis[5]);
-static void init_variogram_part(VGM_MODEL *v, int nrangepars);
+static void init_variogram_part(VGM_MODEL *v);
 
 const V_MODEL v_models[] = { /* the variogram model ``data base'': */
 	{	 NOT_SP, "Nsp", "Nsp (not specified)",  /* DON'T CHANGE THIS ONE!! */
@@ -180,7 +180,7 @@ VARIOGRAM *init_variogram(VARIOGRAM *v) {
 	v->part = (VGM_MODEL *) emalloc(INIT_N_VGMM * sizeof(VGM_MODEL));
 	v->table = NULL;
 	for (i = 0; i < INIT_N_VGMM; i++)
-		init_variogram_part(&(v->part[i]), NRANGEPARS);
+		init_variogram_part(&(v->part[i]));
 	v->max_n_models = INIT_N_VGMM;
 	v->SSErr = 0.0;
 	v->ev = init_ev();
@@ -195,12 +195,11 @@ void vgm_init_block_values(VARIOGRAM *v) {
 	v->block_semivariance = -999999.0;
 }
 
-void init_variogram_part(VGM_MODEL *p, int nrangepars) {
+static void init_variogram_part(VGM_MODEL *p) {
 	int i;
 
 	p->sill = 0.0;
-	p->range = (double *) emalloc(nrangepars * sizeof(double));
-	for (i = 0; i < nrangepars; i++)
+	for (i = 0; i < NRANGEPARS; i++)
 		set_mv_double(&(p->range[i])); /* trigger errors if misused */
 	p->model = NOT_SP;
 	p->fit_sill = p->fit_range = 1;
@@ -237,6 +236,7 @@ SAMPLE_VGM *init_ev(void) {
 	return ev;
 }
 
+
 void free_variogram(VARIOGRAM *v) {
 	int i;
 
@@ -251,15 +251,13 @@ void free_variogram(VARIOGRAM *v) {
 		}
 		efree(v->ev);
 	}
-	for (i = 0; i < v->max_n_models; i++) {
-		efree(v->part[i].range);
+	for (i = 0; i < v->max_n_models; i++)
 		if (v->part[i].tm_range != NULL)
 			efree(v->part[i].tm_range);
-	}
-	/* EJPXX
-	if (v->descr)
+		
+	if (v->descr != NULL)
 		efree(v->descr);
-	*/
+
 	efree(v->part);
 	if (v->table) {
 		efree(v->table->values);
@@ -768,8 +766,9 @@ int push_variogram_model(VARIOGRAM *v, VGM_MODEL part) {
 		v->part = (VGM_MODEL *) erealloc(v->part, 
 				(v->max_n_models + INIT_N_VGMM) * sizeof(VGM_MODEL));
 		for (i = v->max_n_models; i < v->max_n_models + INIT_N_VGMM; i++)
-			init_variogram_part(&(v->part[i]), NRANGEPARS);
+			init_variogram_part(&(v->part[i]));
 		v->max_n_models += INIT_N_VGMM;
+		printf("enlarging v->max_n_models\n");
 	}
 	/*
 	 * check some things: 
@@ -1006,7 +1005,7 @@ void push_to_v(VARIOGRAM *v, const char *mod, double sill, double *range,
 	VGM_MODEL vm;
 	int i;
 
-	init_variogram_part(&vm, NRANGEPARS);
+	init_variogram_part(&vm);
 	vm.model = which_variogram_model(mod);
 	if (nrangepars > NRANGEPARS)
 		ErrMsg(ER_IMPOSVAL, "too many range parameters");
