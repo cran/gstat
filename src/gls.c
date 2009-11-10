@@ -325,7 +325,10 @@ void gls(DATA **d /* pointer to DATA array */,
  * factorize C: 
  */
 			if (! gl_sparse)
+#ifdef CUDA
+#else
 				LDLfactor(glm->C);
+#endif
 #ifdef HAVE_SPARSE
 			else {
 				sp_compact(glm->spC, 0.0);

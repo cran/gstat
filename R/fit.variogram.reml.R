@@ -1,4 +1,4 @@
-# $Id: fit.variogram.reml.q,v 1.13 2008-10-09 14:25:20 edzer Exp $
+# $Id: fit.variogram.reml.q,v 1.14 2009-11-02 21:33:17 edzer Exp $
 
 "fit.variogram.reml" <-
 function (formula, locations, data, model, debug.level = 1, set, degree = 0)

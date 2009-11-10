@@ -1065,6 +1065,8 @@ void remove_all(void) {
 	what_is_outfile(-1); /* cleans up static array */
 	reset_block_discr(); /* resets block settings */
 	max_block_dimension(1); /* reset */
+	if (valdata != NULL)
+		free_data(valdata);
 	valdata = NULL;
 }
 

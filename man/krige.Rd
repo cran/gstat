@@ -1,10 +1,12 @@
-% $Id: krige.Rd,v 1.21 2009-02-20 16:52:57 edzer Exp $
+% $Id: krige.Rd,v 1.23 2009-12-01 13:32:16 edzer Exp $
 \name{krige}
 \docType{methods}
 \alias{krige}
+\alias{krige0}
 \alias{krige.locations}
 \alias{krige.spatial}
 \alias{idw}
+\alias{idw0}
 \alias{idw.locations}
 \alias{idw.spatial}
 \alias{krige-methods}
@@ -32,6 +34,7 @@ na.action = na.pass, debug.level = 1)
 krige.spatial(formula, locations, newdata, model, ..., beta, nmax
 = Inf, nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
 na.action = na.pass, debug.level = 1)
+krige0(formula, data, newdata, model, beta, y)
 idw(formula, locations, ...)
 idw.locations(formula, locations, data, newdata, nmax = Inf, 
 	nmin = 0, maxdist = Inf, block, na.action = na.pass, idp = 2.0,
@@ -39,6 +42,7 @@ idw.locations(formula, locations, data, newdata, nmax = Inf,
 idw.spatial(formula, locations, newdata, nmax = Inf, nmin = 0, 
     maxdist = Inf, block = numeric(0), na.action = na.pass, idp = 2.0,
 	debug.level = 1)
+idw0(formula, data, newdata, y)
 }
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear
@@ -57,10 +61,10 @@ idw.spatial(formula, locations, newdata, nmax = Inf, nmin = 0,
   (if locations is a formula) the coordinates with names as defined in \code{locations} }
  \item{model}{ variogram model of dependent variable (or its residuals), 
   defined by a call to \link{vgm} or \link{fit.variogram}}
- \item{beta}{ only for simple kriging (and simulation based on simple
-  kriging); vector with the trend coefficients (including intercept);
+ \item{beta}{ for simple kriging (and simulation based on simple
+  kriging): vector with the trend coefficients (including intercept);
   if no independent variables are defined the model only contains an
-  intercept and this should be the simple kriging mean }
+  intercept and beta should be the simple kriging mean }
  \item{nmax}{ for local kriging: the number of nearest observations that
   should be used for a kriging prediction or simulation, where nearest
   is defined in terms of the space of the spatial locations. By default,
@@ -91,6 +95,9 @@ idw.spatial(formula, locations, newdata, nmax = Inf, nmin = 0,
  to see progress in percentage, and 0 to suppress all printed information }
  \item{\dots}{ other arguments that will be passed to \link{gstat}}
  \item{idp}{numeric; specify the inverse distance weighting power}
+ \item{y}{matrix; to krige multiple fields in a single step, pass data 
+ as columns of matrix \code{y}. This will ignore the value of the 
+ response in \code{formula}.}
 }
 \section{Methods}{
 \describe{
@@ -124,7 +131,12 @@ if \code{locations} is not a formula, object of the same class as
 containing the coordinates of \code{newdata}. Attributes columns
 contain prediction and prediction variance (in case of kriging) or the
 \code{abs(nsim)} columns of the conditional Gaussian or indicator
-simulations }
+simulations 
+
+\code{krige0} and \code{idw0} are alternative functions that have reduced
+functionality and larger memory requirements; they return numeric vectors
+with predicted values only.
+}
 
 \references{ N.A.C. Cressie, 1993, Statistics for Spatial Data,
 Wiley. 
@@ -163,13 +175,16 @@ m <- vgm(.4, "Sph", 954, .06)
 # universal block kriging:
 x <- krige(log(zinc)~x+y, meuse, meuse.grid, model = m, block = c(40,40))
 spplot(x["var1.pred"], main = "universal kriging predictions")
-# add grid:
-#levelplot(var1.var~x+y, as.data.frame(x), aspect = "iso",
-#		panel = function(...) {
-#			panel.levelplot(...)
-#			panel.abline(h = 0:3*1000 + 330000, v= 0:2*1000 + 179000, col = "grey")
-#		},
-#	main = "universal kriging variance")
+
+# krige0, using user-defined covariance function and multiple responses in y:
+v = function(h) { exp(-h/500) }
+y = cbind(meuse$zinc,meuse$copper,meuse$lead,meuse$cadmium)
+x <- krige0(zinc~1, meuse, meuse.grid, v, y = y)
+meuse.grid$zinc = x[,1]
+spplot(meuse.grid["zinc"], main = "zinc")
+meuse.grid$copper = x[,2]
+spplot(meuse.grid["copper"], main = "copper")
+# etc.
 
 }
 \keyword{ models }
