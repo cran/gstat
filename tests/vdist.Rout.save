@@ -1,0 +1,39 @@
+
+R version 2.9.2 (2009-08-24)
+Copyright (C) 2009 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(gstat)
+Loading required package: sp
+> 
+> data(meuse)
+> coordinates(meuse) = ~x+y
+> data(meuse.grid)
+> gridded(meuse.grid) = ~x+y
+> 
+> mg = meuse.grid
+> gridded(mg) = FALSE
+> mg= mg[1500,]
+> krige(log(zinc)~1,meuse,mg,vgm(1, "Exp", 300, anis=c(0,0.01)),
++ 	vdist=FALSE, maxdist=1000,nmax=10)
+[using ordinary kriging]
+       coordinates var1.pred var1.var
+1 (180260, 331300)  5.007376 1.102622
+> krige(log(zinc)~1,meuse,mg,vgm(1, "Exp", 300, anis=c(0,0.01)),
++ 	vdist=TRUE, maxdist=1000,nmax=10)
+[using ordinary kriging]
+       coordinates var1.pred var1.var
+1 (180260, 331300)   5.50671 1.100095
+> 

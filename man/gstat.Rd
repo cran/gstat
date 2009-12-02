@@ -1,4 +1,4 @@
-% $Id: gstat.Rd,v 1.22 2009-01-05 14:49:13 edzer Exp $
+% $Id: gstat.Rd,v 1.23 2009-11-02 21:33:17 edzer Exp $
 \name{gstat}
 \alias{gstat}
 \alias{print.gstat}

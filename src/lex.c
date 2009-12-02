@@ -160,7 +160,15 @@ typedef unsigned int flex_uint32_t;
 
 /* Size of default input buffer. */
 #ifndef YY_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k.
+ * Moreover, YY_BUF_SIZE is 2*YY_READ_BUF_SIZE in the general case.
+ * Ditto for the __ia64__ case accordingly.
+ */
+#define YY_BUF_SIZE 32768
+#else
 #define YY_BUF_SIZE 16384
+#endif /* __ia64__ */
 #endif
 
 /* The state buf must be large enough to hold one state per character in the main buffer.
@@ -606,7 +614,7 @@ static void reset_lex(void);
 /*
 * following is the RULES section:
 */
-#line 610 "<stdout>"
+#line 618 "<stdout>"
 
 #define INITIAL 0
 
@@ -687,7 +695,12 @@ static int input (void );
 
 /* Amount of stuff to slurp up with each read. */
 #ifndef YY_READ_BUF_SIZE
+#ifdef __ia64__
+/* On IA-64, the buffer size is 16k, not 8k */
+#define YY_READ_BUF_SIZE 16384
+#else
 #define YY_READ_BUF_SIZE 8192
+#endif /* __ia64__ */
 #endif
 
 /* Copy whatever the last rule matched to the standard output. */
@@ -695,7 +708,7 @@ static int input (void );
 /* This used to be an fputs(), but since the string might contain NUL's,
  * we now use fwrite().
  */
-#define ECHO fwrite( gstat_yytext, gstat_yyleng, 1, gstat_yyout )
+#define ECHO do { if (fwrite( gstat_yytext, gstat_yyleng, 1, gstat_yyout )) {} } while (0)
 #endif
 
 /* Gets input and stuffs it into "buf".  number of characters read, or YY_NULL,
@@ -790,7 +803,7 @@ YY_DECL
     
 #line 126 "lex.l"
 
-#line 794 "<stdout>"
+#line 807 "<stdout>"
 
 	if ( !(yy_init) )
 		{
@@ -934,7 +947,10 @@ case 9:
 YY_RULE_SETUP
 #line 161 "lex.l"
 {	/* SCANNED("IDENT"); */
+				/* was:
 				yylval.sval = string_dup((char *) gstat_yytext);
+				*/
+				yylval.sval = (char *) gstat_yytext;
 				if (almost_equals((char *) gstat_yytext, "data") ||
 						almost_equals((char *) gstat_yytext, "points")) {
 					SCANNED("data"); return(ID_DATA);
@@ -972,32 +988,32 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 197 "lex.l"
+#line 200 "lex.l"
 {	SCANNED("WS"); return(gstat_yylex()); }
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 198 "lex.l"
+#line 201 "lex.l"
 {	SCANNED("NL"); My_yy_lineno++; return(gstat_yylex()); }
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 199 "lex.l"
+#line 202 "lex.l"
 {	SCANNED("COMMENT (#)"); My_yy_lineno++; return(gstat_yylex()); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 200 "lex.l"
+#line 203 "lex.l"
 {	SCANNED(""); return(*gstat_yytext); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 202 "lex.l"
+#line 205 "lex.l"
 ECHO;
 	YY_BREAK
-#line 1001 "<stdout>"
+#line 1017 "<stdout>"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1755,8 +1771,8 @@ YY_BUFFER_STATE gstat_yy_scan_string (yyconst char * yystr )
 
 /** Setup the input buffer state to scan the given bytes. The next call to gstat_yylex() will
  * scan from a @e copy of @a bytes.
- * @param bytes the byte buffer to scan
- * @param len the number of bytes in the buffer pointed to by @a bytes.
+ * @param yybytes the byte buffer to scan
+ * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
  * 
  * @return the newly allocated buffer state object.
  */
@@ -1995,7 +2011,7 @@ void gstat_yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 202 "lex.l"
+#line 205 "lex.l"
 
 
 /* User supplied subroutines: */
@@ -2149,7 +2165,8 @@ static char *bquote(char *command) {
 	size = file_size(fn);
 	cp = (char *) erealloc(cp, (size + 1) * sizeof(char));
 	f = efopen(fn, "r");
-	fread(cp, 1, size, f);
+	if (fread(cp, 1, size, f) != size)
+		ErrMsg(ER_READ, fn);
 	efclose(f);
 	eremove(fn);
 #else

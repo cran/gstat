@@ -1,0 +1,77 @@
+
+R version 2.10.0 (2009-10-26)
+Copyright (C) 2009 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # test -- load data:
+> library(gstat)
+Loading required package: sp
+> data(meuse)
+> coordinates(meuse) = ~x+y
+> data(meuse.grid)
+> gridded(meuse.grid) = ~x+y
+> 
+> # test -- idw
+> meuse.grid$idw <- idw0(zinc~1, meuse, meuse.grid)
+> x <- idw(zinc~1, meuse, meuse.grid)
+[inverse distance weighted interpolation]
+> summary(x$var1.pred - meuse.grid$idw)
+       V1            
+ Min.   :-1.137e-12  
+ 1st Qu.:-5.684e-14  
+ Median : 0.000e+00  
+ Mean   : 5.908e-15  
+ 3rd Qu.: 1.137e-13  
+ Max.   : 1.819e-12  
+> spplot(meuse.grid["idw"],col.regions=bpy.colors())
+> v = vgm(1, "Exp", 500)
+> # test sk:
+> meuse.grid$sk <- krige0(zinc~1, meuse, meuse.grid, v, beta = 500)
+> x <- krige(zinc~1, meuse, meuse.grid, v, beta = 500)
+[using simple kriging]
+> summary(x$var1.pred - meuse.grid$sk)
+       V1            
+ Min.   :-1.364e-12  
+ 1st Qu.:-1.705e-13  
+ Median : 0.000e+00  
+ Mean   :-2.599e-14  
+ 3rd Qu.: 1.137e-13  
+ Max.   : 1.364e-12  
+> spplot(meuse.grid["sk"],col.regions=bpy.colors())
+> # test ok:
+> meuse.grid$ok <- krige0(zinc~1, meuse, meuse.grid, v)
+> x <- krige(zinc~1, meuse, meuse.grid, v)
+[using ordinary kriging]
+> summary(x$var1.pred - meuse.grid$ok)
+       V1            
+ Min.   :-1.251e-12  
+ 1st Qu.:-1.705e-13  
+ Median : 0.000e+00  
+ Mean   :-2.138e-14  
+ 3rd Qu.: 1.137e-13  
+ Max.   : 1.364e-12  
+> # test uk:
+> meuse.grid$uk <- krige0(zinc~sqrt(dist), meuse, meuse.grid, v)
+> x <- krige(zinc~sqrt(dist), meuse, meuse.grid, v)
+[using universal kriging]
+> summary(x$var1.pred - meuse.grid$uk)
+       V1            
+ Min.   :-1.137e-12  
+ 1st Qu.:-1.137e-13  
+ Median : 0.000e+00  
+ Mean   :-1.682e-14  
+ 3rd Qu.: 1.137e-13  
+ Max.   : 1.137e-12  
+> 

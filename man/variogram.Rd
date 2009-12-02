@@ -1,4 +1,4 @@
-% $Id: variogram.Rd,v 1.22 2009-02-20 13:53:38 edzer Exp $
+% $Id: variogram.Rd,v 1.23 2009-11-02 21:33:17 edzer Exp $
 \name{variogram}
 \alias{variogram}
 \alias{variogram.gstat}
