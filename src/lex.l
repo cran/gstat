@@ -159,10 +159,11 @@ NL				"\n"
 				return(QSTR);
 			}
 {IDENT}     {	/* SCANNED("IDENT"); */
-				/* was:
-				yylval.sval = string_dup((char *) yytext);
-				*/
+#ifdef USING_R /* don't leak memory */
 				yylval.sval = (char *) yytext;
+#else /* avoid trouble if we don't duplicate the string: */
+				yylval.sval = string_dup((char *) yytext);
+#endif
 				if (almost_equals((char *) yytext, "data") ||
 						almost_equals((char *) yytext, "points")) {
 					SCANNED("data"); return(ID_DATA);

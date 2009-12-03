@@ -60,7 +60,8 @@ idw0(formula, data, newdata, y)
   contain attribute columns with the independent variables (if present) and 
   (if locations is a formula) the coordinates with names as defined in \code{locations} }
  \item{model}{ variogram model of dependent variable (or its residuals), 
-  defined by a call to \link{vgm} or \link{fit.variogram}}
+  defined by a call to \link{vgm} or \link{fit.variogram}; for \code{krige0}
+  also a user-supplied covariance function is allowed (see example below) }
  \item{beta}{ for simple kriging (and simulation based on simple
   kriging): vector with the trend coefficients (including intercept);
   if no independent variables are defined the model only contains an
@@ -177,7 +178,8 @@ x <- krige(log(zinc)~x+y, meuse, meuse.grid, model = m, block = c(40,40))
 spplot(x["var1.pred"], main = "universal kriging predictions")
 
 # krige0, using user-defined covariance function and multiple responses in y:
-v = function(h) { exp(-h/500) }
+# exponential variogram with range 500, defined as covariance function:
+v = function(x,y) { exp(-spDists(coordinates(x),coordinates(y))/500) }
 y = cbind(meuse$zinc,meuse$copper,meuse$lead,meuse$cadmium)
 x <- krige0(zinc~1, meuse, meuse.grid, v, y = y)
 meuse.grid$zinc = x[,1]

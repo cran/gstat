@@ -947,10 +947,11 @@ case 9:
 YY_RULE_SETUP
 #line 161 "lex.l"
 {	/* SCANNED("IDENT"); */
-				/* was:
-				yylval.sval = string_dup((char *) gstat_yytext);
-				*/
+#ifdef USING_R /* don't leak memory */
 				yylval.sval = (char *) gstat_yytext;
+#else /* avoid trouble if we don't duplicate the string: */
+				yylval.sval = string_dup((char *) gstat_yytext);
+#endif
 				if (almost_equals((char *) gstat_yytext, "data") ||
 						almost_equals((char *) gstat_yytext, "points")) {
 					SCANNED("data"); return(ID_DATA);
@@ -988,32 +989,32 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 200 "lex.l"
+#line 201 "lex.l"
 {	SCANNED("WS"); return(gstat_yylex()); }
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 201 "lex.l"
+#line 202 "lex.l"
 {	SCANNED("NL"); My_yy_lineno++; return(gstat_yylex()); }
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 202 "lex.l"
+#line 203 "lex.l"
 {	SCANNED("COMMENT (#)"); My_yy_lineno++; return(gstat_yylex()); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 203 "lex.l"
+#line 204 "lex.l"
 {	SCANNED(""); return(*gstat_yytext); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 205 "lex.l"
+#line 206 "lex.l"
 ECHO;
 	YY_BREAK
-#line 1017 "<stdout>"
+#line 1018 "<stdout>"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2011,7 +2012,7 @@ void gstat_yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 205 "lex.l"
+#line 206 "lex.l"
 
 
 /* User supplied subroutines: */
