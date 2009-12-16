@@ -2215,7 +2215,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 366 "parse.y"
     {
-			push_to_v(v, (yyvsp[(2) - (5)].sval), (yyvsp[(1) - (5)].dval), range, nrangepars, anis, fit_sill, fit_range);
+			push_to_v(v, (const char *) (yyvsp[(2) - (5)].sval), (yyvsp[(1) - (5)].dval), range, nrangepars, anis, fit_sill, fit_range);
 		}
     break;
 

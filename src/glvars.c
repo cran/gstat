@@ -1053,7 +1053,6 @@ void check_global_variables(void) {
 
 void remove_all(void) {
 
-	int i;
 	while (n_vars)
 		remove_id(0); /* hard way */
 	/* for (i = n_vars-1; i >= 0; i--)
