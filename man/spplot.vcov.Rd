@@ -15,6 +15,6 @@ resulting from a krige call with multiple variables (cokriging }
 }
 \value{ The plotted object, of class trellis; see \code{spplot} in
 package \pkg{sp}. }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \keyword{dplot}
 

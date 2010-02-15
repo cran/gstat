@@ -1,4 +1,4 @@
-% $Id: krige.Rd,v 1.23 2009-12-01 13:32:16 edzer Exp $
+% $Id: krige.Rd,v 1.25 2010-01-12 12:15:48 edzer Exp $
 \name{krige}
 \docType{methods}
 \alias{krige}
@@ -34,7 +34,7 @@ na.action = na.pass, debug.level = 1)
 krige.spatial(formula, locations, newdata, model, ..., beta, nmax
 = Inf, nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
 na.action = na.pass, debug.level = 1)
-krige0(formula, data, newdata, model, beta, y)
+krige0(formula, data, newdata, model, beta, y, ..., computeVar = FALSE)
 idw(formula, locations, ...)
 idw.locations(formula, locations, data, newdata, nmax = Inf, 
 	nmin = 0, maxdist = Inf, block, na.action = na.pass, idp = 2.0,
@@ -99,6 +99,7 @@ idw0(formula, data, newdata, y)
  \item{y}{matrix; to krige multiple fields in a single step, pass data 
  as columns of matrix \code{y}. This will ignore the value of the 
  response in \code{formula}.}
+ \item{computeVar}{logical; if TRUE, prediction variances will be returned}
 }
 \section{Methods}{
 \describe{
@@ -136,7 +137,9 @@ simulations
 
 \code{krige0} and \code{idw0} are alternative functions that have reduced
 functionality and larger memory requirements; they return numeric vectors
-with predicted values only.
+(or matrices, in case of multiple dependent) with predicted values only;
+in case \code{computeVar} is TRUE, a list with elements pred and var is
+returned, containing predictions and variances.
 }
 
 \references{ N.A.C. Cressie, 1993, Statistics for Spatial Data,
@@ -147,7 +150,7 @@ Wiley.
 Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
 Computers \& Geosciences, 30: 683-691.
 }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \note{  
 Daniel G. Krige is a South African scientist who was a mining engineer
 when he first used generalised least squares prediction with spatial
@@ -180,13 +183,12 @@ spplot(x["var1.pred"], main = "universal kriging predictions")
 # krige0, using user-defined covariance function and multiple responses in y:
 # exponential variogram with range 500, defined as covariance function:
 v = function(x,y) { exp(-spDists(coordinates(x),coordinates(y))/500) }
+# krige two variables in a single pass (using 1 covariance model):
 y = cbind(meuse$zinc,meuse$copper,meuse$lead,meuse$cadmium)
 x <- krige0(zinc~1, meuse, meuse.grid, v, y = y)
 meuse.grid$zinc = x[,1]
 spplot(meuse.grid["zinc"], main = "zinc")
 meuse.grid$copper = x[,2]
 spplot(meuse.grid["copper"], main = "copper")
-# etc.
-
 }
 \keyword{ models }

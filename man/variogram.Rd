@@ -138,7 +138,7 @@ Cressie, N.A.C., 1993, Statistics for Spatial Data, Wiley.
 Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
 Computers \& Geosciences, 30: 683-691.
 }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \note{
 \code{variogram.line} is DEPRECATED; it is and was never meant as a variogram
 method, but works automatically as such by the R dispatch system. Use

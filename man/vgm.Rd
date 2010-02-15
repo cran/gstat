@@ -43,7 +43,7 @@ as model argument: "Exp", "Sph" etc) and long (with some description).
 as.vgm.variomodel tries to convert an object of class variomodel (geoR)
 to vgm.
 }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \note{ 
 Geometric anisotropy can be modelled for each individual simple model
 by giving two or five anisotropy parameters, two for two-dimensional

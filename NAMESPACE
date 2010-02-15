@@ -9,6 +9,7 @@ export(as.vgm.variomodel,
 	fit.lmc,
 	fit.variogram,
 	fit.variogram.reml,
+	fit.variogram.gls,
 	get.contr,
 	gstat,
 	gstat.cv,
@@ -31,6 +32,8 @@ export(as.vgm.variomodel,
 	xyz2img)
 
 exportMethods(krige, idw, krige.cv)
+
+S3method(as.data.frame, variogramCloud)
 
 S3method(image, data.frame)
 

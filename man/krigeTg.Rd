@@ -77,7 +77,7 @@ Wiley.
 
 }
 
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 
 \seealso{ \link{gstat}, \link{predict.gstat} }
 

@@ -7,6 +7,7 @@ examples	how to do the original gstat example files in S
 grass		example grass/R/gstat run; requires grass meuse data set installed
 gstat3D		example of 3D interpolation of random points
 krige		sample run of ordinary and universal kriging
+lhs			create latin hypercube sample of Gaussian random field
 sic2004		part of sic2004 excercise; see ?sic2004
 pcb			pcb North Sea data analysis as used for geoENV2004 paper; see ?pcb
 fulmar		analysis of Fulmaris glacialis data on Dutch part of the North Sea
@@ -15,3 +16,4 @@ ugsim		unconditional Gaussian simulation
 snow		parallel kriging using package snow (not on Windows)
 line		examples for lines support prediction
 weight		compute (the expensive way) kriging weights for a single prediction location
+wind		space-time kriging with the Irish wind data sets

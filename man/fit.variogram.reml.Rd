@@ -24,7 +24,7 @@ to set the max. number of iterations to 100.  }
 \item{degree}{order of trend surface in the location, between 0 and 3}
 }
 
-\value{ an object of class "variogram.model"; see \link{fit.variogram} }
+\value{ an object of class "variogramModel"; see \link{fit.variogram} }
 
 \references{ 
 Christensen, R. Linear models for multivariate, Time Series,
@@ -33,7 +33,7 @@ and Spatial Data, Springer, NY, 1991.
 Kitanidis, P., Minimum-Variance Quadratic Estimation of Covariances of
 Regionalized Variables, Mathematical Geology 17 (2), 195--208, 1985 }
 
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \note{
 This implementation only uses REML fitting of sill parameters. For each
 iteration, an \eqn{n \times n}{n x n} matrix is inverted, with $n$ the number of

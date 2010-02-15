@@ -10,6 +10,6 @@
 
 \title{Gstat Internal Functions}
 \description{gstat internal functions}
-\author{Edzer J. Pebesma}
+\author{Edzer Pebesma}
 \note{these functions are not meant to be called by users directly}
 \keyword{internal}

@@ -30,7 +30,8 @@ CHsolve = function(A, b) {
 	backsolve(A, forwardsolve(A, b, upper.tri = TRUE, transpose = TRUE))
 }
 
-krige0 <- function(formula, data, newdata, model, beta, y) {
+krige0 <- function(formula, data, newdata, model, beta, y, ..., 
+		computeVar = FALSE) {
 
 	stopifnot(identical(proj4string(data), proj4string(newdata)))
 	lst = extractFormula(formula, data, newdata)
@@ -44,21 +45,36 @@ krige0 <- function(formula, data, newdata, model, beta, y) {
 	s0 = coordinates(newdata)
 	if (is(model, "variogramModel")) {
 		require(gstat)
-		V = matrix(variogramLine(model, dist_vector = spDists(s, s, ll),
-			covariance=TRUE)$gamma, nrow(s), nrow(s))
-		v0 = matrix(variogramLine(model, dist_vector = spDists(s, s0, ll),
-			covariance=TRUE)$gamma, nrow(s), nrow(s0))
+		V = variogramLine(model, dist_vector = spDists(s, s, ll),
+			covariance=TRUE)
+		v0 = variogramLine(model, dist_vector = spDists(s, s0, ll),
+			covariance=TRUE)
+		c0 = variogramLine(model, dist_vector = c(0), covariance=TRUE)$gamma
 	} else {
 		V = model(data, data)
 		v0 = model(data, newdata)
+		c0 = as.numeric(model(data[1,],data[1,]))
 	}
-	if (!missing(beta)) # sk:
-		wts = CHsolve(V, v0)
-	else { # ok/uk -- need to estimate beta:
-		wts = CHsolve(V, cbind(v0, X))
-		ViX = wts[,-(1:nrow(s0))]
-		wts = wts[,1:nrow(s0)]
+	doSimpleKriging = !missing(beta)
+	if (doSimpleKriging) { # sk:
+		skwts = CHsolve(V, v0)
+		if (computeVar)
+			var = diag(c0 - t(v0) %*% skwts)
+	} else { # ok/uk -- need to estimate beta:
+		skwts = CHsolve(V, cbind(v0, X))
+		ViX = skwts[,-(1:nrow(s0))]
+		skwts = skwts[,1:nrow(s0)]
 		beta = solve(t(X) %*% ViX, t(ViX) %*% y)
+		if (computeVar) {
+			# (x0-X'C-1 c0)'(X'C-1X)-1 (x0-X'C-1 c0)
+			Q = t(x0) - t(ViX) %*% v0
+			# full variance-covariance of predictions?
+			var = diag(c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q))
+		}
 	}
-	x0 %*% beta + t(wts) %*% (y - X %*% beta)
+	pred = x0 %*% beta + t(skwts) %*% (y - X %*% beta)
+	if (computeVar)
+		list(pred = pred, var = var)
+	else
+		pred
 }

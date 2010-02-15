@@ -2258,13 +2258,15 @@ static DATA *read_grass_data(DATA * d) {
 	point.u.stratum = 0;
 /* Make sure that the current projection is UTM or defined-99 or  */
 /* unreferenced XY projection.                       */
-	if ((G_projection() != 0) && (G_projection() != 1)
-			&& (G_projection() != 99))
-		G_fatal_error(
-		"%s:  Projection must be either Unreferenced XY (value 0) or \
-UTM (value 1).  Change the value \"proj\" in file \"WIND\" to either \
-0 or 1 and then re-executed \"%s\".",
+	if (!gl_longlat) { /* user apparently knows what she/he does! */
+		if ((G_projection() != 0) && (G_projection() != 1)
+				&& (G_projection() != 99))
+			G_fatal_error(
+			"%s:  Projection must be either Unreferenced XY (value 0) or \
+	UTM (value 1).  Change the value \"proj\" in file \"WIND\" to either \
+	0 or 1 and then re-execute \"%s\".",
 				G_program_name(), G_program_name());
+	}
 
 	/* Obtain the mapset name for the chosen site_lists file d->fname */
 	/*

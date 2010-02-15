@@ -20,7 +20,10 @@ function(object, maxdist, n = 200, min=1.0e-6 * maxdist, dir = c(1,0,0),
 	ret = .Call("gstat_variogram_values", as.integer(c(0,0)),
 		as.numeric(pars), as.integer(covariance), as.numeric(dist_vector))
 	.Call("gstat_exit", 0);
-	data.frame(dist=ret[[1]], gamma=ret[[2]])
+	if (is.matrix(dist_vector))
+		matrix(ret[[2]], nrow(dist_vector), ncol(dist_vector))
+	else
+		data.frame(dist=ret[[1]], gamma=ret[[2]])
 }
 
 "variogram.line" <- function(..., deprecate = FALSE) {

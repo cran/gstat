@@ -36,7 +36,7 @@ read more on a simplified, web-based version on
 \url{http://www.gstat.org/ossfim.html}
 }
 
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \note{ The idea is old, simple, but still of value. If you want to map
 a variable with a given accuracy, you will have to sample it. Suppose
 the variogram of the variable is known. Given a regular sampling scheme,

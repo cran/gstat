@@ -55,7 +55,7 @@ better the approximation. Geographically correct images can be obtained
 by modifiying \code{par("pin")}. Read the examples, image a 2 x 2 grid,
 and play with \code{par("pin")} if you want to learn more about this.
 }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \examples{
 data(meuse)
 data(meuse.grid)

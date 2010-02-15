@@ -113,7 +113,7 @@ Delhomme, J.P.  Kriging in the hydrosciences.  Advances in Water
 Resources, 1(5):251-266, 1978; see also the section Kriging with known
 measurement errors in the gstat user's manual, \url{http://www.gstat.org/}
 }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \note{ 
 The function currently copies the data objects into the gstat object, so
 this may become a large object. I would like to copy only the name of the

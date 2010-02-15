@@ -20,7 +20,7 @@ a 5 km x 5 km grid; stored as data.frame.
 data(ncp.grid)
 }
 \author{Dutch National Institute for Coastal and Marine Management (RIKZ);
-data compiled for R by Edzer J. Pebesma }
+data compiled for R by Edzer Pebesma }
 \seealso{\link{fulmar}}
 \keyword{datasets}
 \examples{

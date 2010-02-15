@@ -33,7 +33,7 @@ to e.g. 1.01 }
 returns an object of class \code{gstat}, with fitted variograms;
 }
 \references{ \url{http://www.gstat.org/} }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \note{ This function does not use the iterative procedure proposed by
 M. Goulard and M. Voltz (Math. Geol., 24(3): 269-286; reproduced in
 Goovaerts' 1997 book) but uses simply two steps: first, each variogram

@@ -40,7 +40,7 @@ If plot is FALSE, a data frame with the data prepared to plot
 is being returned.
 }
 \references{ \url{http://www.gstat.org}}
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \note{ the \code{min} argument is supplied because the variogram
 function may be discontinuous at distance zero, surely when a positive
 nugget is present. }

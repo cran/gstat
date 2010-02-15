@@ -156,7 +156,7 @@ Computers \& Geosciences, 30: 683-691.
 For bucket PR quadtrees, excellent demos are found at
 \url{http://www.cs.umd.edu/~brabec/quadtree/index.html}
 }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 
 \seealso{\link{gstat}, \link{krige}}
 
