@@ -65,7 +65,7 @@ sample site }
 \usage{
 data(oxford)
 }
-\author{ P.A. Burrough; compiled for R by Edzer J. Pebesma }
+\author{ P.A. Burrough; compiled for R by Edzer Pebesma }
 \references{ 
 P.A. Burrough, R.A. McDonnell, 1998. Principles of Geographical Information
 Systems. Oxford University Press.

@@ -155,6 +155,7 @@ void predict_all(DATA **data) {
 				select_at(data[where->u.stratum], where);
 			get_est(data, get_method(), where, est);
 		}
+		/* printf("%g %g\n", est[0], est[1]); */
 		write_output(est, at_what, where, row, col);
 	}
 	exit_predictions(at_what);

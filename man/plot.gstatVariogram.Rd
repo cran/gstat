@@ -54,7 +54,7 @@ than threshold will not be plotted}
 returns (or plots) the variogram plot
 }
 \references{ \url{http://www.gstat.org}}
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \note{ currently, plotting models and/or point pair numbers is not
 supported when a variogram is both directional and multivariable; also,
 three-dimensional directional variograms will probably not be displayed

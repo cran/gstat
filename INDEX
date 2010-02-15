@@ -2,6 +2,7 @@ coalash                 Coal ash samples from a mine in Pennsylvania
 fit.lmc                 Fit a Linear Model of Coregionalization to a
                         Multivariable Sample Variogram
 fit.variogram           Fit a Variogram Model to a Sample Variogram
+fit.variogram.gls       GLS fitting of variogram parameters
 fit.variogram.reml      REML Fit Direct Variogram Partial Sills to Data
 fulmar                  Fulmaris glacialis data
 get.contr               Calculate contrasts from multivariable

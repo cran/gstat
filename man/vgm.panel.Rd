@@ -45,7 +45,7 @@ to highlight point pairs with distance close to zero }
 ignored; the enclosing function returns a plot of class \code{trellis}
 }
 \references{ \url{http://www.gstat.org/} }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \seealso{ \link{plot.gstatVariogram}, \link{vgm}}
 \examples{ 
 library(lattice)

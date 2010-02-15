@@ -20,15 +20,16 @@ x (East-West), y (North-South) and z (Up-Down) }
 \item{covariance}{logical; if TRUE return covariance values, otherwise
 return semivariance values }
 \item{...}{ignored}
-\item{dist_vector}{numeric vector with (possibly irregular) distance values}
+\item{dist_vector}{numeric vector or matrix with distance values}
 \item{debug.level}{gstat internal debug level}
 }
 \value{
 a data frame of dimension (\code{n} x 2), with columns distance and gamma
-(semivariances or covariances)
+(semivariances or covariances), or in case \code{dist_vector} is a matrix, a
+conforming matrix with semivariance/covariance values is returned.
 }
 \note{variogramLine is used to generate data for plotting a variogram model.}
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \seealso{ \link{plot.gstatVariogram}}
 
 \examples{

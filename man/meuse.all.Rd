@@ -45,7 +45,7 @@ x 15 m.
 data(meuse.all)
 }
 \author{ The actual field data were collected by Ruud van Rijn and
-Mathieu Rikken; data compiled for R by Edzer J. Pebesma }
+Mathieu Rikken; data compiled for R by Edzer Pebesma }
 \references{ 
 P.A. Burrough, R.A. McDonnell, 1998. Principles of Geographical Information
 Systems. Oxford University Press.

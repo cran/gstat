@@ -94,7 +94,7 @@ data(sic2004) #
 \author{ 
 Data: the German Federal Office for Radiation Protection (BfS),
 \url{http://www.bfs.de/}, data provided by Gregoire Dubois, R compilation
-by Edzer J. Pebesma.  }
+by Edzer Pebesma.  }
 
 \references{ 
 \url{http:/www.ai-geostats.org/},

@@ -22,7 +22,7 @@ hscat(formula, data, breaks, pch = 3, cex = .6, ...)
 \value{
 an object of class trellis; normally the h scatter plot
 }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \note{
 Data pairs are plotted once, so the h-scatterplot are not symmetric.
 }

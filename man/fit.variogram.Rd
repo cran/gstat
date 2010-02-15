@@ -30,7 +30,7 @@ manual. }
 a sill value of a direct variogram becomes negative }
 }
 \value{
-returns a fitted variogram model (of class \code{variogram.model}).
+returns a fitted variogram model (of class \code{variogramModel}).
 
 This is a data.frame has two attributes: (i) \code{singular} a logical
 attribute that indicates whether the non-linear fit converged, or ended
@@ -76,7 +76,7 @@ Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
 Computers \& Geosciences, 30: 683-691.
 }
 
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \seealso{
 \link{variogram},
 \link{vgm}

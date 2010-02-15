@@ -53,7 +53,7 @@ class \code{pointPairs} is present, containing the point pairs identified.
 \references{ 
 \url{http://www.gstat.org/}
 }
-\author{ Edzer J. Pebesma }
+\author{ Edzer Pebesma }
 \seealso{
 \link{variogram},
 \link{plot.gstatVariogram},

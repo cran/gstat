@@ -1811,6 +1811,9 @@ static GRIDMAP *write_gdal(GRIDMAP *m) {
 			}
 		}
 	}
+	/*
+	GDALSetRasterStatistics(hBand, m->cellmin, m->cellmax, 0.0, 0.0);
+	*/
 	GDALClose(m->hDataset);
 	return m;
 }
