@@ -1,3 +1,903 @@
+2010-01-14 11:03  EdzerPebesma
+
+	* [r17]
+	  S/TODO:
+	  removed
+	  issues
+	  already
+	  done
+
+2010-01-14 11:00  EdzerPebesma
+
+	* [r16]
+	  S/nohup.out[DEL]:
+	  obsolete
+
+2010-01-14 08:21  EdzerPebesma
+
+	* [r15]
+	  S/makefile:
+	  removed
+	  install
+	  target
+	  directory
+	  (make
+	  r-install)
+	  
+
+2010-01-13 21:53  EdzerPebesma
+
+	* [r14]
+	  S/R/gstat/inst/doc/gstat.pdf:
+	  needed
+	  for
+	  check
+
+2010-01-13 21:42  EdzerPebesma
+
+	* [r13]
+	  src/version.h:
+	  needed
+	  for
+	  R
+	  package
+
+2010-01-13 07:06  EdzerPebesma
+
+	* [r12]
+	  README,
+	  S/R/gstat/inst/doc/gstat.pdf[DEL],
+	  TODO,
+	  meschach/config.cache[DEL],
+	  meschach/config.log[DEL],
+	  meschach/config.status[DEL],
+	  src/version.h[DEL]:
+	  updated
+	  readme;
+	  removed
+	  configuration
+	  temp
+	  files
+
+2010-01-12 22:14  EdzerPebesma
+
+	* [r11]
+	  S/makefile:
+	  changed
+	  r-copy
+	  target
+	  to
+	  avoid
+	  copying
+	  of
+	  .svn
+	  stuff
+
+2010-01-12 22:04  EdzerPebesma
+
+	* [r10]
+	  S,
+	  S/.Rhistory,
+	  S/CHANGES,
+	  S/R,
+	  S/R/gstat,
+	  S/R/gstat/CHANGES,
+	  S/R/gstat/DESCRIPTION,
+	  S/R/gstat/INDEX,
+	  S/R/gstat/LICENCE,
+	  S/R/gstat/NAMESPACE,
+	  S/R/gstat/R,
+	  S/R/gstat/aclocal.m4,
+	  S/R/gstat/cleanup,
+	  S/R/gstat/configure,
+	  S/R/gstat/configure.in,
+	  S/R/gstat/configure.win,
+	  S/R/gstat/inst,
+	  S/R/gstat/inst/CITATION,
+	  S/R/gstat/inst/ChangeLog,
+	  S/R/gstat/inst/doc,
+	  S/R/gstat/inst/doc/gstat.pdf,
+	  S/R/gstat/inst/doc/gstat.rnw,
+	  S/R/gstat/inst/external,
+	  S/R/gstat/inst/external/ncp.dbf,
+	  S/R/gstat/inst/external/ncp.shp,
+	  S/R/gstat/inst/external/ncp.shx,
+	  S/R/gstat/makefile.in,
+	  S/R/gstat/src,
+	  S/R/gstat/src/config.w32,
+	  S/R/gstat/src/machine.w32,
+	  S/R/gstat/src/meschach,
+	  S/Splus,
+	  S/Splus/aclocal.m4,
+	  S/Splus/configure,
+	  S/Splus/configure.in,
+	  S/Splus/gstat.def,
+	  S/Splus/makefile.in,
+	  S/Splus/makefile.w32,
+	  S/Splus/meschach,
+	  S/Splus/meschach/dmacheps.c,
+	  S/Splus/meschach/fmacheps.c,
+	  S/Splus/meschach/maxint.c,
+	  S/SplusW32,
+	  S/SplusW32/makefile.in,
+	  S/TODO,
+	  S/data,
+	  S/data/00Index,
+	  S/data/coalash.R,
+	  S/data/fulmar.R,
+	  S/data/jura.R,
+	  S/data/meuse.all.R,
+	  S/data/meuse.alt.R,
+	  S/data/ncp.grid.R,
+	  S/data/oxford.R,
+	  S/data/oxford.jpg,
+	  S/data/pcb.rda,
+	  S/data/sic2004.rda,
+	  S/data/sic97.rda,
+	  S/data/tull.rda,
+	  S/data/walker.R,
+	  S/data/wind.rda,
+	  S/demo,
+	  S/demo/00Index,
+	  S/demo/block.R,
+	  S/demo/blue.R,
+	  S/demo/cokriging.R,
+	  S/demo/comp_geoR.R,
+	  S/demo/cosimulation.R,
+	  S/demo/examples.R,
+	  S/demo/fulmar.R,
+	  S/demo/grass.R,
+	  S/demo/gstat3D.R,
+	  S/demo/krige.R,
+	  S/demo/line.R,
+	  S/demo/pcb.R,
+	  S/demo/sic2004.R,
+	  S/demo/snow.R,
+	  S/demo/ugsim.R,
+	  S/demo/uisim.R,
+	  S/demo/weight.R,
+	  S/makefile,
+	  S/man,
+	  S/man/coalash.Rd,
+	  S/man/fit.lmc.Rd,
+	  S/man/fit.variogram.Rd,
+	  S/man/fit.variogram.reml.Rd,
+	  S/man/fulmar.Rd,
+	  S/man/get.contr.Rd,
+	  S/man/gstat-internal.Rd,
+	  S/man/gstat.Rd,
+	  S/man/hscat.Rd,
+	  S/man/image.Rd,
+	  S/man/jura.Rd,
+	  S/man/krige.Rd,
+	  S/man/krige.cv.Rd,
+	  S/man/krigeTg.Rd,
+	  S/man/map.to.lev.Rd,
+	  S/man/meuse.all.Rd,
+	  S/man/meuse.alt.Rd,
+	  S/man/ncp.grid.Rd,
+	  S/man/ossfim.Rd,
+	  S/man/oxford.Rd,
+	  S/man/pcb.Rd,
+	  S/man/plot.gstatVariogram.Rd,
+	  S/man/plot.pointPairs.Rd,
+	  S/man/plot.variogramCloud.Rd,
+	  S/man/predict.gstat.Rd,
+	  S/man/show.vgms.Rd,
+	  S/man/sic2004.Rd,
+	  S/man/sic97.Rd,
+	  S/man/spplot.vcov.Rd,
+	  S/man/tull.Rd,
+	  S/man/variogram.Rd,
+	  S/man/variogramLine.Rd,
+	  S/man/vgm.Rd,
+	  S/man/vgm.panel.Rd,
+	  S/man/walker.Rd,
+	  S/man/wind.Rd,
+	  S/nohup.out,
+	  S/scripts,
+	  S/scripts/preproc.pl,
+	  S/scripts/qtoR,
+	  S/scripts/toSplus,
+	  S/scripts/toSplusWin,
+	  S/src,
+	  S/src/fit.lmc.q,
+	  S/src/fit.variogram.q,
+	  S/src/fit.variogram.reml.q,
+	  S/src/get.contr.q,
+	  S/src/gstat.cv.q,
+	  S/src/gstat.debug.q,
+	  S/src/gstat.formula.predict.q,
+	  S/src/gstat.formula.q,
+	  S/src/gstat.q,
+	  S/src/hscat.q,
+	  S/src/image.data.frame.q,
+	  S/src/krige.cv.q,
+	  S/src/krige.q,
+	  S/src/krige0.q,
+	  S/src/krigeTg.q,
+	  S/src/load.variogram.model.q,
+	  S/src/map.to.lev.q,
+	  S/src/ossfim.q,
+	  S/src/panel.pointPairs.q,
+	  S/src/plot.gstatVariogram.q,
+	  S/src/plot.pointPairs.q,
+	  S/src/plot.variogramCloud.q,
+	  S/src/predict.gstat.q,
+	  S/src/print.gstat.q,
+	  S/src/print.variogram.q,
+	  S/src/print.variogramCloud.q,
+	  S/src/print.variogramModel.q,
+	  S/src/set.q,
+	  S/src/show.vgms.q,
+	  S/src/smenu.q,
+	  S/src/spplot.q,
+	  S/src/variogram.default.q,
+	  S/src/variogram.formula.q,
+	  S/src/variogram.gstat.q,
+	  S/src/variogramLine.q,
+	  S/src/vgm.panel.q,
+	  S/src/vgm.q,
+	  S/src/xyz2img.q,
+	  S/src/zzz.q,
+	  S/tests,
+	  S/tests/blockkr.R,
+	  S/tests/blockkr.Rout.save,
+	  S/tests/covtable.R,
+	  S/tests/covtable.Rout.save,
+	  S/tests/cv.R,
+	  S/tests/cv.Rout.save,
+	  S/tests/cv3d.R,
+	  S/tests/cv3d.Rout.save,
+	  S/tests/fit.R,
+	  S/tests/fit.Rout.save,
+	  S/tests/krige0.R,
+	  S/tests/krige0.Rout.save,
+	  S/tests/line.R,
+	  S/tests/line.Rout.save,
+	  S/tests/merge.R,
+	  S/tests/merge.Rout.save,
+	  S/tests/na.action.R,
+	  S/tests/na.action.Rout.save,
+	  S/tests/rings.R,
+	  S/tests/rings.Rout.save,
+	  S/tests/sim.R,
+	  S/tests/sim.Rout.save,
+	  S/tests/unproj.R,
+	  S/tests/unproj.Rout.save,
+	  S/tests/variogram.R,
+	  S/tests/variogram.Rout.save,
+	  S/tests/vdist.R,
+	  S/tests/vdist.Rout.save:
+	  all
+	  files
+	  related
+	  to
+	  gstat
+	  R
+	  package
+	  (and
+	  S-Plus
+	  library)
+
+2010-01-12 21:59  EdzerPebesma
+
+	* [r9]
+	  attic,
+	  attic/Copyright,
+	  attic/FILES,
+	  attic/cgi,
+	  attic/cgi/README,
+	  attic/cgi/b1.gif,
+	  attic/cgi/b2.gif,
+	  attic/cgi/b3.gif,
+	  attic/cgi/b4.gif,
+	  attic/cgi/b5.gif,
+	  attic/cgi/b6.gif,
+	  attic/cgi/block.gif,
+	  attic/cgi/cgic.c,
+	  attic/cgi/cgic.h,
+	  attic/cgi/cgictest.c,
+	  attic/cgi/grid30,
+	  attic/cgi/makefile,
+	  attic/cgi/makegrd,
+	  attic/cgi/map.gif,
+	  attic/cgi/ossfim.html,
+	  attic/cgi/ossfim_form.html,
+	  attic/cgi/ossfimcgi.c,
+	  attic/cgi/plt,
+	  attic/cgi/s2.gif,
+	  attic/cgi/s3.gif,
+	  attic/cgi/s4.gif,
+	  attic/cgi/s5.gif,
+	  attic/cgi/s6.gif,
+	  attic/cgi/s7.gif,
+	  attic/cgi/s8.gif,
+	  attic/cgi/spacing.gif,
+	  attic/cgi/testform.html,
+	  attic/doc,
+	  attic/doc/rikz,
+	  attic/doc/rikz/makefile,
+	  attic/doc/rikz/rikz.tex,
+	  attic/doc/tex,
+	  attic/doc/tex/edges.tex,
+	  attic/doc/tex/eps,
+	  attic/doc/tex/eps/badlos.eps,
+	  attic/doc/tex/eps/badlos.fig,
+	  attic/doc/tex/eps/bes.eps,
+	  attic/doc/tex/eps/bes.jgr,
+	  attic/doc/tex/eps/block1.eps,
+	  attic/doc/tex/eps/block2.eps,
+	  attic/doc/tex/eps/boxtest.eps,
+	  attic/doc/tex/eps/boxtest.fig,
+	  attic/doc/tex/eps/cir.eps,
+	  attic/doc/tex/eps/cir.jgr,
+	  attic/doc/tex/eps/closed.eps,
+	  attic/doc/tex/eps/closed.fig,
+	  attic/doc/tex/eps/cov.eps,
+	  attic/doc/tex/eps/cov.jgr,
+	  attic/doc/tex/eps/decis1.eps,
+	  attic/doc/tex/eps/decis1.fig,
+	  attic/doc/tex/eps/decis2.eps,
+	  attic/doc/tex/eps/decis2.fig,
+	  attic/doc/tex/eps/difflos.eps,
+	  attic/doc/tex/eps/difflos.fig,
+	  attic/doc/tex/eps/dist.eps,
+	  attic/doc/tex/eps/dist.fig,
+	  attic/doc/tex/eps/dojgr,
+	  attic/doc/tex/eps/ell.eps,
+	  attic/doc/tex/eps/ell.jgr,
+	  attic/doc/tex/eps/example.eps,
+	  attic/doc/tex/eps/example.jgr,
+	  attic/doc/tex/eps/exp.eps,
+	  attic/doc/tex/eps/exp.jgr,
+	  attic/doc/tex/eps/gau.eps,
+	  attic/doc/tex/eps/gau.jgr,
+	  attic/doc/tex/eps/lin.eps,
+	  attic/doc/tex/eps/lin.jgr,
+	  attic/doc/tex/eps/log.eps,
+	  attic/doc/tex/eps/log.jgr,
+	  attic/doc/tex/eps/los.eps,
+	  attic/doc/tex/eps/los.fig,
+	  attic/doc/tex/eps/lzn.eps,
+	  attic/doc/tex/eps/maas.xyz,
+	  attic/doc/tex/eps/make.eps,
+	  attic/doc/tex/eps/make.jgr,
+	  attic/doc/tex/eps/makefile,
+	  attic/doc/tex/eps/map.eps,
+	  attic/doc/tex/eps/map.jgr,
+	  attic/doc/tex/eps/msteps.eps,
+	  attic/doc/tex/eps/msteps.fig,
+	  attic/doc/tex/eps/nbh.eps,
+	  attic/doc/tex/eps/nbh.jgr,
+	  attic/doc/tex/eps/nug.eps,
+	  attic/doc/tex/eps/nug.jgr,
+	  attic/doc/tex/eps/open.eps,
+	  attic/doc/tex/eps/open.fig,
+	  attic/doc/tex/eps/part.eps,
+	  attic/doc/tex/eps/pen.eps,
+	  attic/doc/tex/eps/pen.jgr,
+	  attic/doc/tex/eps/per.eps,
+	  attic/doc/tex/eps/per.jgr,
+	  attic/doc/tex/eps/powa.eps,
+	  attic/doc/tex/eps/powa.jgr,
+	  attic/doc/tex/eps/powb.eps,
+	  attic/doc/tex/eps/powb.jgr,
+	  attic/doc/tex/eps/scat.eps,
+	  attic/doc/tex/eps/scat.jgr,
+	  attic/doc/tex/eps/spec_los.eps,
+	  attic/doc/tex/eps/spec_los.fig,
+	  attic/doc/tex/eps/sph.eps,
+	  attic/doc/tex/eps/sph.jgr,
+	  attic/doc/tex/eps/sqrtdist.eps,
+	  attic/doc/tex/eps/vgm.eps,
+	  attic/doc/tex/eps/vgm.jgr,
+	  attic/doc/tex/eps/vgm1.eps,
+	  attic/doc/tex/eps/vgm2.eps,
+	  attic/doc/tex/eps/zinc.srt,
+	  attic/doc/tex/eps/zn_map.eps,
+	  attic/doc/tex/exam.awk,
+	  attic/doc/tex/example.all,
+	  attic/doc/tex/example.in,
+	  attic/doc/tex/gstat.bib,
+	  attic/doc/tex/gstat.ind,
+	  attic/doc/tex/gstat.tex,
+	  attic/doc/tex/http.sh,
+	  attic/doc/tex/lf.sed,
+	  attic/doc/tex/makefile,
+	  attic/doc/tex/makefile.in,
+	  attic/doc/tex/mapnames,
+	  attic/doc/tex/pdf,
+	  attic/doc/tex/pdf/all2pdf,
+	  attic/doc/tex/q1.awk,
+	  attic/doc/tex/sedcomment,
+	  attic/doc/tex/sedkeys,
+	  attic/doc/tex/sednames,
+	  attic/doc/tex/titlepage.tex,
+	  attic/doc/tex/version.aux,
+	  attic/doc/tex/version.in,
+	  attic/doc/tex/version.tex,
+	  attic/doc/www,
+	  attic/doc/www/Rexamples.html,
+	  attic/doc/www/body,
+	  attic/doc/www/body/bugs.b,
+	  attic/doc/www/body/download.b,
+	  attic/doc/www/body/examples.b,
+	  attic/doc/www/body/grass.b,
+	  attic/doc/www/body/idrisi.b,
+	  attic/doc/www/body/index.b,
+	  attic/doc/www/body/links.b,
+	  attic/doc/www/body/links.b.0,
+	  attic/doc/www/body/lists.b,
+	  attic/doc/www/body/manual.b,
+	  attic/doc/www/body/pcraster.b,
+	  attic/doc/www/body/pcraster.b.0,
+	  attic/doc/www/body/qt.b,
+	  attic/doc/www/body/s.b,
+	  attic/doc/www/body/screenshots.b,
+	  attic/doc/www/body/whatsnew.b,
+	  attic/doc/www/createhtml,
+	  attic/doc/www/createhtml.py,
+	  attic/doc/www/fig,
+	  attic/doc/www/fig/background.gif,
+	  attic/doc/www/fig/gstat.png,
+	  attic/doc/www/fig/gstat_old.png,
+	  attic/doc/www/gstat.css,
+	  attic/doc/www/makefile,
+	  attic/doc/www/scriptbase.py,
+	  attic/doc/www/template,
+	  attic/doc/www/template/footer.html,
+	  attic/doc/www/template/header.html,
+	  attic/doc/www/template/index.html,
+	  attic/doc/www/template/template.html,
+	  attic/doc/www/tools.py,
+	  attic/makefile.cyg,
+	  attic/makefile.pcr,
+	  attic/readme.dos,
+	  attic/setmingw:
+	  older
+	  files,
+	  including
+	  a
+	  web
+	  service
+	  (ossfim),
+	  documentation
+	  and
+	  web
+	  site
+
+2010-01-12 21:50  EdzerPebesma
+
+	* [r8]
+	  include,
+	  include/empty:
+	  (empty)
+	  include
+	  dir
+
+2010-01-12 21:49  EdzerPebesma
+
+	* [r7]
+	  lib,
+	  lib/empty:
+	  (empty)
+	  lib
+	  directory
+
+2010-01-12 21:48  EdzerPebesma
+
+	* [r6]
+	  cmd,
+	  cmd/ex01.cmd,
+	  cmd/ex02.cmd,
+	  cmd/ex03.cmd,
+	  cmd/ex03a.cmd,
+	  cmd/ex04.cmd,
+	  cmd/ex05.cmd,
+	  cmd/ex06.cmd,
+	  cmd/ex07.cmd,
+	  cmd/ex08.cmd,
+	  cmd/ex09.cmd,
+	  cmd/ex10.cmd,
+	  cmd/ex11.cmd,
+	  cmd/ex12.cmd,
+	  cmd/ex13.cmd,
+	  cmd/ex14.cmd,
+	  cmd/ex14a.cmd,
+	  cmd/ex15.cmd,
+	  cmd/ex16.cmd,
+	  cmd/ex17.cmd,
+	  cmd/grass.cmd,
+	  cmd/locs.eas,
+	  cmd/makefile,
+	  cmd/map_diff,
+	  cmd/mask_map.map,
+	  cmd/mask_map.tif,
+	  cmd/mask_v2.map,
+	  cmd/mdiff,
+	  cmd/part_a,
+	  cmd/part_a.tif,
+	  cmd/part_b,
+	  cmd/part_b.tif,
+	  cmd/sqrtdist,
+	  cmd/sqrtdist.tif,
+	  cmd/zinc.eas,
+	  cmd/zincat0.eas,
+	  cmd/zincat1.eas:
+	  upload
+	  of
+	  cmd
+	  examples
+
+2010-01-12 21:45  EdzerPebesma
+
+	* [r5]
+	  COPYING,
+	  ChangeLog.cvs,
+	  README,
+	  TODO,
+	  aclocal.m4,
+	  configure,
+	  configure.in,
+	  install-sh,
+	  makefile,
+	  makefile.in:
+	  upload
+	  of
+	  files
+	  in
+	  gstat
+	  root
+
+2010-01-12 21:43  EdzerPebesma
+
+	* [r4]
+	  meschach/macheps[DEL],
+	  meschach/maxint[DEL]:
+	  removed
+	  two
+	  binaries
+
+2010-01-12 21:42  EdzerPebesma
+
+	* [r3]
+	  meschach,
+	  meschach/.cvsignore,
+	  meschach/CHANGES,
+	  meschach/DOC,
+	  meschach/DOC/fnindex.txt,
+	  meschach/DOC/tutorial.txt,
+	  meschach/FILELIST,
+	  meschach/MACHINES,
+	  meschach/MACHINES/Cray,
+	  meschach/MACHINES/Cray/machine.h,
+	  meschach/MACHINES/Cray/makefile,
+	  meschach/MACHINES/Cray/patch.1,
+	  meschach/MACHINES/Cray/patch.2,
+	  meschach/MACHINES/Cray/patch.3,
+	  meschach/MACHINES/GCC,
+	  meschach/MACHINES/GCC/machine.h,
+	  meschach/MACHINES/GCC/makefile,
+	  meschach/MACHINES/HP,
+	  meschach/MACHINES/HP/machine.hp,
+	  meschach/MACHINES/Linux,
+	  meschach/MACHINES/Linux/machine.h,
+	  meschach/MACHINES/Linux/makefile,
+	  meschach/MACHINES/RS6000,
+	  meschach/MACHINES/RS6000/machine.c,
+	  meschach/MACHINES/RS6000/machine.h,
+	  meschach/MACHINES/RS6000/makefile,
+	  meschach/MACHINES/SGI,
+	  meschach/MACHINES/SGI/machine.h,
+	  meschach/MACHINES/SGI/makefile,
+	  meschach/MACHINES/SPARC,
+	  meschach/MACHINES/SPARC/machine.gcc,
+	  meschach/MACHINES/SPARC/machine.h,
+	  meschach/MACHINES/SPARC/makefile,
+	  meschach/MACHINES/SPARC/makefile.gcc,
+	  meschach/Makefile.pcr,
+	  meschach/README,
+	  meschach/aclocal.m4,
+	  meschach/chfactor.c,
+	  meschach/config.cache,
+	  meschach/config.log,
+	  meschach/config.status,
+	  meschach/configure,
+	  meschach/configure.in,
+	  meschach/copy.c,
+	  meschach/copyright,
+	  meschach/dmacheps.c,
+	  meschach/err.c,
+	  meschach/err.h,
+	  meschach/fmacheps.c,
+	  meschach/hsehldr.c,
+	  meschach/init.c,
+	  meschach/ivecop.c,
+	  meschach/ls.dat,
+	  meschach/lufactor.c,
+	  meschach/macheps,
+	  meschach/machine.c,
+	  meschach/machine.h,
+	  meschach/machine.h.bcc,
+	  meschach/machine.hin,
+	  meschach/makefile,
+	  meschach/makefile.in,
+	  meschach/matop.c,
+	  meschach/matrix.h,
+	  meschach/matrix2.h,
+	  meschach/matrixio.c,
+	  meschach/maxint,
+	  meschach/maxint.c,
+	  meschach/meminfo.c,
+	  meschach/meminfo.h,
+	  meschach/memory.c,
+	  meschach/memstat.c,
+	  meschach/norm.c,
+	  meschach/otherio.c,
+	  meschach/pxop.c,
+	  meschach/qrfactor.c,
+	  meschach/solve.c,
+	  meschach/sparse.c,
+	  meschach/sparse.h,
+	  meschach/sparse2.h,
+	  meschach/sparseio.c,
+	  meschach/spbkp.c,
+	  meschach/spchfctr.c,
+	  meschach/splufctr.c,
+	  meschach/sprow.c,
+	  meschach/spswap.c,
+	  meschach/submat.c,
+	  meschach/vecop.c,
+	  meschach/version.c,
+	  meschach/zmatrix.h,
+	  meschach/zmatrix2.h:
+	  initial
+	  meschach
+	  matrix
+	  library
+	  upload
+
+2010-01-12 21:38  EdzerPebesma
+
+	* [r2]
+	  .,
+	  src,
+	  src/.cvsignore,
+	  src/CHANGES,
+	  src/CREDITS,
+	  src/Makefile.pcr,
+	  src/block.c,
+	  src/block.h,
+	  src/config.bcc,
+	  src/config.h,
+	  src/config.h.bcc,
+	  src/config.hin,
+	  src/data.c,
+	  src/data.h,
+	  src/debug.h,
+	  src/defaults.h,
+	  src/defs.h,
+	  src/direct.c,
+	  src/direct.h,
+	  src/dumpdata.R,
+	  src/ext_dbase.c,
+	  src/ext_dbase.h,
+	  src/ext_dbasetest.h,
+	  src/fig.c,
+	  src/fig.h,
+	  src/fit.c,
+	  src/fit.h,
+	  src/gcdist.c,
+	  src/gcdist.h,
+	  src/getest.c,
+	  src/getest.h,
+	  src/getopt.c,
+	  src/getopt.h,
+	  src/gls.c,
+	  src/gls.h,
+	  src/glvars.c,
+	  src/glvars.h,
+	  src/gstat.c,
+	  src/lex.c,
+	  src/lex.h,
+	  src/lex.l,
+	  src/lm.c,
+	  src/lm.h,
+	  src/makefile.bcc,
+	  src/makefile.cw,
+	  src/makefile.in,
+	  src/map2fig.c,
+	  src/map2fig.h,
+	  src/map2gd.c,
+	  src/map2gd.h,
+	  src/mapio.c,
+	  src/mapio.h,
+	  src/maputils.c,
+	  src/maputils.h,
+	  src/msim.c,
+	  src/msim.h,
+	  src/nsearch.c,
+	  src/nsearch.h,
+	  src/ossfim.c,
+	  src/ossfim.h,
+	  src/palet.c,
+	  src/palet.h,
+	  src/parse.c,
+	  src/parse.h,
+	  src/parse.y,
+	  src/plot.c,
+	  src/plot.h,
+	  src/polygon.c,
+	  src/polygon.h,
+	  src/pqueue.c,
+	  src/pqueue.h,
+	  src/predict.c,
+	  src/predict.h,
+	  src/random.c,
+	  src/random.h,
+	  src/read.c,
+	  src/read.h,
+	  src/reml.c,
+	  src/reml.h,
+	  src/report.c,
+	  src/report.h,
+	  src/s.c,
+	  src/sample.c,
+	  src/sample.h,
+	  src/select.c,
+	  src/select.h,
+	  src/sem.c,
+	  src/sem.h,
+	  src/sem_main.c,
+	  src/sem_main.h,
+	  src/sim.c,
+	  src/sim.h,
+	  src/stat.c,
+	  src/stat.h,
+	  src/tags,
+	  src/ui.c,
+	  src/ui.h,
+	  src/ui_help.h,
+	  src/userio.c,
+	  src/userio.h,
+	  src/utils.c,
+	  src/utils.h,
+	  src/vario.c,
+	  src/vario.h,
+	  src/vario_fn.c,
+	  src/vario_fn.h,
+	  src/vario_io.c,
+	  src/vario_io.h,
+	  src/version.h,
+	  src/writecmd.c,
+	  src/writecmd.h,
+	  src/xvalid.c,
+	  src/xvalid.h:
+	  first
+	  upload
+	  of
+	  c
+	  source
+	  files
+
+2010-01-12 13:35  edzer
+
+	* S/R/gstat/DESCRIPTION: missed a : in a URL
+
+2010-01-12 13:15  edzer
+
+	* S/: man/krige.Rd, src/krige0.q, tests/krige0.R,
+	  tests/krige0.Rout.save: krige0 now also returns kriging variances
+
+2009-12-11 18:02  edzer
+
+	* S/: R/gstat/DESCRIPTION, man/krige.Rd, src/krige0.q: restructured
+	  krige0, uses spDists in sp now for distances.
+
+2009-12-08 14:48  edzer
+
+	* S/R/gstat/DESCRIPTION, S/src/krige0.q, S/tests/line.Rout.save,
+	  src/glvars.c, src/lex.l, src/parse.y, src/version.h: bug in lex.l
+	  for standalone gstat; cosmetic things in krige0.
+
+2009-12-02 13:23  edzer
+
+	* S/: makefile, R/gstat/DESCRIPTION: version bump
+
+2009-12-01 14:32  edzer
+
+	* S/man/krige.Rd: krige0 example
+
+2009-12-01 13:51  edzer
+
+	* S/: R/gstat/NAMESPACE, man/krige.Rd, src/krige0.q,
+	  tests/krige0.R, tests/krige0.Rout.save: more corrections to
+	  krige0 stuff
+
+2009-12-01 12:23  edzer
+
+	* S/: src/krige0.q, tests/krige0.R: kriging and idw alternatives
+
+2009-11-10 13:25  edzer
+
+	* S/tests/vdist.Rout.save: vdist test output
+
+2009-11-10 13:21  edzer
+
+	* src/glvars.c: removed memory leak, now freeing valdata
+
+2009-11-10 13:18  edzer
+
+	* S/: makefile, R/gstat/DESCRIPTION: version update
+
+2009-11-03 12:28  edzer
+
+	* S/demo/: 00Index, comp_geoR.R: added comp_geoR demo
+
+2009-11-02 22:34  edzer
+
+	* src/: data.c, data.h, gls.c, glvars.c, lex.l, lm.c, nsearch.c,
+	  parse.y, s.c, utils.c, vario.c, vario.h: removed several memory
+	  leaks;
+
+2009-11-02 22:33  edzer
+
+	* S/: man/gstat.Rd, man/variogram.Rd, src/fit.variogram.reml.q,
+	  src/gstat.q, src/predict.gstat.q, src/variogram.default.q: added
+	  lambda to gstat (not functioning)
+
+2009-10-30 17:11  edzer
+
+	* S/: man/krige.cv.Rd, src/gstat.cv.q, src/krige.cv.q: changed
+	  progress reporting, suggested by Jon Skoien
+
+2009-10-30 16:20  edzer
+
+	* S/makefile: version update
+
+2009-10-06 09:52  edzer
+
+	* S/R/gstat/DESCRIPTION: version update
+
+2009-10-06 09:52  edzer
+
+	* S/: R/gstat/DESCRIPTION, man/krige.cv.Rd, src/fit.lmc.q,
+	  src/krige.cv.q: version 0.9-63 changes; added argument to diag()
+	  in fit.lmc; removed earlier experiementation with cv on
+	  transGaussian kriging
+
+2009-08-17 16:38  edzer
+
+	* S/makefile, S/R/gstat/DESCRIPTION, S/man/krigeTg.Rd,
+	  S/src/gstat.cv.q, S/src/krige.cv.q, cgi/ossfimcgi, src/data.c,
+	  src/lex.l, src/random.c, src/version.h: version update;
+	  transGaussian kriging added
+
+2009-07-07 17:42  edzer
+
+	* S/src/krigeTg.q: added simulation option to krigeTg
+
+2009-07-03 15:33  edzer
+
+	* S/man/krigeTg.Rd: typo
+
+2009-07-03 14:19  edzer
+
+	* S/man/krigeTg.Rd: more precise on input requirements
+
+2009-07-03 14:11  edzer
+
+	* S/: makefile, R/gstat/DESCRIPTION: version update
+
+2009-07-03 14:10  edzer
+
+	* S/man/pcb.Rd: corrections with \eqn
+
+2009-07-01 18:30  edzer
+
+	* S/: R/gstat/INDEX, man/krigeTg.Rd: corrected equations
+
 2009-07-01 18:14  edzer
 
 	* S/: makefile, man/krigeTg.Rd, src/krigeTg.q: version update; typo
