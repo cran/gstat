@@ -45,9 +45,9 @@ proj4string(grd) = proj4string(sels)
 
 # setup grid
 covfn = function(x,y) { 
-	u = spDists(coordinates(x),coordinates(y))
+	u = spDists(coordinates(x), coordinates(y))
 	t = abs(outer(x$t,y$t,"-"))
-	0.6 * exp(-u/750000) * exp(-t)/1.5
+	0.6 * exp(-u/750000) * exp(-t/1.5)
 }
 for (i in 1:120) {
 	grd$t = rep(i/4, nrow(grd))

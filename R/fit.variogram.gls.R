@@ -1,7 +1,8 @@
 fit.variogram.gls <-
 function(formula, data, model, maxiter = 30, 
-		eps = .01, trace = TRUE, ignoreInitial = TRUE) {
-	v = as.data.frame(variogram(formula, data, cloud = TRUE, cutoff = Inf))
+		eps = .01, trace = TRUE, ignoreInitial = TRUE, cutoff = Inf,
+		plot = FALSE) {
+	v = as.data.frame(variogram(formula, data, cloud = TRUE, cutoff = cutoff))
 	i = v$left
 	j = v$right
 	y = v$gamma
@@ -33,18 +34,19 @@ function(formula, data, model, maxiter = 30,
 			- variogramLine(model, dist_vector = dists[comb(j,i)])$gamma,
 			length(j), length(j))
 		cov = 0.5 * cov ^ 2
-		covinv = solve(cov)
+		#cov = solve(cov)
+		cov = qr(cov)
 		minfuncrange = function(range) {
 			res = y-gamfn(h0,c(th[1],th[2],range))
-			t(res) %*% covinv %*% res
+			t(res) %*% solve(cov, res)
 		}
 		minfuncsill = function(sill) {
 			res = y-gamfn(h0, c(th[1],sill,th[3]))
-			t(res) %*% covinv %*% res
+			t(res) %*% solve(cov, res)
 		}
 		minfuncnugget = function(nugget) {
 			res = y - gamfn(h0, c(nugget, th[2], th[3]))
-			t(res) %*% covinv %*% res
+			t(res) %*% solve(cov, res)
 		}
 		th0 = th
 		th[1] = optimize(minfuncnugget,lower=0,upper=max(y))$minimum
@@ -54,15 +56,21 @@ function(formula, data, model, maxiter = 30,
 		iter = iter + 1
 		if (trace)
 			print(th)
+		model$psill = c(th[1], th[2])
+		model$range[2] = th[3]
 	}
 	if (th[3] / max(h0) > .99)
 		warning("range parameter at search space boundary")
 	if (!converged) {
 		warning("no convergence, returning OLS solution")
 		th = th.ols
+		model$psill = c(th[1], th[2])
+		model$range[2] = th[3]
 	}
-	model$psill = c(th[1], th[2])
-	model$range[2] = th[3]
-	model
+	if (plot)
+		plot(variogram(formula, data, cloud = TRUE, cutoff = cutoff), 
+			model = model)
+	else
+		model
 }
 

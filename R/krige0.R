@@ -31,7 +31,7 @@ CHsolve = function(A, b) {
 }
 
 krige0 <- function(formula, data, newdata, model, beta, y, ..., 
-		computeVar = FALSE) {
+		computeVar = FALSE, fullCovariance = FALSE) {
 
 	stopifnot(identical(proj4string(data), proj4string(newdata)))
 	lst = extractFormula(formula, data, newdata)
@@ -55,26 +55,26 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 		v0 = model(data, newdata)
 		c0 = as.numeric(model(data[1,],data[1,]))
 	}
-	doSimpleKriging = !missing(beta)
-	if (doSimpleKriging) { # sk:
+	if (!missing(beta)) { # sk:
 		skwts = CHsolve(V, v0)
 		if (computeVar)
-			var = diag(c0 - t(v0) %*% skwts)
+			var = c0 - t(v0) %*% skwts
 	} else { # ok/uk -- need to estimate beta:
 		skwts = CHsolve(V, cbind(v0, X))
 		ViX = skwts[,-(1:nrow(s0))]
 		skwts = skwts[,1:nrow(s0)]
 		beta = solve(t(X) %*% ViX, t(ViX) %*% y)
 		if (computeVar) {
-			# (x0-X'C-1 c0)'(X'C-1X)-1 (x0-X'C-1 c0)
+			# (x0-X'C-1 c0)'(X'C-1X)-1 (x0-X'C-1 c0) -- precompute term 1+3:
 			Q = t(x0) - t(ViX) %*% v0
-			# full variance-covariance of predictions?
-			var = diag(c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q))
+			var = c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q)
 		}
 	}
 	pred = x0 %*% beta + t(skwts) %*% (y - X %*% beta)
-	if (computeVar)
+	if (computeVar) {
+		if (!fullCovariance)
+			var = diag(var)
 		list(pred = pred, var = var)
-	else
+	} else
 		pred
 }

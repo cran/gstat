@@ -8,7 +8,8 @@ using GLS (generalized least squares) fitting. Only for direct variograms.
 }
 \usage{
 fit.variogram.gls(formula, data, model, maxiter = 30, 
-		eps = .01, trace = TRUE, ignoreInitial = TRUE)
+		eps = .01, trace = TRUE, ignoreInitial = TRUE, cutoff = Inf,
+		plot = FALSE)
 }
 \arguments{
 \item{formula}{formula defining the response vector and (possible) 
@@ -24,10 +25,14 @@ if TRUE, initial values of model are
 ignored and taken from variogram cloud: 
 nugget: \code{mean(y)/2}, sill: \code{mean(y)/2}, range \code{median(h0)/4}
 with \code{y} the semivariance cloud value and \code{h0} the distances }
-
+\item{cutoff}{maximum distance up to which point pairs are taken into
+consideration}
+\item{plot}{logical; if TRUE, a plot is returned with variogram cloud and
+fitted model; else, the fitted model is returned.}
 }
 
-\value{ an object of class "variogramModel"; see \link{fit.variogram} }
+\value{ an object of class "variogramModel"; see \link{fit.variogram}; if
+\code{plot} is TRUE, a plot is returned instead. }
 
 \references{ 
 Mueller, W.G., 1999: Least-squares fitting from the variogram

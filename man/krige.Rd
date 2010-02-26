@@ -34,7 +34,8 @@ na.action = na.pass, debug.level = 1)
 krige.spatial(formula, locations, newdata, model, ..., beta, nmax
 = Inf, nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
 na.action = na.pass, debug.level = 1)
-krige0(formula, data, newdata, model, beta, y, ..., computeVar = FALSE)
+krige0(formula, data, newdata, model, beta, y, ..., computeVar = FALSE,
+	fullCovariance = FALSE)
 idw(formula, locations, ...)
 idw.locations(formula, locations, data, newdata, nmax = Inf, 
 	nmin = 0, maxdist = Inf, block, na.action = na.pass, idp = 2.0,
@@ -100,6 +101,9 @@ idw0(formula, data, newdata, y)
  as columns of matrix \code{y}. This will ignore the value of the 
  response in \code{formula}.}
  \item{computeVar}{logical; if TRUE, prediction variances will be returned}
+ \item{fullCovariance}{logical; if FALSE a vector with prediction 
+ variances will be returned, if TRUE the full covariance matrix of 
+ all predictions will be returned}
 }
 \section{Methods}{
 \describe{
@@ -138,8 +142,9 @@ simulations
 \code{krige0} and \code{idw0} are alternative functions that have reduced
 functionality and larger memory requirements; they return numeric vectors
 (or matrices, in case of multiple dependent) with predicted values only;
-in case \code{computeVar} is TRUE, a list with elements pred and var is
-returned, containing predictions and variances.
+in case \code{computeVar} is TRUE, a list with elements \code{pred} and
+\code{var} is returned, containing predictions, and (co)variances (depending
+on argument \code{fullCovariance}).
 }
 
 \references{ N.A.C. Cressie, 1993, Statistics for Spatial Data,
