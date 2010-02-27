@@ -7,6 +7,7 @@
 \alias{variogram.line}
 \alias{print.gstatVariogram}
 \alias{print.variogramCloud}
+\alias{as.data.frame.variogramCloud}
 \title{ Calculate Sample or Residual Variogram or Variogram Cloud }
 \description{
 Calculates the sample variogram from data, or in case of a linear model
@@ -114,10 +115,11 @@ for this estimate}
 \item{id}{the combined id pair}
 If cloud is TRUE: an object of class \code{variogramCloud}, with the field
 \code{np} encoding the numbers of the point pair that contributed to a
-variogram cloud estimate, as follows. The first point is found by the
-integer division of np by \eqn{2^{16}}{2**16}, the second point by the remainder
-of that division. \link{print.variogramCloud} shows no \code{np} field,
-but does show in addition:
+variogram cloud estimate, as follows. The first point is found by 1 + the
+integer division of np by the \code{.BigInt} attribute of the returned
+object, the second point by 1 + the remainder of that division. 
+\link{as.data.frame.variogramCloud} returns no \code{np} field,
+but does the decoding into:
 \item{left}{for variogramCloud: data id (row number) of one of 
 the data pair}
 \item{right}{for variogramCloud: data id (row number) of the other 

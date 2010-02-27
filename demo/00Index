@@ -6,6 +6,7 @@ cosimulation	fitting a linear model of coregionalization and cosimulation
 examples	how to do the original gstat example files in S
 grass		example grass/R/gstat run; requires grass meuse data set installed
 gstat3D		example of 3D interpolation of random points
+ikr			example indicator kriging on zinc w. threshold 500 ppm
 krige		sample run of ordinary and universal kriging
 lhs			create latin hypercube sample of Gaussian random field
 sic2004		part of sic2004 excercise; see ?sic2004
@@ -17,3 +18,4 @@ snow		parallel kriging using package snow (not on Windows)
 line		examples for lines support prediction
 weight		compute (the expensive way) kriging weights for a single prediction location
 wind		space-time kriging with the Irish wind data sets
+rep			10 x 10 matrix of fitted variograms from 100 simulated fields

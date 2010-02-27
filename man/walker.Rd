@@ -1,10 +1,11 @@
 % $Id: walker.Rd,v 1.2 2006-02-10 19:03:27 edzer Exp $
 \name{walker}
 \alias{walker}
-\title{Walker Lake sample data set}
+\alias{walker.exh}
+\title{Walker Lake sample and exhaustive data sets}
 \description{
-This is the Walker Lake sample data set (not the exhaustive
-data set!), used in Isaaks and Srivastava's Applied Geostatistics.
+This is the Walker Lake data sets (sample and exhaustive
+data set), used in Isaaks and Srivastava's Applied Geostatistics.
 }
 \format{
   This data frame contains the following columns:
@@ -26,13 +27,12 @@ by Edward H. Isaaks, R. Mohan Srivastava;
 Oxford University Press.
 }
 \note{
-This data set was obtained from
-\url{http://www.ai-geostats.org/resources/data/walker.dat};
-The full (exhaustive) Walker Lake set is available from
-\url{http://www.ai-geostats.org/resources/data/WalkerLake.zip}
+This data sets were obtained from the data sets on
+\url{http://www.ai-geostats.org/}
 }
 \keyword{datasets}
 \examples{
 data(walker)
 summary(walker)
+summary(walker.exh)
 }

@@ -9,7 +9,8 @@ Produces h-scatterplots, where point pairs having specific separation distances
 are plotted. This function is a wrapper around xyplot.
 }
 \usage{
-hscat(formula, data, breaks, pch = 3, cex = .6, ...)
+hscat(formula, data, breaks, pch = 3, cex = .6, mirror = FALSE, 
+	variogram.alpha = 0,...)
 }
 \arguments{
 \item{formula}{ specifies the dependent variable }
@@ -17,7 +18,12 @@ hscat(formula, data, breaks, pch = 3, cex = .6, ...)
 \item{breaks}{ distance class boundaries }
 \item{pch}{ plotting symbol }
 \item{cex}{ plotting symbol size }
-\item{...}{ plotting parameters, passed to xyplot }
+\item{mirror}{ logical; duplicate all points mirrored along x=y?
+(note that correlations are those of the points plotted) }
+\item{variogram.alpha}{ parameter to be passed as alpha parameter to
+\link{variogram}; if alpha is specified it will only affect xyplot by
+being passed through ...}
+\item{...}{ parameters, passed to variogram and xyplot }
 }
 \value{
 an object of class trellis; normally the h scatter plot

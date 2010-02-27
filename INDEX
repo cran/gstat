@@ -48,5 +48,5 @@ variogramLine           Semivariance Values For a Given Variogram Model
 vgm                     Generate, or Add to Variogram Model
 vgm.panel.xyplot        panel functions for most of the variogram plots
                         through lattice
-walker                  Walker Lake sample data set
+walker                  Walker Lake sample and exhaustive data sets
 wind                    Ireland wind data, 1961-1978
