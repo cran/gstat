@@ -53,7 +53,8 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 	} else {
 		V = model(data, data)
 		v0 = model(data, newdata)
-		c0 = as.numeric(model(data[1,],data[1,]))
+		d0 = data[1, 1, drop=FALSE]
+		c0 = as.numeric(model(d0,d0))
 	}
 	if (!missing(beta)) { # sk:
 		skwts = CHsolve(V, v0)
