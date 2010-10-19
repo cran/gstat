@@ -79,3 +79,85 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 	} else
 		pred
 }
+
+krigeST <- function(formula, data, newdata, modelList, y, ..., 
+		computeVar = FALSE, fullCovariance = FALSE) {
+
+	stopifnot(identical(proj4string(data), proj4string(newdata)))
+	lst = extractFormula(formula, data, newdata)
+	X = lst$X
+	x0 = lst$x0
+	if (missing(y))
+		y = lst$y
+
+	V = covfn.ST(data, model = modelList)
+	stopifnot(!is.null(V$T) && !is.null(V$S))
+	v0 = covfn.ST(data, newdata, model = modelList)
+	stopifnot(!is.null(v0$T) && !is.null(v0$S))
+	d0 = data[1, 1, drop=FALSE]
+	c0 = as.numeric(covfn.ST(d0, d0, separate = FALSE, model = modelList))
+	skwts = STsolve(V, v0, X)
+	#ViX = skwts[,-(1:ncol(v0))]
+	#skwts = skwts[,1:ncol(v0)]
+	npts = prod(dim(newdata)[1:2])
+	ViX = skwts[,-(1:npts)]
+	skwts = skwts[,1:npts]
+	beta = solve(t(X) %*% ViX, t(ViX) %*% y)
+	pred = x0 %*% beta + t(skwts) %*% (y - X %*% beta)
+	if (computeVar) {
+		# get (x0-X'C-1 c0)'(X'C-1X)-1 (x0-X'C-1 c0) -- precompute term 1+3:
+		Q = t(x0) - t(ViX) %*% v0
+		var = c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q)
+		if (!fullCovariance)
+			var = diag(var)
+		list(pred = pred, var = var)
+	} else
+		pred
+}
+
+STsolve = function(A, b, X) {
+# V = A$T %x% A$S -- a separable covariance; solve A x = b for x
+# kronecker: T %x% S vec(L) = vec(c0) <-->  S L T = c0
+# solve for L: use Y = L T 
+# S Y = c0 -> Y = solve(S, c0)
+# L T = Y -> Tt Lt = Yt -> Lt = solve(Tt, Yt)
+	Tm = chol(A$Tm)
+	Sm = chol(A$Sm)
+	STbacksolve = function(Tm, Cm, Sm) { 
+		MyChSolve = function(A, b)
+			backsolve(A, forwardsolve(A, b, upper.tri = TRUE, transpose = TRUE))
+		# Y = MyChSolve(Sm, Cm)
+		# L = MyChSolve(Tm, t(Y))
+		# as.vector(t(L))
+		as.vector(t(MyChSolve(Tm, t(MyChSolve(Sm, Cm)))))
+	}
+	# b comes separated:
+	ret1 = apply(b$T, 2, function(x1) 
+		apply(b$S, 2, function(x2)
+			STbacksolve(Tm, matrix(x1 %x% x2, nrow(Sm), nrow(Tm)), Sm)))
+	d = dim(ret1)
+	dim(ret1) = c(d[1] / ncol(b$S), d[2] * ncol(b$S))
+	# X comes full:
+	ret2 = apply(X, 2, function(x) 
+			STbacksolve(Tm, matrix(x, nrow(Sm), nrow(Tm)), Sm))
+	# print(dim(ret1))
+	# print(dim(ret2))
+	cbind(ret1, ret2)
+}
+
+covfn.ST = function(x, y = x, separate = TRUE, model) {
+	if (is(model$space, "variogramModel")) 
+		Sm = variogramLine(model$space, covariance = TRUE, dist_vector = 
+    		spDists(coordinates(x@sp), coordinates(y@sp)))
+	else
+		Sm = model$space(x, y)
+	if (is(model$time, "variogramModel")) 
+    	Tm = variogramLine(model$time, covariance = TRUE, dist_vector = 
+    		abs(outer(as.numeric(index(x@time)), as.numeric(index(y@time)), "-")))
+	else
+		Tm = model$time(x, y)
+    if (separate)
+        list(Sm = Sm, Tm = Tm)
+    else
+        Tm %x% Sm # kronecker product
+}

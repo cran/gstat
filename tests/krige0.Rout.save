@@ -1,7 +1,8 @@
 
-R version 2.10.1 (2009-12-14)
-Copyright (C) 2009 The R Foundation for Statistical Computing
+R version 2.12.0 (2010-10-15)
+Copyright (C) 2010 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: i486-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -32,7 +33,7 @@ Loading required package: sp
  Min.   :-1.364e-12  
  1st Qu.:-8.527e-14  
  Median : 0.000e+00  
- Mean   : 5.725e-15  
+ Mean   : 5.944e-15  
  3rd Qu.: 1.137e-13  
  Max.   : 1.819e-12  
 > spplot(meuse.grid["idw"],col.regions=bpy.colors())
@@ -43,43 +44,43 @@ Loading required package: sp
 [using simple kriging]
 > summary(x$var1.pred - x0$pred)
        V1            
- Min.   :-7.276e-12  
- 1st Qu.:-5.684e-13  
- Median : 1.137e-13  
- Mean   : 8.130e-14  
- 3rd Qu.: 7.390e-13  
- Max.   : 7.503e-12  
+ Min.   :-2.785e-12  
+ 1st Qu.:-2.842e-13  
+ Median : 0.000e+00  
+ Mean   :-2.464e-14  
+ 3rd Qu.: 2.274e-13  
+ Max.   : 2.956e-12  
 > summary(x$var1.var - x0$var)
       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
--1.332e-15 -2.220e-16  0.000e+00 -9.875e-18  2.220e-16  2.109e-15 
+-1.110e-15 -2.220e-16  0.000e+00 -8.694e-18  1.110e-16  9.992e-16 
 > # test ok:
 > x0 <- krige0(zinc~1, meuse, meuse.grid, v, computeVar = TRUE)
 > x <- krige(zinc~1, meuse, meuse.grid, v)
 [using ordinary kriging]
 > summary(x$var1.pred - x0$pred)
        V1            
- Min.   :-7.333e-12  
- 1st Qu.:-5.684e-13  
- Median : 1.137e-13  
- Mean   : 9.938e-14  
- 3rd Qu.: 7.958e-13  
- Max.   : 7.049e-12  
+ Min.   :-2.217e-12  
+ 1st Qu.:-3.411e-13  
+ Median : 0.000e+00  
+ Mean   :-3.590e-14  
+ 3rd Qu.: 2.274e-13  
+ Max.   : 2.728e-12  
 > summary(x$var1.var - x0$var)
       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
--1.318e-15 -2.220e-16  0.000e+00 -9.778e-18  2.220e-16  2.109e-15 
+-1.110e-15 -2.220e-16  0.000e+00 -4.761e-18  2.220e-16  1.110e-15 
 > # test uk:
 > x0 <- krige0(zinc~sqrt(dist), meuse, meuse.grid, v, computeVar = TRUE)
 > x <- krige(zinc~sqrt(dist), meuse, meuse.grid, v)
 [using universal kriging]
 > summary(x$var1.pred - x0$pred)
        V1            
- Min.   :-7.503e-12  
- 1st Qu.:-4.547e-13  
- Median : 1.137e-13  
- Mean   : 1.571e-13  
- 3rd Qu.: 7.958e-13  
- Max.   : 6.821e-12  
+ Min.   :-2.331e-12  
+ 1st Qu.:-2.558e-13  
+ Median : 0.000e+00  
+ Mean   :-1.595e-14  
+ 3rd Qu.: 2.274e-13  
+ Max.   : 2.444e-12  
 > summary(x$var1.var - x0$var)
       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
--1.332e-15 -2.220e-16  0.000e+00 -9.971e-18  2.220e-16  2.109e-15 
+-1.110e-15 -2.220e-16  0.000e+00 -5.602e-19  2.220e-16  1.055e-15 
 > 

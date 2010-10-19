@@ -3,6 +3,7 @@
 \docType{methods}
 \alias{krige}
 \alias{krige0}
+\alias{krigeST}
 \alias{krige.locations}
 \alias{krige.spatial}
 \alias{idw}
@@ -36,6 +37,8 @@ krige.spatial(formula, locations, newdata, model, ..., beta, nmax
 na.action = na.pass, debug.level = 1)
 krige0(formula, data, newdata, model, beta, y, ..., computeVar = FALSE,
 	fullCovariance = FALSE)
+krigeST(formula, data, newdata, modelList, y, ..., computeVar = FALSE,
+	fullCovariance = FALSE)
 idw(formula, locations, ...)
 idw.locations(formula, locations, data, newdata, nmax = Inf, 
 	nmin = 0, maxdist = Inf, block, na.action = na.pass, idp = 2.0,
@@ -63,6 +66,9 @@ idw0(formula, data, newdata, y)
  \item{model}{ variogram model of dependent variable (or its residuals), 
   defined by a call to \link{vgm} or \link{fit.variogram}; for \code{krige0}
   also a user-supplied covariance function is allowed (see example below) }
+ \item{modelList}{ list with two named elements: space and time; these should
+ either be the output of \link{vgm}, or user-defined covariance functions that
+ takes one or two ST objects }
  \item{beta}{ for simple kriging (and simulation based on simple
   kriging): vector with the trend coefficients (including intercept);
   if no independent variables are defined the model only contains an
