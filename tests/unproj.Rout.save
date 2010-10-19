@@ -1,7 +1,8 @@
 
-R version 2.7.0 (2008-04-22)
-Copyright (C) 2008 The R Foundation for Statistical Computing
+R version 2.12.0 (2010-10-15)
+Copyright (C) 2010 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
+Platform: i486-pc-linux-gnu (32-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -20,10 +21,10 @@ Type 'q()' to quit R.
 Loading required package: rgdal
 Loading required package: sp
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.4.4.0, released 2007/11/23
-GDAL_DATA: /home/edzer/S/library/rgdal/gdal
-Loaded PROJ.4 runtime: Rel. 4.6.0, 21 Dec 2007
-PROJ_LIB: /home/edzer/S/library/rgdal/proj
+Loaded GDAL runtime: GDAL 1.7.2, released 2010/04/23
+Path to GDAL shared files: /usr/share/gdal17
+Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009
+Path to PROJ.4 shared files: (autodetected)
 > 
 > data(meuse)
 > coordinates(meuse) = ~x+y
@@ -56,11 +57,21 @@ PROJ_LIB: /home/edzer/S/library/rgdal/proj
 > 
 > library(fields)
 Loading required package: spam
-Package 'spam' is loaded.  Version0.13-2 (2008-01-04).
+Package 'spam' is loaded. Spam version 0.23-0 (2010-09-01).
+Type demo( spam) for some demos, help( Spam) for an overview
+of this package.
+Help for individual functions is optained by adding the
+suffix '.spam' to the function name, e.g. 'help(chol.spam)'.
 
-Type demo( spam) for some demos, help( Spam) for an overview of this package.
+Attaching package: 'spam'
 
- Try help(fields) for an overview of this library 
+The following object(s) are masked from 'package:base':
+
+    backsolve, forwardsolve, norm
+
+ Use help(fields) for an overview of this library
+
+library( fields, keep.source=TRUE) retains comments in the source code. 
 > data(ozone2)
 > oz = SpatialPointsDataFrame(ozone2$lon.lat, 
 + 		data.frame(t(ozone2$y)), 
