@@ -71,9 +71,8 @@ to rotate the two minor directions around the principal direction defined
 by $p$ and $q$. A positive angle acts counter-clockwise while looking
 in the principal direction. Anisotropy ratios $s$ and $t$ are the ratios
 between the major range and each of the two minor ranges. The anisotropy code
-was taken from GSLIB. Note that in
-\url{http://pangea.stanford.edu/ERE/research/scrf/software/gslib/bug/#ANGLE}
-(end of page) it is reported that this code has a bug. Quoting from this
+was taken from GSLIB. Note that in \url{http://www.gslib.com/sec_gb.html}
+it is reported that this code has a bug. Quoting from this
 site: ``The third angle in all GSLIB programs operates in the opposite
 direction than specified in the GSLIB book.  Explanation - The books
 says (pp27) the angle is measured clockwise when looking toward

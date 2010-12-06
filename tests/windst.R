@@ -19,8 +19,8 @@ velocities = apply(windsqrt, 2, function(x) { x - meanwind })
 # proper Euclidian (projected) space:
 pts = coordinates(wind.loc[match(names(wind[4:15]), wind.loc$Code),])
 pts = SpatialPoints(pts)
+if (require(rgdal)) {
 proj4string(pts) = "+proj=longlat +datum=WGS84"
-library(rgdal)
 utm29 = CRS("+proj=utm +zone=29 +datum=WGS84")
 pts = spTransform(pts, utm29)
 t = xts(1:nrow(wind), wind$time)
@@ -65,3 +65,4 @@ pred = krigeST(sqrt(values)~1, w, STF(grd, tgrd), v)
 wind.ST = STFDF(grd, tgrd, data.frame(pred = pred))
 
 all.equal(wind.pr0, wind.ST)
+}

@@ -53,7 +53,7 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 	} else {
 		V = model(data, data)
 		v0 = model(data, newdata)
-		d0 = data[1, 1, drop=FALSE]
+		d0 = data[1, drop=FALSE]
 		c0 = as.numeric(model(d0,d0))
 	}
 	if (!missing(beta)) { # sk:
