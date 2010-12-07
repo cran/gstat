@@ -21,7 +21,7 @@ Type 'q()' to quit R.
 Loading required package: rgdal
 Loading required package: sp
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.7.2, released 2010/04/23
+Loaded GDAL runtime: GDAL 1.7.3, released 2010/11/10
 Path to GDAL shared files: /usr/share/gdal17
 Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009
 Path to PROJ.4 shared files: (autodetected)
