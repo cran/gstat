@@ -59,6 +59,11 @@
 #include "glvars.h"
 #include "debug.h"
 
+#ifdef HAVE_LIBGIS
+# include <grass/gis.h>
+# include <grass/gisdefs.h>
+#endif 
+
 static void convert_null_to_space(char *cp, const char *name, const FILE *f);
 
 typedef enum { IS_FILE, IS_PIPE } FILE_TYPE;
