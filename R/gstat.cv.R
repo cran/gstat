@@ -12,9 +12,12 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 	if (all.residuals) {
 		nc = length(object$data)
 		ret = data.frame(matrix(NA, nrow(data), nc))
-	} else
-		ret = SpatialPointsDataFrame(coordinates(data), 
-			data.frame(matrix(as.numeric(NA), nrow(data), 2)))
+	} else {
+		cc = coordinates(data)
+		df = data.frame(matrix(as.numeric(NA), nrow(data), 2),
+			row.names = rownames(cc))
+		ret = SpatialPointsDataFrame(cc, df)
+	}
 	if (missing(nfold)) 
 		nfold = nrow(data)
 	else if (length(nfold) == nrow(data))
