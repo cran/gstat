@@ -58,7 +58,7 @@ function (x, y, subscripts, type = "p", pch = plot.symbol$pch,
                 	ang.hor <- pi * (direction[subscripts][1]/180.0)
                 	dir <- get.direction.unitv(ang.hor, 0)
             	}
-            	ret <- variogramLine(model, max = max(x), dir = dir)
+            	ret <- variogramLine(model, max(x), dir = dir)
             	llines(x = ret$dist, y = ret$gamma, lty = lty, col = col.line, lwd = lwd)
         	}
 		}
