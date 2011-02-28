@@ -95,7 +95,7 @@
  * (for glvars.c:) something, not bigger than 127 
  * because of user interface (crazy though)
  */
-#define ERROR_BUFFER_SIZE 1024
+#define ERROR_BUFFER_SIZE 1280
 
 #define NOWARRANTY \
 "  Because the program is licensed free of charge, there is no warranty\n\

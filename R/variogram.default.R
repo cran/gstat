@@ -21,7 +21,6 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     if (cloud == TRUE) 
         width = 0
 	if (is.logical(map) && map == TRUE) {
-		require(sp)
 		cells.dim = length(seq(-cutoff, cutoff, by = width))
 		grid.topology = GridTopology(rep(-cutoff, 2), rep(width, 2), rep(cells.dim, 2))
 		map = SpatialGrid(grid = grid.topology)
@@ -47,7 +46,8 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 			if (missing(grid) || !is.list(grid)) {
 				if (!is.null(g) && gridded(g$data[i]$data))
 					grd = unlist(gridparameters(g$data[i]$data))
-				grd = numeric(0)
+				else 
+					grd = numeric(0)
 			} else
 				grd = grid[[i]]
             .Call("gstat_new_data", as.double(object[[i]]), 

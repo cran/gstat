@@ -81,7 +81,8 @@ known. By default, trend coefficients are estimated from the data.}
 when object is of class \code{gstat} and has more than one variable }
 \item{v}{ object of class \code{variogram} or \code{variogramCloud}
 to be printed}
-\item{grid}{ grid parameters, if data are gridded }
+\item{grid}{ grid parameters, if data are gridded (not to be called
+directly; this is filled automatically) }
 \item{map}{ logical; if TRUE, and \code{cutoff} and \code{width}
 are given, a variogram map is returned. This requires package
 sp. Alternatively, a map can be passed, of class SpatialDataFrameGrid

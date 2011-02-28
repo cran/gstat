@@ -60,11 +60,11 @@ GNUPLOT_TERM gnuplot_terms[] = {
  { PSLATEX, 1, 1, "pslatex", "", "$\\gamma(h)$", "$h$" },
  { CGM, 1, 1, "cgm", "", NULL },
  { GIF, 2, 2, "gif", 
- 	"transparent size 480, 360 xffffff x000000 x404040 xff0000 x0000ff x00ff00",
+ 	"transparent size 640, 480 xffffff x000000 x404040 xff0000 x0000ff x00ff00",
 	NULL, NULL },
  { EPS, 1, 1, "postscript", "eps solid 17", NULL, NULL },
  { PNG, 2, 3, 
- 		"png", "small transparent color xffffff x000000 x404040 xff0000",
+ 		"png", "small transparent xffffff x000000 x404040 xff0000",
 		NULL, NULL },
  { EEPIC, 2, 3, "eepic", "", "{$\\gamma(h)$}", "{$h$}" },
  { UNKNOWN, 0, 0, NULL, NULL, NULL, NULL }
