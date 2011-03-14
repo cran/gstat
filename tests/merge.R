@@ -1,3 +1,4 @@
+options(digits=6)
 # illustrates the use of merge, for merging parameters accross variables:
 # Z1=m+e1(s)
 # Z2=m+e2(s)

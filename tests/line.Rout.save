@@ -1,6 +1,6 @@
 
-R version 2.12.0 (2010-10-15)
-Copyright (C) 2010 The R Foundation for Statistical Computing
+R version 2.12.2 (2011-02-25)
+Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: i486-pc-linux-gnu (32-bit)
 
@@ -16,6 +16,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+> options(digits=6)
 > library(gstat)
 Loading required package: sp
 > data(meuse.grid)
@@ -39,8 +40,8 @@ Loading required package: sp
 > out1
 An object of class "SpatialLinesDataFrame"
 Slot "data":
-         x        y var1.pred   var1.var
-a 180333.3 332166.7  6.161791 0.00802505
+       x      y var1.pred   var1.var
+a 180333 332167   6.16179 0.00802505
 
 Slot "lines":
 [[1]]
@@ -78,7 +79,7 @@ CRS arguments: NA
 [using ordinary kriging]
 > out2
   coordinates var1.pred   var1.var
-1      (0, 0)  6.161791 0.00802505
+1      (0, 0)   6.16179 0.00802505
 > 
 > compare.krigingLines = function(formula, data, newdata, model) {
 + 	out1 = krige(formula, data, newdata, model)
@@ -102,8 +103,8 @@ a         0        0
 [using ordinary kriging]
 An object of class "SpatialLinesDataFrame"
 Slot "data":
-         x        y var1.pred    var1.var
-a 180666.7 332583.3  6.042376 0.005319143
+       x      y var1.pred   var1.var
+a 180667 332583   6.04238 0.00531914
 
 Slot "lines":
 [[1]]
@@ -153,9 +154,9 @@ a         0        0
 [using ordinary kriging]
 An object of class "SpatialLinesDataFrame"
 Slot "data":
-         x        y var1.pred   var1.var
-a 180333.3 332166.7  6.161791 0.00802505
-b 181000.0 333000.0  5.706034 0.01104287
+       x      y var1.pred   var1.var
+a 180333 332167   6.16179 0.00802505
+b 181000 333000   5.70603 0.01104287
 
 Slot "lines":
 [[1]]
