@@ -1,6 +1,6 @@
 
-R version 2.12.0 (2010-10-15)
-Copyright (C) 2010 The R Foundation for Statistical Computing
+R version 2.12.2 (2011-02-25)
+Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: i486-pc-linux-gnu (32-bit)
 
@@ -16,6 +16,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+> options(digits=6)
 > # illustrates the use of merge, for merging parameters accross variables:
 > # Z1=m+e1(s)
 > # Z2=m+e2(s)
@@ -116,8 +117,8 @@ row 2:    0.191452347    0.308547653
 row 3:    0.191452347    0.308547653 
 
 
-  x y  d1.pred  d1.var  d2.pred  d2.var cov.d1.d2
-1 1 1 2.031619 0.92923 2.968381 0.92923 0.4576978
+  x y d1.pred  d1.var d2.pred  d2.var cov.d1.d2
+1 1 1 2.03162 0.92923 2.96838 0.92923  0.457698
 > 
 > # Z1 and Z2 share a regression slope:
 > g = gstat(NULL,"d1", z~x,~x+y,d1,model=vgm(1, "Exp", 1))
@@ -220,6 +221,6 @@ row 2: -4.16333634e-17            0.5
 row 3: 2.77555756e-17            0.5 
 
 
-  x y d1.pred   d1.var d2.pred   d2.var cov.d1.d2
-1 1 1     0.5 1.081434     4.5 1.081434 0.3054935
+  x y d1.pred  d1.var d2.pred  d2.var cov.d1.d2
+1 1 1     0.5 1.08143     4.5 1.08143  0.305494
 > 
