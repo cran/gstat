@@ -16,7 +16,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-> options(digits=6)
+> options(digits=5)
 > library(gstat)
 Loading required package: sp
 > data(meuse.grid)
@@ -40,8 +40,8 @@ Loading required package: sp
 > out1
 An object of class "SpatialLinesDataFrame"
 Slot "data":
-       x      y var1.pred   var1.var
-a 180333 332167   6.16179 0.00802505
+       x      y var1.pred var1.var
+a 180333 332167    6.1618 0.008025
 
 Slot "lines":
 [[1]]
@@ -78,8 +78,8 @@ CRS arguments: NA
 > out2 = krige(log(zinc)~1, meuse, SpatialPoints(matrix(0,1,2)), v, block=coordinates(pts))
 [using ordinary kriging]
 > out2
-  coordinates var1.pred   var1.var
-1      (0, 0)   6.16179 0.00802505
+  coordinates var1.pred var1.var
+1      (0, 0)    6.1618 0.008025
 > 
 > compare.krigingLines = function(formula, data, newdata, model) {
 + 	out1 = krige(formula, data, newdata, model)
@@ -103,8 +103,8 @@ a         0        0
 [using ordinary kriging]
 An object of class "SpatialLinesDataFrame"
 Slot "data":
-       x      y var1.pred   var1.var
-a 180667 332583   6.04238 0.00531914
+       x      y var1.pred  var1.var
+a 180667 332583    6.0424 0.0053191
 
 Slot "lines":
 [[1]]
@@ -154,9 +154,9 @@ a         0        0
 [using ordinary kriging]
 An object of class "SpatialLinesDataFrame"
 Slot "data":
-       x      y var1.pred   var1.var
-a 180333 332167   6.16179 0.00802505
-b 181000 333000   5.70603 0.01104287
+       x      y var1.pred var1.var
+a 180333 332167    6.1618 0.008025
+b 181000 333000    5.7060 0.011043
 
 Slot "lines":
 [[1]]
