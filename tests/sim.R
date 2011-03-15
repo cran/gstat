@@ -1,3 +1,4 @@
+options(digits=6)
 library(gstat)
 data(meuse)
 set.seed(158229572)
