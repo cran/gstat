@@ -1,6 +1,6 @@
 Package: gstat
-Version: 0.9-79
-Date: 2011/03/15
+Version: 0.9-80
+Date: 2011/04/04
 Title: geostatistical modelling, prediction and simulation
 Author: Edzer Pebesma <edzer.pebesma@uni-muenster.de> and others
 Maintainer: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
@@ -14,6 +14,6 @@ Suggests: rgdal (>= 0.5.2), fields, mapdata, lattice, spacetime,
         maptools
 License: GPL
 URL: http://www.gstat.org/, http://52north.org/geostatistics
-Packaged: 2011-03-15 17:04:08 UTC; edzer
+Packaged: 2011-04-03 22:11:40 UTC; edzer
 Repository: CRAN
-Date/Publication: 2011-03-15 17:40:34
+Date/Publication: 2011-04-04 07:38:27

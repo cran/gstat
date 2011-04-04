@@ -59,7 +59,7 @@ function (formula, newdata, na.action, BLUE.estimates = FALSE)
 		# NA's were filtered in X, but not in coords:
     	mf.f =    model.frame(terms.f, newdata, na.action = na.pass)
 		valid.pattern = !(apply(mf.f, 1, function(x) any(is.na(x))))
-		X    = model.matrix(terms.f, mf.f   [valid.pattern, , drop = FALSE])
+		X    = model.matrix(terms.f, mf.f[valid.pattern, , drop = FALSE])
 		locs = locs[valid.pattern, ]
 		if (NROW(locs) != NROW(X))
 			stop("NROW(locs) != NROW(X): this should not occur")

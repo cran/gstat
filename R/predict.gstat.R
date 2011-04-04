@@ -190,9 +190,15 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 				match.ID = TRUE)
 		} else {
 			coordinates(ret) = dimnames(raw$locations)[[2]]
-			gridded(ret) = gridded(newdata)
-			if (gridded(newdata)) 
-				fullgrid(ret) = fullgrid(newdata)
+			if (gridded(newdata)) {
+				returnFullGrid = fullgrid(newdata)
+				fullgrid(newdata) = FALSE
+				ret = new("SpatialPixelsDataFrame", 
+					new("SpatialPixels", as(ret, "SpatialPoints"),
+					grid = newdata@grid, grid.index = newdata@grid.index),
+        			data = ret@data, coords.nrs = ret@coords.nrs)
+				fullgrid(ret) = returnFullGrid
+			}
 		}
 		proj4string(ret) = CRS(proj4string(newdata))
 	}
