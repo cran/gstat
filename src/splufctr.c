@@ -302,7 +302,7 @@ SPMAT	*spILUfactor(A,alpha)
 SPMAT	*A;
 double	alpha;
 {
-    int		i, k, idx, idx_piv, m, n, old_idx, old_idx_piv;
+    int		i, k, idx, idx_piv, /* m, */ n, old_idx, old_idx_piv;
     SPROW	*r, *r_piv;
     Real	piv_val, tmp;
     
@@ -312,7 +312,7 @@ double	alpha;
     if ( alpha < 0.0 )
 	error(E_RANGE,"[alpha] in spILUfactor");
     
-    m = A->m;	n = A->n;
+    /* m = A->m; */		n = A->n;
     sp_diag_access(A);
     sp_col_access(A);
     

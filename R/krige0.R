@@ -65,8 +65,10 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 		ViX = skwts[,-(1:nrow(s0))]
 		skwts = skwts[,1:nrow(s0)]
 		beta = solve(t(X) %*% ViX, t(ViX) %*% y)
-		if (computeVar) {
-			# (x0-X'C-1 c0)'(X'C-1X)-1 (x0-X'C-1 c0) -- precompute term 1+3:
+		if (computeVar) { 
+			# here done the HARD, i.e. m x m way; first compute
+			# (x0-X'C-1 c0)'(X'C-1X)-1 (x0-X'C-1 c0) 
+			# -- precompute term 1+3:
 			Q = t(x0) - t(ViX) %*% v0
 			var = c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q)
 		}

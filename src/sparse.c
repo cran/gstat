@@ -123,7 +123,7 @@ VEC	*sp_mv_mlt(A,x,out)
 SPMAT	*A;
 VEC	*x, *out;
 {
-   int	i, j_idx, m, n, max_idx;
+   int	i, j_idx, m, /* n, */ max_idx;
    Real	sum, *x_ve;
    SPROW	*r;
    row_elt	*elts;
@@ -136,7 +136,7 @@ VEC	*x, *out;
      out = v_resize(out,A->m);
    if ( out == x )
      error(E_INSITU,"sp_mv_mlt");
-   m = A->m;	n = A->n;
+   m = A->m;	/* n = A->n; */
    x_ve = x->ve;
    
    for ( i = 0; i < m; i++ )
@@ -159,7 +159,7 @@ VEC	*sp_vm_mlt(A,x,out)
 SPMAT	*A;
 VEC	*x, *out;
 {
-   int	i, j_idx, m, n, max_idx;
+   int	i, j_idx, m, /* n, */ max_idx;
    Real	tmp, *x_ve, *out_ve;
    SPROW	*r;
    row_elt	*elts;
@@ -173,7 +173,7 @@ VEC	*x, *out;
    if ( out == x )
      error(E_INSITU,"sp_vm_mlt");
    
-   m = A->m;	n = A->n;
+   m = A->m;	/* n = A->n; */
    v_zero(out);
    x_ve = x->ve;	out_ve = out->ve;
    
