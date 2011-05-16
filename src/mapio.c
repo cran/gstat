@@ -1,10 +1,11 @@
 /*
     Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2003 (C) Edzer J. Pebesma
+    Copyright 1992, 2011 (C) Edzer Pebesma
 
-    Edzer J. Pebesma, e.pebesma@geo.uu.nl
-    Department of physical geography, Utrecht University
-    P.O. Box 80.115, 3508 TC Utrecht, The Netherlands
+    Edzer Pebesma, edzer.pebesma@uni-muenster.de
+	Institute for Geoinformatics (ifgi), University of Münster 
+	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
+	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -530,7 +531,9 @@ int map_put_cell(GRIDMAP * m,	/* pointer to GRIDMAP structure */
 GRIDMAP *map_dup(const char *fname, GRIDMAP *m)
 {
 	GRIDMAP *dup = NULL;
+#ifdef HAVE_LIBGDAL
 	char **papszOptions = NULL, *drv = NULL;
+#endif
 
 	assert(m);
 	assert(fname);
@@ -1034,7 +1037,7 @@ static GRIDMAP *write_idrisi32(GRIDMAP *m) {
 static int read_idrisi32_header(GRIDMAP *m, const char *fname) {
 	FILE *f;
 	char *tok1 = NULL, *tok2 = NULL;
-	unsigned int check = 0, ok = 1, is_real = 0;
+	unsigned int check = 0, ok = 1 /* , is_real = 0 */ ;
     double unit_dist; /* KS added */
 	double ymin, xmax; /* EJP added, removed from GRIDMAP structure, 
 						 where KS put them in */
@@ -1063,7 +1066,7 @@ static int read_idrisi32_header(GRIDMAP *m, const char *fname) {
 			if (!strstr(tok2, "integer") && !strstr(tok2, "real"))
 				ok = 0;
 			if (strstr(tok2, "real")) {
-				is_real = 1; 
+				/* is_real = 1;  */
 				is_what = IS_REAL;
              }
 		} else if (string_casecmp(tok1, "file title  :") == 0) {
@@ -2702,7 +2705,7 @@ static void write_ermapper_header(GRIDMAP * m, FILE * fp)
 static GRIDMAP *read_surfer(GRIDMAP * m) {
 	FILE *f = NULL;
 	int i, j, size;
-	float *buf, zlo, zhi;
+	float *buf /* , zlo, zhi */ ;
 
 	DUMP(m->filename);
 	DUMP(".grd: trying Surfer DSAA format... ");
@@ -2712,8 +2715,10 @@ static GRIDMAP *read_surfer(GRIDMAP * m) {
 			efclose(f);
 			return NULL;
 		} else { /* use min/max in header to set missing values later on */
+			/*
 			zlo = m->cellmin;
 			zhi = m->cellmax;
+			*/
 		}
 		if (read_ascii_grid(m, f, 0)) {
 			efclose(f);

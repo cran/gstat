@@ -1,10 +1,11 @@
 /*
     Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2003 (C) Edzer J. Pebesma
+    Copyright 1992, 2011 (C) Edzer Pebesma
 
-    Edzer J. Pebesma, e.pebesma@geo.uu.nl
-    Department of physical geography, Utrecht University
-    P.O. Box 80.115, 3508 TC Utrecht, The Netherlands
+    Edzer Pebesma, edzer.pebesma@uni-muenster.de
+	Institute for Geoinformatics (ifgi), University of Münster 
+	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
+	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

@@ -16,7 +16,7 @@ function (data, gstat.object, X, ids = names(gstat.object$data))
 		}
 		ret
 	}
-    lti <- function(i, j) {
+    lti <- function(i, j) { # lower triangular matrix index, when repr as array
         mx = max(i, j) - 1
         mn = min(i, j) - 1
         ((mx) * (mx - 1))/2 + mn + 1
@@ -38,7 +38,7 @@ function (data, gstat.object, X, ids = names(gstat.object$data))
 	if (any(is.na(pr.idx)) || any(is.na(cov.idx)))
 		stop("colunn names in data not matched")
 
-	res = data.frame(t(apply(as.data.frame(data), 1, 
+	res = data.frame(t(apply(as.data.frame(data)[names(data)], 1, 
 		contr.fun, n = n, pr.idx = pr.idx, cov.idx = cov.idx,
 		contr = X)))
 

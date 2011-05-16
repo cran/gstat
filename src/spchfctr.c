@@ -375,7 +375,7 @@ VEC	*b, *out;
 SPMAT	*spICHfactor(A)
 SPMAT	*A;
 {
-	int	k, m, n, nxt_row, nxt_idx, diag_idx;
+	int	k, m /*, n */ , nxt_row, nxt_idx, diag_idx;
 	Real	pivot, tmp2;
 	SPROW	*r_piv, *r_op;
 	row_elt	*elt_piv, *elt_op;
@@ -391,7 +391,7 @@ SPMAT	*A;
 	if ( ! A->flag_diag )
 		sp_diag_access(A);
 
-	m = A->m;	n = A->n;
+	m = A->m;	/* n = A->n ; */
 	for ( k = 0; k < m; k++ )
 	{
 		r_piv = &(A->row[k]);

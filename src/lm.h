@@ -3,7 +3,6 @@
 void pred_lm(DATA **data, int n_vars, DPOINT *where, double *est);
 void make_residuals_lm(DATA *d);
 double *make_ols(DATA *d);
-void free_lm(void *lm);
 
 # ifdef MATRIXH /* MAT, VEC definitions */
 MAT *get_X(DATA **d, MAT *X, int nvars);
@@ -34,8 +33,10 @@ typedef struct {
 } LM ;
 
 LM *calc_lm(LM *lm);
-LM *init_lm(LM *lm);
 void logprint_lm(DATA *d, LM *lm);
+
+LM *init_lm(LM *lm);
+void free_lm(LM *lm);
 
 # endif /* MATRIXH */
 
