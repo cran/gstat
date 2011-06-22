@@ -26,7 +26,7 @@ idw0 = function(formula, data, newdata, y) {
 
 CHsolve = function(A, b) {
 	# solves A x = b for x if A is PD symmetric
-	A = chol(A)
+	A = chol(A, LINPACK=TRUE)
 	backsolve(A, forwardsolve(A, b, upper.tri = TRUE, transpose = TRUE))
 }
 
@@ -123,8 +123,8 @@ STsolve = function(A, b, X) {
 # solve for L: use Y = L T 
 # S Y = c0 -> Y = solve(S, c0)
 # L T = Y -> Tt Lt = Yt -> Lt = solve(Tt, Yt)
-	Tm = chol(A$Tm)
-	Sm = chol(A$Sm)
+	Tm = chol(A$Tm, LINPACK=TRUE)
+	Sm = chol(A$Sm, LINPACK=TRUE)
 	STbacksolve = function(Tm, Cm, Sm) { 
 		MyChSolve = function(A, b)
 			backsolve(A, forwardsolve(A, b, upper.tri = TRUE, transpose = TRUE))

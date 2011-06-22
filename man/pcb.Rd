@@ -3,16 +3,16 @@
 \alias{pcb}
 \title{PCB138 measurements in sediment at the NCP, the Dutch part of the North Sea}
 \description{
-This data set gives a point set with altitudes, digitized from the
-1:10,000 topographical map of the Netherlands.
+PCB138 measurements in sediment at the NCP, which is the 
+Dutch part of the North Sea
 }
 \format{
   This data frame contains the following columns:
   \describe{
     \item{year}{ measurement year }
-    \item{x}{ x-coordinate; UTM31 }
-    \item{y}{ y-coordinate; UTM31 }
-    \item{coast}{ distance to coast, m.}
+    \item{x}{ x-coordinate; UTM zone 31 }
+    \item{y}{ y-coordinate; UTM zone 31 }
+    \item{coast}{ distance to coast of the Netherlands, in km.}
     \item{depth}{ sea water depth, m. }
     \item{PCB138}{ PCB-138, measured on the sediment fraction smaller than
 	63 \eqn{\mu}{mu}, in \eqn{\mu g/kg}{mu g/kg} dry matter; BUT SEE NOTE BELOW }

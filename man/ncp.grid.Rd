@@ -3,16 +3,16 @@
 \alias{ncp.grid}
 \title{Grid for the NCP, the Dutch part of the North Sea}
 \description{
-Gridded data for the NCP, the Dutch part of the North Sea, for
-a 5 km x 5 km grid; stored as data.frame.
+Gridded data for the NCP (Nederlands Continentaal Plat, the Dutch
+part of the North Sea), for a 5 km x 5 km grid; stored as data.frame.
 }
 \format{
   This data frame contains the following columns:
   \describe{
-   \item{x}{x-coordinate, UTM31}
-   \item{y}{y-coordinate, UTM31}
-   \item{depth}{sea water depth, m}
-   \item{coast}{distance to coast, m}
+   \item{x}{x-coordinate, UTM zone 31}
+   \item{y}{y-coordinate, UTM zone 31}
+   \item{depth}{sea water depth, m.}
+   \item{coast}{distance to the coast of the Netherlands, in km.}
    \item{area}{identifier for administrative sub-areas}
   }
 }

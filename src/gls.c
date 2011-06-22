@@ -144,7 +144,8 @@ void gls(DATA **d /* pointer to DATA array */,
 		*Tmp1 = MNULL, *Tmp2 = MNULL, *Tmp3, *R = MNULL;
 	static VEC *blup = VNULL, *tmpa = VNULL, *tmpb = VNULL;
 	volatile unsigned int i, rows_C;
-	unsigned int j, k, l = 0, row, col, start_i, start_j, start_X, global;
+	unsigned int j, k, l = 0, row, col, start_i, start_j, start_X, global,
+		one_nbh_empty;
 	VARIOGRAM *v = NULL;
 	static enum GLS_WHAT last_pred = GLS_INIT; /* the initial value */
 	double c_value, *X_ori;
@@ -214,10 +215,14 @@ void gls(DATA **d /* pointer to DATA array */,
 /* 
  * selection dependent problem dimensions: 
  */
-	for (i = rows_C = 0; i < n_vars; i++)
+	for (i = rows_C = 0, one_nbh_empty = 0; i < n_vars; i++) {
 		rows_C += d[i]->n_sel;
+		if (d[i]->n_sel == 0)
+			one_nbh_empty = 1;
+	}
 
-	if (rows_C == 0) { /* empty selection list(s) */
+	if (rows_C == 0 /* all selection lists empty */
+			|| one_nbh_empty == 1) { /* one selection list empty */
 		if (pred == GLS_BLP || UPDATE_BLP)
 			debug_result(blup, MSPE, pred);
 		return;
