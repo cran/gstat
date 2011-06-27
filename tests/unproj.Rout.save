@@ -1,6 +1,6 @@
 
-R version 2.12.0 (2010-10-15)
-Copyright (C) 2010 The R Foundation for Statistical Computing
+R version 2.13.0 (2011-04-13)
+Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: i486-pc-linux-gnu (32-bit)
 
@@ -21,8 +21,8 @@ Type 'q()' to quit R.
 Loading required package: rgdal
 Loading required package: sp
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.7.3, released 2010/11/10
-Path to GDAL shared files: /usr/share/gdal17
+Loaded GDAL runtime: GDAL 1.8.0, released 2011/01/12
+Path to GDAL shared files: /usr/share/gdal/1.8
 Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009
 Path to PROJ.4 shared files: (autodetected)
 > 

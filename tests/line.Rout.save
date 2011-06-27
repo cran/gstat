@@ -1,5 +1,5 @@
 
-R version 2.12.2 (2011-02-25)
+R version 2.13.0 (2011-04-13)
 Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: i486-pc-linux-gnu (32-bit)
@@ -40,8 +40,8 @@ Loading required package: sp
 > out1
 An object of class "SpatialLinesDataFrame"
 Slot "data":
-       x      y var1.pred var1.var
-a 180333 332167    6.1618 0.008025
+       x      y var1.pred  var1.var
+a 180333 332167    6.1618 0.0080251
 
 Slot "lines":
 [[1]]
@@ -78,8 +78,8 @@ CRS arguments: NA
 > out2 = krige(log(zinc)~1, meuse, SpatialPoints(matrix(0,1,2)), v, block=coordinates(pts))
 [using ordinary kriging]
 > out2
-  coordinates var1.pred var1.var
-1      (0, 0)    6.1618 0.008025
+  coordinates var1.pred  var1.var
+1      (0, 0)    6.1618 0.0080251
 > 
 > compare.krigingLines = function(formula, data, newdata, model) {
 + 	out1 = krige(formula, data, newdata, model)
@@ -154,9 +154,9 @@ a         0        0
 [using ordinary kriging]
 An object of class "SpatialLinesDataFrame"
 Slot "data":
-       x      y var1.pred var1.var
-a 180333 332167    6.1618 0.008025
-b 181000 333000    5.7060 0.011043
+       x      y var1.pred  var1.var
+a 180333 332167    6.1618 0.0080251
+b 181000 333000    5.7060 0.0110429
 
 Slot "lines":
 [[1]]
