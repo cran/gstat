@@ -68,7 +68,8 @@ idw0(formula, data, newdata, y)
   also a user-supplied covariance function is allowed (see example below) }
  \item{modelList}{ list with two named elements: space and time; these should
  either be the output of \link{vgm}, or user-defined covariance functions that
- takes one or two ST objects }
+ take one or two ST objects; a separable covariance model is assumed and 
+ exploited }
  \item{beta}{ for simple kriging (and simulation based on simple
   kriging): vector with the trend coefficients (including intercept);
   if no independent variables are defined the model only contains an

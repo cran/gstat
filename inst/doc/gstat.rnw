@@ -12,9 +12,9 @@
 
 \SweaveOpts{echo=TRUE}
 
-\title{The meuse data set: a tutorial\\
+\title{The meuse data set: a brief tutorial\\
 for the {\tt gstat} R package }
-\author{Edzer J.\ Pebesma}
+\author{\href{mailto:edzer.pebesma@uni-muenster.de}{Edzer Pebesma}}
 \date{\today}
 
 \begin{document}

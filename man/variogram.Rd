@@ -4,6 +4,7 @@
 \alias{variogram.gstat}
 \alias{variogram.formula}
 \alias{variogram.default}
+\alias{variogramST}
 \alias{variogram.line}
 \alias{print.gstatVariogram}
 \alias{print.variogramCloud}
@@ -24,6 +25,8 @@ and pooled variogram, and for irregular distance intervals.
 	numeric(0), cloud = FALSE, trend.beta = NULL, debug.level = 1,
 	cross = TRUE, grid, map = FALSE, g = NULL, ..., projected = TRUE, lambda = 1.0)
 \method{variogram}{line}(..., deprecate = TRUE)
+variogramST(formula, locations, data, ..., tlags = 0:15,
+		progress = TRUE, pseudo = TRUE)
 \method{print}{gstatVariogram}(v, ...)
 \method{print}{variogramCloud}(v, ...)
 }
@@ -62,7 +65,7 @@ directions in (x,y) }
 optional a vector of directions
 \item{tol.hor}{ horizontal tolerance angle in degrees }
 \item{tol.ver}{ vertical tolerance angle in degrees }
-\item{cressie}{ logical; if TRUE, use Cressie's robust variogram estimate;
+\item{cressie}{ logical; if TRUE, use Cressie''s robust variogram estimate;
 if FALSE use the classical method of moments variogram estimate }
 \item{dX}{ include a pair of data points $y(s_1),y(s_2)$ taken at
 locations $s_1$ and $s_2$ for sample variogram calculation only when
@@ -77,8 +80,12 @@ values should be strictly increasing }
 \item{trend.beta}{vector with trend coefficients, in case they are
 known. By default, trend coefficients are estimated from the data.}
 \item{debug.level}{ integer; set gstat internal debug level }
-\item{cross}{ logical; if FALSE, no cross variograms are calculated
-when object is of class \code{gstat} and has more than one variable }
+\item{cross}{ logical or character; if FALSE, no cross variograms are computed
+when object is of class \code{gstat} and has more than one variable; if
+TRUE, all direct and cross variograms are computed; if
+equal to "ST", direct and cross variograms are computed for all pairs 
+involving the first (non-time lagged) variable; if equal to "ONLY",
+only cross variograms are computed (no direct variograms). }
 \item{v}{ object of class \code{variogram} or \code{variogramCloud}
 to be printed}
 \item{grid}{ grid parameters, if data are gridded (not to be called
@@ -99,7 +106,11 @@ distances are computed, for unprojected great circle distances
 deriving from class Spatial, projection is detected automatically using
 \code{is.projected}}
 \item{lambda}{test feature; not working (yet)}
-} 
+\item{tlags}{ integer; time lags to consider; see details below }
+\item{progress}{ logical; show text progress bar }
+\item{pseudo}{ logical; use pseudo cross variogram for computing
+time-lagged spatial variograms }
+}
 
 \value{ If map is TRUE (or a map is passed), a grid map is returned
 containing the (cross) variogram map(s). See package sp.
@@ -114,6 +125,7 @@ for this estimate}
 \item{dir.hor}{the horizontal direction}
 \item{dir.ver}{the vertical direction}
 \item{id}{the combined id pair}
+
 If cloud is TRUE: an object of class \code{variogramCloud}, with the field
 \code{np} encoding the numbers of the point pair that contributed to a
 variogram cloud estimate, as follows. The first point is found by 1 + the
@@ -126,15 +138,22 @@ the data pair}
 \item{right}{for variogramCloud: data id (row number) of the other 
 data in the pair}
 
-In the past, gstat returned an object of class "variogram"; however,
-this resulted in confusions for users of the package geoR: the geoR
-variog function also returns objects of class "variogram", incompatible
-to those returned by this function. That's why I changed the class name.
+In case of a spatio-temporal variogram, the sample variogram
+contains two additional fields, \code{timelag} and \code{spacelag},
+the first of which indicates the time lag used, the second the space
+lag. \code{spacelag} is the midpoint in the spatial lag intervals,
+whereas \code{dist} is the average distance between the point
+pairs found in a distance interval. To compute variograms
+for space lag $h$ and time lag $t$, the pseudo cross variogram
+$(Z_i(s)-Z_{i+t}(s+h))^2$ is averaged over all time lagged observation
+sets $Z_i$ and $Z_{i+t}$ available.
 
 }
 
 \references{ 
 Cressie, N.A.C., 1993, Statistics for Spatial Data, Wiley.
+
+Cressie, N., C. Wikle, 2011, Statistics for Spatio-temporal Data, Wiley.
 
 \url{http://www.gstat.org/}
 
