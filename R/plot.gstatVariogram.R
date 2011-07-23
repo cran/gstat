@@ -1,7 +1,8 @@
 # $Id: plot.gstatVariogram.q,v 1.15 2007-06-08 18:03:25 edzer Exp $
 
 "plot.gstatVariogram" <-
-function (x, model = NULL, ylim, xlim, xlab = "distance", ylab = "semivariance", 
+function (x, model = NULL, ylim, xlim, xlab = "distance", 
+	ylab = attr(x, "what"), 
 	panel = vgm.panel.xyplot, multipanel = TRUE, plot.numbers = FALSE, scales, 
 	ids = x$id, group.id = TRUE, skip, layout, ...) 
 {

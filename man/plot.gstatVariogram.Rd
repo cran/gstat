@@ -2,29 +2,34 @@
 \name{plot.gstatVariogram}
 \alias{plot.gstatVariogram}
 \alias{plot.variogramMap}
+\alias{plot.StVariogram}
 \title{
-Plot a Sample Variogram
+Plot a sample variogram, and possibly a fitted model
 }
 \description{
 Creates a variogram plot
 }
 \usage{
 \method{plot}{gstatVariogram}(x, model = NULL, ylim, xlim, xlab = "distance", 
-	ylab = "semivariance", panel = vgm.panel.xyplot, multipanel = TRUE, plot.numbers = FALSE, 
-	scales, ids = x$id, group.id = TRUE, skip, layout, ...)
+	ylab = attr(x, "what"), panel = vgm.panel.xyplot, multipanel = TRUE, 
+	plot.numbers = FALSE, scales, ids = x$id, group.id = TRUE, skip, 
+	layout, ...)
 \method{plot}{variogramMap}(x, np = FALSE, skip, threshold, ...)
+\method{plot}{StVariogram}(x, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
+		convertMonths = FALSE)
 }
 \arguments{
-\item{x}{ object of class "gstatVariogram", obtained from the function 
-\link{variogram}, possibly containing directional or cross variograms }
+\item{x}{ object obtained from the method 
+\link{variogram}, possibly containing directional or cross variograms,
+space-time variograms and variogram model information }
 \item{model}{ in case of a single variogram: a variogram model, as 
 obtained from \link{vgm} or \link{fit.variogram}, to be drawn as 
 a line in the variogram plot; in case of a set of variograms and
 cross variograms: a list with variogram models }
-\item{ylim}{ numeric vector of length 2, limits of the y-axis}
-\item{xlim}{ numeric vector of length 2, limits of the x-axis}
-\item{xlab}{ x-axis label }
-\item{ylab}{ y-axis label }
+\item{ylim}{ numeric; vector of length 2, limits of the y-axis}
+\item{xlim}{ numeric; vector of length 2, limits of the x-axis}
+\item{xlab}{ character; x-axis label }
+\item{ylab}{ character; y-axis label }
 \item{panel}{ panel function }
 \item{multipanel}{ logical; if TRUE, directional variograms are plotted in
 different panels, if FALSE, directional variograms are plotted in the same
@@ -49,6 +54,11 @@ semivariances }
 than threshold will not be plotted}
 \item{\dots}{ any arguments that will be passed to the panel plotting functions
 (such as \code{auto.key} in examples below) }
+\item{col}{colors to use}
+\item{map}{logical; if TRUE, plot space-tim variogram map}
+\item{convertMonths}{logical; if TRUE, \code{yearmon} time lags will
+be unit converted and plotted as (integer) months, and no longer match the
+numeric representation of \code{yearmon}, which has years as unit }
 }
 \value{
 returns (or plots) the variogram plot

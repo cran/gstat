@@ -612,13 +612,15 @@ static void gstat_set_block(long i, SEXP block, SEXP block_cols, DPOINT *current
 }
 
 SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction, 
-		SEXP cressie, SEXP dX, SEXP boundaries, SEXP grid) {
+		SEXP cressie, SEXP dX, SEXP boundaries, SEXP grid, SEXP cov,
+		SEXP asym, SEXP pseudo) {
 	SEXP ret;
 	SEXP np; 
 	SEXP dist;
 	SEXP gamma;
 	SEXP sx;
 	SEXP sy;
+	SEXP ev_parameters;
 	/* SEXP y; */
 	long i, id1, id2, nest;
 	VARIOGRAM *vgm;
@@ -638,7 +640,12 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 	vgm->id = LTI(id1,id2);
 	vgm->id1 = id1;
 	vgm->id2 = id2;
-	vgm->ev->evt = (id1 == id2 ? SEMIVARIOGRAM : CROSSVARIOGRAM);
+	if (INTEGER_POINTER(cov)[0] == 0)
+		vgm->ev->evt = (id1 == id2 ? SEMIVARIOGRAM : CROSSVARIOGRAM);
+	else
+		vgm->ev->evt = (id1 == id2 ? COVARIOGRAM : CROSSCOVARIOGRAM);
+	vgm->ev->is_asym = INTEGER_POINTER(asym)[0];
+	vgm->ev->pseudo = INTEGER_POINTER(pseudo)[0];
 	vgm->ev->recalc = 1;
 	vgm->fname = NULL;
 	if (LENGTH(cutoff) > 0)
@@ -653,6 +660,9 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 	if (LENGTH(dX) > 0) {
 		d = get_gstat_data();
 		d[id1]->dX = NUMERIC_POINTER(dX)[0];
+		d[id2]->dX = NUMERIC_POINTER(dX)[0];
+		/* printf("dX1: %g ", d[id1]->dX);
+		printf("dX2: %g\n", d[id2]->dX); */
 	} 
 	for (i = 0; i < LENGTH(boundaries); i++) /* does nothing if LENGTH is 0 */
 		push_bound(NUMERIC_POINTER(boundaries)[i]);
@@ -699,14 +709,25 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 	} else {
 		if (vgm->ev->cloud)
 			nest = vgm->ev->n_est;
-		else
-			nest = vgm->ev->n_est - 1;
-		PROTECT(ret = NEW_LIST(3));
+		else {
+			/*
+			if (vgm->ev->zero != ZERO_INCLUDE)
+				nest = vgm->ev->n_est;
+			else 
+			*/
+				nest = vgm->ev->n_est - 1;
+		}
+		PROTECT(ret = NEW_LIST(4));
 		if (nest <= 0)
 			return(ret);
 		PROTECT(np = NEW_NUMERIC(nest));
 		PROTECT(dist = NEW_NUMERIC(nest));
 		PROTECT(gamma = NEW_NUMERIC(nest));
+		PROTECT(ev_parameters = NEW_NUMERIC(4));
+		NUMERIC_POINTER(ev_parameters)[0] = vgm->ev->cutoff;
+		NUMERIC_POINTER(ev_parameters)[1] = vgm->ev->iwidth;
+		NUMERIC_POINTER(ev_parameters)[2] = vgm->ev->pseudo;
+		NUMERIC_POINTER(ev_parameters)[3] = vgm->ev->is_asym;
 		for (i = 0; i < nest; i++) {
 			NUMERIC_POINTER(np)[i] = vgm->ev->nh[i];
 			NUMERIC_POINTER(dist)[i] = vgm->ev->dist[i];
@@ -715,7 +736,8 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 		SET_ELEMENT(ret, 0, np);
 		SET_ELEMENT(ret, 1, dist);
 		SET_ELEMENT(ret, 2, gamma);
-		UNPROTECT(4);
+		SET_ELEMENT(ret, 3, ev_parameters);
+		UNPROTECT(5);
 	}
 	return(ret);
 }

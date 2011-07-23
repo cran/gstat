@@ -650,57 +650,57 @@ void fill_cutoff_width(DATA *data /* pointer to DATA structure to derive
 		i = 0;
 		while (gl_bounds[i] >= 0.0) /* count length */
 			i++;
-				ev->cutoff = gl_bounds[i-1];
-				ev->iwidth = ev->cutoff / i;
-			} else {
-				if (is_mv_double(&(ev->cutoff))) {
-					if (gl_cutoff < 0.0) {
-						d = data_block_diagonal(data);
-						if (d == 0.0)
-							ev->cutoff = 1.0; /* ha ha ha */
-						else
-							ev->cutoff = d * gl_fraction;
-					} else
-						ev->cutoff = gl_cutoff;
-				}
-				if (is_mv_double(&(ev->iwidth))) {
-					if (gl_iwidth < 0.0)
-						ev->iwidth = ev->cutoff / gl_n_intervals;
-					else
-						ev->iwidth = gl_iwidth;
-				}
-			}
+		ev->cutoff = gl_bounds[i-1];
+		ev->iwidth = ev->cutoff / i;
+	} else {
+		if (is_mv_double(&(ev->cutoff))) {
+			if (gl_cutoff < 0.0) {
+				d = data_block_diagonal(data);
+				if (d == 0.0)
+					ev->cutoff = 1.0; /* ha ha ha */
+				else
+					ev->cutoff = d * gl_fraction;
+			} else
+				ev->cutoff = gl_cutoff;
 		}
+		if (is_mv_double(&(ev->iwidth))) {
+			if (gl_iwidth < 0.0)
+				ev->iwidth = ev->cutoff / gl_n_intervals;
+			else
+				ev->iwidth = gl_iwidth;
+		}
+	}
+}
 
-		void fprint_header_vgm(FILE *f, const DATA *a, const DATA *b,
-				const SAMPLE_VGM *ev) {
-			time_t tp;
-			char *cp = NULL;
-			/* char *pwd; */
+void fprint_header_vgm(FILE *f, const DATA *a, const DATA *b,
+			const SAMPLE_VGM *ev) {
+	time_t tp;
+	char *cp = NULL;
+	/* char *pwd; */
 
-			fprintf(f, "#gstat %s %s [%s]", GSTAT_OS, VERSION, command_line);
-			/* if (pwd = getenv("PWD")) fprintf(f, "(in %s)", pwd); */
-			fprintf(f, "\n");
-			fprintf(f, "#sample %s%s\n",
-				(ev->evt == CROSSVARIOGRAM && ev->pseudo ? "pseudo " : ""),
-				vgm_type_str[ev->evt]);
-			tp = time(&tp);
-			fprintf(f, "#%s", asctime(localtime(&tp))); /* includes \n */
-			cp = print_data_line(a, &cp);
-			fprintf(f, "#data(%s): %s", name_identifier(a->id), cp);
-			if (a != b) {
-				cp = print_data_line(b, &cp);
-				fprintf(f, " data(%s): %s", name_identifier(b->id), cp);
-			}
-			if (cp != NULL)
-				efree(cp);
-			fprintf(f, "\n");
-			fprintf(f, "#[1] mean: %g variance: %g", a->mean, a->std * a->std);
-			if (a != b)
-				fprintf(f, " [2] mean: %g variance: %g", b->mean, b->std * a->std);
-			fprintf(f, "\n");
-			fprintf(f, "#cutoff: %g ", ev->cutoff);
-			if (gl_bounds == NULL)
+	fprintf(f, "#gstat %s %s [%s]", GSTAT_OS, VERSION, command_line);
+	/* if (pwd = getenv("PWD")) fprintf(f, "(in %s)", pwd); */
+	fprintf(f, "\n");
+	fprintf(f, "#sample %s%s\n",
+		(ev->evt == CROSSVARIOGRAM && ev->pseudo ? "pseudo " : ""),
+		vgm_type_str[ev->evt]);
+	tp = time(&tp);
+	fprintf(f, "#%s", asctime(localtime(&tp))); /* includes \n */
+	cp = print_data_line(a, &cp);
+	fprintf(f, "#data(%s): %s", name_identifier(a->id), cp);
+	if (a != b) {
+		cp = print_data_line(b, &cp);
+		fprintf(f, " data(%s): %s", name_identifier(b->id), cp);
+	}
+	if (cp != NULL)
+		efree(cp);
+	fprintf(f, "\n");
+	fprintf(f, "#[1] mean: %g variance: %g", a->mean, a->std * a->std);
+	if (a != b)
+		fprintf(f, " [2] mean: %g variance: %g", b->mean, b->std * a->std);
+	fprintf(f, "\n");
+	fprintf(f, "#cutoff: %g ", ev->cutoff);
+	if (gl_bounds == NULL)
 		fprintf(f,"%s %g\n","interval width:", ev->iwidth);
 	else
 		fprintf(f, "(fixed boundaries)\n");

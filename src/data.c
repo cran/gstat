@@ -275,8 +275,8 @@ void set_norm_fns(DATA *d) {
 			d->point_norm = point_norm_gc;
 			d->pp_norm2 = pp_norm_gc2;
 			d->pb_norm2 = pb_norm_gc2;
-			if (gl_split != DEF_split)
-				pr_warning("longlat data cannot do quadtree, setting split to %d", INT_MAX);
+			/* if (gl_split != DEF_split)
+				pr_warning("longlat data cannot do quadtree, setting split to %d", INT_MAX); */
 			gl_split = INT_MAX;
 		} else {
 			d->point_norm = point_norm_2D;

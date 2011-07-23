@@ -1,11 +1,12 @@
 # $Id: variogram.default.q,v 1.29 2009-11-02 21:33:17 edzer Exp $
 
 "variogram.default" <-
-function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0, 
+function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0, 
     beta = 0, tol.hor = 90/length(alpha), tol.ver = 90/length(beta), 
     cressie = FALSE, dX = numeric(0), boundaries = numeric(0), 
     cloud = FALSE, trend.beta = NULL, debug.level = 1, cross = TRUE, 
-	grid, map = FALSE, g = NULL, ..., projected = TRUE, lambda = 1.0) 
+	grid, map = FALSE, g = NULL, ..., projected = TRUE, lambda = 1.0,
+	verbose = FALSE, covariogram = FALSE, asym = FALSE, pseudo = FALSE) 
 {
     id1 = id2 = 0
     ret = NULL
@@ -67,13 +68,24 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 
     pos = 0
     ids = NULL
+	bnd = NULL
 	is.direct = NULL
-	if (cross)
+    if (cross == "ONLY") {
+		stopifnot(nvars >= 2)
+		id.range = 2:nvars
+	} else if (cross == TRUE)
 		id.range = nvars:1
 	else
 		id.range = 1:nvars
     for (id1 in id.range) {
-        for (id2 in ifelse(cross, 1, id1):id1) {
+		if (cross == "ST")
+			id2range = 1
+        else if (cross == "ONLY")
+			id2range = 1:(id1-1)
+		else
+			id2range = ifelse(cross, 1, id1):id1
+        for (id2 in id2range) {
+			if (verbose) cat(".")
             if (is.null(id.names)) 
                 id = ifelse(id1 == id2, paste(id1), cross.name(id2, id1))
             else id = ifelse(id1 == id2, paste(id.names[id1]), 
@@ -81,12 +93,19 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
             for (a in alpha) {
                 for (b in beta) {
                   direction = as.numeric(c(a, b, tol.hor, tol.ver))
+				  # boundaries nees to be passed into the c code only ONCE:
+				  if (is.null(bnd))
+				  	bnd = boundaries 
+				  else # NOT the first time we're here, so...
+				    bnd = numeric(0)
                   ret.call = .Call("gstat_variogram", 
 				  		as.integer(c(id1 - 1, id2 - 1)), 
 						as.numeric(cutoff), as.numeric(width), 
                     	as.numeric(direction), as.integer(cressie), 
-                    	as.numeric(dX), as.numeric(boundaries), map)
-				  boundaries = numeric(0)
+                    	as.numeric(dX), as.numeric(bnd), map, 
+						as.integer(covariogram),
+						as.integer(asym),
+						as.integer(pseudo))
                   if (is.logical(map) && map == FALSE) {
                     np = ret.call[[1]]
                     sel = np > 0
@@ -94,6 +113,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
                     if (n.dir > 0) {
                       dist = ret.call[[2]]
                       gamma = ret.call[[3]]
+					  ret_cw = ret.call[[4]] # Sat Jul 16 16:19:59 CEST 2011
                       dir.a = rep(a, n.dir)
                       dir.b = rep(b, n.dir)
                       ids = c(ids, rep(id, n.dir))
@@ -120,6 +140,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
             }
         }
     }
+	if (verbose) cat("\n")
     .Call("gstat_exit", NULL)
 	if (is.logical(map) && map == FALSE) {
     	if (!is.null(ids)) {
@@ -128,8 +149,19 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     		if (cloud) {
         		class(ret) = c("variogramCloud", "data.frame")
 				attr(ret, ".BigInt") = 2^(4 * .Machine$sizeof.long)
-    		} else 
+    		} else {
 				class(ret) = c("gstatVariogram", "data.frame")
+				if (length(boundaries) == 0) {
+					cutoff = ret_cw[1]
+					width = ret_cw[2]
+					boundaries = seq(0, cutoff, width)
+					if (!all.equal(max(boundaries), cutoff))
+						boundaries = c(boundaries, cutoff)
+				}
+				attr(ret, "boundaries") = boundaries
+				attr(ret, "pseudo") = ret_cw[3]
+				row.names(ret) = NULL
+			}
 		}
 	} else {
 		coordinates(ret) = c("dx", "dy")
@@ -137,5 +169,7 @@ function (object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 		ret = list(map = ret)
 		class(ret) = c("variogramMap", "list")
 	}
+	if (!is.null(ret))
+		attr(ret, "what") = ifelse(covariogram, "covariance", "semivariance")
     ret
 }

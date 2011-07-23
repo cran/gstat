@@ -3,6 +3,10 @@
 "gstat.formula" <-
 function (formula, data)
 {
+	# check for duplicated pixels; if yes coerce to SpatialPointsDataFrame:
+	if (is(data, "SpatialPixels") && anyDuplicated(data@grid.index) != 0)
+		gridded(data) = FALSE
+
     m = model.frame(terms(formula), as(data, "data.frame"))
     Y = model.extract(m, "response")
     if (length(Y) == 0)
