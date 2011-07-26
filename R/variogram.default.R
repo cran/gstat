@@ -155,7 +155,7 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 					cutoff = ret_cw[1]
 					width = ret_cw[2]
 					boundaries = seq(0, cutoff, width)
-					if (!all.equal(max(boundaries), cutoff))
+					if (!identical(max(boundaries), cutoff))
 						boundaries = c(boundaries, cutoff)
 				}
 				attr(ret, "boundaries") = boundaries

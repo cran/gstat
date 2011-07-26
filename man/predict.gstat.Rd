@@ -7,7 +7,7 @@ simple, ordinary, and universal kriging, simple, ordinary, and universal
 cokriging, point- or block-kriging, and conditional simulation equivalents
 for each of the kriging methods.  }
 \usage{
-predict.gstat(object, newdata, block = numeric(0), nsim = 0, 
+\method{predict}{gstat}(object, newdata, block = numeric(0), nsim = 0, 
 	indicators = FALSE, BLUE = FALSE, debug.level = 1, mask, 
 	na.action = na.pass, sps.args = list(n = 500, type = "regular",
 	offset = c(.5, .5)), ...)
