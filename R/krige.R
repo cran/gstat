@@ -6,12 +6,12 @@ if (!isGeneric("krige"))
 
 "krige.locations" <-
 function (formula, locations, data = sys.frame(sys.parent()), 
-	newdata, model = NULL, ..., beta = NULL, nmax = Inf, nmin = 0, 
+	newdata, model = NULL, ..., beta = NULL, nmax = Inf, nmin = 0, omax = 0,
 	maxdist = Inf, block = numeric(0), nsim = 0, indicators = FALSE, 
 	na.action = na.pass, debug.level = 1)
 {
     g = gstat(formula = formula, locations = locations, data = data, 
-		model = model, beta = beta, nmax = nmax, nmin = nmin, 
+		model = model, beta = beta, nmax = nmax, nmin = nmin, omax = omax,
 		maxdist = maxdist, ...)
     predict.gstat(g, newdata = newdata, block = block, nsim = nsim,
 		indicators = indicators, na.action = na.action, debug.level = debug.level)
@@ -19,13 +19,14 @@ function (formula, locations, data = sys.frame(sys.parent()),
 setMethod("krige", c("formula", "formula"), krige.locations)
 
 krige.spatial <- function(formula, locations, newdata, model = NULL, ..., 
-	beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
-	nsim = 0, indicators = FALSE, na.action = na.pass, debug.level = 1)
+	beta = NULL, nmax = Inf, nmin = 0, omax = 0, maxdist = Inf, 
+	block = numeric(0), nsim = 0, indicators = FALSE, 
+	na.action = na.pass, debug.level = 1)
 {
 	# locations = coordinates(arg2)
     g = gstat(formula = formula, # locations = locations, 
 		data = locations, 
-		model = model, beta = beta, nmax = nmax, nmin = nmin, 
+		model = model, beta = beta, nmax = nmax, nmin = nmin, omax = omax,
 		maxdist = maxdist, ...)
     predict.gstat(g, newdata = newdata, block = block, nsim = nsim,
 		indicators = indicators, na.action = na.action, debug.level = debug.level)
@@ -39,19 +40,21 @@ if (!isGeneric("idw"))
 
 idw.locations <-
 function (formula, locations, data = sys.frame(sys.parent()), 
-		newdata, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
+		newdata, nmax = Inf, nmin = 0, omax = 0, maxdist = Inf, 
+		block = numeric(0), 
 		na.action = na.pass, idp = 2.0, debug.level = 1) {
 	krige(formula, locations, data, newdata, nmax = nmax, nmin = nmin,
-		maxdist = maxdist, block = block, na.action = na.action,
+		omax = omax, maxdist = maxdist, block = block, na.action = na.action,
 		set = list(idp = idp), debug.level = debug.level)
 }
 setMethod("idw", c("formula", "formula"), idw.locations)
 
 idw.spatial <-
 function (formula, locations, 
-		newdata, nmax = Inf, nmin = 0, maxdist = Inf, block = numeric(0), 
+		newdata, nmax = Inf, nmin = 0, omax = 0, 
+		maxdist = Inf, block = numeric(0), 
 		na.action = na.pass, idp = 2.0, debug.level = 1) {
-	krige(formula, locations, newdata, nmax = nmax, nmin = nmin,
+	krige(formula, locations, newdata, nmax = nmax, nmin = nmin, omax = omax,
 		maxdist = maxdist, block = block, na.action = na.action,
 		set = list(idp = idp), debug.level = debug.level, model = NULL)
 }

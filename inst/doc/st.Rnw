@@ -323,8 +323,62 @@ print(plot(vv))
 \caption{ sample variogram map (right) and fitted seperable model (left). }
 \label{fig:sm}
 \end{figure}
+A wireframe (3D) plot of the sample variogram can be obtained e.g. by
+<<eval=FALSE>>=
+library(lattice)
+wireframe(gamma~spacelag*timelag, vv, drape=TRUE, 
+	col.regions=bpy.colors)
+@
+which is shown in figure \ref{fig:wire}.
+\begin{figure}[hbt]
+\begin{center}
+<<fig=TRUE,echo=FALSE>>=
+library(lattice)
+print(wireframe(gamma-model~spacelag*timelag, vv, drape=TRUE, 
+	col.regions=bpy.colors()))
+@
+\end{center}
+\caption{ Wireplot of sample space-time variogram }
+\label{fig:wire}
+\end{figure}
 
-%\section{Spatio-temporal prediction}
+\section{Spatio-temporal prediction}
+
+The vignette in package \code{spacetime} gives an example of using
+the gstat function \code{krigeST} for spatio-temporal kriging of
+the Irish wind data. The variogram there needs to be specified as
+two separate variogram models, the product of which needs to be
+the target spatio-temporal variogram. The \code{krigeST} function
+uses global kriging, but only needs to invert the purely spatial
+and purely time covariance matrices.
+
+For more generic spatio-temporal kriging where space is
+two-dimensional, one could use \code{krige}, defining the
+observations and prediction locations as three-dimensional data sets,
+see for an example
+<<eval=FALSE>>=
+demo(gstat3D)
+@
+It needs to be pointed out that in that case, the time (typically
+the third dimension) needs to be numeric, and three-dimensional
+anisotropy needs to be defined properly (see \code{?vgm}).
+
+In case the data set is too large for global kriging, one could
+try to use local kriging, and select data within some distance, or
+by specifying \code{nmax} (the nearest $n$ observations).  In both
+cases, it is advisable to transform time such that one can use an
+{\em isotropic} variogram model in the three dimensions, as only
+in that case the nearest $n$ observations correspond to the $n$
+most correlated observations. 
+
+An additional consideration is that in space-time, observations may
+not be regularly spaced. In some cases, the nearest $n$ obervations
+may come from a single measurement location, which may lead to sharp
+jumps/boundaries in the interpolated values. This might be solved
+by using larger neighbourhoods, or by setting the \code{omax}
+in \code{krige} or \code{gstat} calls to the neighbourhood size
+to select {\em per octant} (this should be combined with specifying
+\code{maxdist}).
 
 %\section{Spatio-temporal simulation}
 

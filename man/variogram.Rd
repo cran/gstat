@@ -23,7 +23,9 @@ and pooled variogram, and for irregular distance intervals.
 	0, beta = 0, tol.hor = 90/length(alpha), tol.ver =
 	90/length(beta), cressie = FALSE, dX = numeric(0), boundaries =
 	numeric(0), cloud = FALSE, trend.beta = NULL, debug.level = 1,
-	cross = TRUE, grid, map = FALSE, g = NULL, ..., projected = TRUE, lambda = 1.0)
+	cross = TRUE, grid, map = FALSE, g = NULL, ..., projected = TRUE, 
+	lambda = 1.0, verbose = FALSE, covariogram = FALSE, PR = FALSE, 
+	asym = FALSE, pseudo = FALSE)
 \method{variogram}{line}(..., deprecate = TRUE)
 variogramST(formula, locations, data, ..., tlags = 0:15,
 		progress = TRUE, pseudo = TRUE)
@@ -106,10 +108,15 @@ distances are computed, for unprojected great circle distances
 deriving from class Spatial, projection is detected automatically using
 \code{is.projected}}
 \item{lambda}{test feature; not working (yet)}
+\item{verbose}{logical; print some progress indication}
 \item{tlags}{ integer; time lags to consider; see details below }
 \item{progress}{ logical; show text progress bar }
 \item{pseudo}{ logical; use pseudo cross variogram for computing
-time-lagged spatial variograms }
+time-lagged spatial variograms}
+\item{covariogram}{logical; compute covariogram instead of variogram?}
+\item{PR}{logical; compute pairwise relative variogram (does NOT check
+whether variable is strictly positive)}
+\item{asym}{logical; compute asymmetric pseudo cross or covariogram?}
 }
 
 \value{ If map is TRUE (or a map is passed), a grid map is returned

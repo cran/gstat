@@ -6,7 +6,8 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     cressie = FALSE, dX = numeric(0), boundaries = numeric(0), 
     cloud = FALSE, trend.beta = NULL, debug.level = 1, cross = TRUE, 
 	grid, map = FALSE, g = NULL, ..., projected = TRUE, lambda = 1.0,
-	verbose = FALSE, covariogram = FALSE, asym = FALSE, pseudo = FALSE) 
+	verbose = FALSE, covariogram = FALSE, PR = FALSE, asym = FALSE, 
+	pseudo = FALSE) 
 {
     id1 = id2 = 0
     ret = NULL
@@ -56,7 +57,7 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 				as.integer(1), as.double(t.beta), as.integer(-1),
 				as.integer(0), as.double(-1), as.integer(1), 
 				double(0), grd, as.integer(0), as.integer(projected),
-				as.integer(0), as.double(lambda))
+				as.integer(0), as.double(lambda), as.integer(0))
 			if (!is.null(g) && !is.null(g$model[[id.names[i]]])) 
 				load.variogram.model(g$model[[id.names[i]]], c(i - 1, i - 1))
         }
@@ -70,6 +71,8 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     ids = NULL
 	bnd = NULL
 	is.direct = NULL
+	if (PR) 
+		covariogram = 2
     if (cross == "ONLY") {
 		stopifnot(nvars >= 2)
 		id.range = 2:nvars
@@ -169,7 +172,15 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 		ret = list(map = ret)
 		class(ret) = c("variogramMap", "list")
 	}
-	if (!is.null(ret))
-		attr(ret, "what") = ifelse(covariogram, "covariance", "semivariance")
+	if (!is.null(ret)) {
+		if (PR)
+			attr(ret, "what") = "pairwise relative semivariance"
+		else if (covariogram)
+			attr(ret, "what") = "covariance"
+		else if (cressie)
+			attr(ret, "what") = "Cressie's semivariance"
+		else
+			attr(ret, "what") = "semivariance"
+	}
     ret
 }

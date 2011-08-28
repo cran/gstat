@@ -73,7 +73,7 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15,
 		pb = txtProgressBar(style = 3, max = length(tlags))
 	for (dt in seq(along = tlags)) {
 		ret[[dt]] = StVgmLag(formula, data, tlags[dt], pseudo = pseudo, ...)
-		ret[[dt]]$id = paste("lag", dt, sep="")
+		ret[[dt]]$id = paste("lag", dt - 1, sep="")
 		if (progress)
 			setTxtProgressBar(pb, dt)
 	}
@@ -95,7 +95,7 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15,
 }
 
 plot.StVariogram = function(x, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
-		convertMonths = FALSE) {
+		convertMonths = FALSE, wireframe = FALSE, both = FALSE) {
 	lst = list(...)
 	if (!is.null(lst$col.regions))
 		col = lst$col.regions
@@ -118,19 +118,32 @@ plot.StVariogram = function(x, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
 		if (!is.null(u))
 			ylab = paste(ylab, " (", u, ")", sep="")
 	}
+	x0 = x # needed by wireframe()
 	if (!is.null(x$model)) {
 		v0 = rbind(x, x)
 		v0$what = c(rep("sample", nrow(x)), rep("model", nrow(x)))
 		v0$gamma = c(x$gamma, x$model)
 		x = v0
 	}
-	if (map) {
+	if (wireframe) { 
+		if (!is.null(x$model)) {
+			if (both)
+				wireframe(model+gamma ~ spacelag*timelag, 
+					x0, drape = TRUE, col.regions = col, 
+					xlab = xlab, ylab = ylab, ...)
+			else
+				wireframe(model ~ spacelag*timelag, x0, drape = TRUE, 
+					col.regions = col, xlab = xlab, ylab = ylab, ...)
+		} else
+			wireframe(gamma ~ spacelag * timelag, x0, drape = TRUE, col = col,
+				xlab = xlab, ylab = ylab, ...)
+	} else if (map) {
 		if (!is.null(x$model))
 			f = gamma ~ spacelag + timelag | what
 		else
 			f = gamma ~ spacelag + timelag
 		levelplot(f, x, xlab = xlab, ylab = ylab, col.regions = col, ...)
-	} else {
+	} else { # not map, not wireplot
 		if (!is.null(x$model))
 			f = gamma ~ dist | what
 		else

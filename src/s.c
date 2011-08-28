@@ -128,7 +128,7 @@ SEXP gstat_exit(SEXP x) {
 SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
 			SEXP beta, SEXP nmax, SEXP nmin, SEXP maxdist, 
 			SEXP vfn, SEXP sw, SEXP grid, SEXP degree, SEXP is_projected,
-			SEXP vdist, SEXP lambda) {
+			SEXP vdist, SEXP lambda, SEXP omax) {
 	double *y, *locs, *X, *w = NULL;
 	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
@@ -196,6 +196,8 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		d[id]->beta = push_d_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
 	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
 		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
+	if (INTEGER_POINTER(omax)[0] > 0) /* leave default (0) if <= 0 */
+		d[id]->oct_max = INTEGER_POINTER(nmax)[0];
 	if (INTEGER_POINTER(nmin)[0] > 0) /* leave default (0) if <= 0 */
 		d[id]->sel_min = INTEGER_POINTER(nmin)[0];
 	if (NUMERIC_POINTER(maxdist)[0] > 0.0)
@@ -642,8 +644,15 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 	vgm->id2 = id2;
 	if (INTEGER_POINTER(cov)[0] == 0)
 		vgm->ev->evt = (id1 == id2 ? SEMIVARIOGRAM : CROSSVARIOGRAM);
-	else
+	else if (INTEGER_POINTER(cov)[0] == 1)
 		vgm->ev->evt = (id1 == id2 ? COVARIOGRAM : CROSSCOVARIOGRAM);
+	else {
+		if (id1 != id2)
+			ErrMsg(ER_IMPOSVAL,
+			"cannot compute pairwise relative cross semivariogram");
+		if (INTEGER_POINTER(cov)[0] == 2)
+			vgm->ev->evt = PRSEMIVARIOGRAM;
+	}
 	vgm->ev->is_asym = INTEGER_POINTER(asym)[0];
 	vgm->ev->pseudo = INTEGER_POINTER(pseudo)[0];
 	vgm->ev->recalc = 1;

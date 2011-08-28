@@ -6,7 +6,8 @@ typedef enum {
 	SEMIVARIOGRAM,
 	CROSSVARIOGRAM,
 	COVARIOGRAM,
-	CROSSCOVARIOGRAM
+	CROSSCOVARIOGRAM,
+	PRSEMIVARIOGRAM /* pairwise relative semivariogram */
 } SAMPLE_VGM_TYPE;
 
 extern const char *vgm_type_str[];

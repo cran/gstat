@@ -170,6 +170,7 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 	v->ev->is_directional = is_directional(v);
 	if (v->ev->recalc) {
 		switch (v->ev->evt) {
+			case PRSEMIVARIOGRAM:
 			case SEMIVARIOGRAM:
 				semivariogram(d[v->id1], v->ev);
 				break;
@@ -205,7 +206,8 @@ static SAMPLE_VGM *semivariogram(DATA *d, SAMPLE_VGM *ev) {
 /*
  *  calculate sample variogram of 0.5 E[(Z(x)-Z(x+h))2]
  */
-	ev->evt = SEMIVARIOGRAM;
+	if (ev->evt == PRSEMIVARIOGRAM)
+		d->calc_residuals = 0;
 	ev = alloc_exp_variogram(d, NULL, ev);
 	if (d->grid != NULL && d->prob > 0.5 && d->every == 1)
 		ev = semivariogram_grid(d, ev);
@@ -220,7 +222,7 @@ static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev) {
 	unsigned long uli, ulj;
 	int i, j, index = 0, divide_by = 1;
 	unsigned int total_steps;
-	double gamma, ddist;
+	double gamma, ddist, head, tail, gam;
 
 	while (d->n_sel / divide_by > 0.5 * sqrt(INT_MAX))
 		divide_by <<= 1; /* prevent overflow on calculating total_steps */
@@ -243,14 +245,17 @@ static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev) {
 			ddist = valid_distance(d->sel[i], d->sel[j], ev->cutoff, 1,
 				d, d, (GRIDMAP *) ev->map);
 			if (ddist >= 0.0 && i != j) {
+				head = d->sel[i]->attr;
+				tail = d->sel[j]->attr;
 				if (! ev->cloud) {
 					index = get_index(ddist, ev);
 					if (gl_cressie)  /* sqrt abs diff */
-						ev->gamma[index] +=
-							sqrt(fabs(d->sel[i]->attr - d->sel[j]->attr));
-					else {
-						ev->gamma[index] +=
-							SQR(d->sel[i]->attr - d->sel[j]->attr);
+						ev->gamma[index] += sqrt(fabs(head - tail));
+					else if (ev->evt == PRSEMIVARIOGRAM) {
+						gam = 2.0 * (head - tail)/(head + tail);
+						ev->gamma[index] += SQR(gam);
+					} else { /* SEMIVARIOGRAM: */
+						ev->gamma[index] += SQR(head - tail);
 #ifdef ADJUST_VARIANCE
 						if (d->colnvariance)
 							ev->gamma[index] -= d->sel[i]->variance +
@@ -264,9 +269,12 @@ static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev) {
 				} else { /* cloud: */
 					if (! (ev->zero == ZERO_AVOID && ddist == 0.0)) {
 						if (gl_cressie)
-							gamma = sqrt(fabs(d->sel[i]->attr - d->sel[j]->attr));
-						else {
-							gamma = SQR(d->sel[i]->attr - d->sel[j]->attr);
+							gamma = sqrt(fabs(head - tail));
+						else if (ev->evt == PRSEMIVARIOGRAM) {
+							gam = 2.0 * (head - tail)/(head + tail);
+							gamma = gam * gam;
+						} else {
+							gamma = SQR(head - tail);
 #ifdef ADJUST_VARIANCE
 							if (d->colnvariance)
 								gamma -= d->sel[i]->variance + d->sel[j]->variance;
@@ -297,7 +305,7 @@ static SAMPLE_VGM *semivariogram_grid(DATA *d, SAMPLE_VGM *ev) {
 	} grid_ev;
 	int row, col, irow, icol, i, max_index, index;
 	unsigned long ula, ulb;
-	double gamma, ddist;
+	double gamma, ddist, head, tail, gam;
 	DPOINT a, b, *dpa = NULL, *dpb = NULL;
 
 	max_index = (int) floor(ev->cutoff / SQUARECELLSIZE(d->grid));
@@ -336,13 +344,18 @@ static SAMPLE_VGM *semivariogram_grid(DATA *d, SAMPLE_VGM *ev) {
 							&& icol < d->grid->cols
 							&& ((dpb = d->grid->dpt[irow][icol]) != NULL)) {
 						ddist = grid_ev.gi[i].dist;
+						head = dpa->attr;
+						tail = dpb->attr;
 						if (! ev->cloud) {
 							index = grid_ev.gi[i].ev_index;
 							if (gl_cressie)  /* sqrt abs diff */
-								ev->gamma[index] +=
-									sqrt(fabs(dpa->attr - dpb->attr));
+								ev->gamma[index] += sqrt(fabs(head - tail));
 							else {
-								ev->gamma[index] += SQR(dpa->attr - dpb->attr);
+								if (ev->evt == PRSEMIVARIOGRAM) {
+									gam = 2.0 * (head - tail)/(head + tail);
+									ev->gamma[index] += gam * gam;
+								} else
+									ev->gamma[index] += SQR(head - tail);
 #ifdef ADJUST_VARIANCE
 								if (d->colnvariance)
 									ev->gamma[index] -= dpa->variance +
@@ -355,13 +368,17 @@ static SAMPLE_VGM *semivariogram_grid(DATA *d, SAMPLE_VGM *ev) {
 							ev->nh[index]++;
 						} else { /* cloud: */
 							if (gl_cressie)
-								gamma = sqrt(fabs(dpa->attr - dpb->attr));
-							else
-								gamma = SQR(dpa->attr - dpb->attr);
+								gamma = sqrt(fabs(head - tail));
+							else if (ev->evt == PRSEMIVARIOGRAM) {
+								gam = 2.0 * (head - tail)/(head + tail);
+								gamma = gam * gam;
+							} else {
+								gamma = SQR(head - tail);
 #ifdef ADJUST_VARIANCE
-							if (d->colnvariance)
-								gamma -= dpa->variance + dpb->variance;
+								if (d->colnvariance)
+									gamma -= dpa->variance + dpb->variance;
 #endif
+							}
 							ula = GET_INDEX(dpa);
 							ulb = GET_INDEX(dpb);
 							push_to_cloud(ev, gamma / 2.0, ddist, TO_NH(ula,ulb));
@@ -864,6 +881,9 @@ static void divide(SAMPLE_VGM *ev) {
 				case COVARIOGRAM: /* BREAKTHROUGH */
 				case CROSSCOVARIOGRAM:
 					ev->gamma[i] /= (1.0 * ev->nh[i]);
+					break;
+				case PRSEMIVARIOGRAM:
+					ev->gamma[i] /= (2.0 * ev->nh[i]);
 					break;
 				case NOTSPECIFIED: /* BREAKTHROUGH */
 				default:
