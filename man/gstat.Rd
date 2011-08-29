@@ -12,7 +12,7 @@ unconditional Gaussian or indicator simulation equivalents. Multivariate
 gstat object can be subsetted. }
 \usage{
 gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
-	nmin = 0, maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, 
+	nmin = 0, omax = 0, maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, 
 	fill.cross = TRUE, variance = "identity", weights = NULL, merge, 
 	degree = 0, vdist = FALSE, lambda = 1.0)
 \method{print}{gstat}(x, ...)
@@ -51,6 +51,8 @@ gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
   \item{nmin}{ for local kriging: if the number of nearest observations
   within distance \code{maxdist} is less than \code{nmin}, a missing 
   value will be generated; see maxdist }
+  \item{omax}{ maximum number of observations to select per octant (3D) or
+  quadrant (2D); only relevant if \code{maxdist} has been defined as well }
   \item{maxdist}{ for local kriging: only observations within a distance
   of \code{maxdist} from the prediction location are used for prediction
   or simulation; if combined with \code{nmax}, both criteria apply }

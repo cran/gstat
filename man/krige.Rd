@@ -30,10 +30,10 @@ For multivariable prediction, see \link{gstat} and \link{predict.gstat}
 \usage{
 krige(formula, locations, ...)
 krige.locations(formula, locations, data, newdata, model, ..., beta, nmax
-= Inf, nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
+= Inf, nmin = 0, omax = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
 na.action = na.pass, debug.level = 1)
 krige.spatial(formula, locations, newdata, model, ..., beta, nmax
-= Inf, nmin = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
+= Inf, nmin = 0, omax = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
 na.action = na.pass, debug.level = 1)
 krige0(formula, data, newdata, model, beta, y, ..., computeVar = FALSE,
 	fullCovariance = FALSE)
@@ -41,10 +41,10 @@ krigeST(formula, data, newdata, modelList, y, ..., computeVar = FALSE,
 	fullCovariance = FALSE)
 idw(formula, locations, ...)
 idw.locations(formula, locations, data, newdata, nmax = Inf, 
-	nmin = 0, maxdist = Inf, block, na.action = na.pass, idp = 2.0,
+	nmin = 0, omax = 0, maxdist = Inf, block, na.action = na.pass, idp = 2.0,
 	debug.level = 1)
 idw.spatial(formula, locations, newdata, nmax = Inf, nmin = 0, 
-    maxdist = Inf, block = numeric(0), na.action = na.pass, idp = 2.0,
+    omax = 0, maxdist = Inf, block = numeric(0), na.action = na.pass, idp = 2.0,
 	debug.level = 1)
 idw0(formula, data, newdata, y)
 }
@@ -81,6 +81,7 @@ idw0(formula, data, newdata, y)
  \item{nmin}{ for local kriging: if the number of nearest observations
   within distance \code{maxdist} is less than \code{nmin}, a missing 
   value will be generated; see maxdist }
+ \item{omax}{ see \link{gstat} }
  \item{maxdist}{ for local kriging: only observations within a distance
   of \code{maxdist} from the prediction location are used for prediction
   or simulation; if combined with \code{nmax}, both criteria apply }
@@ -102,7 +103,7 @@ idw0(formula, data, newdata, y)
   in coordinates and predictors are both dealt with. }
  \item{debug.level}{debug level, passed to \link{predict.gstat}; use -1 
  to see progress in percentage, and 0 to suppress all printed information }
- \item{\dots}{ other arguments that will be passed to \link{gstat}}
+ \item{\dots}{ further arguments will be passed to \link{gstat}}
  \item{idp}{numeric; specify the inverse distance weighting power}
  \item{y}{matrix; to krige multiple fields in a single step, pass data 
  as columns of matrix \code{y}. This will ignore the value of the 

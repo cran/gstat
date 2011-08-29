@@ -16,7 +16,7 @@ Creates a variogram plot
 	layout, ...)
 \method{plot}{variogramMap}(x, np = FALSE, skip, threshold, ...)
 \method{plot}{StVariogram}(x, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
-		convertMonths = FALSE)
+		convertMonths = FALSE, wireframe = FALSE, both = FALSE)
 }
 \arguments{
 \item{x}{ object obtained from the method 
@@ -59,6 +59,9 @@ than threshold will not be plotted}
 \item{convertMonths}{logical; if TRUE, \code{yearmon} time lags will
 be unit converted and plotted as (integer) months, and no longer match the
 numeric representation of \code{yearmon}, which has years as unit }
+\item{wireframe}{logical; if TRUE, produce a wireframe plot}
+\item{both}{logica; if TRUE, plot model and sample variogram in a single
+wireplot}
 }
 \value{
 returns (or plots) the variogram plot

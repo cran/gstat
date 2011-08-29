@@ -3,6 +3,7 @@ useDynLib(gstat)
 import(methods)
 import(lattice)
 import(sp)
+import(spacetime)
 
 export(as.vgm.variomodel,
 	cross.name,

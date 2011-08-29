@@ -6,8 +6,8 @@
 
 "gstat" <-
 function (g, id, formula, locations,
-	data = NULL, model = NULL, beta, nmax = Inf, nmin = 0, maxdist = Inf, 
-	dummy = FALSE, set, fill.all = FALSE, fill.cross = TRUE, 
+	data = NULL, model = NULL, beta, nmax = Inf, nmin = 0, omax = 0,
+	maxdist = Inf, dummy = FALSE, set, fill.all = FALSE, fill.cross = TRUE, 
 	variance = "identity", weights = NULL, merge, degree = 0, vdist = FALSE,
 	lambda = 1.0) 
 {
@@ -77,7 +77,7 @@ function (g, id, formula, locations,
         id = paste("var", length(g$data) + 1, sep = "")
     g$data[[id]] = list(formula = formula, # locations = locations, 
         data = data, has.intercept = attr(terms(formula), "intercept"),
-		beta = beta, nmax = nmax, nmin = nmin, maxdist = maxdist, 
+		beta = beta, nmax = nmax, nmin = nmin, omax = omax, maxdist = maxdist, 
 		dummy = dummy, vfn = vfn, weights = weights, degree = degree, 
 		vdist = vdist, lambda = lambda)
     g$model[[id]] = model
