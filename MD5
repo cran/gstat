@@ -1,5 +1,5 @@
 b930a1c993354b3d71cc449df073d4be *CHANGES
-38f3f0352b3948a17d0dd623ba2f4595 *DESCRIPTION
+b69367d838fd6a17fad5a6fea9bf5736 *DESCRIPTION
 65d65c650081d775169bc341a1c8a5b1 *LICENCE
 b077fda85066b08b7ea8ce20d9fcc7e7 *NAMESPACE
 02a9d4ea0f96e71d31a614d441396d5f *R/fit.lmc.R
@@ -8,7 +8,7 @@ b077fda85066b08b7ea8ce20d9fcc7e7 *NAMESPACE
 5df08278a8744348260ca6c27262ec29 *R/fit.variogram.reml.R
 d3b1befeb3d012d19788a085c61cbc7e *R/get.contr.R
 ca3b028021a6fe7780101f5c7ad2f6ea *R/gstat.R
-21567a0cf24688e8d9368e0cf3e69478 *R/gstat.cv.R
+2631ea53d8fc95146486373906faf56f *R/gstat.cv.R
 c744fdbeb7c8ba722dac045b92e9e3a2 *R/gstat.debug.R
 03e7aaba822a7e03978fe673b0985b59 *R/gstat.formula.R
 cbf16eea326f04c3995b5642140e5a20 *R/gstat.formula.predict.R
@@ -35,7 +35,7 @@ ae4124c6ea80101b9eb6866f2ab71ac7 *R/print.variogramCloud.R
 646b35c9a6261640f4ccdceb20bd0373 *R/smenu.R
 e6512625a896a3c6dc22f9c084f43115 *R/spplot.R
 086f336c43b6008a48bd528362599dda *R/variogram.ST.R
-957d6675c85ecc19927821c14e71085e *R/variogram.default.R
+683c708fe16e52372389484985e02489 *R/variogram.default.R
 7cee4997003ea828f08351def9ce3bb2 *R/variogram.formula.R
 ee790562fd1b5c3a44053630b8cde4e5 *R/variogram.gstat.R
 1c0dfd07ebdf94eaa13a68f3a9eb9231 *R/variogramLine.R
@@ -88,12 +88,12 @@ ed826850975d2c0cd7556fd265d4e87d *demo/wind.R
 3e513aae2bb5d80ef6c3c5d00a473f89 *inst/CITATION
 8ef95803e5b9db32d91f0c821190d044 *inst/ChangeLog
 13ba85de19daef4c6c332c11107a5890 *inst/doc/gstat.Rnw
-638d06e70242a5fdc170e3b07d63c6ea *inst/doc/gstat.pdf
+3f928162087605d60094fa27d95ceb70 *inst/doc/gstat.pdf
 23a8ca706b284fdd73be5e1958601d75 *inst/doc/ifgi-logo_int.pdf
-a1536788d929255256e9dd4be5303323 *inst/doc/prs.Rnw
-f86de9a980954a5059e56325a2eb589d *inst/doc/prs.pdf
+9928b4a0aba5faaeb024fcaca40dbbc2 *inst/doc/prs.Rnw
+ac9a2b39f7453e7cbe4ed9aa1d6e9966 *inst/doc/prs.pdf
 bb6a285c47223dc4cb8581e450d14003 *inst/doc/st.Rnw
-66abf6abedb2b7a59b7739c18037e910 *inst/doc/st.pdf
+4131169bc848e5f2ecfbde89bf859bd7 *inst/doc/st.pdf
 af529f6f9ce9e52ed054e016fd386af5 *inst/external/cluster.txt
 bacec53ee233889d6419b0e394bde7a8 *inst/external/ncp.dbf
 3692904f850276a958eaa4024e4a8ec7 *inst/external/ncp.shp

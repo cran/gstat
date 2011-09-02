@@ -19,8 +19,8 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 		ret = SpatialPointsDataFrame(cc, df)
 	}
 	if (missing(nfold)) 
-		nfold = nrow(data)
-	else if (length(nfold) == nrow(data))
+		nfold = 1:nrow(data)
+	if (length(nfold) == nrow(data))
 		fold = nfold
 	else if (nfold < nrow(data)) 
 		fold = sample(nfold, nrow(data), replace = TRUE)

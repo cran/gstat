@@ -71,8 +71,11 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
     ids = NULL
 	bnd = NULL
 	is.direct = NULL
-	if (PR) 
+	if (PR) {
+		if (any(object[[1]] <= 0))
+			warning("pairwise relative variogram assumes non-negative data")
 		covariogram = 2
+	}
     if (cross == "ONLY") {
 		stopifnot(nvars >= 2)
 		id.range = 2:nvars
