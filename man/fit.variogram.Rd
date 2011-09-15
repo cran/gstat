@@ -42,10 +42,11 @@ in a singularity, and (ii) \code{SSErr} a numerical attribute with the
 \note{ If fitting the range(s) is part of the job of this function,
 the results may well depend on the starting values, given in argument
 \code{model}.  This is nothing new, but generally true for non-linear
-regression problems. This function uses the internal gstat (C) code, which
-interates over (a) a direct (least squares) fit of the partial sills and
-(b) an iterated search, using gradients, for the optimal range value(s),
-until convergence of after a combined step ((a) and (b)) is reached. 
+regression problems. This function uses the internal gstat (C) code,
+which iterates over (a) a direct (ordinary or weighted least squares)
+fit of the partial sills and (b) an iterated search, using gradients,
+for the optimal range value(s), until convergence of after a combined
+step ((a) and (b)) is reached.
 
 If for a direct (i.e. not a cross) variogram a sill parameter (partial
 sill or nugget) becomes negative, fit.variogram is called again with
