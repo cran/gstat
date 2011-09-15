@@ -1,5 +1,5 @@
 b930a1c993354b3d71cc449df073d4be *CHANGES
-b69367d838fd6a17fad5a6fea9bf5736 *DESCRIPTION
+b0f8b29285e23615c14eb52c00030ee2 *DESCRIPTION
 65d65c650081d775169bc341a1c8a5b1 *LICENCE
 b077fda85066b08b7ea8ce20d9fcc7e7 *NAMESPACE
 02a9d4ea0f96e71d31a614d441396d5f *R/fit.lmc.R
@@ -16,7 +16,7 @@ cbf16eea326f04c3995b5642140e5a20 *R/gstat.formula.predict.R
 edc9791ebe437b1901380d74972db2cc *R/image.data.frame.R
 bc6d39e3af8aaeaf7f756fecf31fa412 *R/krige.R
 b0433ecbe9d835d830305648cc2d08bf *R/krige.cv.R
-2d9583a62fcdb06efb954b4f59fc0c2f *R/krige0.R
+3493c038899a757edd5ae45a81717967 *R/krige0.R
 4d12a98da5047471714771888c60106f *R/krigeTg.R
 30c533ed5b6ce3d8b3009f0002fc7423 *R/load.variogram.model.R
 5e4ca298349e3841bcd67b74ec2b4b45 *R/map.to.lev.R
@@ -88,12 +88,12 @@ ed826850975d2c0cd7556fd265d4e87d *demo/wind.R
 3e513aae2bb5d80ef6c3c5d00a473f89 *inst/CITATION
 8ef95803e5b9db32d91f0c821190d044 *inst/ChangeLog
 13ba85de19daef4c6c332c11107a5890 *inst/doc/gstat.Rnw
-3f928162087605d60094fa27d95ceb70 *inst/doc/gstat.pdf
+d9ae95de575846b8645cd2e322a8d7d3 *inst/doc/gstat.pdf
 23a8ca706b284fdd73be5e1958601d75 *inst/doc/ifgi-logo_int.pdf
 9928b4a0aba5faaeb024fcaca40dbbc2 *inst/doc/prs.Rnw
-ac9a2b39f7453e7cbe4ed9aa1d6e9966 *inst/doc/prs.pdf
+2fe1a335f0be1b39c757f5574da8cf72 *inst/doc/prs.pdf
 bb6a285c47223dc4cb8581e450d14003 *inst/doc/st.Rnw
-4131169bc848e5f2ecfbde89bf859bd7 *inst/doc/st.pdf
+e3a0e584be56716cb3ed96258c98c5f2 *inst/doc/st.pdf
 af529f6f9ce9e52ed054e016fd386af5 *inst/external/cluster.txt
 bacec53ee233889d6419b0e394bde7a8 *inst/external/ncp.dbf
 3692904f850276a958eaa4024e4a8ec7 *inst/external/ncp.shp
@@ -102,7 +102,7 @@ d7dc006dda153c41d6d102787e3a76c3 *inst/external/ncp.shx
 155d522e855fd867b07b25cc268d16cd *makefile.in
 06db1548bb88f327326dbf8d119a1b5e *man/coalash.Rd
 308f2115a92bd0e02b43ba1bba2659f7 *man/fit.lmc.Rd
-992a3529712f3437781556cca4725ac1 *man/fit.variogram.Rd
+109b62eef586ed02b0970cf72cd6fe30 *man/fit.variogram.Rd
 80b0b02cdf89db7b6519ba56199b755b *man/fit.variogram.gls.Rd
 d48bbaa274a22696dd54a6330691f9ae *man/fit.variogram.reml.Rd
 a49dcfdebcf4338a5375ae630c9e5306 *man/fulmar.Rd

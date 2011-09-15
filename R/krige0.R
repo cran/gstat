@@ -85,7 +85,8 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 krigeST <- function(formula, data, newdata, modelList, y, ..., 
 		computeVar = FALSE, fullCovariance = FALSE) {
 
-	stopifnot(identical(proj4string(data), proj4string(newdata)))
+	if (is(data, "ST") && is(newdata, "ST"))
+		stopifnot(identical(proj4string(data@sp), proj4string(newdata@sp)))
 	lst = extractFormula(formula, data, newdata)
 	X = lst$X
 	x0 = lst$x0
