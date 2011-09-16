@@ -44,7 +44,7 @@ proj4string(grd) = proj4string(sels)
 #sels = as(sels, "data.frame")
 
 # setup grid
-covfn = function(x,y) { 
+covfn = function(x, y = x) { 
 	u = spDists(coordinates(x), coordinates(y))
 	t = abs(outer(x$t,y$t,"-"))
 	0.6 * exp(-u/750000) * exp(-t/1.5)

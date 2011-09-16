@@ -51,10 +51,15 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 			covariance=TRUE)
 		c0 = variogramLine(model, dist_vector = c(0), covariance=TRUE)$gamma
 	} else {
-		V = model(data, data)
+		V = model(data)
 		v0 = model(data, newdata)
-		d0 = data[1, drop=FALSE]
-		c0 = as.numeric(model(d0,d0))
+		if (computeVar) {
+			if (is(newdata, "SpatialPolygons") || 
+					is(newdata, "SpatialPolygons"))
+				stop("unequal target support not implemented")
+			else
+				c0 = as.numeric(model(newdata[1, drop=FALSE]))
+		}
 	}
 	if (!missing(beta)) { # sk:
 		skwts = CHsolve(V, v0)

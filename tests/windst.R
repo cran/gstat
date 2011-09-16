@@ -44,7 +44,7 @@ grd = SpatialPixels(SpatialPoints(makegrid(m, n = 300)),
 # select april 1961:
 w = w[, "1961-04"]
 
-covfn = function(x, y) { 
+covfn = function(x, y = x) { 
 	du = spDists(coordinates(x), coordinates(y))
 	t1 = as.numeric(index(x)) # time in seconds
 	t2 = as.numeric(index(y)) # time in seconds
