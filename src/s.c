@@ -615,7 +615,7 @@ static void gstat_set_block(long i, SEXP block, SEXP block_cols, DPOINT *current
 
 SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction, 
 		SEXP cressie, SEXP dX, SEXP boundaries, SEXP grid, SEXP cov,
-		SEXP asym, SEXP pseudo) {
+		SEXP pseudo) {
 	SEXP ret;
 	SEXP np; 
 	SEXP dist;
@@ -653,7 +653,7 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 		if (INTEGER_POINTER(cov)[0] == 2)
 			vgm->ev->evt = PRSEMIVARIOGRAM;
 	}
-	vgm->ev->is_asym = INTEGER_POINTER(asym)[0];
+	/* vgm->ev->is_asym = INTEGER_POINTER(asym)[0]; */
 	vgm->ev->pseudo = INTEGER_POINTER(pseudo)[0];
 	vgm->ev->recalc = 1;
 	vgm->fname = NULL;

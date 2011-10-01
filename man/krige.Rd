@@ -195,7 +195,7 @@ spplot(x["var1.pred"], main = "universal kriging predictions")
 
 # krige0, using user-defined covariance function and multiple responses in y:
 # exponential variogram with range 500, defined as covariance function:
-v = function(x,y) { exp(-spDists(coordinates(x),coordinates(y))/500) }
+v = function(x, y = x) { exp(-spDists(coordinates(x),coordinates(y))/500) }
 # krige two variables in a single pass (using 1 covariance model):
 y = cbind(meuse$zinc,meuse$copper,meuse$lead,meuse$cadmium)
 x <- krige0(zinc~1, meuse, meuse.grid, v, y = y)
