@@ -33,8 +33,8 @@
 #include <float.h> /* DBL_MAX */
 #include <math.h> /* sqrt() */
 
-#include "defs.h"
 #include "matrix2.h"
+#include "defs.h"
 #include "userio.h"
 #include "data.h"
 #include "utils.h"

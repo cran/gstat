@@ -34,6 +34,8 @@ static	char	rcsid[] = "$Id: otherio.c,v 1.1.1.1 2003-06-23 18:31:41 cees Exp $";
 #include	<ctype.h>
 #include	"matrix.h"
 
+#include	"../src/s.h" /* EJP */
+#include	"../src/config.h" /* EJP */
 
 
 /* scratch area -- enough for a single line */
@@ -42,6 +44,7 @@ static	char	scratch[MAXLINE+1];
 /* default value for fy_or_n */
 static	int	y_n_dflt = TRUE;
 
+#ifndef USING_R
 /* fy_or_n -- yes-or-no to question is string s
 	-- question written to stderr, input from fp 
 	-- if fp is NOT a tty then return y_n_dflt */
@@ -70,12 +73,14 @@ char	*s;
 		fprintf(stderr,"and 'n' or 'N' for no.\n");
 	}
 }
+#endif
 
 /* yn_dflt -- sets the value of y_n_dflt to val */
 int	yn_dflt(val)
 int	val;
 {	return y_n_dflt = val;		}
 
+#ifndef USING_R
 /* fin_int -- return integer read from file/stream fp
 	-- prompt s on stderr if fp is a tty
 	-- check that x lies between low and high: re-prompt if
@@ -161,4 +166,4 @@ double	low, high;
 	}
 }
 
-
+#endif /* USING_R */

@@ -226,6 +226,7 @@ double r_uniform(void) {
 	return my_rng.r_unif();
 }
 
+#ifndef USING_R
 int e_random(int argc, char *argv[]) {
 
 	int un, n, i;
@@ -251,6 +252,7 @@ int e_random(int argc, char *argv[]) {
 			printf("%g\n", r_normal());
 	return 0;
 }
+#endif
 
 /*
  * [pqr]_normal: functions for Normal(mean=0,var=1) distribution

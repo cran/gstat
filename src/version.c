@@ -34,6 +34,10 @@
 
 #include	<stdio.h>
 
+#include "../src/s.h" /* EJP */
+#include "../src/config.h" /* EJP */
+
+#ifndef USING_R
 void	m_version()
 {
 	static char rcsid[] = "$Id: version.c,v 1.1.1.1 2003-06-23 18:31:42 cees Exp $";
@@ -64,6 +68,7 @@ void	m_version()
 	printf("EJP: removed note about machine.van in configure.[h|hin] \n");
 	printf("EJP: (seems to be missing)\n");
 }
+#endif
 
 /* $Log: version.c,v $
 /* Revision 1.1.1.1  2003-06-23 18:31:42  cees

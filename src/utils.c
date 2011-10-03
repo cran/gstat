@@ -28,7 +28,6 @@
 /*
  * utils.c: error checking functions for file, memory and string handling
  */
-#include "defs.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,6 +37,7 @@
 #include <math.h> /* floor() */
 #include <string.h> /* strlen(), memcmp() */
 
+#include "defs.h"
 #ifdef HAVE_STAT_H
 # include <sys/types.h> 
 # include <sys/stat.h>
@@ -64,6 +64,10 @@
 # include <grass/gis.h>
 # include <grass/gisdefs.h>
 #endif 
+
+#ifdef USING_R
+# define NO_STD_IN_OUT
+#endif
 
 static void convert_null_to_space(char *cp, const char *name, const FILE *f);
 
@@ -391,6 +395,7 @@ int file_exists(const char *name) {
 		return 0;
 }
 
+#ifndef USING_R
 char *get_line(char **s, int *size, FILE *stream) {
 /* 
  * read line in *s, return number of chars read;
@@ -467,6 +472,7 @@ char *string_prompt(const char *prompt) {
 	} while (line);
 	return buf;
 }
+#endif
 
 char *string_file(const char *fname) {
 /*

@@ -31,6 +31,9 @@
 #include        <ctype.h>
 #include        "matrix.h"
 
+#include        "../src/s.h"
+#include        "../src/config.h"
+
 static char rcsid[] = "$Id: matrixio.c,v 1.1.1.1 2003-06-23 18:31:36 cees Exp $";
 
 
@@ -38,6 +41,7 @@ static char rcsid[] = "$Id: matrixio.c,v 1.1.1.1 2003-06-23 18:31:36 cees Exp $"
 static char line[MAXLINE];
 
 
+#ifndef USING_R
 /**************************************************************************
   Input routines
   **************************************************************************/
@@ -519,4 +523,4 @@ VEC     *x;
      }
      if ( tmp % 5 != 0 )        putc('\n',fp);
 }
-
+#endif /* USING_R */

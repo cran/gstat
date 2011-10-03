@@ -102,6 +102,7 @@ static void print_poly_log(POLYGON *edge);
 
 static const char *fname = NULL;
 /*------------------------------ POLYGONS ------------------------------*/
+#ifndef USING_R
 POLYGON *read_polygons(const char *filename, int *n_polys, double **iso_values) {
 	FILE *f = NULL;
 	int i = 0, j,n, line_size = 0, d, np, iww_nl=-1;
@@ -200,6 +201,7 @@ POLYGON *read_polygons(const char *filename, int *n_polys, double **iso_values) 
 	efree(line);
 	return pol;
 }
+#endif
 
 void report_edges(void) {
     int i, j, n, *ip;
@@ -245,6 +247,7 @@ static void print_poly_log(POLYGON *edge) {
     return;
 }
 
+#ifndef USING_R
 POLYGON read_n_points(FILE *f, int np) {
 	static char *line = NULL;
 	static int line_size;
@@ -288,6 +291,7 @@ POLYGON read_n_points(FILE *f, int np) {
     
 	return pl;
 }
+#endif
 
 int point_in_polygon(PLOT_POINT point, POLYGON *pl)
 {
@@ -391,6 +395,7 @@ static char InPoly(PLOT_POINT q, POLYGON *Poly)
 
 
 
+#ifndef USING_R
 /*------------------------------ EDGES ------------------------------*/
 void read_edges(void) 
 {
@@ -420,6 +425,7 @@ void read_edges(void)
 /*     set_n_edges(n_edges_total); */
     
 }
+#endif
 
 void check_edges(DATA *d, const DPOINT *where) {
 #define BAD FLT_MAX    

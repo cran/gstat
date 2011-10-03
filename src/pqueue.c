@@ -212,10 +212,8 @@ void enqueue(QUEUE *q, Q_ELEMENT_WHAT *el, int n) {
 Q_ELEMENT_WHAT dequeue(QUEUE *q) {
 	Q_ELEMENT *e;
 
-	if (q->length == 0) {
-		printf("error: cannot dequeue empty queue\n");
-		exit(1);
-	}
+	if (q->length == 0)
+		ErrMsg(ER_NULL, "cannot dequeue empty queue");
 	e = q->head; /* get first queue element */
 	q->head = q->head->next; /* reset first to next */
 	e->next = q->empty; /* put the dequeued element in the empty queue */

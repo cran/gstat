@@ -39,9 +39,10 @@ static	char	rcsid[] = "$Id: err.c,v 1.2 2006-06-01 20:17:56 edzer Exp $";
 #include   "err.h"
 
 #include "../src/config.h" /* EJP */
-#ifdef USING_R
-void Rprintf(char*, ...);
+#ifdef USING_R /* EJP: added all the #ifdef USING_R */
 void s_gstat_error(char *, int);
+void Rf_error(const char *, ...);
+void Rprintf(const char *, ...);
 #endif
 
 #ifdef SYSV
@@ -142,6 +143,7 @@ int err_list_attach(int list_num, int list_len,char **err_ptr,int warn)
        err_ptr == (char **)NULL) 
      return -1;
    
+#ifndef USING_R
    if (list_num >= ERR_LIST_MAX_LEN) {
 	fprintf(stderr,"\n file \"%s\": %s %s\n",
 		"err.c","increase the value of ERR_LIST_MAX_LEN",
@@ -153,6 +155,7 @@ int err_list_attach(int list_num, int list_len,char **err_ptr,int warn)
 	printf("Exiting program\n");
 	exit(0);
      }
+#endif
 
    if (err_list[list_num].listp != (char **)NULL &&
        err_list[list_num].listp != err_ptr)
@@ -229,6 +232,7 @@ int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)
    
    if ( err_num < 0 ) err_num = 0;
    
+#ifndef USING_R
    if (list_num < 0 || list_num >= err_list_end ||
        err_list[list_num].listp == (char **)NULL) {
       fprintf(stderr,
@@ -244,10 +248,12 @@ int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)
       printf("\nExiting program\n");
       exit(0);
    }
+#endif
    
    num = err_num;
    if ( num >= err_list[list_num].len ) num = 0;
    
+#ifndef USING_R
    if ( cnt_errs && ++num_errs >= MAX_ERRS )	/* too many errors */
    {
       fprintf(stderr,"\n\"%s\", line %d: %s in function %s()\n",
@@ -261,11 +267,17 @@ int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)
       printf("Exiting program\n");
       exit(0);
    }
+#endif
    if ( err_list[list_num].warn )
        switch ( err_flag )
        {
 	   case EF_SILENT: break;
 	   default:
+#ifdef USING_R
+	   Rprintf("\n\"%s\", line %d: %s in function %s()\n\n",
+		   file,line_num,err_list[list_num].listp[num],
+		   isascii(*fn_name) ? fn_name : "???");
+#else
 	   fprintf(stderr,"\n\"%s\", line %d: %s in function %s()\n\n",
 		   file,line_num,err_list[list_num].listp[num],
 		   isascii(*fn_name) ? fn_name : "???");
@@ -273,6 +285,7 @@ int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)
 	       fprintf(stdout,"\n\"%s\", line %d: %s in function %s()\n\n",
 		       file,line_num,err_list[list_num].listp[num],
 		       isascii(*fn_name) ? fn_name : "???");
+#endif
 	   break;
        }
    else
@@ -282,6 +295,11 @@ int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)
 	   longjmp(restart,(err_num==0)? -1 : err_num);
 	   break;
 	   case EF_ABORT:
+#ifdef USING_R
+	   Rprintf("\n\"%s\", line %d: %s in function %s()\n",
+		   file,line_num,err_list[list_num].listp[num],
+		   isascii(*fn_name) ? fn_name : "???");
+#else
 	   fprintf(stderr,"\n\"%s\", line %d: %s in function %s()\n",
 		   file,line_num,err_list[list_num].listp[num],
 		   isascii(*fn_name) ? fn_name : "???");
@@ -289,9 +307,20 @@ int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)
 	       fprintf(stdout,"\n\"%s\", line %d: %s in function %s()\n",
 		       file,line_num,err_list[list_num].listp[num],
 		       isascii(*fn_name) ? fn_name : "???");
+#endif
+#ifdef USING_R
+	   Rf_error("");
+#else
 	   abort();
+#endif
+
 	   break;
 	   case EF_JUMP:
+#ifdef USING_R
+	   Rprintf("\n\"%s\", line %d: %s in function %s()\n",
+		   file,line_num,err_list[list_num].listp[num],
+		   isascii(*fn_name) ? fn_name : "???");
+#else
 	   fprintf(stderr,"\n\"%s\", line %d: %s in function %s()\n",
 		   file,line_num,err_list[list_num].listp[num],
 		   isascii(*fn_name) ? fn_name : "???");
@@ -299,6 +328,7 @@ int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)
 	       fprintf(stdout,"\n\"%s\", line %d: %s in function %s()\n",
 		       file,line_num,err_list[list_num].listp[num],
 		       isascii(*fn_name) ? fn_name : "???");
+#endif
 	   longjmp(restart,(err_num==0)? -1 : err_num);
 	   break;
 	   case EF_R_ERROR:
@@ -310,6 +340,11 @@ int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)
 #endif
 	   break;
 	   default:
+#ifdef USING_R
+	   Rprintf("\n\"%s\", line %d: %s in function %s()\n\n",
+		   file,line_num,err_list[list_num].listp[num],
+		   isascii(*fn_name) ? fn_name : "???");
+#else
 	   fprintf(stderr,"\n\"%s\", line %d: %s in function %s()\n\n",
 		   file,line_num,err_list[list_num].listp[num],
 		   isascii(*fn_name) ? fn_name : "???");
@@ -317,12 +352,17 @@ int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)
 	       fprintf(stdout,"\n\"%s\", line %d: %s in function %s()\n\n",
 		       file,line_num,err_list[list_num].listp[num],
 		       isascii(*fn_name) ? fn_name : "???");
-	   
+#endif
 	   break;
        }
    
    /* ensure exit if fall through */
-   if ( ! err_list[list_num].warn )  exit(0);
+   if ( ! err_list[list_num].warn )  
+#ifdef USING_R /* EJP */
+	 s_gstat_error("err.c", 0);
+#else
+  	 exit(0);
+#endif
 
    return 0;
 }

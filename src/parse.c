@@ -3173,6 +3173,7 @@ int parse_cmd(const char *cmd, const char *fname) {
 	return yyparse();
 }
 
+#ifndef USING_R
 int parse_file(const char *fname) {
 /* 
  * parse commands in file fname
@@ -3257,6 +3258,7 @@ int read_vector(D_VECTOR *d, char *fname) {
 
 	return rval;
 }
+#endif
 
 static void verify_data(DATA *d) { /* declaration : contents */
 

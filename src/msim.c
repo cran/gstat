@@ -37,6 +37,11 @@
 #include <assert.h>
 
 #include "defs.h"
+
+#ifdef USING_R
+# include <R.h>
+#endif
+
 #include "debug.h"
 #include "random.h"
 #include "data.h"
@@ -278,6 +283,7 @@ static void restore_data_list(DATA **data, int sim, int n_vars) {
 	}
 }
 
+#ifndef USING_R
 void save_simulations_to_ascii(const char *fname) {
 	DATA **d, *dv;
 	FILE *f;
@@ -461,6 +467,7 @@ void save_simulations_to_maps(GRIDMAP *mask) {
 	efree(what);
 	free_simulations();
 }
+#endif
 
 void free_simulations(void) {
 	int i, j;
@@ -496,6 +503,7 @@ void free_simulations(void) {
 	}
 }
 
+#ifndef USING_R
 void lhs(DATA **d, int n_vars, int stratify) {
 /*
  * lhs(): Latin hypercube sampling of multi-Gaussian random fields
@@ -642,6 +650,7 @@ void lhs(DATA **d, int n_vars, int stratify) {
 
 	return;
 }
+#endif
 
 static void lhs_one(Double_index *list, unsigned int dim, 
 		double mean, double var) {

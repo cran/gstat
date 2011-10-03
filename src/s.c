@@ -76,9 +76,8 @@
 #include "random.h"
 #include "getest.h"
 #include "polygon.h"
+#include "s.h"
 
-void s_gstat_error(const char *mess, int level);
-void s_gstat_warning(const char *mess);
 void s_gstat_printlog(const char *mess);
 void s_gstat_progress(unsigned int current, unsigned int total);
 double s_r_uniform(void);
@@ -1037,7 +1036,7 @@ SEXP gstat_load_ev(SEXP np, SEXP dist, SEXP gamma) {
 	vgm->ev->cloud = cloud;
 #ifndef WIN32
 	if (DEBUG_VGMFIT)
-		fprint_sample_vgm(stdout, vgm->ev);
+		fprint_sample_vgm(NULL, vgm->ev);
 #endif
 	return(np);
 }

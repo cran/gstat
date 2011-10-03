@@ -32,6 +32,9 @@
 #include        <stdio.h>
 #include        "sparse.h"
 
+#include	"../src/s.h" /* EJP */
+#include	"../src/config.h" /* EJP */
+
 static char rcsid[] = "$Id: sparseio.c,v 1.1.1.1 2003-06-23 18:31:50 cees Exp $";
 
 
@@ -40,6 +43,7 @@ static char rcsid[] = "$Id: sparseio.c,v 1.1.1.1 2003-06-23 18:31:50 cees Exp $"
 static char line[MAXLINE];
 
 /* sp_foutput -- output sparse matrix A to file/stream fp */
+#ifndef USING_R
 void    sp_foutput(fp,A)
 FILE    *fp;
 SPMAT  *A;
@@ -81,6 +85,7 @@ SPMAT  *A;
 	}
 	fprintf(fp,"#\n");	/* to stop looking beyond for next entry */
 }
+#endif
 
 /* sp_foutput2 -- print out sparse matrix **as a dense matrix**
 	-- see output format used in matrix.h etc */
@@ -122,6 +127,7 @@ SPMAT  *A;
 }
 ******************************************************************/
 
+#ifndef USING_R
 /* sp_dump -- prints ALL relevant information about the sparse matrix A */
 void    sp_dump(fp,A)
 FILE    *fp;
@@ -313,3 +319,4 @@ FILE    *fp;
 	return A;
 }
 
+#endif

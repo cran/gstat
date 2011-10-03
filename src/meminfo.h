@@ -129,14 +129,21 @@ int mem_stat_reg_vars();
 
 #define mem_info()   mem_info_file(stdout,0)
 
+/* EJP:
 #define mem_stat_reg(var,type)  mem_stat_reg_list((void **)var,type,0)
 #define MEM_STAT_REG(var,type)  mem_stat_reg_list((void **)&(var),type,0)
 #define mem_stat_free(mark)   mem_stat_free_list(mark,0)
 
 #define mem_bytes(type,old_size,new_size)  \
   mem_bytes_list(type,old_size,new_size,0)
-
 #define mem_numvar(type,num) mem_numvar_list(type,num,0)
+*/
+#define mem_stat_reg(var,type)
+#define MEM_STAT_REG(var,type)
+#define mem_stat_free(mark)
+
+#define mem_bytes(type,old_size,new_size)
+#define mem_numvar(type,num)
 
 
 /* internal type */

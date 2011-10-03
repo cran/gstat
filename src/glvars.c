@@ -43,7 +43,11 @@
 #include "random.h"
 #include "predict.h"
 #include "defaults.h" /* default values for gl_* variables */
-#include "writecmd.h" /* printlog_glvars() */
+
+#ifndef USING_R
+# include "writecmd.h" /* printlog_glvars() */
+#endif
+
 #include "glvars.h"
 #include "gls.h"
 #include "block.h"
@@ -600,6 +604,7 @@ double max_block_dimension(int reset) {
 	return dim;
 }
 
+#ifndef USING_R
 int dump_all(void) {
 	int i;
 	char *cp = NULL;
@@ -639,6 +644,7 @@ int dump_all(void) {
 	printlog("method: %s\n", method_string(get_method()));
 	return 0;
 }
+#endif
 
 void setup_valdata_X(DATA *d) {
 /* 
@@ -787,8 +793,10 @@ void set_mode(void) {
 		/* if STRATIFIED: first mask categories, then base functions */
 		check_failed = (1 + nm != n_masks);
 	}
+#ifndef USING_R
 	if (! check_failed)
 		check_failed = !is_valid_strata_map(get_mask_name(0), get_n_vars());
+#endif
 	if (check_failed) {
 		mode = SIMPLE;
 		return;
@@ -1041,6 +1049,7 @@ void check_global_variables(void) {
 			ErrMsg(ER_IMPOSVAL, "# marginals should be 2 x # of variables");
 	}
 	v_tmp = init_variogram(NULL);
+#ifndef USING_R
 	for (i = 0; i < get_n_vgms(); i++) {
 		if (vgm[i]) {
 			if (vgm[i]->fname && read_variogram(v_tmp, vgm[i]->fname) == 0)
@@ -1049,6 +1058,7 @@ void check_global_variables(void) {
 				pr_warning("NOTE that `%s' is a file name, variogram models never have quotes", vgm[i]->fname2);
 		}
 	}
+#endif
 	free_variogram(v_tmp);
 } 
 

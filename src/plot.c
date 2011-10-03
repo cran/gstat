@@ -28,12 +28,13 @@
 /*
  * plot.c: kriging weights/variogram plot drivers to gnuplot and jgraph
  */
-#include "defs.h"
 
 #include <stdio.h>
 #include <stdlib.h> /* getenv() */
 #include <string.h>
 #include <math.h>
+
+#include "defs.h"
 #include "userio.h"
 #include "debug.h"
 #include "data.h"
@@ -74,6 +75,7 @@ GNUPLOT_TERM gnuplot_terms[] = {
 static int set_key(FILE *f, const VARIOGRAM *v, double min, double max);
 static void get_minmax_y(const VARIOGRAM *v, double max_x, double *min_y, double *max_y);
 
+#ifndef USING_R
 int fprint_gnuplot_variogram(FILE *stream, const VARIOGRAM *v,
 		char *fname, PLOT_TYPE p, int window_nr) {
 	double min_y = 0.0, max_y = 0.0, max_x = 0.0, range;
@@ -398,6 +400,7 @@ int fprint_jgraph_variogram(FILE *f, const VARIOGRAM *v) {
 	} 
 	return 0;
 }
+#endif
 
 static void get_minmax_y(const VARIOGRAM *v, double max_x, double *min_y, double *max_y) {
 	int i;
