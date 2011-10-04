@@ -1,8 +1,8 @@
 
-R version 2.13.0 (2011-04-13)
+R version 2.13.2 (2011-09-30)
 Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
-Platform: i486-pc-linux-gnu (32-bit)
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -23,7 +23,7 @@ Loading required package: sp
 Geospatial Data Abstraction Library extensions to R successfully loaded
 Loaded GDAL runtime: GDAL 1.8.0, released 2011/01/12
 Path to GDAL shared files: /usr/share/gdal/1.8
-Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009
+Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009, [PJ_VERSION: 470]
 Path to PROJ.4 shared files: (autodetected)
 > 
 > data(meuse)
@@ -31,6 +31,16 @@ Path to PROJ.4 shared files: (autodetected)
 > proj4string(meuse) = CRS("+init=epsg:28992")
 > meuse.ll = spTransform(meuse, CRS("+proj=longlat"))
 > library(gstat)
+Loading required package: spacetime
+Loading required package: zoo
+
+Attaching package: 'zoo'
+
+The following object(s) are masked from 'package:base':
+
+    as.Date
+
+Loading required package: xts
 > variogram(log(zinc)~1, meuse.ll)
     np       dist     gamma dir.hor dir.ver   id
 1   57 0.07927429 0.1234479       0       0 var1
@@ -57,7 +67,7 @@ Path to PROJ.4 shared files: (autodetected)
 > 
 > library(fields)
 Loading required package: spam
-Package 'spam' is loaded. Spam version 0.23-0 (2010-09-01).
+Package 'spam' is loaded. Spam version 0.27-0 (2011-08-17).
 Type demo( spam) for some demos, help( Spam) for an overview
 of this package.
 Help for individual functions is optained by adding the
@@ -69,9 +79,6 @@ The following object(s) are masked from 'package:base':
 
     backsolve, forwardsolve, norm
 
- Use help(fields) for an overview of this library
-
-library( fields, keep.source=TRUE) retains comments in the source code. 
 > data(ozone2)
 > oz = SpatialPointsDataFrame(ozone2$lon.lat, 
 + 		data.frame(t(ozone2$y)), 

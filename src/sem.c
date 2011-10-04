@@ -111,7 +111,9 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 		no output has to be written to file */ )
 {
 	DATA **d = NULL, *d1 = NULL, *d2 = NULL;
+#ifndef USING_R
 	FILE *f = NULL;
+#endif
 
 	assert(v);
 

@@ -93,9 +93,10 @@ plot(DUB~time, wind, type= 'l', ylab = "windspeed (knots)", main = "Dublin")
 # fig 2:
 #wind = wind[!(wind$month == 2 & wind$day == 29),]
 wind$jday = as.numeric(format(wind$time, '\%j'))
-windsqrt = sqrt(0.5148 * wind[4:15])
+windsqrt = sqrt(0.5148 * as.matrix(wind[4:15]))
 Jday = 1:366
-daymeans = apply(sapply(split(windsqrt - mean(windsqrt), wind$jday), mean), 2, mean)
+windsqrt = windsqrt - mean(windsqrt)
+daymeans = sapply(split(windsqrt, wind$jday), mean)
 plot(daymeans ~ Jday)
 lines(lowess(daymeans ~ Jday, f = 0.1))
 
