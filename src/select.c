@@ -34,6 +34,11 @@
 #include <math.h> /* sqrt(), fabs() */
 
 #include "defs.h"
+
+#ifdef USING_R
+void Rprintf(const char *,...);
+#endif
+
 #include "userio.h"
 #include "data.h"
 #include "utils.h"
@@ -253,7 +258,7 @@ static int octant_select(DATA *d, DPOINT *where) {
 			start = end;
 	}
 	if (end != d->n_sel) {
-		printf("end: %d, n_sel: %d\n", end, d->n_sel);
+		Rprintf("end: %d, n_sel: %d\n", end, d->n_sel);
 		ErrMsg(ER_IMPOSVAL, "octant_select(): remaining points");
 	}
 	return n_notempty; /* # non-empty octants */

@@ -299,6 +299,7 @@ static void map_set_row(GRIDMAP *m, unsigned int new_row)
  * a pointer to a GRIDMAP read, NULL in case the map is not
  * one of the formats supported.
  */
+#ifndef USING_R
 GRIDMAP *map_read(GRIDMAP * m)
 {
 
@@ -371,6 +372,7 @@ GRIDMAP *map_read(GRIDMAP * m)
 	/* no success: */
 	return NULL;
 }
+#endif
 
 static GRIDMAP *write_error(GRIDMAP * m)
 {
@@ -603,6 +605,7 @@ void map_free(GRIDMAP * m /* pointer to GRIDMAP structure */ )
 	efree(m);
 }
 
+#ifndef USING_R
 /*
  * check whether two maps have equal topologies 
  * compares cellsizes, location and dimension 
@@ -3061,6 +3064,7 @@ void map_name_nr(GRIDMAP *mask, const char *base, char *name, int nr, int max) {
 	cp[8] = '.'; /* print 8.3 point */
 	memcpy(name, base, strlen(base)); /* overprint name excluding '\0' */
 }
+#endif
 
 #ifdef MAPIO_LIB /* dummy, test main() */
 int main(int argc, char *argv[])

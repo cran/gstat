@@ -41,6 +41,9 @@
 #include  "sparse.h"
 #endif
 
+#include  "../src/s.h" /* EJP */
+#include  "../src/config.h" /* EJP */
+
 static char rcsid[] = "$Id: meminfo.c,v 1.1.1.1 2003-06-23 18:31:43 cees Exp $";
 
 /* this array is defined further in this file */
@@ -158,6 +161,7 @@ int list;
 
 /* to print out the contents of mem_connect[list] */
 
+#ifndef USING_R
 void mem_dump_list(fp,list)
 FILE *fp;
 int list;
@@ -189,7 +193,7 @@ int list;
    
    fprintf(fp,"\n");
 }
-
+#endif
 
 
 /*=============================================================*/
@@ -254,6 +258,7 @@ int type,list;
 
 
 
+#ifndef USING_R
 /* print out memory info to the file fp */
 void mem_info_file(fp,list)
 FILE *fp;
@@ -290,6 +295,7 @@ int list;
 	   "total:",t, (t!=1 ? 's' : ' '),
 	   nt, (nt!=1 ? 's' : ' '));
 }
+#endif
 
 
 /* function for memory information */
@@ -305,6 +311,7 @@ int list;
    */
 
 
+#ifndef USING_R
 void mem_bytes_list(type,old_size,new_size,list)
 int type,list;
 int old_size,new_size;
@@ -341,7 +348,6 @@ int old_size,new_size;
       }
    }
 }
-
 
 /* mem_numvar_list
    
@@ -383,4 +389,4 @@ int type,list,num;
       }
    }
 }
-
+#endif

@@ -7,7 +7,17 @@
 #ifndef DEFS_H
 #define DEFS_H /* avoid multiple inclusion */
 
+#define NDEBUG /* turns off assert()ions */
+
 #include "config.h"
+
+#ifdef USING_R
+/* # include <R.h> */
+# define exit(n) Rf_error("exiting with code %d", n)
+# define printf Rprintf
+#else
+# define Rprintf printf
+#endif
 
 #ifdef SPLUS6WIN32
 # define CDECL __cdecl

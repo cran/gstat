@@ -118,6 +118,7 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 	d = get_gstat_data();
 	d1 = d[v->id1];
 	d2 = d[v->id2];
+#ifndef USING_R
 	if (v->fname && (d1->dummy || d2->dummy)) {
 		if ((v->ev = load_ev(v->ev, v->fname)) == NULL)
 			ErrMsg(ER_READ, "could not read sample variogram");
@@ -125,6 +126,7 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 		v->ev->recalc = 0;
 		return 0;
 	}
+#endif
 	if (d1->sel == NULL) 
 		select_at(d1, NULL); /* global selection (sel = list) */
 	if (d2->sel == NULL)
@@ -191,6 +193,7 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 				break;
 		}
 	}
+#ifndef USING_R
 	if (v->ev->map && !v->ev->S_grid)
 		ev2map(v);
 	else if (fname != NULL) {
@@ -200,6 +203,7 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 	}
 	if (f && f != stdout)
 		return efclose(f);
+#endif
 	return 0;
 }
 
@@ -656,9 +660,11 @@ void fill_cutoff_width(DATA *data /* pointer to DATA structure to derive
 			m->rows = dg->rows;
 			m->cols = dg->cols;
 		} else {
+#ifndef USING_R
 			m->filename = get_mask_name(0);
 			if ((m = map_read(m)) == NULL)
 				ErrMsg(ER_READ, "cannot open map");
+#endif
 		}
 		ev->iwidth = 1.0;
 		ev->cutoff = m->rows * m->cols; 
@@ -690,6 +696,7 @@ void fill_cutoff_width(DATA *data /* pointer to DATA structure to derive
 	}
 }
 
+#ifndef USING_R
 void fprint_header_vgm(FILE *f, const DATA *a, const DATA *b,
 			const SAMPLE_VGM *ev) {
 	time_t tp;
@@ -736,6 +743,7 @@ void fprint_header_vgm(FILE *f, const DATA *a, const DATA *b,
 			vgm_type_str[ev->evt]);
 	return;
 }
+#endif
 
 static SAMPLE_VGM *alloc_exp_variogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {
 	int i;
@@ -903,8 +911,13 @@ void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev) {
 	if (! ev->cloud) {
 		/* start writing: distance 0 */
 		if (ev->zero == ZERO_SPECIAL && ev->nh[ev->n_est-1])
+#ifndef USING_R
+			Rprintf(EVFMT, 0.0, 0.0, ev->nh[ev->n_est-1], 
+				ev->dist[ev->n_est-1], ev->gamma[ev->n_est-1]);
+#else 
 			fprintf(f, EVFMT, 0.0, 0.0, ev->nh[ev->n_est-1], 
 				ev->dist[ev->n_est-1], ev->gamma[ev->n_est-1]);
+#endif
 		/* continue writing: */
 		if (ev->zero == ZERO_SPECIAL || ev->zero == ZERO_AVOID)
 			n = ev->n_est - 1;
@@ -923,8 +936,13 @@ void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev) {
 					to = gl_bounds[i];
 				}
 				to = MIN(ev->cutoff, to);
+#ifndef USING_R
+				Rprintf(EVFMT, from, to, ev->nh[i],
+					ev->dist[i], ev->gamma[i]);
+#else
 				fprintf(f, EVFMT, from, to, ev->nh[i],
 					ev->dist[i], ev->gamma[i]);
+#endif
 				/*
 				for (j = 0; j < ev->nh[i]; j++)
 					fprintf(f, "[%d,%d] ",
@@ -936,10 +954,17 @@ void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev) {
 		}
 	} else {
 		for (i = 0; i < ev->n_est; i++)
+#ifndef USING_R
+			Rprintf("%ld %ld %g %g\n", HIGH_NH(ev->nh[i]) + 1,
+				LOW_NH(ev->nh[i]) + 1, ev->dist[i], ev->gamma[i]);
+#else
 			fprintf(f, "%ld %ld %g %g\n", HIGH_NH(ev->nh[i]) + 1,
 				LOW_NH(ev->nh[i]) + 1, ev->dist[i], ev->gamma[i]);
+#endif
 	}
+#ifndef USING_R
 	fflush(f);
+#endif
 	return;
 } /* fprint_sample_vgm */
 
@@ -969,6 +994,7 @@ static void ev2map(VARIOGRAM *v) {
 	return;
 }
 
+#ifndef USING_R
 static SAMPLE_VGM *load_ev(SAMPLE_VGM *ev, const char *fname) {
 	char *s = NULL, *tok;
 	int i, size = 0, incr = 100;
@@ -1038,3 +1064,4 @@ static SAMPLE_VGM *load_ev(SAMPLE_VGM *ev, const char *fname) {
 	efclose(f);
 	return ev;
 }
+#endif

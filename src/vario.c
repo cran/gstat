@@ -28,7 +28,6 @@
 /*
  * vario.c: basic variogram model functions (init, print, update, etc.)
  */
-#include "defs.h"
 
 #include <stdio.h>
 #include <stdlib.h> /* getenv() */
@@ -37,6 +36,7 @@
 #include <math.h>
 #include <string.h>
 
+#include "defs.h"
 #include "matrix2.h"
 
 #include "userio.h"
@@ -271,9 +271,11 @@ void logprint_variogram(const VARIOGRAM *v, int verbose) {
 	printlog("%s", sprint_variogram(v, verbose));
 }
 
+#ifndef USING_R
 void fprint_variogram(FILE *f, const VARIOGRAM *v, int verbose) {
 	fprintf(f, "%s", sprint_variogram(v, verbose));
 }
+#endif
 
 const char *sprint_variogram(const VARIOGRAM *v, int verbose) {
 /* prints contents of VARIOGRAM v on string */
@@ -769,7 +771,9 @@ int push_variogram_model(VARIOGRAM *v, VGM_MODEL part) {
 		for (i = v->max_n_models; i < v->max_n_models + INIT_N_VGMM; i++)
 			init_variogram_part(&(v->part[i]));
 		v->max_n_models += INIT_N_VGMM;
+#ifndef USING_R
 		printf("enlarging v->max_n_models\n");
+#endif
 	}
 	/*
 	 * check some things: 
@@ -856,6 +860,7 @@ double relative_nugget(VARIOGRAM *v) {
 	return (nug/(nug+sill));
 }
 
+#ifndef USING_R
 int vario(int argc, char **argv) {
 /* model from to nsteps */
 	double dist, from, to;
@@ -896,6 +901,7 @@ int vario(int argc, char **argv) {
 	}	
 	return 0;
 }
+#endif
 
 FIT_TYPE fit_int2enum(int fit) {
 	switch (fit) {

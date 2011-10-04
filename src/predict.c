@@ -88,6 +88,7 @@ unsigned int n_pred_locs = 0;
 
 void map_sign(GRIDMAP *m, const char *what);
 
+#ifndef USING_R
 void predict_all(DATA **data) {
 	int i = 0, random_path = 0;
 	DPOINT *here = NULL, *where = NULL;
@@ -419,6 +420,7 @@ int is_valid_strata_map(const char *name, int n_vars) {
 	map_free(mp);
 	return (check_failed == 0);
 }
+#endif
 
 unsigned int *get_n_sim_locs_table(unsigned int *size) {
 	unsigned int i, j, *table;
@@ -453,6 +455,7 @@ unsigned int *get_n_sim_locs_table(unsigned int *size) {
 	return table;
 }
 
+#ifndef USING_R
 static GRIDMAP *check_open(const char *name, int i) {
 	GRIDMAP *mask;
 	unsigned int r, c;
@@ -538,6 +541,7 @@ static int get_map_location(DPOINT *loc, int random_path,
 	} 
 	return (at_end == 0);
 }
+#endif
 
 static int get_random_cell(GRIDMAP *m, unsigned int *row, unsigned int *col) {
 	static char **u = NULL, *tmp = NULL;

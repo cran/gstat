@@ -96,6 +96,7 @@ static void calc_data_mean_std(DATA *d);
 static void correct_strata(DATA *d);
 static void field_error(char *fname, int line_nr, int fld, char *text);
 static int average_duplicates(DATA *d);
+#ifndef USING_R
 static int read_data_from_map(DATA *d);
 static int read_idrisi_points(DATA *d);
 static int read_idrisi_point_data(DATA *d, const char *fname);
@@ -103,6 +104,7 @@ static int read_idrisi_point_header(DATA *d, const char *fname);
 static int read_idrisi32_points(DATA *d);
 static int read_idrisi32_point_data(DATA *d, const char *fname);
 static int read_idrisi32_point_header(DATA *d, const char *fname);
+#endif
 static void transform_data(DATA *d);
 static void grid_push_point(DATA *d, DPOINT *p, int adjust_to_gridcentrs);
 static double point_norm_1D(const DPOINT *p);
@@ -163,6 +165,7 @@ const POLY_NM polynomial[N_POLY] =
  * if d->fname is "-", data is read from stdin (with a warning message);
  * in this case, it is assumed to be in GeoEAS format.
  */
+#ifndef USING_R
 DATA *read_gstat_data(DATA *d) {
 	int check = 0;
 	DATA *valdata;
@@ -263,6 +266,7 @@ DATA *read_gstat_data(DATA *d) {
     }
 	return d;
 }
+#endif
 
 void set_norm_fns(DATA *d) {
 
@@ -318,6 +322,7 @@ void setup_data_minmax(DATA *d) {
 	}
 }
 
+#ifndef USING_R
 static DATA *read_table(DATA *d) {
 	int colmax = 0, i, line_size = 0, line2_size = 0, line_nr = 1, ncols;
 	static DPOINT current;
@@ -400,6 +405,7 @@ static DATA *read_table(DATA *d) {
 	efree(line);
 	return d;
 }
+#endif
 
 static void mk_var_names(DATA *d) {
 	char tmp1[100], tmp2[100]; 
@@ -462,6 +468,7 @@ static void init_dpoint(DATA *d, DPOINT *current) {
 	}
 }
 
+#ifndef USING_R
 static int read_data_line(FILE *f, char *line, DATA *d, DPOINT *current,
 		int *line_nr, int colmax) {
 /*
@@ -578,6 +585,7 @@ static int read_data_line(FILE *f, char *line, DATA *d, DPOINT *current,
 	} 
 	return this_one_is_mv;
 } 
+#endif
 
 static int double_is_mv(DATA *d, double *f) {
 	if (is_mv_double(&(d->mv)))
@@ -834,11 +842,13 @@ static void transform_data(DATA *d) {
 				p->attr = 0.0;
 		}
 	} else if (d->nscore_table) {
+#ifndef USING_R
 		if (strlen(d->nscore_table) > 0) {
 			f = efopen(d->nscore_table, "w");
 			fprintf(f, "normal scores for %s\n", d->variable);
 			fprintf(f, "2\nobserved value\nnormal score\n");
 		}
+#endif
 		values = emalloc(d->n_list * sizeof(Double_index));
 		for (i = 0; i < d->n_list; i++) {
 			values[i].d = d->list[i]->attr; /* */
@@ -855,9 +865,11 @@ static void transform_data(DATA *d) {
 			q = (i + 0.5 * tie_length) / d->n_list;
 			nscore = q_normal(q);
 			for (j = 0; j < tie_length; j++) {
+#ifndef USING_R
 				if (f)
 					fprintf(f, "%g %g\n", d->list[values[i+j].index]->attr, 
 							nscore);
+#endif
 				/* transform: */
 				d->list[values[i+j].index]->attr = nscore;
 			}
@@ -1021,6 +1033,7 @@ static int average_duplicates(DATA *d) {
 	return d->n_averaged = n_tot;
 }
 
+#ifndef USING_R
 static int read_eas_header(FILE *infile, DATA *d, int ncols) {
 	char *line = NULL, *cp;
 	int i, size = 0; 
@@ -1052,6 +1065,7 @@ static int read_eas_header(FILE *infile, DATA *d, int ncols) {
 		efree(line);
 	return ncols;
 }
+#endif
 
 static void field_error(char *fname, int line_nr, int fld, char *text) {
 	message("gstat:%s:%d: read error on field %d\n", fname, line_nr, fld);
@@ -1518,6 +1532,7 @@ int coordinates_are_equal(const DATA *a, const DATA *b) {
 	return equal;
 }
 
+#ifndef USING_R
 static int read_data_from_map(DATA *d) {
 	DPOINT current;
 	unsigned int i, j, first_cell = 1;
@@ -2078,6 +2093,7 @@ char *print_data_line(const DATA *d, char **to) {
 	strcat(*to, ";"); 
 	return *to;
 } /* print_data_line */
+#endif
 
 int push_to_merge_table(DATA *d, int to_var, int col_this_X, int col_other_X) {
 	int i;
@@ -2241,8 +2257,7 @@ double v_identity(double mu) {
 	return 1.0;
 }
 
-
-
+#ifndef USING_R
 #ifdef HAVE_LIBGIS
 static DATA *read_grass_data(DATA * d) {
 /* From: "main.c" for GRASS Program "v.bubble". 
@@ -2437,4 +2452,5 @@ static DATA *read_grass_data(DATA * d) {
 	G_sites_close(fd);
 	return d;
 }
+#endif
 #endif

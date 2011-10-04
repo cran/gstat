@@ -86,7 +86,11 @@ static void fill_est(DATA **d, VEC *blup, MAT *MSPE, int n_vars, double *est);
 static void debug_result(VEC *blup, MAT *MSPE, enum GLS_WHAT pred);
 static VEC *get_mu(VEC *mu, const VEC *y, DATA **d, int nvars);
 static MAT *get_corr_mat(MAT *C, MAT *R);
+
+#ifndef USING_R
 static void plot_weights(DATA **d, int nvars, DPOINT *where, MAT *weights);
+#endif
+
 #define M_DEBUG(a,b) { if (DEBUG_COV){printlog("\n# %s:\n", b); \
 	m_logoutput(a);}}
 #define V_DEBUG(a,b) {if (DEBUG_COV){printlog("\n# %s:\n", b); \
@@ -535,8 +539,10 @@ void gls(DATA **d /* pointer to DATA array */,
 		Tmp1 = m_mlt(glm->CinvX, Tmp3, Tmp1);
 		Tmp2 = m_add(Tmp1, CinvC0, Tmp2);
 		M_DEBUG(Tmp2, "kriging weights");
+#ifndef USING_R
 		if (plotfile)
 			plot_weights(d, n_vars, where, Tmp2);
+#endif
 		if (DEBUG_COV)
 			printlog("\n\n");
 	}
@@ -820,6 +826,7 @@ static MAT *get_corr_mat(MAT *C, MAT *R) {
 	return(R);
 }
 
+#ifndef USING_R
 static void plot_weights(DATA **d, int nvars, DPOINT *where, MAT *weights) {
 	int i, j, k, l, ps;
 	static int ps_min = 0, ps_max = 0, *index = NULL /*, gif = 0 */ ;
@@ -911,7 +918,7 @@ static void plot_weights(DATA **d, int nvars, DPOINT *where, MAT *weights) {
 	fprintf(plotfile, "\n"); /* newline before next point location */
 	return;
 }
-
+#endif /* USING_R */
 
 #ifdef HAVE_SPARSE
 /* sp_foutput -- output sparse matrix A to file/stream fp */

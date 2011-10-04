@@ -816,11 +816,13 @@ YY_DECL
 		if ( ! (yy_start) )
 			(yy_start) = 1;	/* first start state */
 
+#ifndef USING_R
 		if ( ! gstat_yyin )
 			gstat_yyin = stdin;
 
 		if ( ! gstat_yyout )
 			gstat_yyout = stdout;
+#endif
 
 		if ( ! YY_CURRENT_BUFFER ) {
 			gstat_yyensure_buffer_stack ();
@@ -1813,8 +1815,13 @@ YY_BUFFER_STATE gstat_yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_len 
 
 static void yy_fatal_error (yyconst char* msg )
 {
+	void Rf_error(const char *, ...);
+#ifdef USING_R
+	Rf_error("lex: fatal error");
+#else
     	(void) fprintf( stderr, "%s\n", msg );
 	exit( YY_EXIT_FAILURE );
+#endif
 }
 
 /* Redefine yyless() so it works in section 3 code. */
@@ -1929,8 +1936,10 @@ static int yy_init_globals (void)
 
 /* Defined in main.c */
 #ifdef YY_STDINIT
+# ifndef USING_R
     gstat_yyin = stdin;
     gstat_yyout = stdout;
+# endif
 #else
     gstat_yyin = (FILE *) 0;
     gstat_yyout = (FILE *) 0;

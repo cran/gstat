@@ -224,6 +224,7 @@ int CDECL compare(const double *a, const double *b)
 	return 0;
 }
 
+#ifndef USING_R
 static void write_ascii_header(FILE *out_file, DATA *data, int n_outfl) {
 	char *lf = "\n";
 	int i = 0;
@@ -373,3 +374,4 @@ void write_points(const char *fname, DATA *d, DPOINT *where, double *est,
 #endif 
 	}
 }
+#endif /* USING_R */

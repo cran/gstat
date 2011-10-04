@@ -33,6 +33,9 @@
 #include        <stdlib.h>
 #include	"sparse.h"
 
+#include	"../src/s.h" /* EJP */
+#include	"../src/config.h" /* EJP */
+
 
 static char	rcsid[] = "$Id: sprow.c,v 1.1.1.1 2003-06-23 18:31:50 cees Exp $";
 
@@ -41,6 +44,7 @@ static char	rcsid[] = "$Id: sprow.c,v 1.1.1.1 2003-06-23 18:31:50 cees Exp $";
 
 /* sprow_dump - prints relevant information about the sparse row r */
 
+#ifndef USING_R
 void sprow_dump(fp,r)
 FILE *fp;
 SPROW *r;
@@ -66,6 +70,7 @@ SPROW *r;
 	     elts->col,elts->val,elts->nxt_row,elts->nxt_idx);
    fprintf(fp,"\n");
 }
+#endif
 
 
 /* sprow_idx -- get index into row for a given column in a given row
@@ -639,6 +644,7 @@ int	j0, type;
 }
 
   
+#ifndef USING_R
 /* sprow_foutput -- print a representation of r on stream fp */
 void	sprow_foutput(fp,r)
 FILE	*fp;
@@ -658,6 +664,7 @@ SPROW	*r;
      fprintf(fp,"Column %d: %g, next row: %d, next index %d\n",
 	     e->col, e->val, e->nxt_row, e->nxt_idx);
 }
+#endif
 
 
 /* sprow_set_val -- sets the j-th column entry of the sparse row r

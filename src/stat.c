@@ -137,6 +137,7 @@ void calc_r(double *a, double *b, int n, double *corr) {
 	return;
 }
 
+#ifndef USING_R
 int stats(char *name, int silent, double q) {
 	static D_VECTOR *dv = NULL;
 	double mean = 0.0;
@@ -185,6 +186,7 @@ int stats(char *name, int silent, double q) {
 		dv->size);
 	return 0;
 }
+#endif
 
 int CDECL d_cmp(const double *a, const double *b) {
 	if (*a < *b)

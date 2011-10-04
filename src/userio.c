@@ -48,7 +48,14 @@
 #include "version.h"
 #include "userio.h"
 
-#define is_openf(f) (f != NULL && f != stdout && f != stderr)
+#ifdef USING_R
+void Rprintf(const char *, ...);
+void Rf_error(const char *, ...);
+# define is_openf(f) (f != NULL)
+#else
+# define is_openf(f) (f != NULL && f != stdout && f != stderr)
+#endif
+
 
 static FILE *logfile = NULL;
 
@@ -96,7 +103,11 @@ const char *error_messages[MAX_ERRNO+1] = {
 
 void init_userio(int use_stdio) {
 	if (use_stdio) {
+#ifdef USING_R
+		set_gstat_log_file(NULL);
+#else
 		set_gstat_log_file(stdout);
+#endif
 		set_gstat_warning_handler(default_warning);
 		set_gstat_error_handler(default_error);
 		set_gstat_log_handler(default_printlog);
@@ -265,14 +276,22 @@ const char *get_gstat_error_message(void) {
 void print_to_logfile_if_open(const char *mess) {
 
 	if (is_openf(logfile))
+#ifdef USING_R
+		Rprintf("%s", mess);
+#else
 		fprintf(logfile, "%s", mess);
+#endif 
 }
 
 void default_warning(const char *mess) {
 
 	print_to_logfile_if_open(mess);
 
+#ifdef USING_R
+	Rprintf("%s\n", mess);
+#else
 	fprintf(stderr, "%s\n", mess);
+#endif
 	return;
 }
 
@@ -280,8 +299,12 @@ void default_error(const char *mess, int level) {
 
 	print_to_logfile_if_open(mess);
 
+#ifdef USING_R
+	Rf_error("%s\n", mess);
+#else
 	fprintf(stderr, "%s\n", mess);
 	exit(level == 0 ? -1 : level);
+#endif
 }
 
 void printlog(const char *fmt, ...) {
@@ -310,7 +333,11 @@ void default_printlog(const char *mess) {
 	if (is_openf(logfile))
 		print_to_logfile_if_open(mess);
 	else
+#ifndef USING_R
+		Rprintf("%s", mess);
+#else
 		printf("%s", mess);
+#endif
 }
 
 int set_gstat_log_file(FILE *f) {
@@ -345,12 +372,20 @@ void default_progress(unsigned int current, unsigned int total) {
 	perc = floor(100.0 * current / total);
 	if (perc != perc_last) { /* another percentage -> calculate time: */
 		if (current == total) { /* 100% done, reset: */
+#ifdef USING_R
+			Rprintf("\r%3d%% done\n", 100);
+#else
 			fprintf(stderr, "\r%3d%% done\n", 100);
+#endif
 			perc_last = sec_last = -1;
 		} else {
 			sec = difftime(time(NULL), start);
 			if (sec != sec_last) { /* another second -- don't print too often */
+#ifdef USING_R
+				Rprintf("\r%3d%% done", perc);
+#else
 				fprintf(stderr, "\r%3d%% done", perc);
+#endif
 				perc_last = perc;
 				sec_last = sec;
 			}

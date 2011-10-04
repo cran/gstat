@@ -338,6 +338,7 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 				set_mv_double(&(est[i])); 
 			/* print_sim(); */
 			break;
+#ifndef USING_R
 		case MAPVALUE: 
 			if (get_n_masks() == 0)
 				ErrMsg(ER_VARNOTSET, "define at least one mask");
@@ -358,6 +359,7 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 						est[i] = map_get_cell(m[i], row, col);
 				}
 			break;
+#endif
 		case NRS: 
 			if (get_mode() != STRATIFY) {
 				for (i = 0; i < n_vars; i++) {

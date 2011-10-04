@@ -49,6 +49,10 @@
 #include "lm.h"
 #include "fit.h"
 
+#ifdef USING_R
+void Rprintf(const char *, ...);
+#endif
+
 #define FIT_LOG     "fit.log"
 #define NEARLY_ZERO     1e-30
 
@@ -56,7 +60,9 @@ static void wls_fit(VARIOGRAM *vp);
 static double getSSErr(const VARIOGRAM *vp, PERM *p, LM *lm);
 static void write_fx(FILE *, VARIOGRAM *v);
 static void get_values(const char *fname, VARIOGRAM *v);
+#ifndef USING_R
 static void gnu_fit(VARIOGRAM *v);
+#endif
 static void correct_for_anisotropy(VARIOGRAM *v);
 
 static int fill_weights(const VARIOGRAM *vp, PERM *p, LM *lm);
@@ -103,22 +109,24 @@ int fit_variogram(VARIOGRAM *v) {
 		case WLS_NHH:
 			wls_fit(v);
 			break;
+#ifndef USING_R
 		case WLS_GNUFIT: /* BREAKTHROUGH */
 		case WLS_GNUFIT_MOD:
 			gnu_fit(v);
 			break;
+#endif
 		case MIVQUE_FIT:
 			if (v->id1 != v->id2) 
 				return 1;
 			d = get_gstat_data();
 			reml_sills(d[v->id1], v);
 			break;
+		default:
+			ErrMsg(ER_IMPOSVAL, "fit_vgm(): value for fit not recognized");
 		/*
 		case LMC:
 			d = get_gstat_data();
 			fit_lmc(d, v, ...
-		default:
-			ErrMsg(ER_IMPOSVAL, "fit_vgm(): unknown v->ev->fit");
 		*/
 		/* no default: force compile warning on missing option! */
 	}
@@ -309,6 +317,7 @@ static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, int iter,
 		return 1;
 	}
 
+#ifndef USING_R
 	if (DEBUG_FIT) {
 		printf("data: ");
 		v_foutput(stdout, lm->y);
@@ -317,14 +326,17 @@ static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, int iter,
 		printf("X: ");
 		m_foutput(stdout, lm->X);
 	}
+#endif
 
 	lm->has_intercept = 1; /* does not affect the fit */
 	lm = calc_lm(lm); /* solve WLS eqs. for beta */
 
+#ifndef USING_R
 	if (DEBUG_FIT) {
 		printf("beta: ");
 		v_foutput(stdout, lm->beta);
 	}
+#endif
 
 	if (lm->is_singular) {
 		iv_free(fit);
@@ -406,6 +418,7 @@ static int fill_weights(const VARIOGRAM *vp, PERM *p, LM *lm) {
  * fit a variogram model to a sample variogram,
  * using the gnuplot fit command of gnuplot versions 3.6 and above
  */
+#ifndef USING_R
 static void gnu_fit(VARIOGRAM *v) {
 	int i;
 	FILE *f = NULL;
@@ -545,6 +558,7 @@ static void get_values(const char *fname, VARIOGRAM *v) {
 	correct_for_anisotropy(v);
 	return;
 }
+#endif /* USING_R */
 
 static void correct_for_anisotropy(VARIOGRAM *v) {
 /*
