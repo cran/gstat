@@ -1,8 +1,8 @@
 
-R version 2.13.0 (2011-04-13)
+R version 2.13.2 (2011-09-30)
 Copyright (C) 2011 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
-Platform: i486-pc-linux-gnu (32-bit)
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -19,6 +19,16 @@ Type 'q()' to quit R.
 > options(digits=5)
 > library(gstat)
 Loading required package: sp
+Loading required package: spacetime
+Loading required package: zoo
+
+Attaching package: 'zoo'
+
+The following object(s) are masked from 'package:base':
+
+    as.Date
+
+Loading required package: xts
 > data(meuse.grid)
 > gridded(meuse.grid) = ~x+y
 > data(meuse)
@@ -40,8 +50,8 @@ Loading required package: sp
 > out1
 An object of class "SpatialLinesDataFrame"
 Slot "data":
-       x      y var1.pred  var1.var
-a 180333 332167    6.1618 0.0080251
+       x      y var1.pred var1.var
+a 180333 332167    6.1618 0.008025
 
 Slot "lines":
 [[1]]
@@ -78,8 +88,8 @@ CRS arguments: NA
 > out2 = krige(log(zinc)~1, meuse, SpatialPoints(matrix(0,1,2)), v, block=coordinates(pts))
 [using ordinary kriging]
 > out2
-  coordinates var1.pred  var1.var
-1      (0, 0)    6.1618 0.0080251
+  coordinates var1.pred var1.var
+1      (0, 0)    6.1618 0.008025
 > 
 > compare.krigingLines = function(formula, data, newdata, model) {
 + 	out1 = krige(formula, data, newdata, model)
@@ -154,9 +164,9 @@ a         0        0
 [using ordinary kriging]
 An object of class "SpatialLinesDataFrame"
 Slot "data":
-       x      y var1.pred  var1.var
-a 180333 332167    6.1618 0.0080251
-b 181000 333000    5.7060 0.0110429
+       x      y var1.pred var1.var
+a 180333 332167    6.1618 0.008025
+b 181000 333000    5.7060 0.011043
 
 Slot "lines":
 [[1]]

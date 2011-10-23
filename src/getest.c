@@ -73,8 +73,10 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 	DPOINT *block = NULL;
 	VARIOGRAM *v;
 	int i, j, n_vars, n_sel, *is_pt;
+#ifndef USING_R
 	static GRIDMAP **m = NULL;
 	unsigned int row = 0, col = 0;
+#endif
 	double *X_ori = NULL, *local_sim;
 	enum GLS_WHAT gls_mode = GLS_BLUP;
 	const double *sim = NULL; /* return value of cond_sim() */

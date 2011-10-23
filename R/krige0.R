@@ -90,8 +90,10 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 krigeST <- function(formula, data, newdata, modelList, y, ..., 
 		computeVar = FALSE, fullCovariance = FALSE) {
 
-	if (is(data, "ST") && is(newdata, "ST"))
+	if (is(data, "ST") && is(newdata, "ST")) {
 		stopifnot(identical(proj4string(data@sp), proj4string(newdata@sp)))
+		stopifnot(is(data, "STFDF"))
+	}
 	lst = extractFormula(formula, data, newdata)
 	X = lst$X
 	x0 = lst$x0
@@ -114,6 +116,7 @@ krigeST <- function(formula, data, newdata, modelList, y, ...,
 	pred = x0 %*% beta + t(skwts) %*% (y - X %*% beta)
 	if (computeVar) {
 		# get (x0-X'C-1 c0)'(X'C-1X)-1 (x0-X'C-1 c0) -- precompute term 1+3:
+		v0 = v0$Tm %x% v0$Sm
 		Q = t(x0) - t(ViX) %*% v0
 		var = c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q)
 		if (!fullCovariance)
@@ -148,8 +151,8 @@ STsolve = function(A, b, X) {
 	# X comes full:
 	ret2 = apply(X, 2, function(x) 
 			STbacksolve(Tm, matrix(x, nrow(Sm), nrow(Tm)), Sm))
-	# print(dim(ret1))
-	# print(dim(ret2))
+	#print(dim(ret1))
+	#print(dim(ret2))
 	cbind(ret1, ret2)
 }
 
