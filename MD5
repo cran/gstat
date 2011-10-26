@@ -1,5 +1,5 @@
 b930a1c993354b3d71cc449df073d4be *CHANGES
-611042ab2cf88e826adff76fb42b321b *DESCRIPTION
+6df533ae3ebbdcc9eb6bda85fe41ef66 *DESCRIPTION
 65d65c650081d775169bc341a1c8a5b1 *LICENCE
 b077fda85066b08b7ea8ce20d9fcc7e7 *NAMESPACE
 02a9d4ea0f96e71d31a614d441396d5f *R/fit.lmc.R
@@ -88,12 +88,12 @@ bbca76493fc83117aa6b62b9b7aafaf0 *demo/uisim.R
 3e513aae2bb5d80ef6c3c5d00a473f89 *inst/CITATION
 a6cdd4ad8854be143c2bcf157852650c *inst/ChangeLog
 13ba85de19daef4c6c332c11107a5890 *inst/doc/gstat.Rnw
-bb1351b2c9b36848861fbd2b13ebad87 *inst/doc/gstat.pdf
+0855ff09b2e48c86e37887e66decfdbb *inst/doc/gstat.pdf
 23a8ca706b284fdd73be5e1958601d75 *inst/doc/ifgi-logo_int.pdf
 9928b4a0aba5faaeb024fcaca40dbbc2 *inst/doc/prs.Rnw
-9616eb164c90792eac279fe8116262a9 *inst/doc/prs.pdf
+8dc1442fd40d7454267f056e89026022 *inst/doc/prs.pdf
 bb6a285c47223dc4cb8581e450d14003 *inst/doc/st.Rnw
-57ba5a267e4371ed0ecfb18d02a0f81a *inst/doc/st.pdf
+43b9da96fbadd83882884f49a7cb90fe *inst/doc/st.pdf
 af529f6f9ce9e52ed054e016fd386af5 *inst/external/cluster.txt
 bacec53ee233889d6419b0e394bde7a8 *inst/external/ncp.dbf
 3692904f850276a958eaa4024e4a8ec7 *inst/external/ncp.shp
@@ -148,7 +148,7 @@ dae1a86f244d5d10e1bface4d76462fd *src/data.c
 f137d1cfffc94b6f49d6a0d5c02ffccd *src/data.h
 63cdaf78aa5a47d70ff0f5e2c0509412 *src/debug.h
 2e125e4191f7f46ea029144d7e4bf397 *src/defaults.h
-da7b08394295c29102ca5a1f75d0f7bd *src/defs.h
+58b8b07ec6047ef2bcb3e3e1f4d1db47 *src/defs.h
 d39851860f282b2367364e417be71949 *src/direct.c
 8a8ecbc415ae2102acbf7bea4228f4db *src/direct.h
 5f9220ecb0882fd72dc561b0207131e4 *src/err.c
