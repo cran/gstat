@@ -7,7 +7,9 @@
 #ifndef DEFS_H
 #define DEFS_H /* avoid multiple inclusion */
 
-#define NDEBUG /* turns off assert()ions */
+#ifndef NDEBUG
+# define NDEBUG /* turns off assert()ions */
+#endif 
 
 #include "config.h"
 
