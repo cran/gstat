@@ -39,7 +39,6 @@
 #include <stdio.h>
 #include <stdlib.h> /* rand(), drand48() */
 #include <math.h> 	/* sqrt() */
-#include <assert.h>
 
 #include "defs.h" /* may define HAVE_DRAND48 */
 #include "utils.h"
