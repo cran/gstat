@@ -30,7 +30,6 @@
  */
 #include <stdio.h>
 #include <math.h>
-#include <assert.h>
 
 #include "matrix2.h"
 #include "defs.h"

@@ -1,5 +1,5 @@
 b930a1c993354b3d71cc449df073d4be *CHANGES
-6df533ae3ebbdcc9eb6bda85fe41ef66 *DESCRIPTION
+3ca84a23e202665e7d2e3ad2089dc6c2 *DESCRIPTION
 65d65c650081d775169bc341a1c8a5b1 *LICENCE
 b077fda85066b08b7ea8ce20d9fcc7e7 *NAMESPACE
 02a9d4ea0f96e71d31a614d441396d5f *R/fit.lmc.R
@@ -88,12 +88,12 @@ bbca76493fc83117aa6b62b9b7aafaf0 *demo/uisim.R
 3e513aae2bb5d80ef6c3c5d00a473f89 *inst/CITATION
 a6cdd4ad8854be143c2bcf157852650c *inst/ChangeLog
 13ba85de19daef4c6c332c11107a5890 *inst/doc/gstat.Rnw
-0855ff09b2e48c86e37887e66decfdbb *inst/doc/gstat.pdf
+3d1afa460666c47fb3d8f70cee50dff7 *inst/doc/gstat.pdf
 23a8ca706b284fdd73be5e1958601d75 *inst/doc/ifgi-logo_int.pdf
 9928b4a0aba5faaeb024fcaca40dbbc2 *inst/doc/prs.Rnw
-8dc1442fd40d7454267f056e89026022 *inst/doc/prs.pdf
+dc2a9281535f7994a1561536f9251fbe *inst/doc/prs.pdf
 bb6a285c47223dc4cb8581e450d14003 *inst/doc/st.Rnw
-43b9da96fbadd83882884f49a7cb90fe *inst/doc/st.pdf
+a78a52e7cbac0595394dbfe9ea280015 *inst/doc/st.pdf
 af529f6f9ce9e52ed054e016fd386af5 *inst/external/cluster.txt
 bacec53ee233889d6419b0e394bde7a8 *inst/external/ncp.dbf
 3692904f850276a958eaa4024e4a8ec7 *inst/external/ncp.shp
@@ -189,7 +189,7 @@ d3ae8a164445f7fc87ffd4cacf2c4431 *src/meminfo.h
 e65aff96bcc6e6e7a8377b640aeda756 *src/meschach/dmacheps.c
 613a5b5c00b9fbb35403e8c94bf3e22b *src/meschach/fmacheps.c
 3109cdf31bde2eb5c63e42aa7d42cc04 *src/meschach/maxint.c
-7e56e0f8cb8f008172ad7e014d034a8e *src/msim.c
+a74251c55365664118f177dc31ffcfb1 *src/msim.c
 7c815f1fc92cebfb6f765f53c32c1f56 *src/msim.h
 aa8c6dd905ddede2d28752283b89639e *src/norm.c
 e6be66be884e0afbfaf2a204faab5c98 *src/nsearch.c
@@ -207,13 +207,13 @@ b0df1c77fc4b328defd7594d1f87e98d *src/polygon.c
 8d4095443a797a47205ff04bb83f89e9 *src/predict.h
 2fc775708c2533e5af3793760c6d2c85 *src/pxop.c
 4e93c4ae743db58faeeb0aa7914d41ed *src/qrfactor.c
-9fa7e0d97766b3be0863ec29c483c030 *src/random.c
+d214d66d43c9c13af777e44de4d05886 *src/random.c
 056d3033c3de7d9abc12953fb66690ba *src/random.h
 9102f9fd7c5febfe1989db42cc35c91e *src/read.c
 ad138e7bec7a1240fe2630e4bd7daf26 *src/read.h
 9b0018a9061a67609d2f3d957870981a *src/reml.c
 dc58fae97b9abee9228ba2ae92c9a126 *src/reml.h
-d58cb27742a05b52346a1d0d5debc116 *src/report.c
+57a6d76f8f0f39eef3a35d11afa721ba *src/report.c
 ce94080b5cfddebe9ec7fc96fa4fbe92 *src/report.h
 aecb9911ba47799266c5d9db35be764f *src/s.c
 859d1b11b47228f5dfe51ad14b109c6c *src/s.h
@@ -221,7 +221,7 @@ aecb9911ba47799266c5d9db35be764f *src/s.c
 f9f9efd4c025607820dd39928231d6e8 *src/select.h
 c7fc29844e55ffb650bb92cc17c306cb *src/sem.c
 83a21bf0de4e2f4f59b52fdfffcf6a51 *src/sem.h
-b524e51ee8fd36a52fb8e06e9e72d9aa *src/sim.c
+cc0c6f9462881118d7cc7c15e47536ff *src/sim.c
 4481ac8fe298f827274c7f9bc5619990 *src/sim.h
 ad478533af9bba3569e6fac67c16ac0b *src/solve.c
 965f03d0a2b3c909d008dd862c2d7e40 *src/sparse.c
@@ -238,8 +238,8 @@ ee047383491a3cab6a411af563cc8094 *src/stat.h
 db850807e1dfc1a64f410a1ea154fb91 *src/submat.c
 8d8971294b0f4dbbd459892eb205e24e *src/userio.c
 1696bf56fd5ebbe266390a98bb3d9dc1 *src/userio.h
-422f54e0ca5cd625224c09fe6fa0ee8d *src/utils.c
-e75fd00b41846b3d7a52b931d4d2ad2f *src/utils.h
+5e8bfae9ea4b55e2dbdd25c5daebdf31 *src/utils.c
+d1c6e8e308d200c2f3187a47292eb2e9 *src/utils.h
 d52053bdf8393175e594f015f433eaae *src/vario.c
 4b6ce1ce2f4badd8082bc059d65a4009 *src/vario.h
 e7d8c5fd8a85ba5e9555e02f8aa22add *src/vario_fn.c

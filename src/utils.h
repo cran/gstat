@@ -2,7 +2,13 @@
 #define UTILS_H
 
 # include <stddef.h> /* size_t */
+
+#ifdef NDEBUG
+# define assert(x)
+#else
+# error "assert.h being included" /* remove this to activate assert */
 # include <assert.h> /* assert() */
+#endif
 # include <stdio.h> /* FILE */
 # include <string.h> /* FILE */
 

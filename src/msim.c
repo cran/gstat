@@ -34,7 +34,6 @@
 #include <stdlib.h> /* qsort() */
 #include <string.h> /* memmove() */
 #include <math.h>   /* sqrt(), ... */
-#include <assert.h>
 
 #include "defs.h"
 
