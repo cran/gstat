@@ -10,7 +10,9 @@ newd = spsample(meuse.grid, ncell, type="regular")
 ncell = dim(coordinates(newd))[1]
 v = vgm(0.6, "Sph", 900, 0.05)
 
-library(snow)
+if (!require(parallel))
+	library(snow)
+
 nclus = 4
 clus <- c(rep("localhost", nclus))
 
