@@ -1,6 +1,6 @@
 
-R version 2.13.2 (2011-09-30)
-Copyright (C) 2011 The R Foundation for Statistical Computing
+R version 2.15.0 (2012-03-30)
+Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -16,18 +16,18 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-> library(spacetime)
+> library(gstat)
 Loading required package: sp
+Loading required package: spacetime
 Loading required package: zoo
 
 Attaching package: 'zoo'
 
 The following object(s) are masked from 'package:base':
 
-    as.Date
+    as.Date, as.Date.numeric
 
 Loading required package: xts
-> library(gstat)
 > data(wind)
 > wind.loc$y = as.numeric(char2dms(as.character(wind.loc[["Latitude"]])))
 > wind.loc$x = as.numeric(char2dms(as.character(wind.loc[["Longitude"]])))
@@ -40,6 +40,7 @@ Loading required package: xts
 > windsqrt = sqrt(0.5148 * wind[stations]) # knots -> m/s
 > Jday = 1:366
 > daymeans = apply(sapply(split(windsqrt - mean(windsqrt), wind$jday), mean), 2,  mean)
+There were 50 or more warnings (use warnings() to see the first 50)
 > meanwind = lowess(daymeans ~ Jday, f = 0.1)$y[wind$jday]
 > velocities = apply(windsqrt, 2, function(x) { x - meanwind })
 > # match order of columns in wind to Code in wind.loc;
@@ -96,8 +97,8 @@ Loading required package: xts
 + }
 Loading required package: rgdal
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.8.0, released 2011/01/12
-Path to GDAL shared files: /usr/share/gdal/1.8
+Loaded GDAL runtime: GDAL 1.9.0, released 2011/12/29
+Path to GDAL shared files: /usr/local/share/gdal
 Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009, [PJ_VERSION: 470]
 Path to PROJ.4 shared files: (autodetected)
 Loading required package: maps
@@ -105,4 +106,18 @@ Loading required package: foreign
 Loading required package: lattice
 Checking rgeos availability: TRUE
 [1] TRUE
+Warning messages:
+1: In STF(sp, time) : STF(): setting timeIsInterval to default value TRUE
+
+2: In STF(grd, tgrd) : STF(): setting timeIsInterval to default value TRUE
+
+3: In STF(sp, time) : STF(): setting timeIsInterval to default value TRUE
+
+4: In STF(grd, tgrd) : STF(): setting timeIsInterval to default value TRUE
+
+5: In STF(sp, time) : STF(): setting timeIsInterval to default value TRUE
+
 > 
+> proc.time()
+   user  system elapsed 
+  3.612   0.136   3.701 

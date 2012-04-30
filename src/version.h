@@ -1,4 +1,4 @@
 /* automatically generated from makefile: make version */
-#define VERSION    "2.5.2 (03 October 2011)"
+#define VERSION    "2.5.2 (29 April 2012)"
 #define TARGET     "x86_64"
-#define LASTMOD    "Mon Oct  3 18:30:57 CEST 2011"
+#define LASTMOD    "Sun Apr 29 21:36:06 CEST 2012"

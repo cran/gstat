@@ -11,7 +11,8 @@ Generates a variogram model, or adds to an existing model.
 \code{print.variogramModel} prints the essence of a variogram  model.
 }
 \usage{
-vgm(psill, model, range, nugget, add.to, anis, kappa = 0.5, ..., covtable)
+vgm(psill, model, range, nugget, add.to, anis, kappa = 0.5, ..., covtable,
+	Err = 0)
 \method{print}{variogramModel}(x, ...)
 as.vgm.variomodel(m)
 }
@@ -31,6 +32,10 @@ compontent to the model) }
 (see examples) }
 \item{covtable}{ if model is \code{Tab}, instead of model parameters a one-dimensional 
 covariance table can be passed here. See covtable.R in tests directory, and example below. }
+\item{Err}{ numeric; if larger than zero, the measurement error variance
+component that will not be included to the kriging equations, i.e. kriging
+will now smooth the process Y instead of predict the measured Z, 
+where Z=Y+e, and Err is the variance of e}
 \item{m}{ object of class \code{variomodel}, see \pkg{geoR}}
 }
 \value{

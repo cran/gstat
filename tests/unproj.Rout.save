@@ -1,6 +1,6 @@
 
-R version 2.13.2 (2011-09-30)
-Copyright (C) 2011 The R Foundation for Statistical Computing
+R version 2.15.0 (2012-03-30)
+Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -21,10 +21,14 @@ Type 'q()' to quit R.
 Loading required package: rgdal
 Loading required package: sp
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.8.0, released 2011/01/12
-Path to GDAL shared files: /usr/share/gdal/1.8
+Loaded GDAL runtime: GDAL 1.9.0, released 2011/12/29
+Path to GDAL shared files: /usr/local/share/gdal
 Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009, [PJ_VERSION: 470]
 Path to PROJ.4 shared files: (autodetected)
+> 
+> # for validity of covariance functions on the sphere, see also:
+> # DOI 10.1007/s11004-011-9344-7
+> # http://mypage.iu.edu/~srobeson/Pubs/variogram_sphere_mathgeo_2011.pdf
 > 
 > data(meuse)
 > coordinates(meuse) = ~x+y
@@ -38,7 +42,7 @@ Attaching package: 'zoo'
 
 The following object(s) are masked from 'package:base':
 
-    as.Date
+    as.Date, as.Date.numeric
 
 Loading required package: xts
 > variogram(log(zinc)~1, meuse.ll)
@@ -154,7 +158,10 @@ variogram:
 > cat('==========\nspDistsN1 Distances:\n')
 ==========
 spDistsN1 Distances:
-> print(spDistsN1(coordinates(foo), coordinates(foo)[1,], longlat=T))
+> print(spDistsN1(coordinates(foo), coordinates(foo)[1,], longlat=TRUE))
  [1]    0.0000 3115.1110 1907.9013 1837.3802 1481.5415 3775.3386 1480.4328
  [8] 3081.4193 4090.2668  665.5109 2683.1053
 > 
+> proc.time()
+   user  system elapsed 
+  1.548   0.048   1.617 

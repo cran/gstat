@@ -49,7 +49,9 @@ should match the number of spatial dimensions spanned by the data (1
 (x), 2 (x,y) or 3 (x,y,z)).  }
 \item{...}{any other arguments that will be passed to
 \link{variogram.default} (ignored)}
-\item{y}{ list with for each variable the vector with responses }
+\item{y}{ list with for each variable the vector with responses; please
+note that it is not recommended to call variogram.default directly, as
+it may make undocumented assumptions. }
 \item{X}{ (optional) list with for each variable the matrix with
 regressors/covariates; the number of rows should match that of the
 correspoding element in y, the number of columns equals the number of
@@ -156,6 +158,10 @@ $(Z_i(s)-Z_{i+t}(s+h))^2$ is averaged over all time lagged observation
 sets $Z_i$ and $Z_{i+t}$ available.
 
 }
+\note{ \code{variogram.default} should not be called by users directly,
+as it makes many assumptions about the organization of the data, that
+are not fully documented (but of course, can be understood from reading
+the source code of the other \code{variogram} methods) }
 
 \references{ 
 Cressie, N.A.C., 1993, Statistics for Spatial Data, Wiley.

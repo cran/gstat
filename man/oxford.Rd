@@ -70,10 +70,12 @@ data(oxford)
 P.A. Burrough, R.A. McDonnell, 1998. Principles of Geographical Information
 Systems. Oxford University Press.
 }
-\note{ \code{oxford.jpg}, in the gstat package data directory,
-shows an image of the soil map for the region }
+\note{ \code{oxford.jpg}, in the gstat package external directory (see
+example below), shows an image of the soil map for the region }
 \keyword{datasets}
 \examples{
 data(oxford)
 summary(oxford)
+# open the following file with a jpg viewer:
+system.file("external/oxford.jpg", package="gstat")
 }

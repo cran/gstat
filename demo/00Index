@@ -1,3 +1,4 @@
+a2p			area-to-point kriging with krige0, demo
 block		block kriging -- effect of block size and irregular blocks
 blue		how to get BLUE coefficients out of a predict.gstat call
 cokriging	fitting a linear model of coregionalization and cokriging
