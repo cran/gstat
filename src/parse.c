@@ -147,7 +147,11 @@ static DPOINT *bp = NULL;
 static VARIOGRAM *v = NULL;
 static int id = -1, id1 = -1, id2 = -1, col1 = -1, col2 = -1,
 	fit_sill = 0, fit_range = 0, nrangepars = 1,
-	vector_only = 0, allow_vector_only = 0;
+	vector_only = 0
+#ifndef USING_R
+	, allow_vector_only = 0
+#endif
+	;
 static double range[NRANGEPARS], anis[5];
 static char **ofn = NULL, *boundary_file = NULL;
 static VARIOGRAM *parse_variogram = NULL;

@@ -84,19 +84,19 @@ const DATA_TYPE data_types[] = {
 	{ DATA_GDAL, "GDAL raster map" }
 }; 
 
-static int read_data_line(FILE *f, char *line, DATA *d, DPOINT *current,
-	int *line_nr, int colmax);
-static int is_one_integer(char *line, int *n);
-static void init_dpoint(DATA *d, DPOINT *current);
-static int double_is_mv(DATA *d, double *f);
-static DATA *read_table(DATA *d);
-static void mk_var_names(DATA *d);
-static int read_eas_header(FILE *infile, DATA *d, int ncols);
 static void calc_data_mean_std(DATA *d);
-static void correct_strata(DATA *d);
+#ifndef USING_R
 static void field_error(char *fname, int line_nr, int fld, char *text);
 static int average_duplicates(DATA *d);
-#ifndef USING_R
+static void correct_strata(DATA *d);
+static void mk_var_names(DATA *d);
+static int double_is_mv(DATA *d, double *f);
+static void init_dpoint(DATA *d, DPOINT *current);
+static int is_one_integer(char *line, int *n);
+static int read_eas_header(FILE *infile, DATA *d, int ncols);
+static DATA *read_table(DATA *d);
+static int read_data_line(FILE *f, char *line, DATA *d, DPOINT *current,
+	int *line_nr, int colmax);
 static int read_data_from_map(DATA *d);
 static int read_idrisi_points(DATA *d);
 static int read_idrisi_point_data(DATA *d, const char *fname);
@@ -104,8 +104,8 @@ static int read_idrisi_point_header(DATA *d, const char *fname);
 static int read_idrisi32_points(DATA *d);
 static int read_idrisi32_point_data(DATA *d, const char *fname);
 static int read_idrisi32_point_header(DATA *d, const char *fname);
-#endif
 static void transform_data(DATA *d);
+#endif
 static void grid_push_point(DATA *d, DPOINT *p, int adjust_to_gridcentrs);
 static double point_norm_1D(const DPOINT *p);
 static double point_norm_2D(const DPOINT *p);
@@ -405,7 +405,6 @@ static DATA *read_table(DATA *d) {
 	efree(line);
 	return d;
 }
-#endif
 
 static void mk_var_names(DATA *d) {
 	char tmp1[100], tmp2[100]; 
@@ -468,7 +467,6 @@ static void init_dpoint(DATA *d, DPOINT *current) {
 	}
 }
 
-#ifndef USING_R
 static int read_data_line(FILE *f, char *line, DATA *d, DPOINT *current,
 		int *line_nr, int colmax) {
 /*
@@ -585,7 +583,6 @@ static int read_data_line(FILE *f, char *line, DATA *d, DPOINT *current,
 	} 
 	return this_one_is_mv;
 } 
-#endif
 
 static int double_is_mv(DATA *d, double *f) {
 	if (is_mv_double(&(d->mv)))
@@ -593,6 +590,7 @@ static int double_is_mv(DATA *d, double *f) {
 	else 
 		return ((is_mv_double(f)) || (*f == d->mv));
 }
+#endif
 
 DATA *get_area_centre(DATA *area, DATA *d) {
 	int i, j;
@@ -810,6 +808,7 @@ static void calc_data_mean_std(DATA *d) {
 	return;
 }
 
+#ifndef USING_R
 static void correct_strata(DATA *d) {
 	int i;
 
@@ -865,11 +864,9 @@ static void transform_data(DATA *d) {
 			q = (i + 0.5 * tie_length) / d->n_list;
 			nscore = q_normal(q);
 			for (j = 0; j < tie_length; j++) {
-#ifndef USING_R
 				if (f)
 					fprintf(f, "%g %g\n", d->list[values[i+j].index]->attr, 
 							nscore);
-#endif
 				/* transform: */
 				d->list[values[i+j].index]->attr = nscore;
 			}
@@ -883,6 +880,7 @@ static void transform_data(DATA *d) {
 					100.0 * tie_total / d->n_list);
 	}
 }
+#endif
 
 void setup_polynomial_X(DATA *d) {
 
@@ -1000,6 +998,7 @@ double calc_polynomial(DPOINT *p, int colX) {
  	return 1.0; /* will never happen */
 }
 
+#ifndef USING_R
 static int average_duplicates(DATA *d) { 
 /*
  * average duplicate records (equal coordinates) 
@@ -1033,7 +1032,6 @@ static int average_duplicates(DATA *d) {
 	return d->n_averaged = n_tot;
 }
 
-#ifndef USING_R
 static int read_eas_header(FILE *infile, DATA *d, int ncols) {
 	char *line = NULL, *cp;
 	int i, size = 0; 
@@ -1065,12 +1063,12 @@ static int read_eas_header(FILE *infile, DATA *d, int ncols) {
 		efree(line);
 	return ncols;
 }
-#endif
 
 static void field_error(char *fname, int line_nr, int fld, char *text) {
 	message("gstat:%s:%d: read error on field %d\n", fname, line_nr, fld);
 	ErrMsg(ER_RDFLT, text);
 }
+#endif
 
 void free_data(DATA *d) {
 	int i;
@@ -1118,6 +1116,7 @@ void free_data(DATA *d) {
 	return;
 }
 
+#ifndef USING_R
 static int is_one_integer(char *line, int *n) {
 	char *dup, *cp;
 	int ret_value = 1;
@@ -1133,6 +1132,7 @@ static int is_one_integer(char *line, int *n) {
 	efree(dup);
 	return ret_value;
 }
+#endif
 
 DATA *init_one_data(DATA *data) {
 

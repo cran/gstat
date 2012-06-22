@@ -32,9 +32,11 @@
 #include "../src/s.h"
 #include "../src/config.h"
 
+/*
 static	char	rcsid[] = "$Id: ivecop.c,v 1.1.1.1 2003-06-23 18:31:42 cees Exp $";
 
 static char    line[MAXLINE];
+*/
 
 
 
@@ -112,7 +114,8 @@ IVEC	*iv_resize(IVEC *iv,int new_dim)
 	 mem_bytes(TYPE_IVEC,iv->max_dim*sizeof(int),
 		      new_dim*sizeof(int));
       }
-      iv->ive = RENEW(iv->ive,new_dim,int);
+      /* iv->ive = RENEW(iv->ive,new_dim,int); */
+      RENEW(iv->ive,new_dim,int);
       if ( ! iv->ive )
 	error(E_MEM,"iv_resize");
       iv->max_dim = new_dim;

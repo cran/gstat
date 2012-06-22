@@ -33,8 +33,9 @@
 #include        <stdlib.h>
 #include	"sparse.h"
 
-
+/*
 static char	rcsid[] = "$Id: sparse.c,v 1.1.1.1 2003-06-23 18:31:48 cees Exp $";
+*/
 
 #define	MINROWLEN	10
 
@@ -95,7 +96,7 @@ double	val;
 			    new_len*sizeof(row_elt));
 	 }
 
-	 r->elt = RENEW(r->elt,new_len,row_elt);
+	 RENEW(r->elt,new_len,row_elt);
 	 if ( ! r->elt )	/* can't allocate */
 	   error(E_MEM,"sp_set_val");
 	 r->maxlen = 2*r->maxlen+1;
@@ -675,7 +676,7 @@ SPMAT	*A, *OUT;
 		      A->m*sizeof(SPROW));
       }
 
-      OUT->row = RENEW(OUT->row,A->m,SPROW);
+      RENEW(OUT->row,A->m,SPROW);
       if ( ! OUT->row )
 	error(E_MEM,"sp_copy2");
       
@@ -752,7 +753,7 @@ int	m, n;
 			 m*sizeof(SPROW));
       }
 
-      A->row = RENEW(A->row,(unsigned)m,SPROW);
+      RENEW(A->row,(unsigned)m,SPROW);
       if ( ! A->row )
 	error(E_MEM,"sp_resize");
       for ( i = A->m; i < m; i++ )
@@ -779,8 +780,8 @@ int	m, n;
 		    2*n*sizeof(int));
       }
 
-      A->start_row = RENEW(A->start_row,(unsigned)n,int);
-      A->start_idx = RENEW(A->start_idx,(unsigned)n,int);
+      RENEW(A->start_row,(unsigned)n,int);
+      RENEW(A->start_idx,(unsigned)n,int);
       if ( ! A->start_row || ! A->start_idx )
 	error(E_MEM,"sp_resize");
       A->max_n = n;	/* ...and update max_n */
@@ -864,7 +865,7 @@ int sp_get_vars(int m,int n,int deg,...)
    SPMAT **par;
    
    va_start(ap, deg);
-   while (par = va_arg(ap,SPMAT **)) {   /* NULL ends the list*/
+   while ((par = va_arg(ap,SPMAT **))) {   /* NULL ends the list*/
       *par = sp_get(m,n,deg);
       i++;
    } 
@@ -894,7 +895,7 @@ int sp_resize_vars(int m,int n,...)
    SPMAT **par;
    
    va_start(ap, n);
-   while (par = va_arg(ap,SPMAT **)) {   /* NULL ends the list*/
+   while ((par = va_arg(ap,SPMAT **))) {   /* NULL ends the list*/
       *par = sp_resize(*par,m,n);
       i++;
    } 
@@ -923,7 +924,7 @@ int sp_free_vars(SPMAT **va,...)
    sp_free(*va);
    *va = (SPMAT *) NULL;
    va_start(ap, va);
-   while (par = va_arg(ap,SPMAT **)) {   /* NULL ends the list*/
+   while ((par = va_arg(ap,SPMAT **))) {   /* NULL ends the list*/
       sp_free(*par); 
       *par = (SPMAT *)NULL;
       i++;

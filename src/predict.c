@@ -61,6 +61,7 @@ typedef enum {
 	AT_GRIDMAP
 } PRED_AT;
 
+#ifndef USING_R
 static void init_predictions(PRED_AT w);
 static DPOINT *next_location(DPOINT *loc, PRED_AT what, int random_path,
 		unsigned int *row, unsigned int *col, DATA **data);
@@ -74,9 +75,11 @@ static DPOINT *get_point_location(int random_path);
 static int get_random_cell(GRIDMAP *m, unsigned int *row, unsigned int *col);
 
 static double *est = NULL;
-static GRIDMAP **masks = NULL, **outmap = NULL;
-static DATA *val_data = NULL;
 static unsigned int n_done;
+static GRIDMAP **outmap = NULL;
+#endif
+static GRIDMAP **masks = NULL;
+static DATA *val_data = NULL;
 #ifdef WITH_SPIRAL
 static DATA_GRIDMAP *mask_topology = NULL;
 #endif
@@ -541,7 +544,6 @@ static int get_map_location(DPOINT *loc, int random_path,
 	} 
 	return (at_end == 0);
 }
-#endif
 
 static int get_random_cell(GRIDMAP *m, unsigned int *row, unsigned int *col) {
 	static char **u = NULL, *tmp = NULL;
@@ -608,6 +610,7 @@ static int get_random_cell(GRIDMAP *m, unsigned int *row, unsigned int *col) {
 	tmp = NULL;
 	return 0;
 }
+#endif
 
 /* 
  * procedure map_sign() for putting history and description to maps (csf)

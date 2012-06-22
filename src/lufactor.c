@@ -28,8 +28,9 @@
 	Matrix factorisation routines to work with the other matrix files.
 */
 
-/* LUfactor.c 1.5 11/25/87 */
+/* LUfactor.c 1.5 11/25/87 
 static	char	rcsid[] = "$Id: lufactor.c,v 1.1.1.1 2003-06-23 18:31:44 cees Exp $";
+*/
 
 #include	<stdio.h>
 #include	"matrix.h"
@@ -218,7 +219,7 @@ MAT	*LU;
 PERM	*pivot;
 {
     static	VEC	*y = VNULL, *z = VNULL;
-    Real	cond_est, L_norm, U_norm, sum, tiny;
+    Real	cond_est = HUGE_VAL, L_norm, U_norm, sum, tiny;
     int		i, j, n;
 
     if ( ! LU || ! pivot )

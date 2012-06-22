@@ -29,9 +29,9 @@
   These are the routines that should be modified in order to take
   full advantage of specialised architectures (pipelining, vector
   processors etc).
-  */
 
 static	char	*rcsid = "$Id: machine.c,v 1.1.1.1 2003-06-23 18:31:41 cees Exp $";
+  */
 
 #include	"machine.h"
 

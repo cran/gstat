@@ -34,7 +34,7 @@
 #include <time.h> /* for s_gstat_progress function */
 
 #include "config.h" /* may define USING_R */
-# include "S.h" /* defines seed_in, also for R */
+# include <S.h> /* defines seed_in, also for R */
 
 #ifdef USING_R
 # include <R.h>

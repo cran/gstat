@@ -29,9 +29,9 @@
   Based on previous version on Zilog
   System 8000 setret() etc.
   Ported to Pyramid 9810 late 1987
-  */
 
 static	char	rcsid[] = "$Id: err.c,v 1.2 2006-06-01 20:17:56 edzer Exp $";
+  */
 
 #include	<stdio.h>
 #include	<setjmp.h>
@@ -199,7 +199,11 @@ int err_is_list_attached(int list_num)
 
 /* other local variables */
 
-static	int	err_flag = EF_EXIT, num_errs = 0, cnt_errs = 1;
+static	int	err_flag = EF_EXIT, 
+#ifndef USING_R
+	num_errs = 0, 
+#endif
+	cnt_errs = 1;
 
 /* set_err_flag -- sets err_flag -- returns old err_flag */
 int	set_err_flag(int flag)

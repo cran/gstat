@@ -84,7 +84,7 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 	for (i = 0; i < get_n_outfile(); i++)
 		set_mv_double(&est[i]);
 	block = get_block_p();
-	if (get_mode() == NSP)
+	if (get_mode() == MODE_NSP)
 		ErrMsg(ER_IMPOSVAL, "Getest(): mode not specified");
 	if (block->x > 0.0 || block->y > 0.0 || block->z > 0.0 || get_data_area())
 		SET_BLOCK(where);

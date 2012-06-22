@@ -73,8 +73,10 @@ static SAMPLE_VGM *cross_variogram(DATA *a, DATA *b, SAMPLE_VGM *ev);
 static SAMPLE_VGM *covariogram(DATA *a, SAMPLE_VGM *ev);
 static SAMPLE_VGM *cross_covariogram(DATA *a, DATA *b, SAMPLE_VGM *ev);
 static int get_index(double dist, SAMPLE_VGM *ev);
+#ifndef USING_R
 static void ev2map(VARIOGRAM *v);
 static SAMPLE_VGM *load_ev(SAMPLE_VGM *ev, const char *fname);
+#endif
 static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev);
 static SAMPLE_VGM *semivariogram_grid(DATA *d, SAMPLE_VGM *ev);
 static void push_to_cloud(SAMPLE_VGM *ev, double gamma, double dist,
@@ -970,6 +972,7 @@ void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev) {
 	return;
 } /* fprint_sample_vgm */
 
+#ifndef USING_R
 static void ev2map(VARIOGRAM *v) {
 	GRIDMAP *m1 = NULL, *m2 = NULL;
 	unsigned int row, col, i;
@@ -996,7 +999,6 @@ static void ev2map(VARIOGRAM *v) {
 	return;
 }
 
-#ifndef USING_R
 static SAMPLE_VGM *load_ev(SAMPLE_VGM *ev, const char *fname) {
 	char *s = NULL, *tok;
 	int i, size = 0, incr = 100;

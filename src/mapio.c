@@ -103,6 +103,7 @@ char *gl_mv_string = "NA";
 #include "mapio.h"
 
 /* functions, specific to a package */
+#ifndef USING_R
 static GRIDMAP *read_arcgrid(GRIDMAP * m);
 static GRIDMAP *write_arcgrid(GRIDMAP * m);
 static GRIDMAP *read_idrisi_image(GRIDMAP * m);
@@ -118,7 +119,6 @@ static GRIDMAP *write_surfer(GRIDMAP * m);
 static GRIDMAP *read_gslib(GRIDMAP * m);
 #endif
 static GRIDMAP *write_gslib(GRIDMAP * m);
-static GRIDMAP *write_error(GRIDMAP * m);
 
 #ifdef HAVE_T2_GRIDFORMAT
 static GRIDMAP *read_T2(GRIDMAP * m);
@@ -178,6 +178,8 @@ static void alloc_mv_grid(GRIDMAP * m);
 static void map_set_row(GRIDMAP *m, unsigned int row);
 
 static float default_misval_idrisi = 0.0;
+#endif
+static GRIDMAP *write_error(GRIDMAP * m);
 
 #define SWAP_N(a,n) swap_floats((unsigned char *)a,n)
 #define SWAP_M_N(a,m,n) swap_multiformat((unsigned char *)a,m,n)
@@ -195,11 +197,13 @@ static float default_misval_idrisi = 0.0;
 #define DEFAULT_MISVAL -9999.0
 #define SURFER_MISVAL 1.70141E+38
 
+#ifndef USING_R
 static char *line_buf = NULL;
 static int line_size = 0;
 
 static char *er_datum = NULL;
 static char *er_projection = NULL;
+#endif
 
 /*
  * create a new GRIDMAP structure
