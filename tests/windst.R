@@ -1,4 +1,3 @@
-library(spacetime)
 library(gstat)
 data(wind)
 wind.loc$y = as.numeric(char2dms(as.character(wind.loc[["Latitude"]])))

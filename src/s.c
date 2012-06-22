@@ -86,6 +86,7 @@ static int seed_is_in = 0;
 static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams);
 static void gstat_set_block(long i, SEXP block, SEXP block_cols, DPOINT *current);
 static void S_no_progress(unsigned int current, unsigned int total);
+static const char VarName[] = "(R Data)";
 
 SEXP gstat_init(SEXP s_debug_level) {
 
@@ -173,18 +174,11 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 
 	d[id]->n_list = d[id]->n_max = 0;
 	d[id]->colnx = d[id]->colny = d[id]->colnvalue = d[id]->colnz = 0;
-	/*
-	d[id]->x_coord = string_dup("x (S-plus)");
-	d[id]->y_coord = string_dup("y (S-plus)");
-	d[id]->z_coord = string_dup("z (S-plus)");
-	d[id]->variable = string_dup("S-plus data");
-	d[id]->fname = string_dup("S-plus data");
-	*/
-	d[id]->x_coord = "x (S-plus)";
-	d[id]->y_coord = "y (S-plus)";
-	d[id]->z_coord = "z (S-plus)";
-	d[id]->variable = "S-plus data";
-	d[id]->fname = "S-plus data";
+	d[id]->x_coord = "x";
+	d[id]->y_coord = "y";
+	d[id]->z_coord = "z";
+	d[id]->variable = "R data";
+	d[id]->fname = "R data";
 	d[id]->lambda = NUMERIC_POINTER(lambda)[0];
 	has_int = INTEGER_POINTER(has_intercept)[0];
 	/* increase d[id]->n_X and set d[id]->colX[i]: */
@@ -300,11 +294,11 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 
 	d[id]->n_list = d[id]->n_max = 0;
 	d[id]->colnx = d[id]->colny = d[id]->colnvalue = d[id]->colnz = 0;
-	d[id]->x_coord = string_dup("x (S-plus)");
-	d[id]->y_coord = string_dup("y (S-plus)");
-	d[id]->z_coord = string_dup("z (S-plus)");
-	d[id]->variable = string_dup("S-plus data");
-	d[id]->fname = string_dup("S-plus data");
+	d[id]->x_coord = "x";
+	d[id]->y_coord = "y";
+	d[id]->z_coord = "z";
+	d[id]->variable = "R data";
+	d[id]->fname = "R data";
 	has_int = INTEGER_POINTER(has_intercept)[0];
 	for (i = d[id]->n_X = 0; i < LENGTH(beta); i++)
 		data_add_X(d[id], i + (has_int ? 0 : 1));

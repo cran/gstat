@@ -2,17 +2,18 @@
 
 "plot.variogramCloud" <-
 function (x, identify = FALSE, digitize = FALSE, 
-	xlim = c(0, max(x$dist)), ylim = c(0, max(x$gamma)), 
+	xlim = c(0, max(x$dist)), ylim, # = c(0, max(x$gamma)), 
 	xlab = "distance", ylab = "semivariance", keep = FALSE, ...) 
 {
     if (identify || digitize) {
+		if (missing(ylim)) ylim = c(0, max(x$gamma))
         plot(x$dist, x$gamma, xlim = xlim, ylim = ylim, xlab = xlab, 
             ylab = ylab, ...)
 		.BigInt = attr(x, ".BigInt")
         head = floor(x$np %/% .BigInt) + 1
         tail = floor(x$np %%  .BigInt) + 1
 		if (identify) {
-			print("mouse-left identifies, mouse-right stops")
+			print("mouse-left identifies, mouse-right or Esc stops")
         	labs = paste(head, tail, sep = ",")
         	sel = identify(x$dist, x$gamma, labs, pos = keep)
 			ret = data.frame(cbind(head, tail)[sel, ])
@@ -40,10 +41,12 @@ function (x, identify = FALSE, digitize = FALSE,
 		lab = attr(x, "text")
 		poly = attr(x, "poly")
 		if (!is.null(sel) && !is.null(lab)) {
+			if (missing(ylim)) ylim = c(0, max(x$gamma))
         	plot(x$dist, x$gamma, xlim = xlim, ylim = ylim, xlab = xlab, 
             	ylab = ylab, ...)
 			text(x$dist[sel$ind], x$gamma[sel$ind], labels=lab, pos= sel$pos)
 		} else if (!is.null(poly)) {
+			if (missing(ylim)) ylim = c(0, max(x$gamma))
         	plot(x$dist, x$gamma, xlim = xlim, ylim = ylim, xlab = xlab, 
             	ylab = ylab, ...)
 			lines(poly$x, poly$y)

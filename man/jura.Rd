@@ -10,10 +10,11 @@
 \alias{jura.val}
 \title{Jura data set}
 \description{
-The jura data set from Pierre Goovaerts book (see references below). It contains four 
-data.frames: prediction.dat, validation.dat and transect.dat and juragrid.dat,
-and three data.frames with consistently coded land use and rock type factors. The
-examples below show how to transform these into spatial (sp) objects.
+The jura data set from Pierre Goovaerts book (see references
+below). It contains four \code{data.frame}s: prediction.dat, validation.dat
+and transect.dat and juragrid.dat, and three \code{data.frame}s with
+consistently coded land use and rock type factors. The examples
+below show how to transform these into spatial (sp) objects.
 }
 \format{
   This data frame contains the following columns:
@@ -49,9 +50,13 @@ metals in the soil in the Swiss Jura: European Journal of Soil Science
 
 }
 \note{
-The points data sets were obtained from \url{
-http://home.comcast.net/~goovaerts/book.html}, the grid data were kindly
-provided by Pierre Goovaerts.
+The points data sets were obtained from
+\url{http://home.comcast.net/~pgoovaerts/book.html}, the grid data
+were kindly provided by Pierre Goovaerts.
+
+The following codes were used to convert \code{prediction.dat}
+and \code{validation.dat} to \code{jura.pred} and \code{jura.val}
+(see examples below):
 
 Rock Types: 1: Argovian, 2: Kimmeridgian, 3: Sequanian, 4: Portlandian,
 5: Quaternary.
@@ -62,7 +67,7 @@ bestelltes Land)
 
 Points 22 and 100 in the validation set
 (\code{validation.dat[c(22,100),]}) seem not to lie exactly on the
-grid origininally intended, but are kept as such to be consistent with
+grid originally intended, but are kept as such to be consistent with
 the book.
 }
 
@@ -74,17 +79,23 @@ summary(validation.dat)
 summary(transect.dat)
 summary(juragrid.dat)
 
-# the commands to create the spatial objects:
+# the following commands create objects with factors instead
+# of the integer codes for Landuse and Rock:
 require(sp)
 jura.pred = prediction.dat
 jura.val = validation.dat
 jura.grid = juragrid.dat
 
-jura.pred$Landuse = factor(prediction.dat$Landuse, labels=levels(juragrid.dat$Landuse))
-jura.pred$Rock = factor(prediction.dat$Rock, labels=levels(juragrid.dat$Rock))
-jura.val$Landuse = factor(validation.dat$Landuse, labels=levels(juragrid.dat$Landuse))
-jura.val$Rock = factor(validation.dat$Rock, labels=levels(juragrid.dat$Rock))
+jura.pred$Landuse = factor(prediction.dat$Landuse, 
+	labels=levels(juragrid.dat$Landuse))
+jura.pred$Rock = factor(prediction.dat$Rock, 
+	labels=levels(juragrid.dat$Rock))
+jura.val$Landuse = factor(validation.dat$Landuse, 
+	labels=levels(juragrid.dat$Landuse))
+jura.val$Rock = factor(validation.dat$Rock, 
+	labels=levels(juragrid.dat$Rock))
 
+# the following commands convert data.frame objects into spatial (sp) objects:
 coordinates(jura.pred) = ~Xloc+Yloc
 coordinates(jura.val) = ~Xloc+Yloc
 coordinates(jura.grid) = ~Xloc+Yloc

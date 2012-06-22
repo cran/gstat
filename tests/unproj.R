@@ -1,6 +1,10 @@
 if (require(rgdal) == FALSE)
 	q()
 
+# for validity of covariance functions on the sphere, see also:
+# DOI 10.1007/s11004-011-9344-7
+# http://mypage.iu.edu/~srobeson/Pubs/variogram_sphere_mathgeo_2011.pdf
+
 data(meuse)
 coordinates(meuse) = ~x+y
 proj4string(meuse) = CRS("+init=epsg:28992")
@@ -47,4 +51,4 @@ cat('==========\nvariogram:\n')
 print(head(vg.foo))
 
 cat('==========\nspDistsN1 Distances:\n')
-print(spDistsN1(coordinates(foo), coordinates(foo)[1,], longlat=T))
+print(spDistsN1(coordinates(foo), coordinates(foo)[1,], longlat=TRUE))

@@ -1,6 +1,6 @@
 
-R version 2.13.2 (2011-09-30)
-Copyright (C) 2011 The R Foundation for Statistical Computing
+R version 2.15.0 (2012-03-30)
+Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -26,7 +26,7 @@ Attaching package: 'zoo'
 
 The following object(s) are masked from 'package:base':
 
-    as.Date
+    as.Date, as.Date.numeric
 
 Loading required package: xts
 > data(meuse)
@@ -76,6 +76,9 @@ Intrinsic Correlation found. Good.
  Mean   : 0.008212   Mean   :3   Mean   :180005   Mean   :331635  
  3rd Qu.: 0.632272   3rd Qu.:4   3rd Qu.:180630   3rd Qu.:332463  
  Max.   : 3.279924   Max.   :5   Max.   :181390   Max.   :333611  
+Warning message:
+In checkNames(value) :
+  attempt to set invalid names: this may lead to problems later on. See ?make.names
 > summary(gstat.cv(g, remove.all=FALSE, nfold=5))
 Intrinsic Correlation found. Good.
 [using ordinary cokriging]
@@ -90,15 +93,21 @@ Intrinsic Correlation found. Good.
  log.zinc.pred    log.zinc.var         observed        residual        
  Min.   :4.632   Min.   :0.002590   Min.   :4.727   Min.   :-0.513948  
  1st Qu.:5.293   1st Qu.:0.005023   1st Qu.:5.288   1st Qu.:-0.074101  
- Median :5.767   Median :0.006181   Median :5.787   Median : 0.010331  
- Mean   :5.893   Mean   :0.006597   Mean   :5.886   Mean   :-0.007157  
+ Median :5.767   Median :0.006181   Median :5.787   Median : 0.010332  
+ Mean   :5.893   Mean   :0.006597   Mean   :5.886   Mean   :-0.007156  
  3rd Qu.:6.426   3rd Qu.:0.007500   3rd Qu.:6.514   3rd Qu.: 0.070512  
  Max.   :7.674   Max.   :0.027236   Max.   :7.517   Max.   : 0.506778  
      zscore              fold             x                y         
- Min.   :-5.45652   Min.   :1.000   Min.   :178605   Min.   :329714  
+ Min.   :-5.45653   Min.   :1.000   Min.   :178605   Min.   :329714  
  1st Qu.:-1.05557   1st Qu.:2.000   1st Qu.:179371   1st Qu.:330762  
  Median : 0.11046   Median :3.000   Median :179991   Median :331633  
  Mean   :-0.07335   Mean   :2.968   Mean   :180005   Mean   :331635  
  3rd Qu.: 0.86810   3rd Qu.:4.000   3rd Qu.:180630   3rd Qu.:332463  
  Max.   : 7.37567   Max.   :5.000   Max.   :181390   Max.   :333611  
+Warning message:
+In checkNames(value) :
+  attempt to set invalid names: this may lead to problems later on. See ?make.names
 > 
+> proc.time()
+   user  system elapsed 
+  0.996   0.060   1.049 

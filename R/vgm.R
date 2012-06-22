@@ -4,12 +4,16 @@ warn.angle3 = TRUE
 
 "vgm" <-
 function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
-		..., covtable) {
+		..., covtable, Err = 0) {
 	add.to.df = function(x, y) {
 		x = rbind(x, y)
 		row.names(x) = 1:nrow(x)
 		return(x)
 	}
+	stopifnot(length(psill) == 1)
+	stopifnot(length(range) == 1)
+	stopifnot(missing(nugget) || length(nugget) == 1)
+	stopifnot(length(kappa) == 1)
 	m = .Call("gstat_get_variogram_models", as.integer(0))
 	n = length(m)
 	mf = factor(m, levels = m)
@@ -18,6 +22,7 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
 		mlf = factor(ml, levels = ml)
 		return(data.frame(short = mf, long = mlf))
 	}
+	stopifnot(length(model) == 1)
 	table = NULL
 	if (model == "Tab" && !missing(covtable)) {
 		table = as.matrix(covtable)
@@ -28,7 +33,7 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
 			stop("the first covariance value should be at distance 0.0")
 		table = table[,2]
 		mf = factor(c(m, "Tab"), levels = c(m, "Tab"))
-		if (!missing(add.to) || !missing(nugget))
+		if (!missing(add.to) || !missing(nugget) || Err > 0)
 			stop("cannot add submodels or nugget to covariance Table model")
 	} else if (!any(m == model)) 
 		stop(paste("variogram model", model, "unknown\n"))
@@ -64,6 +69,10 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
 			anis1=anis[4], anis2=anis[5])
 	if (!missing(add.to))
 		ret = add.to.df(data.frame(add.to), ret)
+	if (Err > 0)
+		ret = add.to.df(data.frame(model=mf[mf=="Err"], psill=Err,
+			range=0.0, kappa = kappa, ang1=anis[1], ang2=anis[2],
+			ang3=anis[3], anis1=anis[4], anis2=anis[5]), ret)
 	if (!is.null(table))
 		attr(ret, "table") = table
 	class(ret) = c("variogramModel", "data.frame")

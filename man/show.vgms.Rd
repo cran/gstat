@@ -11,7 +11,7 @@ and optionally a set of Matern models with varying smoothness.
 \usage{
 show.vgms(min = 1e-12 * max, max = 3, n = 50, sill = 1, range = 1,
     models = as.character(vgm()$short[c(1:17)]), nugget = 0, kappa.range = 0.5,
-	plot = TRUE, ...)
+	plot = TRUE, ..., as.groups = FALSE)
 }
 \arguments{
 \item{min}{ numeric; start distance value for semivariance calculation 
@@ -19,16 +19,18 @@ beyond the first point at exactly zero  }
 \item{max}{ numeric; maximum distance for semivariance calculation 
 and plotting }
 \item{n}{ integer; number of points to calculate distance values }
-\item{sill}{ numeric; (partial) sill of the variogram model }
-\item{range}{ numeric; range of the variogram model }
-\item{models}{ character; variogram models to be plotted }
-\item{nugget}{ numeric; nugget component for variogram models }
+\item{sill}{ numeric; (partial) sill(s) of the variogram model }
+\item{range}{ numeric; range(s) of the variogram model }
+\item{models}{ character; variogram model(s) to be plotted }
+\item{nugget}{ numeric; nugget component(s) for variogram models }
 \item{kappa.range}{ numeric; if this is a vector with more than one
 element, only a range of Matern models is plotted with these kappa 
 values }
 \item{plot}{ logical; if TRUE, a plot is returned with the models
 specified; if FALSE, the data prepared for this plot is returned }
 \item{...}{ passed on to the call to xyplot }
+\item{as.groups}{ logical; if TRUE, different models are plotted with
+different lines in a single panel, else, in one panel per model }
 }
 \value{
 returns a (Trellis) plot of the variogram models requested; see

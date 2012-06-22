@@ -54,11 +54,14 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 		V = model(data)
 		v0 = model(data, newdata)
 		if (computeVar) {
-			if (is(newdata, "SpatialPolygons") || 
+			if (is(newdata, "SpatialLines") || 
 					is(newdata, "SpatialPolygons"))
-				stop("unequal target support not implemented")
-			else
-				c0 = as.numeric(model(newdata[1, drop=FALSE]))
+				stop("varying target support has not been implemented")
+			c0 = as.numeric(model(newdata[1, drop=FALSE],
+				newdata[1, drop=FALSE]))
+			# ?check this: provide TWO arguments, so model(x,y) can target
+			# eventually Y, instead of measurements Z=Y+e
+			# with e measurement error term e
 		}
 	}
 	if (!missing(beta)) { # sk:
