@@ -673,7 +673,9 @@ extern int gstat_yywrap (void );
 #endif
 #endif
 
+#ifndef USING_R
     static void yyunput (int c,char *buf_ptr  );
+#endif
     
 #ifndef yytext_ptr
 static void yy_flex_strncpy (char *,yyconst char *,int );
@@ -688,7 +690,9 @@ static int yy_flex_strlen (yyconst char * );
 #ifdef __cplusplus
 static int yyinput (void );
 #else
+# ifndef USING_R
 static int input (void );
+# endif
 #endif
 
 #endif
@@ -1345,6 +1349,7 @@ static int yy_get_next_buffer (void)
 	return yy_is_jam ? 0 : yy_current_state;
 }
 
+#ifndef USING_R
     static void yyunput (int c, register char * yy_bp )
 {
 	register char *yy_cp;
@@ -1381,7 +1386,9 @@ static int yy_get_next_buffer (void)
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
 }
+#endif
 
+# ifndef USING_R
 #ifndef YY_NO_INPUT
 #ifdef __cplusplus
     static int yyinput (void)
@@ -1455,6 +1462,7 @@ static int yy_get_next_buffer (void)
 	return c;
 }
 #endif	/* ifndef YY_NO_INPUT */
+#endif /* USING_R */
 
 /** Immediately switch to a different input stream.
  * @param input_file A readable stream.

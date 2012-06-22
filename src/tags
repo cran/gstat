@@ -1,0 +1,1480 @@
+!_TAG_FILE_FORMAT	2	/supported features/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted/
+!_TAG_PROGRAM_AUTHOR	Steve Kirkendall	/kirkenda@cs.pdx.edu/
+!_TAG_PROGRAM_NAME	Elvis Ctags	//
+!_TAG_PROGRAM_URL	ftp://ftp.cs.pdx.edu/pub/elvis/README.html	/official site/
+!_TAG_PROGRAM_VERSION	2.2.0	//
+ADD_STR	data.c	1987;"	d	file:	ln:1987
+ADD_STR	lex.c	2085;"	d	file:	ln:2085
+ANIS_ERR	vario.c	1087;"	d	file:	ln:1087
+AT_GRIDMAP	predict.c	62;"	ln:62	enum:PRED_AT
+AT_POINTS	predict.c	62;"	ln:62	enum:PRED_AT
+BAD	polygon.c	431;"	d	file:	ln:431
+BEGIN	lex.c	144;"	d	file:	ln:144
+BINARY_NATIVE	mapio.c	193;"	d	file:	ln:193
+BINARY_NON_NATIVE	mapio.c	194;"	d	file:	ln:194
+C	gls.c	131;"	ln:131	struct:GLM
+CHECK_BITX	data.c	912;"	d	file:	ln:912
+CHECK_BITY	data.c	913;"	d	file:	ln:913
+CHECK_BITZ	data.c	914;"	d	file:	ln:914
+CHECK_CELLSIZE	mapio.c	188;"	d	file:	ln:188
+CHECK_COLS	mapio.c	187;"	d	file:	ln:187
+CHECK_ROWS	mapio.c	186;"	d	file:	ln:186
+CHECK_SUM	mapio.c	191;"	d	file:	ln:191
+CHECK_X_UL	mapio.c	189;"	d	file:	ln:189
+CHECK_Y_UL	mapio.c	190;"	d	file:	ln:190
+CHfactor	chfactor.c	/^MAT	*CHfactor(MAT *A)$/;"	f	ln:44
+CHsolve	chfactor.c	/^VEC	*CHsolve(MAT *A, VEC *b, VEC *x)$/;"	f	ln:91
+CROSS	polygon.c	76;"	d	file:	ln:76
+CinvX	gls.c	131;"	ln:131	struct:GLM
+CsfReadRow	mapio.c	/^void CsfReadRow(GRIDMAP *m, float *buf, unsigned int row)$/;"	f	ln:1432
+CsfWriteRow	mapio.c	/^void CsfWriteRow(GRIDMAP *m, float *buf, unsigned int row)$/;"	f	ln:1438
+DEFAULT_MISVAL	mapio.c	195;"	d	file:	ln:195
+DEG2RAD	vario.c	1089;"	d	file:	ln:1089
+DELTA_AB	polygon.c	89;"	d	file:	ln:89
+DPSWAP	select.c	66;"	d	file:	ln:66
+Dsolve	solve.c	/^VEC	*Dsolve(A,b,x)$/;"	f	ln:207
+ECHO	lex.c	711;"	d	file:	ln:711
+EF_ABORT	err.c	62;"	d	file:	ln:62
+EF_EXIT	err.c	61;"	d	file:	ln:61
+EF_JUMP	err.c	63;"	d	file:	ln:63
+EF_R_ERROR	err.c	65;"	d	file:	ln:65
+EF_SILENT	err.c	64;"	d	file:	ln:64
+EOB_ACT_CONTINUE_SCAN	lex.c	187;"	d	file:	ln:187
+EOB_ACT_END_OF_FILE	lex.c	188;"	d	file:	ln:188
+EOB_ACT_LAST_MATCH	lex.c	189;"	d	file:	ln:189
+EPOINT1	polygon.c	79;"	d	file:	ln:79
+EPOINT2	polygon.c	80;"	d	file:	ln:80
+ER_IMPOSVAL	random.c	66;"	d	file:	ln:66
+EVFMT	sem.c	909;"	d	file:	ln:909
+E_SIGNAL	err.c	68;"	d	file:	ln:68
+ErrMsg	random.c	67;"	d	file:	ln:67
+Err_list	err.c	/^}  Err_list;$/;"	t	ln:121
+FALSE	err.c	58;"	d	file:	ln:58
+FILE_RECORD	utils.c	/^} FILE_RECORD;$/;"	t	ln:82
+FILE_STATUS	utils.c	/^typedef enum { IS_OPEN, IS_CLOSED, IS_REMOVED } FILE_STATUS;$/;"	v	ln:74
+FILE_TYPE	utils.c	/^typedef enum { IS_FILE, IS_PIPE } FILE_TYPE;$/;"	v	ln:73
+FILL_TABLE	parse.c	2905;"	d	file:	ln:2905
+FIT_LOG	fit.c	56;"	d	file:	ln:56
+FLEXINT_H	lex.c	48;"	d	file:	ln:48
+FLEX_BETA	lex.c	32;"	d	file:	ln:32
+FLEX_SCANNER	lex.c	27;"	d	file:	ln:27
+FLT_MAX	read.c	59;"	d	file:	ln:59
+FLT_MIN	read.c	60;"	d	file:	ln:60
+FP_ERR	userio.c	410;"	d	file:	ln:410
+Float	msim.c	/^typedef double Float; \/* doubles the memory requirement -> may be pretty much *\/$/;"	t	file:	ln:63
+Float	msim.c	/^typedef float Float;$/;"	t	file:	ln:65
+GLM	gls.c	/^} GLM; \/* structure is locally defined, will be held in void *glm in DATA *\/$/;"	t	ln:131
+GSTAT_EXPR	parse.c	/^} GSTAT_EXPR;$/;"	t	ln:180
+HUGE_VAL	read.c	63;"	d	file:	ln:63
+IDENT	parse.c	253;"	d	file:	ln:253
+ID_AREA	parse.c	265;"	d	file:	ln:265
+ID_BLOCK	parse.c	266;"	d	file:	ln:266
+ID_BOUNDS	parse.c	268;"	d	file:	ln:268
+ID_COVARIANCES	parse.c	259;"	d	file:	ln:259
+ID_DATA	parse.c	254;"	d	file:	ln:254
+ID_EDGES	parse.c	262;"	d	file:	ln:262
+ID_MARGINALS	parse.c	269;"	d	file:	ln:269
+ID_MASKS	parse.c	261;"	d	file:	ln:261
+ID_MERGE	parse.c	264;"	d	file:	ln:264
+ID_METHOD	parse.c	267;"	d	file:	ln:267
+ID_OUTPUT	parse.c	260;"	d	file:	ln:260
+ID_PREDICTIONS	parse.c	257;"	d	file:	ln:257
+ID_SET	parse.c	263;"	d	file:	ln:263
+ID_VARIANCES	parse.c	258;"	d	file:	ln:258
+ID_VARIOGRAM	parse.c	256;"	d	file:	ln:256
+ID_X	parse.c	255;"	d	file:	ln:255
+INCLUDED_EXT_DBASE	data.c	59;"	d	file:	ln:59
+INCR	utils.c	406;"	d	file:	ln:406
+INITIAL	lex.c	619;"	d	file:	ln:619
+INIT_C	random.c	470;"	d	file:	ln:470
+INIT_CD	random.c	471;"	d	file:	ln:471
+INIT_CM	random.c	472;"	d	file:	ln:472
+INT	parse.c	249;"	d	file:	ln:249
+INT16_MAX	lex.c	90;"	d	file:	ln:90
+INT16_MIN	lex.c	81;"	d	file:	ln:81
+INT32_MAX	lex.c	93;"	d	file:	ln:93
+INT32_MIN	lex.c	84;"	d	file:	ln:84
+INT8_MAX	lex.c	87;"	d	file:	ln:87
+INT8_MIN	lex.c	78;"	d	file:	ln:78
+INT_MAX	read.c	51;"	d	file:	ln:51
+INT_MIN	read.c	52;"	d	file:	ln:52
+IN_OUT	polygon.c	478;"	d	file:	ln:478
+IS_CLOSED	utils.c	74;"	ln:74	enum:FILE_STATUS
+IS_FILE	utils.c	73;"	ln:73	enum:FILE_TYPE
+IS_OPEN	utils.c	74;"	ln:74	enum:FILE_STATUS
+IS_PIPE	utils.c	73;"	ln:73	enum:FILE_TYPE
+IS_REMOVED	utils.c	74;"	ln:74	enum:FILE_STATUS
+IWW	polygon.c	86;"	d	file:	ln:86
+IminAw	reml.c	/^static MAT *IminAw = MNULL;$/;"	v	file:	ln:65
+InPoly	polygon.c	/^static char InPoly(PLOT_POINT q, POLYGON *Poly)$/;"	f	file:	ln:333
+LDLfactor	chfactor.c	/^MAT	*LDLfactor(MAT *A)$/;"	f	ln:105
+LDLsolve	chfactor.c	/^VEC	*LDLsolve(MAT *LDL, VEC *b, VEC *x)$/;"	f	ln:147
+LONG_MAX	read.c	55;"	d	file:	ln:55
+LONG_MIN	read.c	56;"	d	file:	ln:56
+LTsolve	solve.c	/^VEC	*LTsolve(L,b,out,diag)$/;"	f	ln:236
+LUTsolve	lufactor.c	/^VEC	*LUTsolve(LU,pivot,b,x)$/;"	f	ln:158
+LUcondest	lufactor.c	/^double	LUcondest(LU,pivot)$/;"	f	ln:216
+LUfactor	lufactor.c	/^MAT	*LUfactor(A,pivot)$/;"	f	ln:45
+LUsolve	lufactor.c	/^VEC	*LUsolve(A,pivot,b,x)$/;"	f	ln:139
+Lsolve	solve.c	/^VEC	*Lsolve(matrix,b,out,diag)$/;"	f	ln:99
+MANTISSA_SIZE	random.c	468;"	d	file:	ln:468
+MAXCHAR	lex.c	2086;"	d	file:	ln:2086
+MAXERR	err.c	96;"	d	file:	ln:96
+MAXWARN	err.c	106;"	d	file:	ln:106
+MAX_ANG	direct.c	45;"	d	file:	ln:45
+MAX_ERRS	err.c	110;"	d	file:	ln:110
+MAX_SIZE	utils.c	805;"	d	file:	ln:805
+MAX_STACK	ivecop.c	336;"	d	file:	ln:336
+MAX_STACK	vecop.c	457;"	d	file:	ln:457
+MCHfactor	chfactor.c	/^MAT	*MCHfactor(MAT *A, double tol)$/;"	f	ln:165
+MEM_ERR	userio.c	403;"	d	file:	ln:403
+MEM_NUM_STD_TYPES	meminfo.c	70;"	d	file:	ln:70
+MINROWLEN	sparse.c	39;"	d	file:	ln:39
+MINROWLEN	sprow.c	42;"	d	file:	ln:42
+MIN_BESS	vario_fn.c	53;"	d	file:	ln:53
+MODULUS	init.c	129;"	d	file:	ln:129
+MODULUS	init.c	131;"	d	file:	ln:131
+MY_input	lex.c	/^int MY_input(void) {$/;"	f	ln:2028
+MY_output	lex.c	/^int MY_output(int c) {$/;"	f	ln:2057
+MY_unput	lex.c	/^int MY_unput(int c) {$/;"	f	ln:2062
+MZ	init.c	133;"	d	file:	ln:133
+M_DEBUG	gls.c	94;"	d	file:	ln:94
+NEARLY_ZERO	fit.c	57;"	d	file:	ln:57
+NO_STD_IN_OUT	utils.c	68;"	d	file:	ln:68
+N_NODES	nsearch.c	74;"	d	file:	ln:74
+P	random.c	464;"	d	file:	ln:464
+PI	vario_fn.c	55;"	d	file:	ln:55
+PM1	random.c	465;"	d	file:	ln:465
+POLY_EDGE	polygon.c	85;"	d	file:	ln:85
+POLY_IN	polygon.c	83;"	d	file:	ln:83
+POLY_OUT	polygon.c	84;"	d	file:	ln:84
+POWDI	gcdist.c	9;"	d	file:	ln:9
+POWDI	gcdist.c	11;"	d	file:	ln:11
+PRED_AT	predict.c	/^} PRED_AT;$/;"	v	ln:62
+PROTECT	s.c	54;"	d	file:	ln:54
+Q	random.c	466;"	d	file:	ln:466
+QRCPfactor	qrfactor.c	/^MAT	*QRCPfactor(A,diag,px)$/;"	f	ln:101
+QRCPsolve	qrfactor.c	/^VEC	*QRCPsolve(QR,diag,pivot,b,x)$/;"	f	ln:320
+QRTsolve	qrfactor.c	/^VEC *QRTsolve(A,diag,c,sc)$/;"	f	ln:389
+QRcondest	qrfactor.c	/^double	QRcondest(QR)$/;"	f	ln:448
+QRfactor	qrfactor.c	/^MAT	*QRfactor(A,diag)$/;"	f	ln:64
+QRsolve	qrfactor.c	/^VEC	*QRsolve(QR,diag,b,x)$/;"	f	ln:294
+QSTR	parse.c	252;"	d	file:	ln:252
+Q_HELP	pqueue.c	249;"	d	file:	ln:249
+Q_STOP_AT	nsearch.c	86;"	d	file:	ln:86
+RANDIN	s.c	46;"	d	file:	ln:46
+RANDIN	s.c	58;"	d	file:	ln:58
+RANDOM_REALS	random.c	469;"	d	file:	ln:469
+RANDOUT	s.c	47;"	d	file:	ln:47
+RANDOUT	s.c	59;"	d	file:	ln:59
+REAL	parse.c	251;"	d	file:	ln:251
+REJECT	lex.c	507;"	d	file:	ln:507
+R_NORMAL	s.c	45;"	d	file:	ln:45
+R_NORMAL	s.c	57;"	d	file:	ln:57
+R_UNIFORM	s.c	44;"	d	file:	ln:44
+R_UNIFORM	s.c	56;"	d	file:	ln:56
+Rprintf	s.c	60;"	d	file:	ln:60
+SCANNED	lex.c	608;"	d	file:	ln:608
+SCANNED	lex.c	611;"	d	file:	ln:611
+SEM_INCREMENT	sem.c	63;"	d	file:	ln:63
+SEXP	s.c	53;"	d	file:	ln:53
+SING_ERR	userio.c	399;"	d	file:	ln:399
+SLOW	data.c	1403;"	d	file:	ln:1403
+SM_DEBUG	gls.c	103;"	d	file:	ln:103
+SPOINT1	polygon.c	77;"	d	file:	ln:77
+SPOINT2	polygon.c	78;"	d	file:	ln:78
+STATE_SIZE	random.c	467;"	d	file:	ln:467
+STEP	lex.c	2183;"	d	file:	ln:2183
+STRATUM	predict.c	87;"	d	file:	ln:87
+SURFER_MISVAL	mapio.c	196;"	d	file:	ln:196
+SWAP_M_N	mapio.c	183;"	d	file:	ln:183
+SWAP_N	mapio.c	182;"	d	file:	ln:182
+S_EVALUATOR	s.c	48;"	d	file:	ln:48
+S_no_progress	s.c	/^static void S_no_progress(unsigned int current, unsigned int total) {$/;"	f	file:	ln:1137
+TABLE_SIZE	parse.c	2902;"	d	file:	ln:2902
+TRUE	err.c	59;"	d	file:	ln:59
+UINT	parse.c	250;"	d	file:	ln:250
+UINT16_MAX	lex.c	99;"	d	file:	ln:99
+UINT32_MAX	lex.c	102;"	d	file:	ln:102
+UINT8_MAX	lex.c	96;"	d	file:	ln:96
+UNPROTECT	s.c	55;"	d	file:	ln:55
+UPDATE_BLP	gls.c	98;"	d	file:	ln:98
+UPDATE_BLUP	gls.c	99;"	d	file:	ln:99
+UTmlt	qrfactor.c	/^static	VEC	*UTmlt(U,x,out)$/;"	f	file:	ln:362
+UTsolve	solve.c	/^VEC	*UTsolve(U,b,out,diag)$/;"	f	ln:153
+Umlt	qrfactor.c	/^static	VEC	*Umlt(U,x,out)$/;"	f	file:	ln:342
+Usolve	solve.c	/^VEC	*Usolve(matrix,b,out,diag)$/;"	f	ln:46
+V_DEBUG	gls.c	96;"	d	file:	ln:96
+VarName	s.c	/^static const char VarName[] = "(R Data)";$/;"	v	file:	ln:89
+WPWARNING	msim.c	211;"	d	file:	ln:211
+X	gls.c	131;"	ln:131	struct:GLM
+XCinvX	gls.c	131;"	ln:131	struct:GLM
+XVXt_mlt	reml.c	/^MAT *XVXt_mlt(MAT *X, MAT *V, MAT *out) {$/;"	f	ln:353
+XdXt_mlt	reml.c	/^MAT *XdXt_mlt(MAT *X, VEC *d, MAT *out) {$/;"	f	ln:380
+XtVX_mlt	reml.c	/^MAT *XtVX_mlt(MAT *X, MAT *V, MAT *out) {$/;"	f	ln:326
+XtdX_mlt	reml.c	/^MAT *XtdX_mlt(MAT *X, VEC *d, MAT *out) {$/;"	f	ln:402
+YYABORT	parse.c	930;"	d	file:	ln:930
+YYACCEPT	parse.c	929;"	d	file:	ln:929
+YYBACKUP	parse.c	942;"	d	file:	ln:942
+YYBISON	parse.c	46;"	d	file:	ln:46
+YYBISON_VERSION	parse.c	49;"	d	file:	ln:49
+YYCOPY	parse.c	481;"	d	file:	ln:481
+YYCOPY	parse.c	484;"	d	file:	ln:484
+YYDEBUG	parse.c	202;"	d	file:	ln:202
+YYDPRINTF	parse.c	1022;"	d	file:	ln:1022
+YYDPRINTF	parse.c	1171;"	d	file:	ln:1171
+YYEMPTY	parse.c	926;"	d	file:	ln:926
+YYEOF	parse.c	927;"	d	file:	ln:927
+YYERRCODE	parse.c	961;"	d	file:	ln:961
+YYERROR	parse.c	931;"	d	file:	ln:931
+YYERROR_VERBOSE	parse.c	208;"	d	file:	ln:208
+YYERROR_VERBOSE	parse.c	210;"	d	file:	ln:210
+YYFAIL	parse.c	938;"	d	file:	ln:938
+YYFINAL	parse.c	514;"	d	file:	ln:514
+YYFPRINTF	parse.c	1019;"	d	file:	ln:1019
+YYFREE	parse.c	447;"	d	file:	ln:447
+YYID	parse.c	371;"	d	file:	ln:371
+YYID	parse.c	/^YYID (int yyi)$/;"	f	file:	ln:376
+YYINITDEPTH	parse.c	1180;"	d	file:	ln:1180
+YYLAST	parse.c	516;"	d	file:	ln:516
+YYLEX	parse.c	1009;"	d	file:	ln:1009
+YYLEX	parse.c	1011;"	d	file:	ln:1011
+YYLLOC_DEFAULT	parse.c	970;"	d	file:	ln:970
+YYLSP_NEEDED	parse.c	64;"	d	file:	ln:64
+YYMALLOC	parse.c	440;"	d	file:	ln:440
+YYMAXDEPTH	parse.c	1191;"	d	file:	ln:1191
+YYMAXUTOK	parse.c	529;"	d	file:	ln:529
+YYNNTS	parse.c	521;"	d	file:	ln:521
+YYNRULES	parse.c	523;"	d	file:	ln:523
+YYNSTATES	parse.c	525;"	d	file:	ln:525
+YYNTOKENS	parse.c	519;"	d	file:	ln:519
+YYPACT_NINF	parse.c	778;"	d	file:	ln:778
+YYPOPSTACK	parse.c	1531;"	d	file:	ln:1531
+YYPULL	parse.c	61;"	d	file:	ln:61
+YYPURE	parse.c	55;"	d	file:	ln:55
+YYPUSH	parse.c	58;"	d	file:	ln:58
+YYRECOVERING	parse.c	940;"	d	file:	ln:940
+YYRHSLOC	parse.c	968;"	d	file:	ln:968
+YYSIZE_MAXIMUM	parse.c	348;"	d	file:	ln:348
+YYSIZE_T	parse.c	336;"	d	file:	ln:336
+YYSIZE_T	parse.c	338;"	d	file:	ln:338
+YYSIZE_T	parse.c	342;"	d	file:	ln:342
+YYSIZE_T	parse.c	344;"	d	file:	ln:344
+YYSKELETON_NAME	parse.c	52;"	d	file:	ln:52
+YYSTACK_ALLOC	parse.c	394;"	d	file:	ln:394
+YYSTACK_ALLOC	parse.c	398;"	d	file:	ln:398
+YYSTACK_ALLOC	parse.c	403;"	d	file:	ln:403
+YYSTACK_ALLOC	parse.c	426;"	d	file:	ln:426
+YYSTACK_ALLOC_MAXIMUM	parse.c	423;"	d	file:	ln:423
+YYSTACK_ALLOC_MAXIMUM	parse.c	429;"	d	file:	ln:429
+YYSTACK_BYTES	parse.c	473;"	d	file:	ln:473
+YYSTACK_FREE	parse.c	417;"	d	file:	ln:417
+YYSTACK_FREE	parse.c	427;"	d	file:	ln:427
+YYSTACK_GAP_MAXIMUM	parse.c	469;"	d	file:	ln:469
+YYSTACK_RELOCATE	parse.c	500;"	d	file:	ln:500
+YYSTATE	lex.c	151;"	d	file:	ln:151
+YYSTYPE	parse.c	/^typedef union YYSTYPE$/;"	u	file:	ln:275
+YYSTYPE	parse.c	/^} YYSTYPE;$/;"	t	ln:290
+YYSTYPE_IS_DECLARED	parse.c	293;"	d	file:	ln:293
+YYSTYPE_IS_TRIVIAL	parse.c	291;"	d	file:	ln:291
+YYTABLES_NAME	lex.c	2022;"	d	file:	ln:2022
+YYTABLE_NINF	parse.c	823;"	d	file:	ln:823
+YYTERROR	parse.c	960;"	d	file:	ln:960
+YYTOKENTYPE	parse.c	221;"	d	file:	ln:221
+YYTOKEN_TABLE	parse.c	215;"	d	file:	ln:215
+YYTRANSLATE	parse.c	531;"	d	file:	ln:531
+YYUNDEFTOK	parse.c	528;"	d	file:	ln:528
+YYUSE	parse.c	364;"	d	file:	ln:364
+YYUSE	parse.c	366;"	d	file:	ln:366
+YY_	parse.c	354;"	d	file:	ln:354
+YY_	parse.c	358;"	d	file:	ln:358
+YY_AT_BOL	lex.c	358;"	d	file:	ln:358
+YY_BREAK	lex.c	790;"	d	file:	ln:790
+YY_BUFFER_EOF_PENDING	lex.c	274;"	d	file:	ln:274
+YY_BUFFER_NEW	lex.c	262;"	d	file:	ln:262
+YY_BUFFER_NORMAL	lex.c	263;"	d	file:	ln:263
+YY_BUFFER_STATE	lex.c	/^typedef struct yy_buffer_state *YY_BUFFER_STATE;$/;"	t	ln:180
+YY_BUF_SIZE	lex.c	168;"	d	file:	ln:168
+YY_BUF_SIZE	lex.c	170;"	d	file:	ln:170
+YY_CHAR	lex.c	/^typedef unsigned char YY_CHAR;$/;"	t	file:	ln:362
+YY_CURRENT_BUFFER	lex.c	290;"	d	file:	ln:290
+YY_CURRENT_BUFFER_LVALUE	lex.c	297;"	d	file:	ln:297
+YY_DECL	lex.c	778;"	d	file:	ln:778
+YY_DECL	lex.c	/^YY_DECL$/;"	u	file:	ln:798
+YY_DECL_IS_OURS	lex.c	774;"	d	file:	ln:774
+YY_DO_BEFORE_ACTION	lex.c	383;"	d	file:	ln:383
+YY_END_OF_BUFFER	lex.c	391;"	d	file:	ln:391
+YY_END_OF_BUFFER_CHAR	lex.c	159;"	d	file:	ln:159
+YY_EXIT_FAILURE	lex.c	1813;"	d	file:	ln:1813
+YY_EXTRA_TYPE	lex.c	630;"	d	file:	ln:630
+YY_FATAL_ERROR	lex.c	765;"	d	file:	ln:765
+YY_FLEX_MAJOR_VERSION	lex.c	28;"	d	file:	ln:28
+YY_FLEX_MINOR_VERSION	lex.c	29;"	d	file:	ln:29
+YY_FLEX_SUBMINOR_VERSION	lex.c	30;"	d	file:	ln:30
+YY_FLUSH_BUFFER	lex.c	326;"	d	file:	ln:326
+YY_INPUT	lex.c	587;"	d	file:	ln:587
+YY_INPUT	lex.c	718;"	d	file:	ln:718
+YY_INT_ALIGNED	lex.c	4;"	d	file:	ln:4
+YY_LESS_LINENO	lex.c	191;"	d	file:	ln:191
+YY_LOCATION_PRINT	parse.c	996;"	d	file:	ln:996
+YY_LOCATION_PRINT	parse.c	1001;"	d	file:	ln:1001
+YY_MORE_ADJ	lex.c	509;"	d	file:	ln:509
+YY_NEW_FILE	lex.c	157;"	d	file:	ln:157
+YY_NULL	lex.c	131;"	d	file:	ln:131
+YY_NUM_RULES	lex.c	390;"	d	file:	ln:390
+YY_READ_BUF_SIZE	lex.c	700;"	d	file:	ln:700
+YY_READ_BUF_SIZE	lex.c	702;"	d	file:	ln:702
+YY_REDUCE_PRINT	parse.c	1161;"	d	file:	ln:1161
+YY_REDUCE_PRINT	parse.c	1174;"	d	file:	ln:1174
+YY_RESTORE_YY_MORE_OFFSET	lex.c	510;"	d	file:	ln:510
+YY_RULE_SETUP	lex.c	793;"	d	file:	ln:793
+YY_SC_TO_UI	lex.c	138;"	d	file:	ln:138
+YY_STACK_PRINT	parse.c	1123;"	d	file:	ln:1123
+YY_STACK_PRINT	parse.c	1173;"	d	file:	ln:1173
+YY_START	lex.c	150;"	d	file:	ln:150
+YY_START_STACK_INCR	lex.c	760;"	d	file:	ln:760
+YY_STATE_BUF_SIZE	lex.c	176;"	d	file:	ln:176
+YY_STATE_EOF	lex.c	154;"	d	file:	ln:154
+YY_STRUCT_YY_BUFFER_STATE	lex.c	215;"	d	file:	ln:215
+YY_SYMBOL_PRINT	parse.c	1028;"	d	file:	ln:1028
+YY_SYMBOL_PRINT	parse.c	1172;"	d	file:	ln:1172
+YY_TYPEDEF_YY_BUFFER_STATE	lex.c	179;"	d	file:	ln:179
+YY_TYPEDEF_YY_SIZE_T	lex.c	210;"	d	file:	ln:210
+YY_USER_ACTION	lex.c	785;"	d	file:	ln:785
+YY_USE_CONST	lex.c	112;"	d	file:	ln:112
+YY_USE_CONST	lex.c	119;"	d	file:	ln:119
+Z_EPSILON	random.c	261;"	d	file:	ln:261
+Z_MAX	random.c	262;"	d	file:	ln:262
+_Qsolve	qrfactor.c	/^VEC	*_Qsolve(QR,diag,b,x,tmp)$/;"	f	ln:184
+_STDLIB_H	parse.c	408;"	d	file:	ln:408
+_STDLIB_H	parse.c	436;"	d	file:	ln:436
+__STDC_LIMIT_MACROS	lex.c	58;"	d	file:	ln:58
+__STDC__	parse.c	158;"	d	file:	ln:158
+__add__	machine.c	/^void	__add__(dp1,dp2,out,len)$/;"	f	ln:112
+__ip__	machine.c	/^double	__ip__(dp1,dp2,len)$/;"	f	ln:39
+__mltadd__	machine.c	/^void	__mltadd__(dp1,dp2,s,len)$/;"	f	ln:75
+__smlt__	machine.c	/^void	__smlt__(dp,s,out,len)$/;"	f	ln:101
+__sub__	machine.c	/^void	__sub__(dp1,dp2,out,len)$/;"	f	ln:122
+__zero__	machine.c	/^void	__zero__(dp,len)$/;"	f	ln:132
+_in_prod	vecop.c	/^double	_in_prod(a,b,i0)$/;"	f	ln:36
+_m_copy	copy.c	/^MAT	*_m_copy(MAT *in,MAT *out,u_int i0,u_int j0)$/;"	f	ln:35
+_set_col	submat.c	/^MAT	*_set_col(mat,col,vec,i0)$/;"	f	ln:78
+_set_row	submat.c	/^MAT	*_set_row(mat,row,vec,j0)$/;"	f	ln:97
+_v_copy	copy.c	/^VEC	*_v_copy(VEC *in,VEC *out,u_int i0)$/;"	f	ln:56
+_v_map	vecop.c	/^VEC	*_v_map(f,params,x,out)$/;"	f	ln:205
+_v_norm1	norm.c	/^double	_v_norm1(x,scale)$/;"	f	ln:38
+_v_norm2	norm.c	/^double	_v_norm2(x,scale)$/;"	f	ln:74
+_v_norm_inf	norm.c	/^double	_v_norm_inf(x,scale)$/;"	f	ln:103
+all_directions	direct.c	/^static int all_directions = -1;$/;"	v	file:	ln:54
+alloc_exp_variogram	sem.c	/^static SAMPLE_VGM *alloc_exp_variogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {$/;"	f	file:	ln:750
+alloc_mv_grid	mapio.c	/^static void alloc_mv_grid(GRIDMAP * m)$/;"	f	file:	ln:384
+alloca	parse.c	401;"	d	file:	ln:401
+almost_equals	utils.c	/^int almost_equals(const char *tok, const char *str) {$/;"	f	ln:601
+alpha	direct.c	/^static double alpha = 0.0, beta = 0.0,$/;"	v	file:	ln:50
+anis	parse.c	/^static double range[NRANGEPARS], anis[5];$/;"	v	file:	ln:151
+argv0	glvars.c	/^char *argv0;$/;"	v	ln:132
+average_duplicates	data.c	/^static int average_duplicates(DATA *d) { $/;"	f	file:	ln:1002
+bbox_from_data	nsearch.c	/^static BBOX bbox_from_data(DATA *d) {$/;"	f	file:	ln:597
+bbox_from_grid	nsearch.c	/^static BBOX bbox_from_grid(const GRIDMAP *gt, const DATA_GRIDMAP *dg) {$/;"	f	file:	ln:568
+bessi1	vario_fn.c	/^static double bessi1(double x)$/;"	f	file:	ln:301
+bessk1	vario_fn.c	/^static double bessk1(double x)$/;"	f	file:	ln:325
+beta	gls.c	131;"	ln:131	struct:GLM
+beta	msim.c	/^	***beta = NULL;$/;"	v	file:	ln:76
+biv_finput	ivecop.c	/^IVEC	*biv_finput(FILE *fp,IVEC *iv)$/;"	f	ln:287
+block	glvars.c	/^static DPOINT block;$/;"	v	file:	ln:168
+block_discr	block.c	/^DATA *block_discr(DATA *d, const DPOINT *block, const DPOINT *where) {$/;"	f	ln:67
+bp	parse.c	/^static DPOINT *bp = NULL;$/;"	v	file:	ln:146
+bquote	lex.c	/^static char *bquote(char *command) {$/;"	f	file:	ln:2159
+c	random.c	/^static double c, cd, cm;$/;"	v	file:	ln:477
+calc_VinvIminAw	reml.c	/^static MAT *calc_VinvIminAw(MAT *Vw, MAT *X, MAT *VinvIminAw, int calc_Aw) {$/;"	f	file:	ln:201
+calc_data_mean_std	data.c	/^static void calc_data_mean_std(DATA *d) {$/;"	f	file:	ln:777
+calc_ll	reml.c	/^static double calc_ll(MAT *Vw, MAT *X, VEC *y, int n) {$/;"	f	file:	ln:281
+calc_lm	lm.c	/^LM *calc_lm(LM *lm) {$/;"	f	ln:415
+calc_mu	lm.c	/^double calc_mu(const DATA *d, const DPOINT *where) {$/;"	f	ln:621
+calc_poly	getest.c	/^static void calc_poly(DPOINT *where, double *est) {$/;"	f	file:	ln:540
+calc_polynomial	data.c	/^double calc_polynomial(DPOINT *p, int colX) {$/;"	f	ln:956
+calc_polynomial_point	data.c	/^void calc_polynomial_point(DATA *d, DPOINT *pt) {$/;"	f	ln:942
+calc_polynomials	data.c	/^void calc_polynomials(DATA *d) {$/;"	f	ln:909
+calc_r	stat.c	/^void calc_r(double *a, double *b, int n, double *corr) {$/;"	f	ln:111
+calc_rhs_Tr_m	reml.c	/^static void calc_rhs_Tr_m(int n_models, MAT **Vk,MAT *VinvIminAw, $/;"	f	file:	ln:252
+calc_variogram	sem.c	/^int calc_variogram(VARIOGRAM *v \/* pointer to VARIOGRAM structure *\/,$/;"	f	ln:109
+catch_FPE	err.c	/^void	catch_FPE()$/;"	f	ln:384
+cd	random.c	/^static double c, cd, cm;$/;"	v	file:	ln:477
+cdf_read_grd_info	mapio.c	/^static int cdf_read_grd_info(GRIDMAP * m, double *x_max, double *y_min,$/;"	f	file:	ln:1960
+centre_area	data.c	/^void centre_area(DATA *area) {$/;"	f	ln:653
+check_assign_expr	parse.c	/^static void check_assign_expr(GSTAT_EXPR *expr) {$/;"	f	file:	ln:3074
+check_edges	polygon.c	/^void check_edges(DATA *d, const DPOINT *where) {$/;"	f	ln:430
+check_global_variables	glvars.c	/^void check_global_variables(void) {$/;"	f	ln:845
+check_mem	utils.c	/^void check_mem(char *f, int *l) {$/;"	f	ln:226
+check_open	predict.c	/^static GRIDMAP *check_open(const char *name, int i) {$/;"	f	file:	ln:459
+check_open_edges	polygon.c	/^static unsigned int check_open_edges(const PLOT_POINT data, const int target_side,$/;"	f	file:	ln:781
+check_variography	vario.c	/^void check_variography(const VARIOGRAM **v, int n_vars)$/;"	f	ln:563
+clean_up	glvars.c	/^static void clean_up(void) {$/;"	f	file:	ln:1172
+cm	random.c	/^static double c, cd, cm;$/;"	v	file:	ln:477
+collapse	random.c	/^static unsigned int collapse (int anyint, unsigned int size)$/;"	f	file:	ln:480
+command_file_name	glvars.c	/^char *command_file_name;$/;"	v	ln:129
+command_line	glvars.c	/^char *command_line;$/;"	v	ln:128
+cond_sim	sim.c	/^const double *cond_sim(double *est, int dim, METHOD m, int *is_datum, int orc) {$/;"	f	ln:50
+contains_intercept	lm.c	/^static int contains_intercept(MAT *X) {$/;"	f	file:	ln:576
+convert_C	gls.c	/^static void convert_C(MAT *C, VEC *mu, double (*fn)(double)) {$/;"	f	file:	ln:744
+convert_C0	gls.c	/^static void convert_C0(MAT *C0, VEC *mu, VEC *mu0, double (*fn)(double)) {$/;"	f	file:	ln:763
+convert_MSPE	gls.c	/^static void convert_MSPE(MAT *MSPE, VEC *mu0, double (*fn)(double)) {$/;"	f	file:	ln:779
+convert_null_to_space	utils.c	/^static void convert_null_to_space(char *cp, const char *fname, const FILE *stream) {$/;"	f	file:	ln:505
+coordinates_are_equal	data.c	/^int coordinates_are_equal(const DATA *a, const DATA *b) {$/;"	f	ln:1520
+correct_for_anisotropy	fit.c	/^static void correct_for_anisotropy(VARIOGRAM *v) {$/;"	f	file:	ln:562
+correct_orv	sim.c	/^void correct_orv(double *est, int n_vars, int orc) {$/;"	f	ln:202
+correct_strata	data.c	/^static void correct_strata(DATA *d) {$/;"	f	file:	ln:812
+count_errs	err.c	/^int	count_errs(int flag)$/;"	f	ln:219
+covariogram	sem.c	/^static SAMPLE_VGM *covariogram(DATA *d, SAMPLE_VGM *ev) {$/;"	f	file:	ln:407
+cp	lex.c	/^static char *cp = NULL;$/;"	v	file:	ln:570
+cpu_is_little_endian	utils.c	/^int cpu_is_little_endian(void) {$/;"	f	ln:658
+create_data_area	glvars.c	/^DATA *create_data_area(void) {$/;"	f	ln:564
+create_lm	lm.c	/^static void create_lm(DATA **data, int nvars) {$/;"	f	file:	ln:163
+cross_covariogram	sem.c	/^static SAMPLE_VGM *cross_covariogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {$/;"	f	file:	ln:522
+cross_variogram	sem.c	/^static SAMPLE_VGM *cross_variogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {$/;"	f	file:	ln:455
+cube	norm.c	/^double cube(x)$/;"	f	ln:69
+d	parse.c	/^static DATA *d = NULL, **dpp = NULL;$/;"	v	file:	ln:145
+d_cmp	stat.c	/^int CDECL d_cmp(const double *a, const double *b) {$/;"	f	ln:191
+da_fn_exponential	vario_fn.c	/^double da_fn_exponential(double h, double *r) {$/;"	f	ln:145
+da_fn_gaussian	vario_fn.c	/^double da_fn_gaussian(double h, double *r) {$/;"	f	ln:127
+da_fn_hole	vario_fn.c	/^double da_fn_hole(double h, double *r) {$/;"	f	ln:186
+da_fn_linear	vario_fn.c	/^double da_fn_linear(double h, double *r) {$/;"	f	ln:71
+da_fn_logarithmic	vario_fn.c	/^double da_fn_logarithmic(double h, double *r) {$/;"	f	ln:199
+da_fn_pentaspherical	vario_fn.c	/^double da_fn_pentaspherical(double h, double *r) {$/;"	f	ln:162
+da_fn_periodic	vario_fn.c	/^double da_fn_periodic(double h, double *r) {$/;"	f	ln:176
+da_fn_power	vario_fn.c	/^double da_fn_power(double h, double *r) {$/;"	f	ln:209
+da_fn_spherical	vario_fn.c	/^double da_fn_spherical(double h, double *r) {$/;"	f	ln:103
+da_general	vario.c	/^double da_general(VGM_MODEL *part, double h) {$/;"	f	ln:742
+da_is_zero	vario_fn.c	/^double da_is_zero(double h, double *r) {$/;"	f	ln:234
+data	glvars.c	/^static DATA **data = NULL;$/;"	v	file:	ln:164
+data_add_X	data.c	/^void data_add_X(DATA *d, int col) {$/;"	f	ln:898
+data_area	glvars.c	/^static DATA *data_area = NULL; \/* area that discretises block *\/$/;"	v	file:	ln:167
+data_block_diagonal	data.c	/^double data_block_diagonal(DATA *data) {$/;"	f	ln:2187
+data_types	data.c	/^const DATA_TYPE data_types[] = {$/;"	v	ln:63
+datagrid_rebuild	data.c	/^void datagrid_rebuild(DATA *d, int adjust_to_gridcentres) {$/;"	f	ln:2178
+debug_level	glvars.c	/^int debug_level; \/* debug level *\/$/;"	v	ln:70
+debug_level	mapio.c	/^int debug_level = 1, gl_secure = 0, gl_rowwise = 1;$/;"	v	ln:94
+debug_level	random.c	/^ int debug_level = 0;$/;"	v	ln:69
+debug_result	gls.c	/^static void debug_result(VEC *blup, MAT *MSPE, enum GLS_WHAT pred) {$/;"	f	file:	ln:586
+decide_on_coincide	glvars.c	/^int decide_on_coincide(void) {$/;"	f	ln:809
+default_error	userio.c	/^void default_error(const char *mess, int level) {$/;"	f	ln:298
+default_misval_idrisi	mapio.c	/^static float default_misval_idrisi = 0.0;$/;"	v	file:	ln:180
+default_printlog	userio.c	/^void default_printlog(const char *mess) {$/;"	f	ln:328
+default_progress	userio.c	/^void default_progress(unsigned int current, unsigned int total) {$/;"	f	ln:360
+default_warning	userio.c	/^void default_warning(const char *mess) {$/;"	f	ln:286
+dequeue	pqueue.c	/^Q_ELEMENT_WHAT dequeue(QUEUE *q) {$/;"	f	ln:212
+dist_cmp	polygon.c	/^static int CDECL dist_cmp(const DPOINT **pa, const DPOINT **pb) {$/;"	f	file:	ln:770
+dist_cmp	select.c	/^int CDECL dist_cmp(const DPOINT **pa, const DPOINT **pb) {$/;"	f	ln:290
+divide	sem.c	/^static void divide(SAMPLE_VGM *ev) {$/;"	f	file:	ln:873
+double	random.c	93;"	file:	ln:93
+double	random.c	93;"	file:	ln:93
+double_index_cmp	utils.c	/^int CDECL double_index_cmp(const Double_index *a, const Double_index *b) {$/;"	f	ln:850
+double_is_mv	data.c	/^static int double_is_mv(DATA *d, double *f) {$/;"	f	file:	ln:587
+dump_all	glvars.c	/^int dump_all(void) {$/;"	f	ln:608
+dup_csf	mapio.c	/^static GRIDMAP *dup_csf(GRIDMAP * m, GRIDMAP * dup)$/;"	f	file:	ln:1444
+dval	parse.c	290;"	ln:290	union:YYSTYPE
+e_random	random.c	/^int e_random(int argc, char *argv[]) {$/;"	f	ln:229
+ecalloc	utils.c	/^void *ecalloc(size_t nobj, size_t size) {$/;"	f	ln:124
+edcalloc	utils.c	/^void *edcalloc(size_t nobj, size_t size, char *file, int line) {$/;"	f	ln:195
+edfree	utils.c	/^void edfree(void *p, char *file, int line) {$/;"	f	ln:165
+edges	glvars.c	/^static POLYGON **edges = NULL;            \/* per-file edges *\/$/;"	v	file:	ln:176
+edges_names	glvars.c	/^static char **edges_names = NULL;  \/* names of edges files, n_edges long *\/$/;"	v	file:	ln:174
+edmalloc	utils.c	/^void *edmalloc(size_t size, char *file, int line) {$/;"	f	ln:176
+edrealloc	utils.c	/^void *edrealloc(void *p, size_t size, char *file, int line) {$/;"	f	ln:210
+efclose	userio.c	41;"	d	file:	ln:41
+efclose	utils.c	/^int efclose(FILE *stream) {$/;"	f	ln:303
+effective_range	vario.c	/^double effective_range(const VARIOGRAM *v) {$/;"	f	ln:989
+efopen	utils.c	/^FILE *efopen(const char *filename, const char *mode) {$/;"	f	ln:236
+efree	pqueue.c	57;"	d	file:	ln:57
+efree	utils.c	/^void efree(void *p) {$/;"	f	ln:102
+elapsed	utils.c	/^void elapsed(void) {$/;"	f	ln:772
+emalloc	pqueue.c	55;"	d	file:	ln:55
+emalloc	utils.c	/^void *emalloc(size_t size) {$/;"	f	ln:109
+enlarge_queue	pqueue.c	/^static void enlarge_queue(QUEUE *q) {$/;"	f	file:	ln:64
+enqueue	pqueue.c	/^void enqueue(QUEUE *q, Q_ELEMENT_WHAT *el, int n) {$/;"	f	ln:136
+epclose	utils.c	/^int epclose(FILE *stream) {$/;"	f	ln:359
+epopen	utils.c	/^FILE *epopen(const char *filename, const char *mode) {$/;"	f	ln:339
+er_datum	mapio.c	/^static char *er_datum = NULL;$/;"	v	file:	ln:201
+er_projection	mapio.c	/^static char *er_projection = NULL;$/;"	v	file:	ln:202
+erealloc	pqueue.c	56;"	d	file:	ln:56
+erealloc	utils.c	/^void *erealloc(void *p, size_t size) {$/;"	f	ln:140
+eremove	utils.c	/^int eremove(const char *name) {$/;"	f	ln:370
+err_flag	err.c	/^static	int	err_flag = EF_EXIT, $/;"	v	file:	ln:202
+err_is_list_attached	err.c	/^int err_is_list_attached(int list_num)$/;"	f	ln:189
+err_list	err.c	/^static Err_list     err_list[ERR_LIST_MAX_LEN] = {$/;"	v	file:	ln:123
+err_list_attach	err.c	/^int err_list_attach(int list_num, int list_len,char **err_ptr,int warn)$/;"	f	ln:140
+err_list_end	err.c	/^static int err_list_end = 2;   \/* number of elements in err_list *\/$/;"	v	file:	ln:129
+err_list_free	err.c	/^int err_list_free(int list_num)$/;"	f	ln:173
+err_mesg	err.c	/^static	char	*err_mesg[] =$/;"	v	file:	ln:70
+est	predict.c	/^static double *est = NULL;$/;"	v	file:	ln:76
+est_quant	stat.c	/^double est_quant(double *list, double p, int n) {$/;"	f	ln:80
+est_quantile_div	getest.c	/^static void est_quantile_div(DATA *data, double *est, int div) {$/;"	f	file:	ln:447
+est_skew_kurt	getest.c	/^static void est_skew_kurt(DATA *data, double *est) {$/;"	f	file:	ln:487
+esystem	utils.c	/^int esystem(char *cmd) {$/;"	f	ln:321
+etmpfile	utils.c	/^FILE *etmpfile(void) {$/;"	f	ln:329
+ev2map	sem.c	/^static void ev2map(VARIOGRAM *v) {$/;"	f	file:	ln:973
+ev_err	err.c	/^int	ev_err(char *file,int err_num,int line_num,char *fn_name,int list_num)$/;"	f	ln:233
+exit_predictions	predict.c	/^static void exit_predictions(PRED_AT what) {$/;"	f	file:	ln:236
+expr	parse.c	/^GSTAT_EXPR expr = { NULL, NULL, UNKNOWN, NOLIMIT };$/;"	v	ln:182
+f	utils.c	82;"	ln:82	struct:FILE_RECORD
+field_error	data.c	/^static void field_error(char *fname, int line_nr, int fld, char *text) {$/;"	f	file:	ln:1067
+file_exists	utils.c	/^int file_exists(const char *name) {$/;"	f	ln:387
+file_record	utils.c	/^static FILE_RECORD *file_record = NULL;$/;"	v	file:	ln:84
+file_record_size	utils.c	/^static int file_record_size = 0;$/;"	v	file:	ln:85
+file_size	utils.c	/^size_t file_size(const char *fname) {$/;"	f	ln:547
+fill_cutoff_width	sem.c	/^void fill_cutoff_width(DATA *data \/* pointer to DATA structure to derive$/;"	f	ln:639
+fill_est	gls.c	/^static void fill_est(DATA **d, VEC *blup, MAT *MSPE, int n_vars, double *est)$/;"	f	file:	ln:552
+fill_weights	fit.c	/^static int fill_weights(const VARIOGRAM *vp, PERM *p, LM *lm) {$/;"	f	file:	ln:372
+fit_GaussNewton	fit.c	/^static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, int iter,$/;"	f	file:	ln:248
+fit_int2enum	vario.c	/^FIT_TYPE fit_int2enum(int fit) {$/;"	f	ln:906
+fit_shift	vario.c	/^FIT_TYPE fit_shift(FIT_TYPE now, int next) {$/;"	f	ln:921
+fit_variogram	fit.c	/^int fit_variogram(VARIOGRAM *v) {$/;"	f	ln:72
+fix_minmax	data.c	/^static int fix_minmax = 0;$/;"	v	file:	ln:132
+flex_int16_t	lex.c	/^typedef int16_t flex_int16_t;$/;"	t	file:	ln:64
+flex_int16_t	lex.c	/^typedef short int flex_int16_t;$/;"	t	file:	ln:70
+flex_int32_t	lex.c	/^typedef int32_t flex_int32_t;$/;"	t	file:	ln:66
+flex_int32_t	lex.c	/^typedef int flex_int32_t;$/;"	t	file:	ln:71
+flex_int8_t	lex.c	/^typedef int8_t flex_int8_t;$/;"	t	file:	ln:62
+flex_int8_t	lex.c	/^typedef signed char flex_int8_t;$/;"	t	file:	ln:69
+flex_uint16_t	lex.c	/^typedef uint16_t flex_uint16_t;$/;"	t	file:	ln:65
+flex_uint16_t	lex.c	/^typedef unsigned short int flex_uint16_t;$/;"	t	file:	ln:73
+flex_uint32_t	lex.c	/^typedef uint32_t flex_uint32_t;$/;"	t	file:	ln:67
+flex_uint32_t	lex.c	/^typedef unsigned int flex_uint32_t;$/;"	t	file:	ln:74
+flex_uint8_t	lex.c	/^typedef uint8_t flex_uint8_t;$/;"	t	file:	ln:63
+flex_uint8_t	lex.c	/^typedef unsigned char flex_uint8_t; $/;"	t	file:	ln:72
+float_error	err.c	/^static void	float_error(int num)$/;"	f	file:	ln:375
+fn_bessel	vario_fn.c	/^double fn_bessel(double h, double *r) {$/;"	f	ln:111
+fn_circular	vario_fn.c	/^double fn_circular(double h, double *r) {$/;"	f	ln:79
+fn_exclass	vario_fn.c	/^double fn_exclass(double h, double *r) {$/;"	f	ln:139
+fn_exponential	vario_fn.c	/^double fn_exponential(double h, double *r) {$/;"	f	ln:133
+fn_gaussian	vario_fn.c	/^double fn_gaussian(double h, double *r) {$/;"	f	ln:119
+fn_hole	vario_fn.c	/^double fn_hole(double h, double *r) {$/;"	f	ln:180
+fn_intercept	vario_fn.c	/^double fn_intercept(double h, double *r) {$/;"	f	ln:230
+fn_legendre	vario_fn.c	/^double fn_legendre(double h, double *r) {$/;"	f	ln:219
+fn_linear	vario_fn.c	/^double fn_linear(double h, double *r) {$/;"	f	ln:63
+fn_logarithmic	vario_fn.c	/^double fn_logarithmic(double h, double *r) {$/;"	f	ln:193
+fn_matern	vario_fn.c	/^double fn_matern(double h, double *p) {$/;"	f	ln:239
+fn_matern2	vario_fn.c	/^double fn_matern2(double h, double *p) {$/;"	f	ln:281
+fn_nugget	vario_fn.c	/^double fn_nugget(double h, double *r) {$/;"	f	ln:59
+fn_pentaspherical	vario_fn.c	/^double fn_pentaspherical(double h, double *r) {$/;"	f	ln:151
+fn_periodic	vario_fn.c	/^double fn_periodic(double h, double *r) {$/;"	f	ln:170
+fn_power	vario_fn.c	/^double fn_power(double h, double *r) {$/;"	f	ln:203
+fn_spherical	vario_fn.c	/^double fn_spherical(double h, double *r) {$/;"	f	ln:93
+fn_spline	vario_fn.c	/^double fn_spline(double h, double *r) {$/;"	f	ln:213
+fname	polygon.c	/^static const char *fname = NULL;$/;"	v	file:	ln:103
+format	lm.c	/^static char    *format = "%14.9g ";$/;"	v	file:	ln:635
+fprint_header_vgm	sem.c	/^void fprint_header_vgm(FILE *f, const DATA *a, const DATA *b,$/;"	f	ln:702
+fprint_sample_vgm	sem.c	/^void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev) {$/;"	f	ln:908
+fprint_variogram	vario.c	/^void fprint_variogram(FILE *f, const VARIOGRAM *v, int verbose) {$/;"	f	ln:275
+free_d_vector	data.c	/^void free_d_vector(D_VECTOR *v) {$/;"	f	ln:2227
+free_data	data.c	/^void free_data(DATA *d) {$/;"	f	ln:1073
+free_data_gridmap	data.c	/^static void free_data_gridmap(DATA_GRIDMAP *t) {$/;"	f	file:	ln:2154
+free_glm	gls.c	/^void free_glm(void *v_glm) {$/;"	f	ln:712
+free_lm	lm.c	/^void free_lm(LM *lm) {$/;"	f	ln:145
+free_queue	pqueue.c	/^void free_queue(QUEUE *q) {$/;"	f	ln:115
+free_simulations	msim.c	/^void free_simulations(void) {$/;"	f	ln:471
+free_strbuf	utils.c	/^void free_strbuf(STRING_BUFFER *b) {$/;"	f	ln:832
+free_variogram	vario.c	/^void free_variogram(VARIOGRAM *v) {$/;"	f	ln:241
+ftoa	utils.c	/^char *ftoa(const char *fmt, float *a) {$/;"	f	ln:560
+gauss	block.c	/^static double gauss[4] = { $/;"	v	file:	ln:48
+gauss_w	block.c	/^double gauss_w[4] = {$/;"	v	ln:54
+getSSErr	fit.c	/^static double getSSErr(const VARIOGRAM *vp, PERM *p, LM *lm) {$/;"	f	file:	ln:223
+get_X	lm.c	/^MAT *get_X(DATA **d, MAT *X, int nvars) {$/;"	f	ln:255
+get_X0	lm.c	/^MAT *get_X0(DATA **d, MAT *X0, DPOINT *where, int nvars) {$/;"	f	ln:280
+get_area_centre	data.c	/^DATA *get_area_centre(DATA *area, DATA *d) {$/;"	f	ln:595
+get_block_p	glvars.c	/^DPOINT *get_block_p(void) {$/;"	f	ln:569
+get_col	submat.c	/^VEC	*get_col(mat,col,vec)$/;"	f	ln:36
+get_colX_nr	lm.c	/^static int get_colX_nr(DATA **d, int var, int this_x) {$/;"	f	file:	ln:317
+get_corr_mat	gls.c	/^static MAT *get_corr_mat(MAT *C, MAT *R) {$/;"	f	file:	ln:809
+get_covariance	vario.c	/^double get_covariance(const VARIOGRAM *vp, double dx, double dy, double dz) {$/;"	f	ln:480
+get_covariance_list	s.c	/^SEXP get_covariance_list(SEXP ids, SEXP covariance, SEXP dist_list) {$/;"	f	ln:865
+get_data_area	glvars.c	/^DATA *get_data_area(void) {$/;"	f	ln:560
+get_dataval	glvars.c	/^DATA *get_dataval(void) {$/;"	f	ln:556
+get_default_method	glvars.c	/^METHOD get_default_method(void) {$/;"	f	ln:703
+get_edges	glvars.c	/^POLYGON **get_edges(void) {$/;"	f	ln:1258
+get_edges_name	glvars.c	/^const char *get_edges_name(const int i) {$/;"	f	ln:1238
+get_est	getest.c	/^void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {$/;"	f	ln:65
+get_free	pqueue.c	/^static Q_ELEMENT *get_free(QUEUE *q) {$/;"	f	file:	ln:126
+get_gstat_data	glvars.c	/^DATA **get_gstat_data(void) {$/;"	f	ln:552
+get_gstat_errno	userio.c	/^enum Gstat_errno get_gstat_errno(void) {$/;"	f	ln:224
+get_gstat_error_message	userio.c	/^const char *get_gstat_error_message(void) {$/;"	f	ln:272
+get_index	nsearch.c	91;"	d	file:	ln:91
+get_index	sem.c	/^static int get_index(double dist, SAMPLE_VGM *ev) {$/;"	f	file:	ln:847
+get_line	utils.c	/^char *get_line(char **s, int *size, FILE *stream) {$/;"	f	ln:398
+get_map_location	predict.c	/^static int get_map_location(DPOINT *loc, int random_path,$/;"	f	file:	ln:506
+get_mask0	predict.c	/^const void *get_mask0(void) {$/;"	f	ln:662
+get_maskX	predict.c	/^static double *get_maskX(DATA **data, DPOINT *p,$/;"	f	file:	ln:327
+get_mask_name	glvars.c	/^const char *get_mask_name(int i) {$/;"	f	ln:285
+get_max_sill	vario.c	/^double get_max_sill(int n) {$/;"	f	ln:440
+get_method	glvars.c	/^METHOD get_method(void) {$/;"	f	ln:579
+get_mode	glvars.c	/^MODE get_mode(void) {$/;"	f	ln:526
+get_msim	msim.c	/^float ***get_msim(void) {$/;"	f	ln:780
+get_mu	gls.c	/^static VEC *get_mu(VEC *mu, const VEC *y, DATA **d, int n_vars) {$/;"	f	file:	ln:797
+get_n_beta_set	glvars.c	/^int get_n_beta_set(void) {$/;"	f	ln:517
+get_n_edges	glvars.c	/^int get_n_edges(void) {$/;"	f	ln:1254
+get_n_edges_polys	glvars.c	/^int *get_n_edges_polys(void) {$/;"	f	ln:1244
+get_n_masks	glvars.c	/^int get_n_masks(void) {$/;"	f	ln:291
+get_n_outfile	glvars.c	/^int get_n_outfile(void) {$/;"	f	ln:536
+get_n_sim_locs_table	predict.c	/^unsigned int *get_n_sim_locs_table(unsigned int *size) {$/;"	f	ln:425
+get_n_variogram_models	vario.c	/^int get_n_variogram_models(void) {$/;"	f	ln:1003
+get_n_vars	glvars.c	/^int get_n_vars(void) {$/;"	f	ln:513
+get_n_vgms	glvars.c	/^int get_n_vgms(void) {$/;"	f	ln:530
+get_nearest_point	nsearch.c	/^static DPOINT *get_nearest_point(QUEUE *q, DPOINT *where, DATA *d) {$/;"	f	file:	ln:664
+get_next_random_number	random.c	/^double get_next_random_number(void)$/;"	f	ln:545
+get_outfile_name	glvars.c	/^const char **get_outfile_name(void) {$/;"	f	ln:540
+get_outfile_namei	glvars.c	/^const char *get_outfile_namei(int i) {$/;"	f	ln:573
+get_point_location	predict.c	/^static DPOINT *get_point_location(int random_path) {$/;"	f	file:	ln:477
+get_random_cell	predict.c	/^static int get_random_cell(GRIDMAP *m, unsigned int *row, unsigned int *col) {$/;"	f	file:	ln:546
+get_row	submat.c	/^VEC	*get_row(mat,row,vec)$/;"	f	ln:57
+get_seed	random.c	/^unsigned long int get_seed(void) {$/;"	f	ln:118
+get_semivariance	vario.c	/^double get_semivariance(const VARIOGRAM *vp, double dx, double dy, double dz) {$/;"	f	ln:456
+get_tm	vario.c	/^static ANIS_TM *get_tm(double anis[5]) {$/;"	f	file:	ln:1052
+get_values	fit.c	/^static void get_values(const char *fname, VARIOGRAM *v) {$/;"	f	file:	ln:512
+get_vgm	glvars.c	/^VARIOGRAM *get_vgm(int i) {$/;"	f	ln:544
+get_weights	lm.c	/^static VEC *get_weights(DATA **d, VEC *weights, int nvars) {$/;"	f	file:	ln:343
+get_y	lm.c	/^VEC *get_y(DATA **d, VEC *y, int nvars) {$/;"	f	ln:299
+gl_alpha	glvars.c	/^double gl_alpha; \/* alpha, beta, tol_[hor|ver]: anisotropy parameters *\/$/;"	v	ln:113
+gl_beta	glvars.c	/^double gl_beta;$/;"	v	ln:114
+gl_bounds	glvars.c	/^double *gl_bounds; \/* boundaries semivariogram intervals *\/$/;"	v	ln:102
+gl_cn_max	glvars.c	/^double gl_cn_max; \/* check maximum condition number. Default: don't *\/$/;"	v	ln:112
+gl_coincide	glvars.c	/^int gl_coincide; \/* do the variable locations coincide? *\/$/;"	v	ln:71
+gl_cressie	glvars.c	/^int gl_cressie; \/* use cressie's estimator ? *\/$/;"	v	ln:72
+gl_cutoff	glvars.c	/^double gl_cutoff; \/* variogram cutoff *\/$/;"	v	ln:104
+gl_display	glvars.c	/^char *gl_display;$/;"	v	ln:120
+gl_dots	glvars.c	/^int gl_dots; \/* treshold nr for points -> dots, gnuplot *\/$/;"	v	ln:73
+gl_fit	glvars.c	/^int gl_fit; \/* do not fit a variogram *\/$/;"	v	ln:74
+gl_fit_limit	glvars.c	/^double gl_fit_limit; \/* convergence criterion on fit *\/$/;"	v	ln:105
+gl_format	glvars.c	/^char *gl_format;$/;"	v	ln:125
+gl_fraction	glvars.c	/^double gl_fraction; \/* fraction of max dist for cutoff *\/$/;"	v	ln:106
+gl_gauss	glvars.c	/^int gl_gauss; \/* gaussian quadr. block covariances ? *\/$/;"	v	ln:75
+gl_gcv	glvars.c	/^double gl_gcv; \/* generalized covariance constant *\/$/;"	v	ln:107
+gl_gls_residuals	glvars.c	/^int gl_gls_residuals; \/* calc. gls residuals? *\/$/;"	v	ln:98
+gl_gnuplot	glvars.c	/^char *gl_gnuplot;$/;"	v	ln:123
+gl_gnuplot35	glvars.c	/^char *gl_gnuplot35;$/;"	v	ln:126
+gl_gpterm	glvars.c	/^char *gl_gpterm;$/;"	v	ln:127
+gl_idp	glvars.c	/^double gl_idp; \/* default inverse distance power *\/$/;"	v	ln:108
+gl_iter	glvars.c	/^int gl_iter; \/* max. n. iter for mivque estimates *\/$/;"	v	ln:76
+gl_iwidth	glvars.c	/^double gl_iwidth; \/* variogram class width *\/$/;"	v	ln:109
+gl_jgraph	glvars.c	/^int gl_jgraph; \/* do jgraph plot in batch mode ? *\/$/;"	v	ln:77
+gl_lhs	glvars.c	/^int gl_lhs; \/* apply Latin hypercube sampling to Gaussian simulations *\/$/;"	v	ln:78
+gl_longlat	glvars.c	/^int gl_longlat; \/* indicates whether coordinates are longitude\/latitude, or Euclidian *\/$/;"	v	ln:79
+gl_marginal_names	glvars.c	/^char **gl_marginal_names;$/;"	v	ln:119
+gl_marginal_values	glvars.c	/^double *gl_marginal_values;$/;"	v	ln:103
+gl_mv_string	glvars.c	/^char *gl_mv_string;$/;"	v	ln:121
+gl_mv_string	mapio.c	/^char *gl_mv_string = "NA";$/;"	v	ln:96
+gl_mv_string	random.c	/^ char *gl_mv_string = "NA";$/;"	v	ln:71
+gl_n_intervals	glvars.c	/^int gl_n_intervals; \/* n variogram intervals *\/$/;"	v	ln:81
+gl_n_marginals	glvars.c	/^int gl_n_marginals; \/* the n marginal distributions *\/$/;"	v	ln:82
+gl_n_uk	glvars.c	/^int gl_n_uk; \/* min. # of cs points to use ok *\/$/;"	v	ln:84
+gl_nblockdiscr	glvars.c	/^int gl_nblockdiscr; \/* block discrimination in each dimension *\/$/;"	v	ln:80
+gl_nocheck	glvars.c	/^int gl_nocheck; \/* do not check LMC\/IC ? *\/$/;"	v	ln:86
+gl_nsim	glvars.c	/^int gl_nsim; \/* number of simultanious simulations *\/$/;"	v	ln:83
+gl_numbers	glvars.c	/^int gl_numbers; \/* plot numbers on variogram plot? *\/$/;"	v	ln:85
+gl_order	glvars.c	/^int gl_order; \/* do order relation correction *\/$/;"	v	ln:87
+gl_pager	glvars.c	/^char *gl_pager;$/;"	v	ln:124
+gl_plotfile	glvars.c	/^char *gl_plotfile;  \/* gnuplot file name *\/$/;"	v	ln:122
+gl_plotweights	glvars.c	/^int gl_plotweights; \/* plot kriging weights? *\/$/;"	v	ln:88
+gl_quantile	glvars.c	/^double gl_quantile; \/* sample quantile *\/$/;"	v	ln:110
+gl_register_pairs	glvars.c	/^int gl_register_pairs; \/* register sample variogram pairs? *\/$/;"	v	ln:89
+gl_rowwise	glvars.c	/^int gl_rowwise; \/* deal with raster maps row-wise, or as complete blocks? *\/$/;"	v	ln:90
+gl_rp	glvars.c	/^int gl_rp; \/* follow random path for gs\/is? *\/$/;"	v	ln:91
+gl_secure	glvars.c	/^int gl_secure; \/* disallow system() and popen()? *\/$/;"	v	ln:92
+gl_secure	random.c	/^ int gl_secure = 0;$/;"	v	ln:70
+gl_seed	glvars.c	/^int gl_seed; \/* seed is set? *\/$/;"	v	ln:93
+gl_sim_beta	glvars.c	/^int gl_sim_beta; \/* simulation mode for beta: 0 multiv GLS, 1 univ GLS, 2 OLS *\/$/;"	v	ln:94
+gl_sparse	glvars.c	/^int gl_sparse; \/* use sparse covariance matrices? *\/$/;"	v	ln:99
+gl_spiral	glvars.c	/^int gl_spiral; \/* do spiral search if possible? *\/$/;"	v	ln:95
+gl_split	glvars.c	/^int gl_split; \/* see nsearch.c: was Q_SPLIT_AT *\/$/;"	v	ln:96
+gl_sym_ev	glvars.c	/^int gl_sym_ev; \/* default symmetric ps.cr.v.\/cr.cv. ? *\/$/;"	v	ln:97
+gl_tol_hor	glvars.c	/^double gl_tol_hor;$/;"	v	ln:115
+gl_tol_ver	glvars.c	/^double gl_tol_ver;$/;"	v	ln:116
+gl_xvalid	glvars.c	/^int gl_xvalid; \/* do cross validation on first variable *\/$/;"	v	ln:100
+gl_zero	glvars.c	/^double gl_zero; \/* zero tolerance; 2-squared *\/$/;"	v	ln:117
+gl_zero	mapio.c	/^double gl_zero = DEF_zero;$/;"	v	ln:95
+gl_zero_est	glvars.c	/^int gl_zero_est; \/* est. variogram at h 0 seperately? *\/$/;"	v	ln:101
+gl_zmap	glvars.c	/^double gl_zmap; \/* height of the map *\/$/;"	v	ln:111
+gls	gls.c	/^void gls(DATA **d \/* pointer to DATA array *\/,$/;"	f	ln:140
+gnu_fit	fit.c	/^static void gnu_fit(VARIOGRAM *v) {$/;"	f	file:	ln:422
+grass	utils.c	/^int grass(void) {$/;"	f	ln:859
+grid_push_point	data.c	/^static void grid_push_point(DATA *d, DPOINT *p, int adjust_to_gridcentres) {$/;"	f	file:	ln:2159
+gsetup_gridmap	data.c	/^DATA_GRIDMAP *gsetup_gridmap(double x_ul, double y_ul, double cellsizex, $/;"	f	ln:2131
+gstat_S_fillgrid	s.c	/^static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams) {$/;"	f	file:	ln:1120
+gstat_clo_error	userio.c	/^void gstat_clo_error(char *f, int l, enum Gstat_errno err, int a) {$/;"	f	ln:174
+gstat_debug_level	s.c	/^SEXP gstat_debug_level(SEXP level) {$/;"	f	ln:1083
+gstat_error	userio.c	/^void gstat_error(char *fname, int line,$/;"	f	ln:129
+gstat_exit	s.c	/^SEXP gstat_exit(SEXP x) {$/;"	f	ln:117
+gstat_fit_variogram	s.c	/^SEXP gstat_fit_variogram(SEXP fit, SEXP fit_sill, SEXP fit_range) {$/;"	f	ln:1038
+gstat_gcdist	gcdist.c	/^double gstat_gcdist(double lon1, double lon2, double lat1, double lat2) {$/;"	f	ln:16
+gstat_get_variogram_models	s.c	/^SEXP gstat_get_variogram_models(SEXP dolong) {$/;"	f	ln:898
+gstat_handler	userio.c	/^} gstat_handler = { NULL, NULL, NULL, NULL };$/;"	v	file:	ln:67
+gstat_init	s.c	/^SEXP gstat_init(SEXP s_debug_level) {$/;"	f	ln:91
+gstat_load_command	s.c	/^SEXP gstat_load_command(SEXP commands) {$/;"	f	ln:919
+gstat_load_ev	s.c	/^SEXP gstat_load_ev(SEXP np, SEXP dist, SEXP gamma) {$/;"	f	ln:1003
+gstat_load_variogram	s.c	/^SEXP gstat_load_variogram(SEXP s_ids, SEXP s_model, SEXP s_sills, SEXP s_ranges, $/;"	f	ln:747
+gstat_new_data	s.c	/^SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, $/;"	f	ln:128
+gstat_new_dummy_data	s.c	/^SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta, $/;"	f	ln:274
+gstat_predict	s.c	/^SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block, $/;"	f	ln:339
+gstat_set_block	s.c	/^static void gstat_set_block(long i, SEXP block, SEXP block_cols, DPOINT *current) {$/;"	f	file:	ln:573
+gstat_start	utils.c	/^void gstat_start(void) {$/;"	f	ln:768
+gstat_variogram	s.c	/^SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction, $/;"	f	ln:609
+gstat_variogram_values	s.c	/^SEXP gstat_variogram_values(SEXP ids, SEXP pars, SEXP covariance, SEXP dist_values) {$/;"	f	ln:807
+gstat_yy_create_buffer	lex.c	/^    YY_BUFFER_STATE gstat_yy_create_buffer  (FILE * file, int  size )$/;"	f	ln:1526
+gstat_yy_delete_buffer	lex.c	/^    void gstat_yy_delete_buffer (YY_BUFFER_STATE  b )$/;"	f	ln:1554
+gstat_yy_flex_debug	lex.c	/^int gstat_yy_flex_debug = 0;$/;"	v	ln:502
+gstat_yy_flush_buffer	lex.c	/^    void gstat_yy_flush_buffer (YY_BUFFER_STATE  b )$/;"	f	ln:1605
+gstat_yy_init_buffer	lex.c	/^    static void gstat_yy_init_buffer  (YY_BUFFER_STATE  b, FILE * file )$/;"	f	file:	ln:1577
+gstat_yy_load_buffer_state	lex.c	/^static void gstat_yy_load_buffer_state  (void)$/;"	f	file:	ln:1512
+gstat_yy_scan_buffer	lex.c	/^YY_BUFFER_STATE gstat_yy_scan_buffer  (char * base, yy_size_t  size )$/;"	f	ln:1732
+gstat_yy_scan_bytes	lex.c	/^YY_BUFFER_STATE gstat_yy_scan_bytes  (yyconst char * yybytes, int  _yybytes_len )$/;"	f	ln:1782
+gstat_yy_scan_string	lex.c	/^YY_BUFFER_STATE gstat_yy_scan_string (yyconst char * yystr )$/;"	f	ln:1769
+gstat_yy_switch_to_buffer	lex.c	/^    void gstat_yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer )$/;"	f	ln:1481
+gstat_yyalloc	lex.c	/^void *gstat_yyalloc (yy_size_t  size )$/;"	f	ln:2000
+gstat_yyensure_buffer_stack	lex.c	/^static void gstat_yyensure_buffer_stack (void)$/;"	f	file:	ln:1683
+gstat_yyerror	parse.c	193;"	d	file:	ln:193
+gstat_yyfree	lex.c	/^void gstat_yyfree (void * ptr )$/;"	f	ln:2017
+gstat_yyget_debug	lex.c	/^int gstat_yyget_debug  (void)$/;"	f	ln:1914
+gstat_yyget_in	lex.c	/^FILE *gstat_yyget_in  (void)$/;"	f	ln:1858
+gstat_yyget_leng	lex.c	/^int gstat_yyget_leng  (void)$/;"	f	ln:1874
+gstat_yyget_lineno	lex.c	/^int gstat_yyget_lineno  (void)$/;"	f	ln:1849
+gstat_yyget_out	lex.c	/^FILE *gstat_yyget_out  (void)$/;"	f	ln:1866
+gstat_yyget_text	lex.c	/^char *gstat_yyget_text  (void)$/;"	f	ln:1883
+gstat_yyin	lex.c	/^FILE *gstat_yyin = (FILE *) 0, *gstat_yyout = (FILE *) 0;$/;"	v	ln:364
+gstat_yyleng	lex.c	/^int gstat_yyleng;$/;"	v	ln:302
+gstat_yylex_destroy	lex.c	/^int gstat_yylex_destroy  (void)$/;"	f	ln:1955
+gstat_yylineno	lex.c	/^int gstat_yylineno = 1;$/;"	v	ln:370
+gstat_yypop_buffer_state	lex.c	/^void gstat_yypop_buffer_state (void)$/;"	f	ln:1664
+gstat_yypush_buffer_state	lex.c	/^void gstat_yypush_buffer_state (YY_BUFFER_STATE new_buffer )$/;"	f	ln:1634
+gstat_yyrealloc	lex.c	/^void *gstat_yyrealloc  (void * ptr, yy_size_t  size )$/;"	f	ln:2005
+gstat_yyrestart	lex.c	/^    void gstat_yyrestart  (FILE * input_file )$/;"	f	ln:1464
+gstat_yyset_debug	lex.c	/^void gstat_yyset_debug (int  bdebug )$/;"	f	ln:1919
+gstat_yyset_in	lex.c	/^void gstat_yyset_in (FILE *  in_str )$/;"	f	ln:1904
+gstat_yyset_lineno	lex.c	/^void gstat_yyset_lineno (int  line_number )$/;"	f	ln:1892
+gstat_yyset_out	lex.c	/^void gstat_yyset_out (FILE *  out_str )$/;"	f	ln:1909
+gstat_yytext	lex.c	/^char *gstat_yytext;$/;"	v	ln:511
+gstat_yywrap	lex.c	/^int gstat_yywrap(void) {$/;"	f	ln:2076
+hhtrcols	hsehldr.c	/^MAT	*hhtrcols(MAT *M,u_int i0,u_int j0,VEC *hh,double beta)$/;"	f	ln:136
+hhtrrows	hsehldr.c	/^MAT	*hhtrrows(MAT *M,u_int i0,u_int j0,VEC *hh,double beta)$/;"	f	ln:94
+hhtrvec	hsehldr.c	/^VEC	*hhtrvec(VEC *hh,double beta,u_int  i0,VEC *in,VEC *out)$/;"	f	ln:68
+hhvec	hsehldr.c	/^VEC	*hhvec(VEC *vec,u_int i0,Real *beta,VEC *out,Real *newval)$/;"	f	ln:46
+id	parse.c	/^static int id = -1, id1 = -1, id2 = -1, col1 = -1, col2 = -1,$/;"	v	file:	ln:148
+iiv_finput	ivecop.c	/^IVEC	*iiv_finput(FILE *fp,IVEC *iv)$/;"	f	ln:248
+in_bbox	nsearch.c	/^static int in_bbox(const DPOINT *where, BBOX bbox) {$/;"	f	file:	ln:433
+inext	init.c	/^static int  inext = 0, inextp = 31;$/;"	v	file:	ln:137
+init	random.c	/^static int init = 0;$/;"	v	file:	ln:81
+init_data_minmax	data.c	/^void init_data_minmax(void) {$/;"	f	ln:297
+init_dpoint	data.c	/^static void init_dpoint(DATA *d, DPOINT *current) {$/;"	f	file:	ln:456
+init_ev	vario.c	/^SAMPLE_VGM *init_ev(void) {$/;"	f	ln:212
+init_global_variables	glvars.c	/^int init_global_variables(void) {$/;"	f	ln:178
+init_gstat_data	glvars.c	/^static void init_gstat_data(int n) {$/;"	f	file:	ln:303
+init_lm	lm.c	/^LM *init_lm(LM *lm) {$/;"	f	ln:129
+init_one_data	data.c	/^DATA *init_one_data(DATA *data) {$/;"	f	ln:1137
+init_predictions	predict.c	/^static void init_predictions(PRED_AT w) {$/;"	f	file:	ln:169
+init_qnode	nsearch.c	/^static void init_qnode(QTREE_NODE **p_node, int isleaf, BBOX bb) {$/;"	f	file:	ln:167
+init_qtree	nsearch.c	/^static void init_qtree(DATA *d) {$/;"	f	file:	ln:113
+init_queue	pqueue.c	/^QUEUE *init_queue(QUEUE *q, int (CDECL *cmp)(const Q_ELEMENT_WHAT *a, $/;"	f	ln:89
+init_random	random.c	/^static void init_random(void) {$/;"	f	file:	ln:154
+init_simulations	msim.c	/^void init_simulations(DATA **d) {$/;"	f	ln:113
+init_userio	userio.c	/^void init_userio(int use_stdio) {$/;"	f	ln:104
+init_variogram	vario.c	/^VARIOGRAM *init_variogram(VARIOGRAM *v) {$/;"	f	ln:158
+init_variogram_part	vario.c	/^static void init_variogram_part(VGM_MODEL *p) {$/;"	f	file:	ln:199
+input	lex.c	601;"	d	file:	ln:601
+intercept_only	data.c	/^int intercept_only(const DATA *d) {$/;"	f	ln:2235
+inverse_dist	getest.c	/^static double inverse_dist(DATA *data, DPOINT *where, double idPow) {$/;"	f	file:	ln:509
+is_block_expr	parse.c	/^static int is_block_expr(GSTAT_EXPR *expr, const char *s) {$/;"	f	file:	ln:3114
+is_data_expr	parse.c	/^static int is_data_expr(DATA *d, GSTAT_EXPR *expr, const char *fld) {$/;"	f	file:	ln:2901
+is_directional	sem.c	/^int is_directional(VARIOGRAM *v) {$/;"	f	ln:615
+is_leaf	nsearch.c	89;"	d	file:	ln:89
+is_mv_double	utils.c	/^int is_mv_double(const double *d) {$/;"	f	ln:647
+is_mv_float	utils.c	/^int is_mv_float(const float *f) {$/;"	f	ln:637
+is_one_integer	data.c	/^static int is_one_integer(char *line, int *n) {$/;"	f	file:	ln:1120
+is_openf	userio.c	54;"	d	file:	ln:54
+is_openf	userio.c	56;"	d	file:	ln:56
+is_posdef	vario.c	/^static int is_posdef(MAT *A) {$/;"	f	file:	ln:688
+is_qtree_search	nsearch.c	90;"	d	file:	ln:90
+is_set_expr	parse.c	/^static int is_set_expr(GSTAT_EXPR *expr, const char *name) {$/;"	f	file:	ln:2991
+is_simulation	glvars.c	/^int is_simulation(METHOD m) {$/;"	f	ln:588
+is_singular	lm.c	/^int is_singular(MAT *X, double cond_max) {$/;"	f	ln:606
+is_singular_silent	lm.c	/^static int is_singular_silent(MAT *X, double cond_max, double *ce) {$/;"	f	file:	ln:590
+is_valid_cs	vario.c	/^static int is_valid_cs(const VARIOGRAM *aa, const VARIOGRAM *bb,$/;"	f	file:	ln:517
+is_valid_strata_map	predict.c	/^int is_valid_strata_map(const char *name, int n_vars) {$/;"	f	ln:405
+iv_add	ivecop.c	/^IVEC	*iv_add(IVEC *iv1,IVEC *iv2,IVEC *out)$/;"	f	ln:164
+iv_copy	ivecop.c	/^IVEC	*iv_copy(IVEC *in,IVEC *out)$/;"	f	ln:130
+iv_dump	ivecop.c	/^void	iv_dump(FILE *fp,IVEC *iv)$/;"	f	ln:312
+iv_finput	ivecop.c	/^IVEC	*iv_finput(FILE *fp,IVEC *x)$/;"	f	ln:237
+iv_foutput	ivecop.c	/^void	iv_foutput(FILE *fp,IVEC *iv)$/;"	f	ln:213
+iv_free	ivecop.c	/^int	iv_free(IVEC *iv)$/;"	f	ln:68
+iv_free_vars	memory.c	/^int iv_free_vars(IVEC **ipv,...)$/;"	f	ln:682
+iv_free_vars	memory.c	/^int iv_free_vars(va_alist) va_dcl$/;"	f	ln:947
+iv_get	ivecop.c	/^IVEC	*iv_get(int dim)$/;"	f	ln:42
+iv_get_vars	memory.c	/^int iv_get_vars(int dim,...) $/;"	f	ln:518
+iv_get_vars	memory.c	/^int iv_get_vars(va_alist) va_dcl$/;"	f	ln:774
+iv_move	ivecop.c	/^IVEC	*iv_move(IVEC *in,int i0,int dim0,IVEC *out,int i1)$/;"	f	ln:147
+iv_resize	ivecop.c	/^IVEC	*iv_resize(IVEC *iv,int new_dim)$/;"	f	ln:96
+iv_resize_vars	memory.c	/^int iv_resize_vars(int new_dim,...) $/;"	f	ln:600
+iv_resize_vars	memory.c	/^int iv_resize_vars(va_alist) va_dcl$/;"	f	ln:863
+iv_sort	ivecop.c	/^IVEC	*iv_sort(IVEC *x, PERM *order)$/;"	f	ln:344
+iv_sub	ivecop.c	/^IVEC	*iv_sub(IVEC *iv1,IVEC *iv2,IVEC *out)$/;"	f	ln:189
+iv_zero	init.c	/^IVEC	*iv_zero(IVEC *ix)$/;"	f	ln:53
+ival	parse.c	290;"	ln:290	union:YYSTYPE
+len	err.c	121;"	ln:121	struct:Err_list
+lex_error	lex.c	/^void lex_error(void) {$/;"	f	ln:2088
+lhs	msim.c	/^void lhs(DATA **d, int n_vars, int stratify) {$/;"	f	ln:506
+lhs_one	msim.c	/^static void lhs_one(Double_index *list, unsigned int dim, $/;"	f	file:	ln:654
+line	ivecop.c	/^static char    line[MAXLINE];$/;"	v	file:	ln:37
+line_buf	mapio.c	/^static char *line_buf = NULL;$/;"	v	file:	ln:198
+line_of_sight	polygon.c	/^unsigned char line_of_sight(const PLOT_POINT data, const PLOT_POINT target,$/;"	f	ln:546
+line_size	mapio.c	/^static int line_size = 0;$/;"	v	file:	ln:199
+listp	err.c	121;"	ln:121	struct:Err_list
+load_ev	sem.c	/^static SAMPLE_VGM *load_ev(SAMPLE_VGM *ev, const char *fname) {$/;"	f	file:	ln:1000
+logfile	userio.c	/^static FILE *logfile = NULL;$/;"	v	file:	ln:60
+logfile_name	glvars.c	/^char *logfile_name;$/;"	v	ln:130
+logprint_data_header	data.c	/^static void logprint_data_header(const DATA *d) {$/;"	f	file:	ln:1284
+logprint_lm	lm.c	/^void logprint_lm(DATA *d, LM *lm) {$/;"	f	ln:364
+logprint_point	data.c	/^void logprint_point(const DPOINT *p, const DATA *d) {$/;"	f	ln:1291
+logprint_qtree	nsearch.c	/^static void logprint_qtree(QTREE_NODE *node, int depth) {$/;"	f	file:	ln:537
+logprint_queue	nsearch.c	/^void logprint_queue(QUEUE *queue) {$/;"	f	ln:716
+logprint_variogram	vario.c	/^void logprint_variogram(const VARIOGRAM *v, int verbose) {$/;"	f	ln:270
+m_add	matop.c	/^MAT	*m_add(mat1,mat2,out)$/;"	f	ln:37
+m_free	memory.c	/^int	m_free(mat)$/;"	f	ln:153
+m_free_vars	memory.c	/^int m_free_vars(MAT **va,...)$/;"	f	ln:721
+m_free_vars	memory.c	/^int m_free_vars(va_alist) va_dcl$/;"	f	ln:982
+m_get	memory.c	/^MAT	*m_get(m,n)$/;"	f	ln:35
+m_get_vars	memory.c	/^int m_get_vars(int m,int n,...) $/;"	f	ln:534
+m_get_vars	memory.c	/^int m_get_vars(va_alist) va_dcl$/;"	f	ln:791
+m_ident	init.c	/^MAT	*m_ident(MAT *A)$/;"	f	ln:87
+m_inverse	lufactor.c	/^MAT	*m_inverse(A,out)$/;"	f	ln:178
+m_logoutput	lm.c	/^void m_logoutput(MAT * a)$/;"	f	ln:636
+m_mlt	matop.c	/^MAT	*m_mlt(A,B,OUT)$/;"	f	ln:87
+m_move	copy.c	/^MAT	*m_move(MAT *in,int i0,int j0,int m0,int n0,MAT *out,int i1,int j1)$/;"	f	ln:104
+m_norm1	norm.c	/^double	m_norm1(A)$/;"	f	ln:132
+m_norm_frob	norm.c	/^double	m_norm_frob(A)$/;"	f	ln:180
+m_norm_inf	norm.c	/^double	m_norm_inf(A)$/;"	f	ln:156
+m_ones	init.c	/^MAT	*m_ones(MAT *A)$/;"	f	ln:259
+m_rand	init.c	/^MAT	*m_rand(MAT *A)$/;"	f	ln:228
+m_resize	memory.c	/^MAT	*m_resize(A,new_m,new_n)$/;"	f	ln:261
+m_resize_vars	memory.c	/^int m_resize_vars(int m,int n,...) $/;"	f	ln:616
+m_resize_vars	memory.c	/^int m_resize_vars(va_alist) va_dcl$/;"	f	ln:880
+m_sub	matop.c	/^MAT	*m_sub(mat1,mat2,out)$/;"	f	ln:62
+m_transp	matop.c	/^MAT	*m_transp(in,out)$/;"	f	ln:299
+m_version	version.c	/^void	m_version()$/;"	f	ln:41
+m_zero	init.c	/^MAT	*m_zero(MAT *A)$/;"	f	ln:68
+main	mapio.c	/^int main(int argc, char *argv[])$/;"	f	ln:3070
+main	pqueue.c	/^int main(int argc, char *argv[]) {$/;"	f	ln:256
+makeQ	qrfactor.c	/^MAT	*makeQ(QR,diag,Qout)$/;"	f	ln:225
+makeR	qrfactor.c	/^MAT	*makeR(QR,Rout)$/;"	f	ln:275
+make_gls	gls.c	/^double *make_gls(DATA *d, int calc_residuals) {$/;"	f	ln:613
+make_gls_mv	gls.c	/^double *make_gls_mv(DATA **d, int n_vars) {$/;"	f	ln:664
+make_ols	lm.c	/^double *make_ols(DATA *d) {$/;"	f	ln:93
+make_residuals_lm	lm.c	/^void make_residuals_lm(DATA *d) {$/;"	f	ln:194
+map_cell_is_mv	mapio.c	/^int map_cell_is_mv(GRIDMAP * m \/* pointer to map *\/ ,$/;"	f	ln:470
+map_dup	mapio.c	/^GRIDMAP *map_dup(const char *fname, GRIDMAP *m)$/;"	f	ln:533
+map_equal	mapio.c	/^int map_equal(GRIDMAP * a, GRIDMAP * b)$/;"	f	ln:614
+map_free	mapio.c	/^void map_free(GRIDMAP * m \/* pointer to GRIDMAP structure *\/ )$/;"	f	ln:586
+map_get_cell	mapio.c	/^float map_get_cell(GRIDMAP * m \/* pointer to GRIDMAP *\/ ,$/;"	f	ln:486
+map_name_nr	mapio.c	/^void map_name_nr(GRIDMAP *mask, const char *base, char *name, int nr, int max) {$/;"	f	ln:3029
+map_put_cell	mapio.c	/^int map_put_cell(GRIDMAP * m,	\/* pointer to GRIDMAP structure *\/$/;"	f	ln:503
+map_read	mapio.c	/^GRIDMAP *map_read(GRIDMAP * m)$/;"	f	ln:303
+map_rowcol2xy	mapio.c	/^int map_rowcol2xy(GRIDMAP * m,	\/* pointer to gridmap *\/$/;"	f	ln:403
+map_set_row	mapio.c	/^static void map_set_row(GRIDMAP *m, unsigned int new_row)$/;"	f	file:	ln:239
+map_sign	predict.c	/^void map_sign(GRIDMAP *m, const char *what) {$/;"	f	ln:616
+map_switch_type	mapio.c	/^GRIDMAP *map_switch_type(GRIDMAP *in, MAPTYPE type) {$/;"	f	ln:2958
+map_xy2rowcol	mapio.c	/^int map_xy2rowcol(GRIDMAP * m \/* pointer to map *\/ ,$/;"	f	ln:434
+mask_topology	predict.c	/^static DATA_GRIDMAP *mask_topology = NULL;$/;"	v	file:	ln:81
+masks	predict.c	/^static GRIDMAP **masks = NULL, **outmap = NULL;$/;"	v	file:	ln:77
+max	data.c	/^static DPOINT min, max;$/;"	v	file:	ln:131
+max	norm.c	100;"	d	file:	ln:100
+max_block_dimension	glvars.c	/^double max_block_dimension(int reset) {$/;"	f	ln:593
+mem_attach_list	meminfo.c	/^int mem_attach_list(list, ntypes, type_names, free_funcs, info_sum)$/;"	f	ln:105
+mem_bytes_list	meminfo.c	/^void mem_bytes_list(type,old_size,new_size,list)$/;"	f	ln:315
+mem_connect	meminfo.c	/^MEM_CONNECT mem_connect[MEM_CONNECT_MAX_LISTS] = {$/;"	v	ln:97
+mem_dump_list	meminfo.c	/^void mem_dump_list(fp,list)$/;"	f	ln:165
+mem_free_funcs	meminfo.c	/^static int (*mem_free_funcs[MEM_NUM_STD_TYPES])() = {$/;"	f	file:	ln:78
+mem_free_vars	meminfo.c	/^int mem_free_vars(list)$/;"	f	ln:131
+mem_info_bytes	meminfo.c	/^long mem_info_bytes(type,list)$/;"	f	ln:232
+mem_info_file	meminfo.c	/^void mem_info_file(fp,list)$/;"	f	ln:263
+mem_info_is_on	meminfo.c	/^int mem_info_is_on(void)$/;"	f	ln:219
+mem_info_numvar	meminfo.c	/^int mem_info_numvar(type,list)$/;"	f	ln:246
+mem_info_on	meminfo.c	/^int mem_info_on(sw)$/;"	f	ln:209
+mem_info_sum	meminfo.c	/^static MEM_ARRAY   mem_info_sum[MEM_NUM_STD_TYPES];  $/;"	v	file:	ln:74
+mem_is_list_attached	meminfo.c	/^int mem_is_list_attached(list)$/;"	f	ln:149
+mem_numvar_list	meminfo.c	/^void mem_numvar_list(type,num,list)$/;"	f	ln:361
+mem_switched_on	meminfo.c	/^static int	mem_switched_on = MEM_SWITCH_ON_DEF;  \/* on\/off *\/$/;"	v	file:	ln:204
+mem_type_names	meminfo.c	/^static char *mem_type_names[] = {$/;"	v	file:	ln:54
+message	userio.c	/^void message(char *fmt, ...) {$/;"	f	ln:181
+method	glvars.c	/^static METHOD method = NSP;$/;"	v	file:	ln:169
+method_string	glvars.c	/^const char *method_string(METHOD i) {$/;"	f	ln:425
+methods	glvars.c	/^const METHODS methods[] = { \/* methods and codes *\/$/;"	v	ln:135
+min	data.c	/^static DPOINT min, max;$/;"	v	file:	ln:131
+mk_var_names	data.c	/^static void mk_var_names(DATA *d) {$/;"	f	file:	ln:409
+mknan	mapio.c	1833;"	d	file:	ln:1833
+mknan	mapio.c	1838;"	d	file:	ln:1838
+mknan	mapio.c	1843;"	d	file:	ln:1843
+mmtr_mlt	matop.c	/^MAT	*mmtr_mlt(A,B,OUT)$/;"	f	ln:133
+mode	glvars.c	/^static MODE mode = MODE_NSP; \/* MODE_NSP, SIMPLE, STRATIFY or MULTIVARIABLE *\/$/;"	v	file:	ln:172
+mode	utils.c	82;"	ln:82	struct:FILE_RECORD
+model_shift	vario.c	/^VGM_MODEL_TYPE model_shift(VGM_MODEL_TYPE now, int next) {$/;"	f	ln:965
+mrand	init.c	/^double mrand(void)$/;"	f	ln:142
+mrand_list	init.c	/^static long mrand_list[56];$/;"	v	file:	ln:135
+mrandlist	init.c	/^void	mrandlist(Real a[], int len)$/;"	f	ln:165
+ms_mltadd	matop.c	/^MAT	*ms_mltadd(A1,A2,s,out)$/;"	f	ln:382
+msim	msim.c	/^	***msim = NULL, $/;"	v	file:	ln:69
+mtrm_mlt	matop.c	/^MAT	*mtrm_mlt(A,B,OUT)$/;"	f	ln:168
+mu	gls.c	131;"	ln:131	struct:GLM
+mu0	gls.c	131;"	ln:131	struct:GLM
+mv_mlt	matop.c	/^VEC	*mv_mlt(A,b,out)$/;"	f	ln:204
+mv_mltadd	matop.c	/^VEC	*mv_mltadd(v1,v2,A,alpha,out)$/;"	f	ln:424
+mv_move	copy.c	/^VEC	*mv_move(MAT *in,int i0,int j0,int m0,int n0,VEC *out,int i1)$/;"	f	ln:151
+my_dtoa	utils.c	/^char *my_dtoa(const char *fmt, double *a) {$/;"	f	ln:578
+my_gsl_normal	random.c	/^double my_gsl_normal(void){$/;"	f	ln:102
+my_gsl_uniform	random.c	/^double my_gsl_uniform(void){$/;"	f	ln:99
+my_normal	random.c	/^double my_normal(void) {$/;"	f	ln:343
+my_rng	random.c	/^} my_rng = { NULL, NULL };$/;"	v	file:	ln:93
+myqsort	pxop.c	/^static int myqsort(a,num)$/;"	f	file:	ln:228
+n_done	predict.c	/^static unsigned int n_done;$/;"	v	file:	ln:79
+n_edges	glvars.c	/^static int n_edges = 0; \/*really n of edges files *\/$/;"	v	file:	ln:173
+n_edges_polys	glvars.c	/^static int *n_edges_polys = NULL;  \/* number of edges in every edge file *\/$/;"	v	file:	ln:175
+n_last	glvars.c	/^static int n_last = 0, n_v_last = 0, n_o_last = 0;$/;"	v	file:	ln:171
+n_mallocs	utils.c	/^unsigned int n_mallocs = 0;$/;"	v	ln:159
+n_orvc	sim.c	/^static unsigned int n_orvc = 0, n_total = 0;$/;"	v	file:	ln:48
+n_pred_locs	predict.c	/^unsigned int n_pred_locs = 0;$/;"	v	ln:86
+n_sim_locs	msim.c	/^	*n_sim_locs = NULL, \/* n simulation locations per data variable *\/$/;"	v	file:	ln:82
+n_variograms_set	glvars.c	/^int n_variograms_set(void) {$/;"	f	ln:295
+n_vars	glvars.c	/^static int n_vars = 0, n_masks = 0;$/;"	v	file:	ln:170
+name	parse.c	180;"	ln:180	struct:GSTAT_EXPR
+name	utils.c	82;"	ln:82	struct:FILE_RECORD
+name_identifier	glvars.c	/^const char *name_identifier(int i) {$/;"	f	ln:352
+new_glm	gls.c	/^static GLM *new_glm(void) {$/;"	f	file:	ln:702
+new_map	mapio.c	/^GRIDMAP *new_map(MAP_READ_STATUS status)$/;"	f	ln:209
+next_location	predict.c	/^static DPOINT *next_location(DPOINT *loc, PRED_AT what, int random_path,$/;"	f	file:	ln:274
+ni	random.c	/^static unsigned int ni;$/;"	v	file:	ln:474
+nj	random.c	/^static unsigned int nj;$/;"	v	file:	ln:475
+no_progress	userio.c	/^void no_progress(unsigned int current, unsigned int total) {$/;"	f	ln:459
+node_cmp	nsearch.c	/^static int CDECL node_cmp(const QUEUE_NODE *a, const QUEUE_NODE *b) {$/;"	f	file:	ln:736
+nr	utils.c	82;"	ln:82	struct:FILE_RECORD
+o_filename	glvars.c	/^char *o_filename;$/;"	v	ln:131
+octant_select	select.c	/^static int octant_select(DATA *d, DPOINT *where) {$/;"	f	file:	ln:217
+ofn	parse.c	/^static char **ofn = NULL, *boundary_file = NULL;$/;"	v	file:	ln:152
+old_progress_handler	userio.c	/^static void (*old_progress_handler)(unsigned int this, unsigned int total) $/;"	f	file:	ln:69
+outfile_names	glvars.c	/^static char **outfile_names = NULL, **ids = NULL, **mask_names = NULL;$/;"	v	file:	ln:165
+output	lex.c	603;"	d	file:	ln:603
+p_normal	random.c	/^double p_normal(double z) {$/;"	f	ln:259
+p_triangular	random.c	/^double p_triangular(double z) {$/;"	f	ln:368
+p_uniform	random.c	/^double p_uniform(double z) {$/;"	f	ln:201
+parse_cmd	parse.c	/^int parse_cmd(const char *cmd, const char *fname) {$/;"	f	ln:3170
+parse_file	parse.c	/^int parse_file(const char *fname) {$/;"	f	ln:3177
+parse_gstatrc	parse.c	/^void parse_gstatrc(void) {$/;"	f	ln:3212
+parse_variogram	parse.c	/^static VARIOGRAM *parse_variogram = NULL;$/;"	v	file:	ln:153
+pb_norm_1D	nsearch.c	/^double pb_norm_1D(const DPOINT *where, BBOX bbox) {$/;"	f	ln:457
+pb_norm_2D	nsearch.c	/^double pb_norm_2D(const DPOINT *where, BBOX bbox) {$/;"	f	ln:473
+pb_norm_3D	nsearch.c	/^double pb_norm_3D(const DPOINT *where, BBOX bbox) {$/;"	f	ln:495
+pb_norm_gc2	data.c	/^static double pb_norm_gc2(const DPOINT *where, BBOX bbox) {$/;"	f	file:	ln:1514
+plot_weights	gls.c	/^static void plot_weights(DATA **d, int nvars, DPOINT *where, MAT *weights) {$/;"	f	file:	ln:830
+plotfile	glvars.c	/^FILE *plotfile;$/;"	v	ln:133
+point_in_polygon	polygon.c	/^int point_in_polygon(PLOT_POINT point, POLYGON *pl)$/;"	f	ln:296
+point_norm_1D	data.c	/^static double point_norm_1D(const DPOINT *p) {$/;"	f	file:	ln:1464
+point_norm_2D	data.c	/^static double point_norm_2D(const DPOINT *p) {$/;"	f	file:	ln:1469
+point_norm_3D	data.c	/^static double point_norm_3D(const DPOINT *p) {$/;"	f	file:	ln:1474
+point_norm_gc	data.c	/^static double point_norm_gc(const DPOINT *p) {$/;"	f	file:	ln:1500
+polynomial	data.c	/^const POLY_NM polynomial[N_POLY] =$/;"	v	ln:133
+pop_gstat_progress_handler	userio.c	/^void pop_gstat_progress_handler(void) {$/;"	f	ln:264
+pop_point	data.c	/^void pop_point(DATA *d, int list_nr)$/;"	f	ln:1436
+pp_norm_1D	data.c	/^static double pp_norm_1D(const DPOINT *a, const DPOINT *b) {$/;"	f	file:	ln:1479
+pp_norm_2D	data.c	/^static double pp_norm_2D(const DPOINT *a, const DPOINT *b) {$/;"	f	file:	ln:1486
+pp_norm_3D	data.c	/^static double pp_norm_3D(const DPOINT *a, const DPOINT *b) {$/;"	f	file:	ln:1493
+pp_norm_gc	data.c	/^double pp_norm_gc(const DPOINT *a, const DPOINT *b) {$/;"	f	ln:1506
+pp_norm_gc2	data.c	/^static double pp_norm_gc2(const DPOINT *a, const DPOINT *b) {$/;"	f	file:	ln:1510
+pr_warning	userio.c	/^void pr_warning(char *fmt, ...) {$/;"	f	ln:196
+pred_lm	lm.c	/^void pred_lm(DATA **data, int n_vars, DPOINT *where, double *est) {$/;"	f	ln:54
+predict_all	predict.c	/^void predict_all(DATA **data) {$/;"	f	ln:92
+predict_lm	lm.c	/^static void predict_lm(LM *lm, MAT *X0, double *est) {$/;"	f	file:	ln:223
+print_data	data.c	/^void print_data(const DATA *d, int list) {$/;"	f	ln:1228
+print_data_line	data.c	/^char *print_data_line(const DATA *d, char **to) {$/;"	f	ln:1983
+print_file_record	utils.c	/^void print_file_record(void) {$/;"	f	ln:727
+print_n	utils.c	/^void print_n(void) {$/;"	f	ln:161
+print_orvc	sim.c	/^void print_orvc(void) {$/;"	f	ln:284
+print_poly_log	polygon.c	/^static void print_poly_log(POLYGON *edge) {$/;"	f	file:	ln:236
+print_progress	userio.c	/^void print_progress(unsigned int current, unsigned int total) {$/;"	f	ln:219
+print_queue	pqueue.c	/^static void print_queue(QUEUE *q) {$/;"	f	file:	ln:227
+print_selection	select.c	/^static void print_selection(DATA *d, DPOINT *where) {$/;"	f	file:	ln:311
+print_sim	msim.c	/^void print_sim(void) {$/;"	f	ln:100
+print_start_up	random.c	/^static void print_start_up(void) {$/;"	f	file:	ln:145
+print_to_logfile_if_open	userio.c	/^void print_to_logfile_if_open(const char *mess) {$/;"	f	ln:276
+printlog	random.c	68;"	d	file:	ln:68
+printlog	userio.c	/^void printlog(const char *fmt, ...) {$/;"	f	ln:310
+ptr	parse.c	180;"	ln:180	struct:GSTAT_EXPR
+push_bound	glvars.c	/^void push_bound(double value) {$/;"	f	ln:270
+push_d_vector	data.c	/^D_VECTOR *push_d_vector(double d, D_VECTOR *v) {$/;"	f	ln:2209
+push_data_X	parse.c	/^static void push_data_X(DATA *d, int id) {$/;"	f	file:	ln:3100
+push_edges_name	glvars.c	/^void push_edges_name(const char *name) {$/;"	f	ln:1228
+push_gstat_progress_handler	userio.c	/^void push_gstat_progress_handler($/;"	f	ln:255
+push_marginal	parse.c	/^static void push_marginal(char *name, double value) {$/;"	f	file:	ln:3132
+push_mask_name	glvars.c	/^void push_mask_name(const char *name) {$/;"	f	ln:260
+push_point	data.c	/^void push_point(DATA *d, const DPOINT *p) {$/;"	f	ln:1315
+push_to_cloud	sem.c	/^static void push_to_cloud(SAMPLE_VGM *ev, double gamma, double dist,$/;"	f	file:	ln:834
+push_to_merge_table	data.c	/^int push_to_merge_table(DATA *d, int to_var, int col_this_X, int col_other_X) {$/;"	f	ln:2098
+push_to_v	vario.c	/^void push_to_v(VARIOGRAM *v, const char *mod, double sill, double *range, $/;"	f	ln:1010
+push_to_v_table	vario.c	/^void push_to_v_table(VARIOGRAM *v, double maxdist, int length, double *values,$/;"	f	ln:1036
+push_variogram_model	vario.c	/^int push_variogram_model(VARIOGRAM *v, VGM_MODEL part) {$/;"	f	ln:760
+px_cols	pxop.c	/^MAT	*px_cols(px,A,out)$/;"	f	ln:286
+px_copy	copy.c	/^PERM	*px_copy(PERM *in,PERM *out)$/;"	f	ln:75
+px_free	memory.c	/^int	px_free(px)$/;"	f	ln:200
+px_free_vars	memory.c	/^int px_free_vars(PERM **vpx,...)$/;"	f	ln:702
+px_free_vars	memory.c	/^int px_free_vars(va_alist) va_dcl$/;"	f	ln:965
+px_get	memory.c	/^PERM	*px_get(size)$/;"	f	ln:93
+px_get_vars	memory.c	/^int px_get_vars(int dim,...) $/;"	f	ln:550
+px_get_vars	memory.c	/^int px_get_vars(va_alist) va_dcl$/;"	f	ln:811
+px_ident	init.c	/^PERM	*px_ident(PERM *px)$/;"	f	ln:103
+px_inv	pxop.c	/^PERM	*px_inv(px,out)$/;"	f	ln:45
+px_mlt	pxop.c	/^PERM	*px_mlt(px1,px2,out)$/;"	f	ln:75
+px_resize	memory.c	/^PERM	*px_resize(px,new_size)$/;"	f	ln:398
+px_resize_vars	memory.c	/^int px_resize_vars(int new_dim,...) $/;"	f	ln:633
+px_resize_vars	memory.c	/^int px_resize_vars(va_alist) va_dcl$/;"	f	ln:898
+px_rows	pxop.c	/^MAT	*px_rows(px,A,out)$/;"	f	ln:323
+px_sign	pxop.c	/^int	px_sign(px)$/;"	f	ln:268
+px_transp	pxop.c	/^PERM	*px_transp(px,i1,i2)$/;"	f	ln:207
+px_vec	pxop.c	/^VEC	*px_vec(px,vector,out)$/;"	f	ln:100
+pxinv_vec	pxop.c	/^VEC	*pxinv_vec(px,x,out)$/;"	f	ln:167
+q_normal	random.c	/^double q_normal(double p) {$/;"	f	ln:308
+q_triangular	random.c	/^double q_triangular(double p) {$/;"	f	ln:378
+q_uniform	random.c	/^double q_uniform(double p) {$/;"	f	ln:212
+qtree_expand	nsearch.c	/^static QTREE_NODE *qtree_expand(const DPOINT *where, QTREE_NODE *root) {$/;"	f	file:	ln:338
+qtree_find_node	nsearch.c	/^static QTREE_NODE **qtree_find_node(const DPOINT *where, QTREE_NODE **p_node,$/;"	f	file:	ln:385
+qtree_free	nsearch.c	/^void qtree_free(QTREE_NODE *node) {$/;"	f	ln:294
+qtree_pop_point	nsearch.c	/^void qtree_pop_point(DPOINT *where, DATA *d) {$/;"	f	ln:260
+qtree_print	nsearch.c	/^void qtree_print(DATA *d) {$/;"	f	ln:525
+qtree_push	nsearch.c	/^static void qtree_push(DPOINT *where, QTREE_NODE **p_node, $/;"	f	file:	ln:224
+qtree_push_point	nsearch.c	/^void qtree_push_point(DATA *d, DPOINT *where) {$/;"	f	ln:198
+qtree_rebuild	nsearch.c	/^void qtree_rebuild(DATA *d) {$/;"	f	ln:646
+qtree_select	nsearch.c	/^int qtree_select(DPOINT *where, DATA *d) {$/;"	f	ln:749
+qtree_split_node	nsearch.c	/^static void qtree_split_node(QTREE_NODE *node, BBOX bbox, int rec_level) {$/;"	f	file:	ln:316
+qtree_zero_all_leaves	nsearch.c	/^static void qtree_zero_all_leaves(QTREE_NODE *node) {$/;"	f	file:	ln:635
+r_normal	random.c	/^double r_normal(void) {$/;"	f	ln:337
+r_triangular	random.c	/^double r_triangular(void) {$/;"	f	ln:389
+r_uniform	random.c	/^double r_uniform(void) {$/;"	f	ln:220
+range	parse.c	/^static double range[NRANGEPARS], anis[5];$/;"	v	file:	ln:151
+rcsid	hsehldr.c	/^static	char	rcsid[] = "$Id: hsehldr.c,v 1.1.1.1 2003-06-23 18:31:46 cees Exp $";$/;"	v	file:	ln:36
+rcsid	init.c	/^static	char	rcsid[] = "$Id: init.c,v 1.1.1.1 2003-06-23 18:31:41 cees Exp $";$/;"	v	file:	ln:33
+rcsid	ivecop.c	/^static	char	rcsid[] = "$Id: ivecop.c,v 1.1.1.1 2003-06-23 18:31:42 cees Exp $";$/;"	v	file:	ln:35
+rcsid	lufactor.c	/^static	char	rcsid[] = "$Id: lufactor.c,v 1.1.1.1 2003-06-23 18:31:44 cees Exp $";$/;"	v	file:	ln:32
+rcsid	machine.c	/^static	char	*rcsid = "$Id: machine.c,v 1.1.1.1 2003-06-23 18:31:41 cees Exp $";$/;"	v	file:	ln:34
+rcsid	matop.c	/^static	char	rcsid[] = "$Id: matop.c,v 1.1.1.1 2003-06-23 18:31:39 cees Exp $";$/;"	v	file:	ln:33
+rcsid	meminfo.c	/^static char rcsid[] = "$Id: meminfo.c,v 1.1.1.1 2003-06-23 18:31:43 cees Exp $";$/;"	v	file:	ln:47
+rcsid	memory.c	/^static	char	rcsid[] = "$Id: memory.c,v 1.1.1.1 2003-06-23 18:31:37 cees Exp $";$/;"	v	file:	ln:32
+rcsid	norm.c	/^static	char	rcsid[] = "$Id: norm.c,v 1.1.1.1 2003-06-23 18:31:46 cees Exp $";$/;"	v	file:	ln:30
+rcsid	pxop.c	/^static	char	rcsid[] = "$Id: pxop.c,v 1.1.1.1 2003-06-23 18:31:40 cees Exp $";$/;"	v	file:	ln:33
+rcsid	qrfactor.c	/^static	char	rcsid[] = "$Id: qrfactor.c,v 1.1.1.1 2003-06-23 18:31:45 cees Exp $";$/;"	v	file:	ln:41
+rcsid	solve.c	/^static	char	rcsid[] = "$Id: solve.c,v 1.1.1.1 2003-06-23 18:31:46 cees Exp $";$/;"	v	file:	ln:32
+rcsid	sparse.c	/^static char	rcsid[] = "$Id: sparse.c,v 1.1.1.1 2003-06-23 18:31:48 cees Exp $";$/;"	v	file:	ln:37
+rcsid	sprow.c	/^static char	rcsid[] = "$Id: sprow.c,v 1.1.1.1 2003-06-23 18:31:50 cees Exp $";$/;"	v	file:	ln:40
+rcsid	submat.c	/^static	char	rcsid[] = "$Id: submat.c,v 1.1.1.1 2003-06-23 18:31:40 cees Exp $";$/;"	v	file:	ln:32
+rcsid	vecop.c	/^static	char	rcsid[] = "$Id: vecop.c,v 1.1.1.1 2003-06-23 18:31:38 cees Exp $";$/;"	v	file:	ln:32
+read_T2	mapio.c	/^GRIDMAP *read_T2(GRIDMAP * m)$/;"	f	ln:2226
+read_arcgrid	mapio.c	/^static GRIDMAP *read_arcgrid(GRIDMAP * m)$/;"	f	file:	ln:641
+read_arcgrid_header	mapio.c	/^static int read_arcgrid_header(GRIDMAP * m, FILE * f)$/;"	f	file:	ln:705
+read_ascii_grid	mapio.c	/^static int read_ascii_grid(GRIDMAP * m, FILE * f, int first_line_in_buffer)$/;"	f	file:	ln:1194
+read_csf	mapio.c	/^static GRIDMAP *read_csf(GRIDMAP * m)$/;"	f	file:	ln:1363
+read_data_from_map	data.c	/^static int read_data_from_map(DATA *d) {$/;"	f	file:	ln:1536
+read_data_line	data.c	/^static int read_data_line(FILE *f, char *line, DATA *d, DPOINT *current,$/;"	f	file:	ln:470
+read_double	read.c	/^int read_double(const char *s, double *d) {$/;"	f	ln:84
+read_eas_header	data.c	/^static int read_eas_header(FILE *infile, DATA *d, int ncols) {$/;"	f	file:	ln:1035
+read_edges	polygon.c	/^void read_edges(void) $/;"	f	ln:400
+read_ermapper	mapio.c	/^static GRIDMAP *read_ermapper(GRIDMAP * m)$/;"	f	file:	ln:2485
+read_ermapper_header	mapio.c	/^static int read_ermapper_header(GRIDMAP * m, FILE * f)$/;"	f	file:	ln:2510
+read_float	read.c	/^int read_float(const char *s, float *f) {$/;"	f	ln:66
+read_gdal	mapio.c	/^static GRIDMAP *read_gdal(GRIDMAP *m) {$/;"	f	file:	ln:1687
+read_gmt	mapio.c	/^static GRIDMAP *read_gmt(GRIDMAP * m)$/;"	f	file:	ln:2040
+read_grass	mapio.c	/^static GRIDMAP *read_grass(GRIDMAP * m)$/;"	f	file:	ln:1477
+read_grass_data	data.c	/^static DATA *read_grass_data(DATA * d) {$/;"	f	file:	ln:2262
+read_gslib	mapio.c	/^static GRIDMAP *read_gslib(GRIDMAP * m)$/;"	f	file:	ln:2854
+read_gstat_data	data.c	/^DATA *read_gstat_data(DATA *d) {$/;"	f	ln:169
+read_idrisi32_header	mapio.c	/^static int read_idrisi32_header(GRIDMAP *m, const char *fname) {$/;"	f	file:	ln:1040
+read_idrisi32_image	mapio.c	/^static GRIDMAP *read_idrisi32_image(GRIDMAP *m) { $/;"	f	file:	ln:988
+read_idrisi32_point_data	data.c	/^static int read_idrisi32_point_data(DATA *d, const char *fname) {$/;"	f	file:	ln:1833
+read_idrisi32_point_header	data.c	/^static int read_idrisi32_point_header(DATA *d, const char *fname) {$/;"	f	file:	ln:1753
+read_idrisi32_points	data.c	/^static int read_idrisi32_points(DATA *d) {$/;"	f	file:	ln:1738
+read_idrisi_header	mapio.c	/^static int read_idrisi_header(GRIDMAP * m, const char *fname)$/;"	f	file:	ln:849
+read_idrisi_image	mapio.c	/^static GRIDMAP *read_idrisi_image(GRIDMAP * m)$/;"	f	file:	ln:806
+read_idrisi_point_data	data.c	/^static int read_idrisi_point_data(DATA *d, const char *fname) {$/;"	f	file:	ln:1685
+read_idrisi_point_header	data.c	/^static int read_idrisi_point_header(DATA *d, const char *fname) {$/;"	f	file:	ln:1629
+read_idrisi_points	data.c	/^static int read_idrisi_points(DATA *d) {$/;"	f	file:	ln:1614
+read_int	read.c	/^int read_int(const char *s, int *i) {$/;"	f	ln:112
+read_long	read.c	/^int read_long(const char *s, long int *l) {$/;"	f	ln:144
+read_multiformat_bgrid	mapio.c	/^static int read_multiformat_bgrid(GRIDMAP * m, const char *fname, int swap)$/;"	f	file:	ln:2409
+read_n_points	polygon.c	/^POLYGON read_n_points(FILE *f, int np) {$/;"	f	ln:251
+read_polygons	polygon.c	/^POLYGON *read_polygons(const char *filename, int *n_polys, double **iso_values) {$/;"	f	ln:106
+read_surfer	mapio.c	/^static GRIDMAP *read_surfer(GRIDMAP * m) {$/;"	f	file:	ln:2708
+read_surfer_header	mapio.c	/^static int read_surfer_header(GRIDMAP * m, FILE * f)$/;"	f	file:	ln:2755
+read_table	data.c	/^static DATA *read_table(DATA *d) {$/;"	f	file:	ln:326
+read_uint	read.c	/^int read_uint(const char *s, unsigned int *u) {$/;"	f	ln:128
+read_ulong	read.c	/^int read_ulong(const char *s, unsigned long *u) {$/;"	f	ln:168
+read_variogram	parse.c	/^int read_variogram(VARIOGRAM *v, const char *source) {$/;"	f	ln:3231
+read_vector	parse.c	/^int read_vector(D_VECTOR *d, char *fname) {$/;"	f	ln:3244
+record_closed	utils.c	/^static void record_closed(const FILE *f) {$/;"	f	file:	ln:704
+record_open	utils.c	/^static void record_open(const FILE *f, const char *name, const char *mode,$/;"	f	file:	ln:678
+record_removed	utils.c	/^static void record_removed(const char *name) {$/;"	f	file:	ln:716
+register_pairs	sem.c	/^static void *register_pairs(void *pairs, unsigned long nh,$/;"	f	file:	ln:818
+relative_nugget	vario.c	/^double relative_nugget(VARIOGRAM *v) {$/;"	f	ln:844
+reml	reml.c	/^static int reml(VEC *Y, MAT *X, MAT **Vk, int n_k, int max_iter,$/;"	f	file:	ln:137
+reml_sills	reml.c	/^VARIOGRAM *reml_sills(DATA *data, VARIOGRAM *vp) {$/;"	f	ln:67
+remove_all	glvars.c	/^void remove_all(void) {$/;"	f	ln:1065
+remove_at_exit	utils.c	82;"	ln:82	struct:FILE_RECORD
+remove_id	glvars.c	/^int remove_id(const int id) {$/;"	f	ln:1087
+report_data	data.c	/^void report_data(const DATA *d) {$/;"	f	ln:679
+report_edges	polygon.c	/^void report_edges(void) {$/;"	f	ln:206
+reset_anyway	block.c	/^int reset_anyway = 0;$/;"	v	ln:61
+reset_block_discr	block.c	/^void reset_block_discr(void) {$/;"	f	ln:63
+reset_gstat_errno	userio.c	/^void reset_gstat_errno(void) {$/;"	f	ln:229
+reset_lex	lex.c	/^static void reset_lex(void) {$/;"	f	file:	ln:2140
+reset_parser	parse.c	/^static void reset_parser(void) {$/;"	f	file:	ln:3158
+reset_variogram_parameters	getest.c	/^void reset_variogram_parameters(VARIOGRAM *v) {$/;"	f	ln:575
+resize_ev	sem.c	/^static void resize_ev(SAMPLE_VGM *ev, unsigned int size) {$/;"	f	file:	ln:807
+resize_strbuf	utils.c	/^STRING_BUFFER *resize_strbuf(STRING_BUFFER *b, unsigned int size) {$/;"	f	ln:821
+restart	err.c	/^jmp_buf	restart;$/;"	v	ln:112
+restore_data_list	msim.c	/^static void restore_data_list(DATA **data, int sim, int n_vars) {$/;"	f	file:	ln:254
+restore_data_sel	msim.c	/^void restore_data_sel(DATA **data, int sim, int n_vars) {$/;"	f	ln:223
+rng	random.c	/^static gsl_rng *rng = NULL;$/;"	v	file:	ln:49
+s_gstat_error	s.c	/^void s_gstat_error(const char *mess, int level) {$/;"	f	ln:975
+s_gstat_printlog	s.c	/^void s_gstat_printlog(const char *mess) {$/;"	f	ln:993
+s_gstat_progress	s.c	/^void s_gstat_progress(unsigned int current, unsigned int total) {$/;"	f	ln:943
+s_gstat_warning	s.c	/^void s_gstat_warning(const char *mess) {$/;"	f	ln:983
+s_r_normal	s.c	/^double s_r_normal(void) {$/;"	f	ln:1104
+s_r_uniform	s.c	/^double s_r_uniform(void) {$/;"	f	ln:1088
+sample_mean	stat.c	/^double sample_mean(double *list, int n) {$/;"	f	ln:50
+sample_std	stat.c	/^double sample_std(double *list, double mean, int n) {$/;"	f	ln:76
+sample_var	stat.c	/^double sample_var(double *list, double mean, int n) {$/;"	f	ln:63
+save_sim	msim.c	/^void save_sim(DATA **data, DPOINT *where, int sim, int n_vars,$/;"	f	ln:152
+save_sim_strat	msim.c	/^void save_sim_strat(DATA *d, DPOINT *where, int sim, double value, int is_pt) {$/;"	f	ln:184
+save_simulations_to_ascii	msim.c	/^void save_simulations_to_ascii(const char *fname) {$/;"	f	ln:286
+save_simulations_to_maps	msim.c	/^void save_simulations_to_maps(GRIDMAP *mask) {$/;"	f	ln:387
+save_strcat	utils.c	/^void save_strcat(STRING_BUFFER *dest, const char *src) {$/;"	f	ln:839
+save_string	utils.c	/^const char *save_string(const char *msg) {$/;"	f	ln:804
+save_variogram_parameters	getest.c	/^void save_variogram_parameters(VARIOGRAM *v) {$/;"	f	ln:563
+sd_vector	parse.c	/^static D_VECTOR *sd_vector = NULL;$/;"	v	file:	ln:154
+seed	random.c	/^static unsigned long int seed = 0;$/;"	v	file:	ln:80
+seed_is_in	s.c	/^static int seed_is_in = 0;$/;"	v	file:	ln:85
+segment_between_check	polygon.c	/^static int segment_between_check(PLOT_POINT a, PLOT_POINT b, PLOT_POINT c) {$/;"	f	file:	ln:709
+segment_cross_check	polygon.c	/^static unsigned int segment_cross_check(PLOT_POINT A, PLOT_POINT B, $/;"	f	file:	ln:631
+segment_parallel_check	polygon.c	/^static unsigned int segment_parallel_check(PLOT_POINT A, PLOT_POINT B, $/;"	f	file:	ln:680
+select_at	select.c	/^int select_at(DATA *d, DPOINT *where) {$/;"	f	ln:137
+select_qtree	select.c	/^static int select_qtree(DATA *d, DPOINT *where)$/;"	f	file:	ln:68
+sem_cov_ab	vario_io.c	/^double sem_cov_ab(VARIOGRAM *v, DPOINT *a, DPOINT *b, int sem)$/;"	f	ln:45
+sem_cov_blocks	vario_io.c	/^static double sem_cov_blocks(VARIOGRAM *v, DATA *a, DATA *b, int sem) {$/;"	f	file:	ln:76
+semivariogram	sem.c	/^static SAMPLE_VGM *semivariogram(DATA *d, SAMPLE_VGM *ev) {$/;"	f	file:	ln:212
+semivariogram_grid	sem.c	/^static SAMPLE_VGM *semivariogram_grid(DATA *d, SAMPLE_VGM *ev) {$/;"	f	file:	ln:303
+semivariogram_list	sem.c	/^static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev) {$/;"	f	file:	ln:228
+set_back_radius	select.c	64;"	d	file:	ln:64
+set_beta	msim.c	/^void set_beta(DATA **d, int sim, int n_vars, METHOD method) {$/;"	f	ln:761
+set_direction_values	direct.c	/^void set_direction_values(double a, double b, double t_h, double t_v) {$/;"	f	ln:56
+set_edges	glvars.c	/^POLYGON **set_edges(POLYGON **new_edges) {$/;"	f	ln:1262
+set_err_flag	err.c	/^int	set_err_flag(int flag)$/;"	f	ln:209
+set_gstat_error_handler	userio.c	/^void set_gstat_error_handler(void (*error_fn)(const char *message, int level)) {$/;"	f	ln:242
+set_gstat_log_file	userio.c	/^int set_gstat_log_file(FILE *f) {$/;"	f	ln:343
+set_gstat_log_handler	userio.c	/^void set_gstat_log_handler(void (*logprint)(const char *str)) {$/;"	f	ln:246
+set_gstat_progress_handler	userio.c	/^void set_gstat_progress_handler($/;"	f	ln:250
+set_gstat_warning_handler	userio.c	/^void set_gstat_warning_handler(void (*warning_fn)(const char *message)) {$/;"	f	ln:238
+set_lex_source	lex.c	/^void set_lex_source(const char *source, const char *fname) {$/;"	f	ln:2131
+set_method	glvars.c	/^void set_method(METHOD m) {$/;"	f	ln:583
+set_mode	glvars.c	/^void set_mode(void) {$/;"	f	ln:741
+set_mv_double	utils.c	/^void set_mv_double(double *d) {$/;"	f	ln:629
+set_mv_float	utils.c	/^void set_mv_float(float *f) {$/;"	f	ln:621
+set_n_edges_polys	glvars.c	/^int *set_n_edges_polys(int *n) {$/;"	f	ln:1250
+set_norm_fns	data.c	/^void set_norm_fns(DATA *d) {$/;"	f	ln:271
+set_rng_functions	random.c	/^void set_rng_functions($/;"	f	ln:107
+set_seed	random.c	/^void set_seed(unsigned long int i) {$/;"	f	ln:122
+setup_beta	msim.c	/^void setup_beta(DATA **d, int n_vars, int n_sim) {$/;"	f	ln:694
+setup_data_minmax	data.c	/^void setup_data_minmax(DATA *d) {$/;"	f	ln:307
+setup_meschach_error_handler	userio.c	/^void setup_meschach_error_handler(int using_R) {$/;"	f	ln:415
+setup_poly_method	glvars.c	/^DATA *setup_poly_method(void) {$/;"	f	ln:1266
+setup_poly_minmax	polygon.c	/^void setup_poly_minmax(POLYGON *pl) {$/;"	f	ln:790
+setup_polynomial_X	data.c	/^void setup_polynomial_X(DATA *d) {$/;"	f	ln:885
+setup_valdata_X	glvars.c	/^void setup_valdata_X(DATA *d) {$/;"	f	ln:649
+sign	qrfactor.c	51;"	d	file:	ln:51
+simulate_mvn	sim.c	/^static void simulate_mvn(const double *est, VEC *result, const int *is_datum) {$/;"	f	file:	ln:87
+simulate_uniform	sim.c	/^static void simulate_uniform(double *est, VEC *result, int orc) {$/;"	f	file:	ln:159
+sizeof_ct	mapio.c	/^static unsigned int sizeof_ct(CellType ct)$/;"	f	file:	ln:2382
+sm_mlt	matop.c	/^MAT	*sm_mlt(scalar,matrix,out)$/;"	f	ln:240
+smrand	init.c	/^void smrand(int seed)$/;"	f	ln:190
+spC	gls.c	131;"	ln:131	struct:GLM
+spC	gls.c	131;"	ln:131	struct:GLM
+sp_add	sparse.c	/^SPMAT *sp_add(A,B,C)$/;"	f	ln:464
+sp_col_access	sparse.c	/^SPMAT	*sp_col_access(A)$/;"	f	ln:375
+sp_compact	sparse.c	/^SPMAT	*sp_compact(A,tol)$/;"	f	ln:809
+sp_copy	sparse.c	/^SPMAT	*sp_copy(A)$/;"	f	ln:319
+sp_copy2	sparse.c	/^SPMAT	*sp_copy2(A,OUT)$/;"	f	ln:654
+sp_diag_access	sparse.c	/^SPMAT	*sp_diag_access(A)$/;"	f	ln:416
+sp_free	sparse.c	/^int	sp_free(A)$/;"	f	ln:259
+sp_free_vars	sparse.c	/^int sp_free_vars(SPMAT **va,...)$/;"	f	ln:917
+sp_free_vars	sparse.c	/^int sp_free_vars(va_alist) va_dcl$/;"	f	ln:1014
+sp_get	sparse.c	/^SPMAT	*sp_get(m,n,maxlen)$/;"	f	ln:197
+sp_get_val	sparse.c	/^double	sp_get_val(A,i,j)$/;"	f	ln:44
+sp_get_vars	sparse.c	/^int sp_get_vars(int m,int n,int deg,...) $/;"	f	ln:860
+sp_get_vars	sparse.c	/^int sp_get_vars(va_alist) va_dcl$/;"	f	ln:950
+sp_logoutput	gls.c	/^void    sp_logoutput(SPMAT *A)$/;"	f	ln:925
+sp_m2dense	sparse.c	/^MAT	*sp_m2dense(A,out)$/;"	f	ln:437
+sp_mltadd	sparse.c	/^SPMAT *sp_mltadd(A,B,alpha,C)$/;"	f	ln:558
+sp_mv_mlt	sparse.c	/^VEC	*sp_mv_mlt(A,x,out)$/;"	f	ln:122
+sp_resize	sparse.c	/^SPMAT	*sp_resize(A,m,n)$/;"	f	ln:726
+sp_resize_vars	sparse.c	/^int sp_resize_vars(int m,int n,...) $/;"	f	ln:890
+sp_resize_vars	sparse.c	/^int sp_resize_vars(va_alist) va_dcl$/;"	f	ln:983
+sp_set_val	sparse.c	/^double	sp_set_val(A,i,j,val)$/;"	f	ln:65
+sp_smlt	sparse.c	/^SPMAT *sp_smlt(A,alpha,B)$/;"	f	ln:609
+sp_sub	sparse.c	/^SPMAT *sp_sub(A,B,C)$/;"	f	ln:511
+sp_vm_mlt	sparse.c	/^VEC	*sp_vm_mlt(A,x,out)$/;"	f	ln:158
+sp_zero	sparse.c	/^SPMAT	*sp_zero(A)$/;"	f	ln:632
+sprint_variogram	vario.c	/^const char *sprint_variogram(const VARIOGRAM *v, int verbose) {$/;"	f	ln:280
+sprow_add	sprow.c	/^SPROW	*sprow_add(r1,r2,j0,r_out,type)$/;"	f	ln:473
+sprow_copy	sprow.c	/^SPROW	*sprow_copy(r1,r2,r_out,type)$/;"	f	ln:347
+sprow_dump	sprow.c	/^void sprow_dump(fp,r)$/;"	f	ln:48
+sprow_foutput	sprow.c	/^void	sprow_foutput(fp,r)$/;"	f	ln:649
+sprow_free	sprow.c	/^int sprow_free(r)$/;"	f	ln:263
+sprow_get	sprow.c	/^SPROW	*sprow_get(maxlen)$/;"	f	ln:126
+sprow_idx	sprow.c	/^int	sprow_idx(r,col)$/;"	f	ln:79
+sprow_merge	sprow.c	/^SPROW	*sprow_merge(r1,r2,r_out,type)$/;"	f	ln:292
+sprow_mltadd	sprow.c	/^SPROW	*sprow_mltadd(r1,r2,alpha,j0,r_out,type)$/;"	f	ln:403
+sprow_resize	sprow.c	/^SPROW	*sprow_resize(r,n,type)$/;"	f	ln:219
+sprow_set_val	sprow.c	/^double  sprow_set_val(r,j,val)$/;"	f	ln:672
+sprow_smlt	sprow.c	/^SPROW	*sprow_smlt(r1,alpha,j0,r_out,type)$/;"	f	ln:609
+sprow_sub	sprow.c	/^SPROW	*sprow_sub(r1,r2,j0,r_out,type)$/;"	f	ln:542
+sprow_xpd	sprow.c	/^SPROW	*sprow_xpd(r,n,type)$/;"	f	ln:159
+square	norm.c	/^double	square(x)$/;"	f	ln:64
+start	utils.c	/^static time_t start;$/;"	v	file:	ln:86
+start_random_number	random.c	/^static void start_random_number (int seed_a, int seed_b)$/;"	f	file:	ln:494
+start_up	random.c	/^static char start_up[100];$/;"	v	file:	ln:78
+started	init.c	/^static int  started = FALSE;$/;"	v	file:	ln:136
+stats	stat.c	/^int stats(char *name, int silent, double q) {$/;"	f	ln:141
+status	utils.c	82;"	ln:82	struct:FILE_RECORD
+store_argv	utils.c	/^char *store_argv(int argc, char *argv[]) {$/;"	f	ln:789
+store_radius	select.c	63;"	d	file:	ln:63
+strata_min	predict.c	/^int strata_min;$/;"	v	ln:85
+strcat_tm	vario.c	/^static void strcat_tm(char *cp, ANIS_TM *tm) {$/;"	f	file:	ln:420
+stream_name	utils.c	/^static const char *stream_name(const FILE *f) {$/;"	f	file:	ln:759
+string_casecmp	utils.c	/^int string_casecmp(const char *a, const char *b) {$/;"	f	ln:521
+string_cat	utils.c	/^const char *string_cat(const char *s, const char *t) {$/;"	f	ln:531
+string_file	utils.c	/^char *string_file(const char *fname) {$/;"	f	ln:476
+string_prompt	utils.c	/^char *string_prompt(const char *prompt) {$/;"	f	ln:439
+sub_bbox	nsearch.c	/^static BBOX sub_bbox(const BBOX bbox, int index) {$/;"	f	file:	ln:406
+sub_mat	submat.c	/^MAT	*sub_mat(old,row1,col1,row2,col2,new)$/;"	f	ln:119
+sub_vec	submat.c	/^VEC	*sub_vec(old,i1,i2,new)$/;"	f	ln:156
+sv_mlt	vecop.c	/^VEC	*sv_mlt(scalar,vector,out)$/;"	f	ln:62
+sval	parse.c	290;"	ln:290	union:YYSTYPE
+swap_cols	matop.c	/^MAT	*swap_cols(A,i,j,lo,hi)$/;"	f	ln:355
+swap_floats	mapio.c	/^static void swap_floats(unsigned char *b, unsigned int n)$/;"	f	file:	ln:1345
+swap_multiformat	mapio.c	/^static void swap_multiformat(unsigned char *b, unsigned int m,$/;"	f	file:	ln:2362
+swap_rows	matop.c	/^MAT	*swap_rows(A,i,j,lo,hi)$/;"	f	ln:330
+time_seed	random.c	/^static unsigned long int time_seed(void) {$/;"	f	file:	ln:131
+trace_matrix	reml.c	/^static double trace_matrix(MAT *m) {$/;"	f	file:	ln:312
+transform_data	data.c	/^static void transform_data(DATA *d) {$/;"	f	file:	ln:821
+transform_norm	vario.c	/^double transform_norm(const ANIS_TM *tm, double dx, double dy, double dz) {$/;"	f	ln:724
+type	utils.c	82;"	ln:82	struct:FILE_RECORD
+u	random.c	/^static double u[STATE_SIZE];$/;"	v	file:	ln:476
+unput	lex.c	207;"	d	file:	ln:207
+unput	lex.c	602;"	d	file:	ln:602
+unquote	lex.c	/^static char *unquote(const char *txt) {$/;"	f	file:	ln:2147
+update_variogram	vario.c	/^void update_variogram(VARIOGRAM *vp) {$/;"	f	ln:338
+uval	parse.c	290;"	ln:290	union:YYSTYPE
+v	parse.c	/^static VARIOGRAM *v = NULL;$/;"	v	file:	ln:147
+v_add	vecop.c	/^VEC	*v_add(vec1,vec2,out)$/;"	f	ln:90
+v_bin	data.c	/^double v_bin(double mu) {$/;"	f	ln:2252
+v_conv	vecop.c	/^VEC	*v_conv(x1, x2, out)$/;"	f	ln:561
+v_count	init.c	/^VEC	*v_count(VEC *x)$/;"	f	ln:274
+v_free	memory.c	/^int	v_free(vec)$/;"	f	ln:230
+v_free_vars	memory.c	/^int v_free_vars(VEC **pv,...)$/;"	f	ln:662
+v_free_vars	memory.c	/^int v_free_vars(va_alist) va_dcl$/;"	f	ln:928
+v_get	memory.c	/^VEC	*v_get(size)$/;"	f	ln:124
+v_get_vars	memory.c	/^int v_get_vars(int dim,...) $/;"	f	ln:501
+v_get_vars	memory.c	/^int v_get_vars(va_alist) va_dcl$/;"	f	ln:756
+v_identity	data.c	/^double v_identity(double mu) {$/;"	f	ln:2256
+v_lincomb	vecop.c	/^VEC	*v_lincomb(n,v,a,out)$/;"	f	ln:230
+v_linlist	vecop.c	/^VEC  *v_linlist(VEC *out,VEC *v1,double a1,...)$/;"	f	ln:268
+v_linlist	vecop.c	/^VEC  *v_linlist(va_alist) va_dcl$/;"	f	ln:308
+v_logoutput	lm.c	/^void v_logoutput(VEC * x)$/;"	f	ln:662
+v_map	vecop.c	/^VEC	*v_map(f,x,out)$/;"	f	ln:182
+v_max	vecop.c	/^double	v_max(x, max_idx)$/;"	f	ln:429
+v_min	vecop.c	/^double	v_min(x, min_idx)$/;"	f	ln:399
+v_mltadd	vecop.c	/^VEC	*v_mltadd(v1,v2,scale,out)$/;"	f	ln:116
+v_models	vario.c	/^const V_MODEL v_models[] = { \/* the variogram model ``data base'': *\/$/;"	v	ln:60
+v_move	copy.c	/^VEC	*v_move(VEC *in,int i0,int dim0,VEC *out,int i1)$/;"	f	ln:130
+v_mu	data.c	/^double v_mu(double mu) {$/;"	f	ln:2240
+v_mu2	data.c	/^double v_mu2(double mu) {$/;"	f	ln:2244
+v_mu3	data.c	/^double v_mu3(double mu) {$/;"	f	ln:2248
+v_ones	init.c	/^VEC	*v_ones(VEC *x)$/;"	f	ln:245
+v_pconv	vecop.c	/^VEC	*v_pconv(x1, x2, out)$/;"	f	ln:583
+v_rand	init.c	/^VEC	*v_rand(VEC *x)$/;"	f	ln:211
+v_resize	memory.c	/^VEC	*v_resize(x,new_dim)$/;"	f	ln:440
+v_resize_vars	memory.c	/^int v_resize_vars(int new_dim,...)$/;"	f	ln:582
+v_resize_vars	memory.c	/^int v_resize_vars(va_alist) va_dcl$/;"	f	ln:844
+v_slash	vecop.c	/^VEC	*v_slash(x1, x2, out)$/;"	f	ln:374
+v_sort	vecop.c	/^VEC	*v_sort(x, order)$/;"	f	ln:465
+v_star	vecop.c	/^VEC	*v_star(x1, x2, out)$/;"	f	ln:353
+v_sub	vecop.c	/^VEC	*v_sub(vec1,vec2,out)$/;"	f	ln:155
+v_sum	vecop.c	/^double	v_sum(x)$/;"	f	ln:544
+v_zero	init.c	/^VEC	*v_zero(VEC *x)$/;"	f	ln:39
+val_data	predict.c	/^static DATA *val_data = NULL;$/;"	v	file:	ln:78
+valdata	glvars.c	/^static DATA *valdata = NULL;$/;"	v	file:	ln:166
+valid_direction	direct.c	/^double valid_direction(DPOINT *a, DPOINT *b, int symmetric, const DATA *d) {$/;"	f	ln:85
+valid_distance	sem.c	/^static double valid_distance(DPOINT *a, DPOINT *b, double max, $/;"	f	file:	ln:560
+vario	vario.c	/^int vario(int argc, char **argv) {$/;"	f	ln:864
+verify_data	parse.c	/^static void verify_data(DATA *d) { \/* declaration : contents *\/$/;"	f	file:	ln:3263
+vgm	glvars.c	/^static VARIOGRAM **vgm = NULL;$/;"	v	file:	ln:163
+vgm_init_block_values	vario.c	/^void vgm_init_block_values(VARIOGRAM *v) {$/;"	f	ln:192
+vgm_pars	getest.c	/^static double *vgm_pars = NULL;$/;"	v	file:	ln:61
+vgm_type_str	vario.c	/^const char *vgm_type_str[] = { $/;"	v	ln:150
+vm_mlt	matop.c	/^VEC	*vm_mlt(A,b,out)$/;"	f	ln:262
+vm_mltadd	matop.c	/^VEC	*vm_mltadd(v1,v2,A,alpha,out)$/;"	f	ln:466
+vm_move	copy.c	/^MAT	*vm_move(VEC *in,int i0,MAT *out,int i1,int j1,int m1,int n1)$/;"	f	ln:176
+void	userio.c	67;"	file:	ln:67
+void	userio.c	67;"	file:	ln:67
+void	userio.c	67;"	file:	ln:67
+void	userio.c	67;"	file:	ln:67
+warn	err.c	121;"	ln:121	struct:Err_list
+warn_mesg	err.c	/^static char *warn_mesg[] = {$/;"	v	file:	ln:98
+what_cmp	pqueue.c	/^int what_cmp(const Q_ELEMENT_WHAT *a, const Q_ELEMENT_WHAT *b) {$/;"	f	ln:239
+what_is_file	utils.c	/^static FILE_TYPE what_is_file(const FILE *f) {$/;"	f	file:	ln:750
+what_is_outfile	glvars.c	/^const char *what_is_outfile(int i) {$/;"	f	ln:368
+which_identifier	glvars.c	/^int which_identifier(const char *id) {$/;"	f	ln:326
+which_octant	select.c	/^static int which_octant(DPOINT *where, DPOINT *p, int mode) {$/;"	f	file:	ln:267
+which_point	msim.c	/^static DPOINT *which_point(DATA *d, DPOINT *where) {$/;"	f	file:	ln:207
+which_variogram_model	vario.c	/^VGM_MODEL_TYPE which_variogram_model(const char *m) {$/;"	f	ln:829
+wls_fit	fit.c	/^static void wls_fit(VARIOGRAM *vp) {$/;"	f	file:	ln:136
+write_T2	mapio.c	/^static GRIDMAP *write_T2(GRIDMAP * m)$/;"	f	file:	ln:2286
+write_arcgrid	mapio.c	/^static GRIDMAP *write_arcgrid(GRIDMAP * m)$/;"	f	file:	ln:687
+write_arcgrid_header	mapio.c	/^static int write_arcgrid_header(GRIDMAP * m, FILE * f)$/;"	f	file:	ln:790
+write_ascii_grid	mapio.c	/^static void write_ascii_grid(GRIDMAP * m, FILE * f, int as_rows)$/;"	f	file:	ln:1239
+write_binary_grid	mapio.c	/^static void write_binary_grid(GRIDMAP * m, const char *fname, int swap)$/;"	f	file:	ln:1254
+write_csf	mapio.c	/^static GRIDMAP *write_csf(GRIDMAP * m)$/;"	f	file:	ln:1408
+write_ermapper	mapio.c	/^static GRIDMAP *write_ermapper(GRIDMAP * m)$/;"	f	file:	ln:2639
+write_ermapper_header	mapio.c	/^static void write_ermapper_header(GRIDMAP * m, FILE * fp)$/;"	f	file:	ln:2650
+write_error	mapio.c	/^static GRIDMAP *write_error(GRIDMAP * m)$/;"	f	file:	ln:377
+write_fx	fit.c	/^static void write_fx(FILE *f, VARIOGRAM *v) {$/;"	f	file:	ln:463
+write_gdal	mapio.c	/^static GRIDMAP *write_gdal(GRIDMAP *m) {$/;"	f	file:	ln:1776
+write_gmt	mapio.c	/^static GRIDMAP *write_gmt(GRIDMAP * m)$/;"	f	file:	ln:2110
+write_gnuplot_binary	mapio.c	/^static GRIDMAP *write_gnuplot_binary(GRIDMAP * m)$/;"	f	file:	ln:1306
+write_grass	mapio.c	/^static GRIDMAP *write_grass(GRIDMAP * m)$/;"	f	file:	ln:1568
+write_gslib	mapio.c	/^static GRIDMAP *write_gslib(GRIDMAP * m)$/;"	f	file:	ln:2933
+write_idrisi	mapio.c	/^static GRIDMAP *write_idrisi(GRIDMAP * m)$/;"	f	file:	ln:833
+write_idrisi32	mapio.c	/^static GRIDMAP *write_idrisi32(GRIDMAP *m) {    $/;"	f	file:	ln:1020
+write_idrisi32_header	mapio.c	/^static int write_idrisi32_header(GRIDMAP *m, const char *fname) {$/;"	f	file:	ln:1152
+write_idrisi_header	mapio.c	/^static int write_idrisi_header(GRIDMAP * m, const char *fname) {$/;"	f	file:	ln:941
+write_output	predict.c	/^static void write_output(double *est, PRED_AT w, DPOINT *here,$/;"	f	file:	ln:310
+write_surfer	mapio.c	/^static GRIDMAP *write_surfer(GRIDMAP * m)$/;"	f	file:	ln:2817
+y	gls.c	131;"	ln:131	struct:GLM
+yy_File_name	lex.c	/^static const char *yy_File_name = NULL;$/;"	v	file:	ln:569
+yy_Lexpos	lex.c	/^static int yy_Lexpos = 0, yy_Posafternl = 1, My_yy_lineno = 1,$/;"	v	file:	ln:566
+yy_Source	lex.c	/^static const char *yy_Source = NULL, *lastnl = NULL;$/;"	v	file:	ln:568
+yy_accept	lex.c	/^static yyconst flex_int16_t yy_accept[44] =$/;"	v	file:	ln:399
+yy_base	lex.c	/^static yyconst flex_int16_t yy_base[53] =$/;"	v	file:	ln:446
+yy_buffer_stack	lex.c	/^static YY_BUFFER_STATE * yy_buffer_stack = 0; \/**< Stack as an array. *\/$/;"	v	file:	ln:282
+yy_buffer_stack_max	lex.c	/^static size_t yy_buffer_stack_max = 0; \/**< capacity of stack. *\/$/;"	v	file:	ln:281
+yy_buffer_stack_top	lex.c	/^static size_t yy_buffer_stack_top = 0; \/**< index of top of stack. *\/$/;"	v	file:	ln:280
+yy_buffer_state	lex.c	/^struct yy_buffer_state$/;"	s	file:	ln:216
+yy_c_buf_p	lex.c	/^static char *yy_c_buf_p = (char *) 0;$/;"	v	file:	ln:305
+yy_chk	lex.c	/^static yyconst flex_int16_t yy_chk[103] =$/;"	v	file:	ln:482
+yy_create_buffer	lex.c	8;"	d	file:	ln:8
+yy_def	lex.c	/^static yyconst flex_int16_t yy_def[53] =$/;"	v	file:	ln:456
+yy_delete_buffer	lex.c	9;"	d	file:	ln:9
+yy_did_buffer_switch_on_eof	lex.c	/^static int yy_did_buffer_switch_on_eof;$/;"	v	file:	ln:312
+yy_ec	lex.c	/^static yyconst flex_int32_t yy_ec[256] =$/;"	v	file:	ln:408
+yy_fatal_error	lex.c	/^static void yy_fatal_error (yyconst char* msg )$/;"	f	file:	ln:1816
+yy_flex_debug	lex.c	10;"	d	file:	ln:10
+yy_flex_strlen	lex.c	/^static int yy_flex_strlen (yyconst char * s )$/;"	f	file:	ln:1990
+yy_flex_strncpy	lex.c	/^static void yy_flex_strncpy (char* s1, yyconst char * s2, int n )$/;"	f	file:	ln:1981
+yy_flush_buffer	lex.c	12;"	d	file:	ln:12
+yy_get_next_buffer	lex.c	/^static int yy_get_next_buffer (void)$/;"	f	file:	ln:1159
+yy_get_previous_state	lex.c	/^    static yy_state_type yy_get_previous_state (void)$/;"	f	file:	ln:1293
+yy_hold_char	lex.c	/^static char yy_hold_char;$/;"	v	file:	ln:300
+yy_init	lex.c	/^static int yy_init = 0;		\/* whether we need to initialize *\/$/;"	v	file:	ln:306
+yy_init_buffer	lex.c	11;"	d	file:	ln:11
+yy_init_globals	lex.c	/^static int yy_init_globals (void)$/;"	f	file:	ln:1924
+yy_last_accepting_cpos	lex.c	/^static char *yy_last_accepting_cpos;$/;"	v	file:	ln:499
+yy_last_accepting_state	lex.c	/^static yy_state_type yy_last_accepting_state;$/;"	v	file:	ln:498
+yy_load_buffer_state	lex.c	13;"	d	file:	ln:13
+yy_meta	lex.c	/^static yyconst flex_int32_t yy_meta[16] =$/;"	v	file:	ln:440
+yy_n_chars	lex.c	/^static int yy_n_chars;		\/* number of characters read into yy_ch_buf *\/$/;"	v	file:	ln:301
+yy_new_buffer	lex.c	336;"	d	file:	ln:336
+yy_nxt	lex.c	/^static yyconst flex_int16_t yy_nxt[103] =$/;"	v	file:	ln:466
+yy_reduce_print	parse.c	/^yy_reduce_print (YYSTYPE *yyvsp, int yyrule)$/;"	f	file:	ln:1137
+yy_set_bol	lex.c	348;"	d	file:	ln:348
+yy_set_interactive	lex.c	338;"	d	file:	ln:338
+yy_size_t	lex.c	/^typedef size_t yy_size_t;$/;"	t	file:	ln:211
+yy_stack_print	parse.c	/^yy_stack_print (yytype_int16 *yybottom, yytype_int16 *yytop)$/;"	f	file:	ln:1106
+yy_start	lex.c	/^static int yy_start = 0;	\/* start state number *\/$/;"	v	file:	ln:307
+yy_state_type	lex.c	/^typedef int yy_state_type;$/;"	t	file:	ln:366
+yy_switch_to_buffer	lex.c	14;"	d	file:	ln:14
+yy_symbol_print	parse.c	/^yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)$/;"	f	file:	ln:1080
+yy_symbol_value_print	parse.c	/^yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep)$/;"	f	file:	ln:1048
+yy_trans_info	lex.c	/^struct yy_trans_info$/;"	s	file:	ln:394
+yy_try_NUL_trans	lex.c	/^    static yy_state_type yy_try_NUL_trans  (yy_state_type yy_current_state )$/;"	f	file:	ln:1325
+yyalloc	lex.c	23;"	d	file:	ln:23
+yyalloc	parse.c	/^union yyalloc$/;"	u	file:	ln:462
+yychar	parse.c	71;"	d	file:	ln:71
+yychar	parse.c	/^int yychar;$/;"	v	ln:1455
+yycheck	parse.c	/^static const yytype_uint8 yycheck[] =$/;"	v	file:	ln:858
+yyclearin	parse.c	925;"	d	file:	ln:925
+yyconst	lex.c	125;"	d	file:	ln:125
+yyconst	lex.c	127;"	d	file:	ln:127
+yydebug	parse.c	72;"	d	file:	ln:72
+yydebug	parse.c	/^int yydebug;$/;"	v	ln:1169
+yydefact	parse.c	/^static const yytype_uint8 yydefact[] =$/;"	v	file:	ln:736
+yydefgoto	parse.c	/^static const yytype_int16 yydefgoto[] =$/;"	v	file:	ln:767
+yydestruct	parse.c	/^yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep)$/;"	f	file:	ln:1415
+yyerrok	parse.c	924;"	d	file:	ln:924
+yyerror	parse.c	69;"	d	file:	ln:69
+yyfree	lex.c	25;"	d	file:	ln:25
+yyin	lex.c	15;"	d	file:	ln:15
+yyinput	lex.c	/^    static int yyinput (void)$/;"	f	file:	ln:1387
+yyleng	lex.c	16;"	d	file:	ln:16
+yyless	lex.c	194;"	d	file:	ln:194
+yyless	lex.c	1830;"	d	file:	ln:1830
+yylex	lex.c	17;"	d	file:	ln:17
+yylex	parse.c	68;"	d	file:	ln:68
+yylineno	lex.c	18;"	d	file:	ln:18
+yylval	lex.c	561;"	d	file:	ln:561
+yylval	parse.c	70;"	d	file:	ln:70
+yylval	parse.c	/^YYSTYPE yylval;$/;"	v	ln:1458
+yymore	lex.c	508;"	d	file:	ln:508
+yynerrs	parse.c	73;"	d	file:	ln:73
+yynerrs	parse.c	/^int yynerrs;$/;"	v	ln:1461
+yyout	lex.c	19;"	d	file:	ln:19
+yypact	parse.c	/^static const yytype_int16 yypact[] =$/;"	v	file:	ln:779
+yyparse	parse.c	67;"	d	file:	ln:67
+yyparse	parse.c	/^yyparse (void *YYPARSE_PARAM)$/;"	f	ln:1473
+yypgoto	parse.c	/^static const yytype_int16 yypgoto[] =$/;"	v	file:	ln:810
+yyprhs	parse.c	/^static const yytype_uint16 yyprhs[] =$/;"	v	file:	ln:570
+yyr1	parse.c	/^static const yytype_uint8 yyr1[] =$/;"	v	file:	ln:696
+yyr2	parse.c	/^static const yytype_uint8 yyr2[] =$/;"	v	file:	ln:715
+yyrealloc	lex.c	24;"	d	file:	ln:24
+yyrestart	lex.c	20;"	d	file:	ln:20
+yyrhs	parse.c	/^static const yytype_int8 yyrhs[] =$/;"	v	file:	ln:589
+yyrline	parse.c	/^static const yytype_uint16 yyrline[] =$/;"	v	file:	ln:642
+yystos	parse.c	/^static const yytype_uint8 yystos[] =$/;"	v	file:	ln:894
+yystpcpy	parse.c	1223;"	d	file:	ln:1223
+yystpcpy	parse.c	/^yystpcpy (char *yydest, const char *yysrc)$/;"	f	file:	ln:1230
+yystrlen	parse.c	1200;"	d	file:	ln:1200
+yystrlen	parse.c	/^yystrlen (const char *yystr)$/;"	f	file:	ln:1206
+yystype	parse.c	292;"	d	file:	ln:292
+yysyntax_error	parse.c	/^yysyntax_error (char *yyresult, int yystate, int yychar)$/;"	f	file:	ln:1305
+yytable	parse.c	/^static const yytype_uint8 yytable[] =$/;"	v	file:	ln:824
+yyterminate	lex.c	755;"	d	file:	ln:755
+yytext	lex.c	21;"	d	file:	ln:21
+yytext_ptr	lex.c	373;"	d	file:	ln:373
+yytname	parse.c	/^static const char *const yytname[] =$/;"	v	file:	ln:664
+yytnamerr	parse.c	/^yytnamerr (char *yyres, const char *yystr)$/;"	f	file:	ln:1258
+yytokentype	parse.c	/^   enum yytokentype {$/;"	u	file:	ln:224
+yytoknum	parse.c	/^static const yytype_uint16 yytoknum[] =$/;"	v	file:	ln:686
+yytranslate	parse.c	/^static const yytype_uint8 yytranslate[] =$/;"	v	file:	ln:535
+yytype_int16	parse.c	/^typedef YYTYPE_INT16 yytype_int16;$/;"	t	file:	ln:329
+yytype_int16	parse.c	/^typedef short int yytype_int16;$/;"	t	file:	ln:331
+yytype_int8	parse.c	/^typedef YYTYPE_INT8 yytype_int8;$/;"	t	file:	ln:314
+yytype_int8	parse.c	/^typedef signed char yytype_int8;$/;"	t	file:	ln:317
+yytype_int8	parse.c	/^typedef short int yytype_int8;$/;"	t	file:	ln:319
+yytype_uint16	parse.c	/^typedef YYTYPE_UINT16 yytype_uint16;$/;"	t	file:	ln:323
+yytype_uint16	parse.c	/^typedef unsigned short int yytype_uint16;$/;"	t	file:	ln:325
+yytype_uint8	parse.c	/^typedef YYTYPE_UINT8 yytype_uint8;$/;"	t	file:	ln:308
+yytype_uint8	parse.c	/^typedef unsigned char yytype_uint8;$/;"	t	file:	ln:310
+yyunput	lex.c	/^    static void yyunput (int c, register char * yy_bp )$/;"	f	file:	ln:1348
+yywrap	lex.c	22;"	d	file:	ln:22
+zero_int2enum	vario.c	/^DO_AT_ZERO zero_int2enum(int zero) {$/;"	f	ln:935
+zero_sel_dist2	select.c	/^static void zero_sel_dist2(DATA *d) {$/;"	f	file:	ln:302
+zero_shift	vario.c	/^DO_AT_ZERO zero_shift(DO_AT_ZERO now, int next) {$/;"	f	ln:946
+zero_weights_count	lm.c	/^static int zero_weights_count(LM *lm) {$/;"	f	file:	ln:565

@@ -29,8 +29,9 @@
 #include	<stdio.h>
 #include	"matrix.h"
 
+/*
 static	char	rcsid[] = "$Id: submat.c,v 1.1.1.1 2003-06-23 18:31:40 cees Exp $";
-
+*/
 
 /* get_col -- gets a specified column of a matrix and retruns it as a vector */
 VEC	*get_col(mat,col,vec)

@@ -28,9 +28,9 @@
 	This is a file of routines for zero-ing, and initialising
 	vectors, matrices and permutations.
 	This is to be included in the matrix.a library
-*/
 
 static	char	rcsid[] = "$Id: init.c,v 1.1.1.1 2003-06-23 18:31:41 cees Exp $";
+*/
 
 #include	<stdio.h>
 #include	"matrix.h"

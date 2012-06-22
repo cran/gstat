@@ -58,12 +58,12 @@ void Rprintf(const char *, ...);
 
 static void wls_fit(VARIOGRAM *vp);
 static double getSSErr(const VARIOGRAM *vp, PERM *p, LM *lm);
+#ifndef USING_R
 static void write_fx(FILE *, VARIOGRAM *v);
 static void get_values(const char *fname, VARIOGRAM *v);
-#ifndef USING_R
 static void gnu_fit(VARIOGRAM *v);
-#endif
 static void correct_for_anisotropy(VARIOGRAM *v);
+#endif
 
 static int fill_weights(const VARIOGRAM *vp, PERM *p, LM *lm);
 static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, 
@@ -558,7 +558,6 @@ static void get_values(const char *fname, VARIOGRAM *v) {
 	correct_for_anisotropy(v);
 	return;
 }
-#endif /* USING_R */
 
 static void correct_for_anisotropy(VARIOGRAM *v) {
 /*
@@ -578,3 +577,4 @@ static void correct_for_anisotropy(VARIOGRAM *v) {
  	}
 	return;
 }
+#endif /* USING_R */

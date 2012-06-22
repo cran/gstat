@@ -71,10 +71,10 @@ void	m_version()
 #endif
 
 /* $Log: version.c,v $
-/* Revision 1.1.1.1  2003-06-23 18:31:42  cees
-/* Verbatim import gstat-2.4.2.tar.gz as downloaded from www.gstat.org
-/* at Mon Jun 23 20:52:05 CEST 2003
-/*
+ * Revision 1.1.1.1  2003-06-23 18:31:42  cees
+ * Verbatim import gstat-2.4.2.tar.gz as downloaded from www.gstat.org
+ * at Mon Jun 23 20:52:05 CEST 2003
+ *
  * Revision 1.9  1994/03/24  00:04:05  des
  * Added notes on changes to spILUfactor() and px_inv().
  *

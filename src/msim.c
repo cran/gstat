@@ -56,8 +56,10 @@
 #include "msim.h"
 
 static DPOINT *which_point(DATA *d, DPOINT *where);
+#ifndef USING_R
 static void restore_data_list(DATA **data, int sim, int n_vars);
 static void lhs_one(Double_index *list, unsigned int dim, double mean, double var);
+#endif
 
 #ifdef SIM_DOUBLE
 typedef double Float; /* doubles the memory requirement -> may be pretty much */
@@ -251,6 +253,7 @@ void restore_data_sel(DATA **data, int sim, int n_vars) {
 	}
 }
 
+#ifndef USING_R
 static void restore_data_list(DATA **data, int sim, int n_vars) {
 /*
  * for data[0]..data[n_vars-1] restore the values of the `sim' simulation
@@ -282,7 +285,6 @@ static void restore_data_list(DATA **data, int sim, int n_vars) {
 	}
 }
 
-#ifndef USING_R
 void save_simulations_to_ascii(const char *fname) {
 	DATA **d, *dv;
 	FILE *f;
@@ -649,7 +651,6 @@ void lhs(DATA **d, int n_vars, int stratify) {
 
 	return;
 }
-#endif
 
 static void lhs_one(Double_index *list, unsigned int dim, 
 		double mean, double var) {
@@ -690,6 +691,7 @@ static void lhs_one(Double_index *list, unsigned int dim,
  			printlog("%g [%d]%s", list[i].d, rank[i], (i + 1) % 5 ? " " : "\n");
  	}
 }
+#endif
 
 void setup_beta(DATA **d, int n_vars, int n_sim) {
 	double *est;

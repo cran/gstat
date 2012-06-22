@@ -100,9 +100,9 @@ static unsigned int check_open_edges(const PLOT_POINT data, const int target_sid
                                      const PLOT_POINT target, const POLYGON *p_obj);
 static void print_poly_log(POLYGON *edge);
 
-static const char *fname = NULL;
 /*------------------------------ POLYGONS ------------------------------*/
 #ifndef USING_R
+static const char *fname = NULL;
 POLYGON *read_polygons(const char *filename, int *n_polys, double **iso_values) {
 	FILE *f = NULL;
 	int i = 0, j,n, line_size = 0, d, np, iww_nl=-1;

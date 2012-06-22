@@ -89,7 +89,9 @@ static void record_open(const FILE *f, const char *name, const char *mode,
 	FILE_TYPE t);
 static void record_closed(const FILE *f);
 static void record_removed(const char *name);
+#ifndef USING_R
 static FILE_TYPE what_is_file(const FILE *f);
+#endif
 static const char *stream_name(const FILE *f);
 
 #ifdef MEMDEBUG
@@ -747,6 +749,7 @@ void print_file_record(void) {
 	}
 }
 
+#ifndef USING_R
 static FILE_TYPE what_is_file(const FILE *f) {
 	int i;
 	for (i = 0; i < file_record_size; i++)
@@ -755,6 +758,7 @@ static FILE_TYPE what_is_file(const FILE *f) {
 	assert(0);
 	return IS_OPEN; /* never reached */
 }
+#endif
 
 static const char *stream_name(const FILE *f) {
 	int i;
@@ -856,6 +860,7 @@ int CDECL double_index_cmp(const Double_index *a, const Double_index *b) {
 	return 0;
 }
 
+#ifndef USING_R
 int grass(void) {
 	static int gisinit = 0;
 	int env, lock;
@@ -864,8 +869,7 @@ int grass(void) {
 	if (gisinit == 1) /* been here before... */
 		return gisinit;
 
-	env = ((getenv("LOCATION") || 
-		getenv("LOCATION_NAME"))&& getenv("GISDBASE") && getenv("MAPSET") ||
+	env = ((getenv("LOCATION") || getenv("LOCATION_NAME")) && getenv("GISDBASE") && getenv("MAPSET") ||
 		getenv("GISRC"));
 	if ((home = getenv("HOME")) == NULL)
 		home = "";
@@ -891,3 +895,4 @@ int grass(void) {
 	efree(str);
 	return gisinit;
 }
+#endif

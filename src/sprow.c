@@ -37,7 +37,9 @@
 #include	"../src/config.h" /* EJP */
 
 
+/*
 static char	rcsid[] = "$Id: sprow.c,v 1.1.1.1 2003-06-23 18:31:50 cees Exp $";
+*/
 
 #define	MINROWLEN	10
 
@@ -203,7 +205,7 @@ int	n,type;
 	 mem_bytes(type,r->maxlen*sizeof(row_elt),
 		     newlen*sizeof(row_elt)); 
       }
-      r->elt = RENEW(r->elt,newlen,row_elt);
+      RENEW(r->elt,newlen,row_elt);
       if ( ! r->elt )
 	error(E_MEM,"sprow_xpd");
       r->maxlen = newlen;
@@ -249,7 +251,7 @@ int	n,type;
 	 mem_bytes(type,r->maxlen*sizeof(row_elt),
 		   n*sizeof(row_elt)); 
       }
-      r->elt = RENEW(r->elt,n,row_elt);
+      RENEW(r->elt,n,row_elt);
       if ( ! r->elt )
 	error(E_MEM,"sprow_resize");
       r->maxlen = r->len = n;
@@ -695,7 +697,7 @@ double  val;
                         new_len*sizeof(row_elt)); 
          }
          
-         r->elt = RENEW(r->elt,new_len,row_elt);
+         RENEW(r->elt,new_len,row_elt);
          if ( ! r->elt )        /* can't allocate */
            error(E_MEM,"sprow_set_val");
          r->maxlen = 2*r->maxlen+1;
