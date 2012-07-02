@@ -2,7 +2,7 @@ library(gstat)
 
 # roughly follows the case presented in:
 # E.J. Pebesma and G.B.M. Heuvelink, 1999. Latin hypercube sampling 
-# of Gaussian random fields. Technometrics 41 (4), pp. 303–312.
+# of Gaussian random fields. Technometrics 41 (4), pp. 303-312.
 
 data(meuse)
 data(meuse.grid)
