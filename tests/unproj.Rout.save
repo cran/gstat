@@ -1,5 +1,5 @@
 
-R version 2.15.0 (2012-03-30)
+R version 2.15.1 (2012-06-22) -- "Roasted Marshmallows"
 Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
@@ -21,8 +21,8 @@ Type 'q()' to quit R.
 Loading required package: rgdal
 Loading required package: sp
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.9.0, released 2011/12/29
-Path to GDAL shared files: /usr/local/share/gdal
+Loaded GDAL runtime: GDAL 1.9.1, released 2012/05/15
+Path to GDAL shared files: /usr/share/gdal/1.9
 Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009, [PJ_VERSION: 470]
 Path to PROJ.4 shared files: (autodetected)
 > 
@@ -71,17 +71,17 @@ Loading required package: xts
 > 
 > library(fields)
 Loading required package: spam
-Package 'spam' is loaded. Spam version 0.27-0 (2011-08-17).
-Type demo( spam) for some demos, help( Spam) for an overview
-of this package.
-Help for individual functions is optained by adding the
-suffix '.spam' to the function name, e.g. 'help(chol.spam)'.
+Spam version 0.29-1 (2012-05-05) is loaded.
+Type 'help( Spam)' or 'demo( spam)' for a short introduction 
+and overview of this package.
+Help for individual functions is also obtained by adding the
+suffix '.spam' to the function name, e.g. 'help( chol.spam)'.
 
 Attaching package: 'spam'
 
 The following object(s) are masked from 'package:base':
 
-    backsolve, forwardsolve, norm
+    backsolve, forwardsolve
 
 > data(ozone2)
 > oz = SpatialPointsDataFrame(ozone2$lon.lat, 
@@ -164,4 +164,4 @@ spDistsN1 Distances:
 > 
 > proc.time()
    user  system elapsed 
-  1.548   0.048   1.617 
+  1.536   0.088   1.611 

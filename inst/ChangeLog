@@ -1,3 +1,89 @@
+2012-07-01 22:36  EdzerPebesma
+
+	* makefile, pkg/DESCRIPTION, pkg/src/s.c: version update; #include
+	  <S.h>; added -Wall to checking
+
+2012-06-18 14:06  EdzerPebesma
+
+	* pkg/R/show.vgms.R, pkg/src/chfactor.c, pkg/src/copy.c,
+	  pkg/src/data.c, pkg/src/err.c, pkg/src/fit.c, pkg/src/getest.c,
+	  pkg/src/hsehldr.c, pkg/src/init.c, pkg/src/ivecop.c,
+	  pkg/src/lex.c, pkg/src/lufactor.c, pkg/src/machine.c,
+	  pkg/src/mapio.c, pkg/src/matop.c, pkg/src/meminfo.c,
+	  pkg/src/memory.c, pkg/src/msim.c, pkg/src/norm.c,
+	  pkg/src/parse.c, pkg/src/polygon.c, pkg/src/predict.c,
+	  pkg/src/pxop.c, pkg/src/qrfactor.c, pkg/src/sem.c,
+	  pkg/src/solve.c, pkg/src/sparse.c, pkg/src/sprow.c,
+	  pkg/src/submat.c, pkg/src/utils.c, pkg/src/vecop.c,
+	  pkg/src/version.c, pkg/tests/unproj.Rout.save,
+	  pkg/tests/windst.Rout.save: removed all warnings that would
+	  result from using -Wall; updated two test outputs.
+
+2012-06-16 20:52  EdzerPebesma
+
+	* pkg/R/show.vgms.R, pkg/R/vgm.R: as.groups in show.vgms() now
+	  works, too.
+
+2012-06-16 16:38  EdzerPebesma
+
+	* pkg/R/show.vgms.R, pkg/man/show.vgms.Rd: added as.groups
+	  argument; typo
+
+2012-06-16 15:37  EdzerPebesma
+
+	* pkg/R/show.vgms.R, pkg/R/vgm.R, pkg/man/show.vgms.Rd: show.vgms
+	  now accepts sill, range and nugget to be vectors of length > 1
+
+2012-05-31 19:06  EdzerPebesma
+
+	* makefile, pkg/DESCRIPTION, pkg/tests/unproj.R: version; took out
+	  gstat.org
+
+2012-05-01 17:32  EdzerPebesma
+
+	* pkg/man/jura.Rd: url; more comments
+
+2012-05-01 17:28  EdzerPebesma
+
+	* pkg/man/jura.Rd: comments from David Rossiter
+
+2012-04-30 20:33  EdzerPebesma
+
+	* standalone/makefile, standalone/makefile.in,
+	  standalone/src/version.h: removed configure target
+
+2012-04-30 19:42  EdzerPebesma
+
+	* pkg/man/oxford.Rd: reference to jpg corrected, noted by David
+	  Rossiter
+
+2012-04-30 12:54  EdzerPebesma
+
+	* attic/S/makefile, makefile, pkg/DESCRIPTION, pkg/inst/ChangeLog,
+	  pkg/src/block.c, pkg/src/block.h, pkg/src/chfactor.c,
+	  pkg/src/config.hin, pkg/src/copy.c, pkg/src/debug.h,
+	  pkg/src/defs.h, pkg/src/direct.c, pkg/src/err.c, pkg/src/fit.h,
+	  pkg/src/gcdist.c, pkg/src/gcdist.h, pkg/src/getest.h,
+	  pkg/src/gls.h, pkg/src/glvars.c, pkg/src/glvars.h,
+	  pkg/src/hsehldr.c, pkg/src/lm.c, pkg/src/lufactor.c,
+	  pkg/src/machine.c, pkg/src/machine.hin, pkg/src/mapio.c,
+	  pkg/src/mapio.h, pkg/src/matop.c, pkg/src/matrix.h,
+	  pkg/src/matrix2.h, pkg/src/meminfo.c, pkg/src/meminfo.h,
+	  pkg/src/msim.c, pkg/src/msim.h, pkg/src/nsearch.c,
+	  pkg/src/nsearch.h, pkg/src/parse.c, pkg/src/parse.h,
+	  pkg/src/plot.h, pkg/src/polygon.c, pkg/src/polygon.h,
+	  pkg/src/pqueue.c, pkg/src/pqueue.h, pkg/src/predict.h,
+	  pkg/src/random.h, pkg/src/read.h, pkg/src/reml.c, pkg/src/reml.h,
+	  pkg/src/report.h, pkg/src/sem.c, pkg/src/sim.h, pkg/src/solve.c,
+	  pkg/src/sparse.h, pkg/src/stat.c, pkg/src/stat.h,
+	  pkg/src/userio.c, pkg/src/userio.h, pkg/src/utils.c,
+	  pkg/src/utils.h, pkg/src/vario.h, pkg/src/vario_fn.c,
+	  pkg/src/vario_fn.h, pkg/src/vario_io.c, pkg/src/vario_io.h,
+	  pkg/src/version.h, pkg/tests/cv.Rout.save,
+	  pkg/tests/cv3d.Rout.save, standalone/meschach/machine.h,
+	  standalone/src/s.h, standalone/src/version.h: added missing src
+	  files; increased version number.
+
 2012-04-30 11:46  EdzerPebesma
 
 	* COPYING, ChangeLog, ChangeLog.cvs, README, S, TODO, aclocal.m4,
