@@ -1,5 +1,5 @@
 b930a1c993354b3d71cc449df073d4be *CHANGES
-6cac335a8d5166adc7facb5b03045858 *DESCRIPTION
+ef8d8d945124c34f3ec3417b4719107d *DESCRIPTION
 65d65c650081d775169bc341a1c8a5b1 *LICENCE
 973b2ee87b75082c6e6fd6715b4f91a7 *NAMESPACE
 02a9d4ea0f96e71d31a614d441396d5f *R/fit.lmc.R
@@ -16,7 +16,7 @@ cbf16eea326f04c3995b5642140e5a20 *R/gstat.formula.predict.R
 edc9791ebe437b1901380d74972db2cc *R/image.data.frame.R
 bc6d39e3af8aaeaf7f756fecf31fa412 *R/krige.R
 b0433ecbe9d835d830305648cc2d08bf *R/krige.cv.R
-84589a16e5192136860eeb200c58c305 *R/krige0.R
+ec91af5143b9942528d73b29cc4fa287 *R/krige0.R
 4d12a98da5047471714771888c60106f *R/krigeTg.R
 30c533ed5b6ce3d8b3009f0002fc7423 *R/load.variogram.model.R
 5e4ca298349e3841bcd67b74ec2b4b45 *R/map.to.lev.R
@@ -89,12 +89,12 @@ bbca76493fc83117aa6b62b9b7aafaf0 *demo/uisim.R
 3e513aae2bb5d80ef6c3c5d00a473f89 *inst/CITATION
 868235195f85c86ef7420af28ee7a4fc *inst/ChangeLog
 13ba85de19daef4c6c332c11107a5890 *inst/doc/gstat.Rnw
-4fb8f56f0af8f6ad8c8fb15b8946b8a5 *inst/doc/gstat.pdf
+1311e0ff07356f2ceab2a4ac82e8c860 *inst/doc/gstat.pdf
 23a8ca706b284fdd73be5e1958601d75 *inst/doc/ifgi-logo_int.pdf
 9928b4a0aba5faaeb024fcaca40dbbc2 *inst/doc/prs.Rnw
-0140da410ba538a6ec97a2e0aa265df9 *inst/doc/prs.pdf
+4db146bf3b554703821661e0b1ff3132 *inst/doc/prs.pdf
 bb6a285c47223dc4cb8581e450d14003 *inst/doc/st.Rnw
-7a5e44b3e88a13f2055171d9d4911156 *inst/doc/st.pdf
+27c9b8ec2850db96d4fa056f34744cce *inst/doc/st.pdf
 af529f6f9ce9e52ed054e016fd386af5 *inst/external/cluster.txt
 bacec53ee233889d6419b0e394bde7a8 *inst/external/ncp.dbf
 3692904f850276a958eaa4024e4a8ec7 *inst/external/ncp.shp
@@ -267,10 +267,10 @@ a98ba5ef25029ac1981222040b4db61a *tests/rings.Rout.save
 459e4a010ac4f61c0f18972b3a5cbb41 *tests/sim.R
 8b9e63c0e1bac0c24b7b8004a446d1bd *tests/sim.Rout.save
 71a4250e772908250af7286dcd1024d1 *tests/unproj.R
-e0bbddcf42551ea5bcd3ff1e6a390c17 *tests/unproj.Rout.save
+88b1eca3d251abb79c4ed0a22adfc00c *tests/unproj.Rout.save
 d19fa916904446c1757a34eb73b35eef *tests/variogram.R
 cd2b9dc2d29146849af90eb015576490 *tests/variogram.Rout.save
 3b9d43665ca6864ed0d366831a4b2131 *tests/vdist.R
 21290641eff7b86816ca17e584edd4a9 *tests/vdist.Rout.save
 fd97384f4bb63c161bdb54f63d32a69c *tests/windst.R
-f2b87a44886bc924fa29a7193836e7f0 *tests/windst.Rout.save
+2a78c4230f6ea06eecb184a68455be8b *tests/windst.Rout.save

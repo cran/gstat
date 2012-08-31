@@ -1,5 +1,5 @@
 
-R version 2.15.0 (2012-03-30)
+R version 2.15.1 (2012-06-22) -- "Roasted Marshmallows"
 Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
@@ -97,8 +97,8 @@ There were 50 or more warnings (use warnings() to see the first 50)
 + }
 Loading required package: rgdal
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.9.0, released 2011/12/29
-Path to GDAL shared files: /usr/local/share/gdal
+Loaded GDAL runtime: GDAL 1.9.1, released 2012/05/15
+Path to GDAL shared files: /usr/share/gdal/1.9
 Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009, [PJ_VERSION: 470]
 Path to PROJ.4 shared files: (autodetected)
 Loading required package: maps
@@ -120,4 +120,4 @@ Warning messages:
 > 
 > proc.time()
    user  system elapsed 
-  3.612   0.136   3.701 
+  3.460   0.136   3.578 
