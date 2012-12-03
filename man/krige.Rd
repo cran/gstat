@@ -17,6 +17,8 @@
 \alias{krige,formula,NULL-method}
 \alias{idw,formula,formula-method}
 \alias{idw,formula,Spatial-method}
+\alias{idw,formula,ST-method}
+\alias{krige,formula,ST-method} % calling krigeST
 \title{ Simple, Ordinary or Universal, global or local, Point or Block Kriging,
 or simulation. }
 \description{
@@ -147,7 +149,7 @@ contain prediction and prediction variance (in case of kriging) or the
 \code{abs(nsim)} columns of the conditional Gaussian or indicator
 simulations 
 
-\code{krige0} and \code{idw0} are alternative functions that have reduced
+\code{krige0} and \code{idw0} are alternative functions with reduced
 functionality and larger memory requirements; they return numeric vectors
 (or matrices, in case of multiple dependent) with predicted values only;
 in case \code{computeVar} is TRUE, a list with elements \code{pred} and

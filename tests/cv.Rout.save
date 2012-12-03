@@ -1,5 +1,5 @@
 
-R version 2.15.0 (2012-03-30)
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
 Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
@@ -19,16 +19,6 @@ Type 'q()' to quit R.
 > # try bivariate cokriging; cross validate first variable
 > library(gstat)
 Loading required package: sp
-Loading required package: spacetime
-Loading required package: zoo
-
-Attaching package: 'zoo'
-
-The following object(s) are masked from 'package:base':
-
-    as.Date, as.Date.numeric
-
-Loading required package: xts
 > data(meuse)
 > g=gstat(NULL, "log-zinc", log(zinc)~1,  ~x+y, meuse, nmax=10)
 > g=gstat(g, "log-lead", log(lead)~1,     ~x+y, meuse, nmax=10)
@@ -110,4 +100,4 @@ In checkNames(value) :
 > 
 > proc.time()
    user  system elapsed 
-  0.996   0.060   1.049 
+  0.848   0.024   0.872 

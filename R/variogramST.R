@@ -1,7 +1,9 @@
 VgmFillNA = function(x, boundaries) {
+	# pads the sample variogram with NA rows where no data are available.
 	n = length(boundaries) - 1
 	ix = rep(NA, n)
-	ix[which(1:n %in% findInterval(x$dist, boundaries))] = 1:nrow(x)
+	#ix[which(1:n %in% findInterval(x$dist, boundaries))] = 1:nrow(x)
+	ix[findInterval(x$dist, boundaries)] = 1:nrow(x)
 	# x$b = boundaries[-1]
 	# print(x[ix,])
 	x[ix,]
@@ -13,7 +15,8 @@ VgmAverage = function(ret, boundaries = NULL) {
 	# take care of missing rows...
 	if (is.null(boundaries)) 
 		boundaries = attr(ret[[1]], "boundaries")
-	ret = lapply(ret, VgmFillNA, boundaries = boundaries)
+	ret = lapply(ret, VgmFillNA, 
+			boundaries = c(0, 1e-6 * boundaries[2], boundaries[-1]))
 	# average/sum three columns:
 	gamma = apply(do.call(cbind, lapply(ret, function(x) x$gamma)), 1, mean,
 		na.rm = TRUE)
@@ -45,7 +48,8 @@ StVgmLag = function(formula, data, dt, pseudo, ...) {
 			d1 = d1[.ValidObs(formula, d1),]
 			d2 = data[, i + dt]
 			d2 = d2[.ValidObs(formula, d2),]
-			obj = gstat(NULL, paste("D", i, sep=""), formula, d1)
+			obj = gstat(NULL, paste("D", i, sep=""), formula, d1, 
+				set = list(zero_dist = 3))
 			obj = gstat(obj, paste("D", i+dt, sep=""), formula, d2)
 			ret[[i]] = variogram(obj, cross = "ONLY", pseudo = pseudo, ...)
 		}
@@ -59,7 +63,9 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15,
 		data = locations
 	stopifnot(is(data, "STFDF") || is(data, "STSDF"))
 	it = index(data@time)
-	if (is.regular(zoo(1:length(it), it), strict = TRUE)) {
+	if (is.regular(
+				as.zoo(matrix(1:length(it)), order.by = it), 
+				strict = TRUE)) {
 		twidth = diff(it)[1]
 		tlags = tlags[tlags <= min(max(tlags), length(unique(it)) - 1)]
 	} else {
@@ -85,13 +91,15 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15,
 	if (is(t, "yearmon"))
 		class(v$timelag) = "yearmon"
 	b = attr(ret[[2]], "boundaries")
+	b = c(0, b[2]/1e6, b[-1])
 	ix = findInterval(v$dist, b)
-	spacelags = b[1:(length(b)-1)] + diff(b)/2
+	b = b[-2]
+	spacelags = c(0, b[-length(b)] + diff(b)/2)
 	v$spacelag = spacelags[ix]
 	if (isTRUE(!is.projected(data)))
 		attr(v$spacelag, "units") = "km"
 	class(v) = c("StVariogram", "data.frame")
-	v
+	na.omit(v)
 }
 
 plot.StVariogram = function(x, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
@@ -155,61 +163,4 @@ plot.StVariogram = function(x, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
 				auto.key = list(space = "right"), xlab = xlab, 
 				par.settings = ps, ...)
 	}
-}
-
-variogram.ST00 = function(formula, locations, data, ...,
-		nt = 15, twidth, tcutoff, dX) {
-# Sat Jul 16 19:51:37 CEST 2011
-	if (missing(data))
-		data = locations
-	stopifnot(is(data, "STIDF"))
-	# da = as(data, "STIDF")
-	it = index(data@time)
-	if (is.regular(it, strict = TRUE)) {
-		if (missing(twidth))
-			twidth = diff(it)[1]
-		nt = min(nt, length(unique(it))/2)
-	} else {
-		if (!(missing(twidth) && missing(tcutoff)))
-			stop("time is not strictly regular: specify twidth and/or tcutoff")	
-		if (!missing(twidth) && !missing(tcutoff)) {
-			nt = tcutoff %/% twidth
-			if (tcutoff %% twidth > 0)
-				nt = nt+1
-		}
-	}
-	if (missing(tcutoff) && !missing(twidth))
-		tcutoff = nt * twidth
-	if (missing(twidth) && !missing(tcutoff))
-		twidth = tcutoff / nt
-	# now we have all three; continue with twidth and tcutoff.
-	#ret = vector("list", 2*nt+1)
-	ret = vector("list", nt)
-	obj = NULL
-	da = data
-	df = as(da, "data.frame")
-	dsp = addAttrToGeom(da@sp, df) # now Spatial, with time as attribute
-	dsp$RES = residuals(lm(formula, df))
-	t = twidth * (0:(nt-1))
-	for (dt in 1:nt) {
-		id = paste("B", dt-1, sep="")
-		df0 = as(dsp, "SpatialPointsDataFrame")
-		df0$TIME = df0$time - t[dt] # Back i-1 steps
-		obj = gstat(obj, id, RES~TIME, df0)
-	}
-	if (missing(dX))
-		dX = twidth/2
-	v = variogram(obj, dX = dX, cross = "ST", progress = TRUE, ...)
-	# add time lag:
-	tlag = substring(as.character(v$id), first = 5)
-	tlag[tlag == ""] = "0"
-	v$timelag = t[as.numeric(tlag)+1]
-	b = attr(v, "boundaries")
-	ix = findInterval(v$dist, b)
-	spacelags = b[1:(length(b)-1)] + diff(b)/2
-	v$spacelag = spacelags[ix]
-	if (isTRUE(!is.projected(data)))
-		attr(v$spacelag, "units") = "km"
-	class(v) = c("StVariogram", "data.frame")
-	v
 }

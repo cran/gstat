@@ -14,12 +14,12 @@ function(object, maxdist, n = 200, min=1.0e-6 * maxdist, dir = c(1,0,0),
 		stop("maxdist or dist_vector needs to be set");
 	if (length(dir) != 3)
 		stop("dir should be numeric vector of length 3")
-	.Call("gstat_init", as.integer(debug.level))
+	.Call(gstat_init, as.integer(debug.level))
 	pars = c(min,maxdist,n,dir)
 	load.variogram.model(object, c(0,0)) # loads object into gstat 
-	ret = .Call("gstat_variogram_values", as.integer(c(0,0)),
+	ret = .Call(gstat_variogram_values, as.integer(c(0,0)),
 		as.numeric(pars), as.integer(covariance), as.numeric(dist_vector))
-	.Call("gstat_exit", 0);
+	.Call(gstat_exit, 0);
 	if (is.matrix(dist_vector))
 		matrix(ret[[2]], nrow(dist_vector), ncol(dist_vector))
 	else

@@ -78,7 +78,7 @@ location $s_i$, and $||.||$ the 2-norm.  This allows pooled estimation of
 within-strata variograms (use a factor variable as regressor, and dX=0.5),
 or variograms of (near-)replicates in a linear model (addressing point
 pairs having similar values for regressors variables) }
-\item{boundaries}{ numerical vector with distance interval boundaries; 
+\item{boundaries}{ numerical vector with distance interval upper boundaries; 
 values should be strictly increasing }
 \item{cloud}{ logical; if TRUE, calculate the semivariogram cloud }
 \item{trend.beta}{vector with trend coefficients, in case they are

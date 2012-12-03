@@ -1,4 +1,6 @@
 library(gstat)
+library(spacetime)
+
 data(wind)
 wind.loc$y = as.numeric(char2dms(as.character(wind.loc[["Latitude"]])))
 wind.loc$x = as.numeric(char2dms(as.character(wind.loc[["Longitude"]])))
@@ -10,7 +12,8 @@ wind$jday = as.numeric(format(wind$time, '%j'))
 stations = 4:15
 windsqrt = sqrt(0.5148 * wind[stations]) # knots -> m/s
 Jday = 1:366
-daymeans = apply(sapply(split(windsqrt - mean(windsqrt), wind$jday), mean), 2,  mean)
+daymeans = colMeans(
+	sapply(split(windsqrt - colMeans(windsqrt), wind$jday), colMeans))
 meanwind = lowess(daymeans ~ Jday, f = 0.1)$y[wind$jday]
 velocities = apply(windsqrt, 2, function(x) { x - meanwind })
 # match order of columns in wind to Code in wind.loc;
@@ -22,9 +25,8 @@ if (require(rgdal)) {
 proj4string(pts) = "+proj=longlat +datum=WGS84"
 utm29 = CRS("+proj=utm +zone=29 +datum=WGS84")
 pts = spTransform(pts, utm29)
-t = xts(1:nrow(wind), wind$time)
 # note the t() in:
-w = STFDF(pts, t, data.frame(values = as.vector(t(velocities))))
+w = STFDF(pts, wind$time, data.frame(values = as.vector(t(velocities))))
 
 library(mapdata)
 library(maptools)
@@ -53,7 +55,7 @@ covfn = function(x, y = x) {
 }
 
 n = 10
-tgrd = xts(1:n, seq(min(index(w)), max(index(w)), length=n))
+tgrd = seq(min(index(w)), max(index(w)), length=n)
 pred = krige0(sqrt(values)~1, w, STF(grd, tgrd), covfn)
 layout = list(list("sp.points", pts, first=F, cex=.5),
 	list("sp.lines", m, col='grey'))

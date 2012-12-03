@@ -28,7 +28,7 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 	}
 	if (any(is.na(boundaries)))
 		stop("no NA values allowed in boundaries")
-    .Call("gstat_init", as.integer(debug.level))
+    .Call(gstat_init, as.integer(debug.level))
 	if (!is.null(g) && !is.null(g$set))
 		gstat.load.set(g$set)
     id.names = NULL
@@ -51,7 +51,7 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 					grd = numeric(0)
 			} else
 				grd = grid[[i]]
-            .Call("gstat_new_data", as.double(object[[i]]), 
+            .Call(gstat_new_data, as.double(object[[i]]), 
 				as.double(locations[[i]]), as.double(Xloc), 
 				as.integer(1), as.double(t.beta), as.integer(-1),
 				as.integer(0), as.double(-1), as.integer(1), 
@@ -103,7 +103,7 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 				  	bnd = boundaries 
 				  else # NOT the first time we're here, so...
 				    bnd = numeric(0)
-                  ret.call = .Call("gstat_variogram", 
+                  ret.call = .Call(gstat_variogram, 
 				  		as.integer(c(id1 - 1, id2 - 1)), 
 						as.numeric(cutoff), as.numeric(width), 
                     	as.numeric(direction), as.integer(cressie), 
@@ -145,7 +145,7 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
         }
     }
 	if (verbose) cat("\n")
-    .Call("gstat_exit", NULL)
+    .Call(gstat_exit, NULL)
 	if (is.logical(map) && map == FALSE) {
     	if (!is.null(ids)) {
 			ret$id = factor(ids, levels = unique(ids))

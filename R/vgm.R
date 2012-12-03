@@ -14,11 +14,11 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
 	stopifnot(length(range) == 1)
 	stopifnot(missing(nugget) || length(nugget) == 1)
 	stopifnot(length(kappa) == 1)
-	m = .Call("gstat_get_variogram_models", as.integer(0))
+	m = .Call(gstat_get_variogram_models, as.integer(0))
 	n = length(m)
 	mf = factor(m, levels = m)
 	if (missing(model)) {
-		ml = .Call("gstat_get_variogram_models", as.integer(1))
+		ml = .Call(gstat_get_variogram_models, as.integer(1))
 		mlf = factor(ml, levels = ml)
 		return(data.frame(short = mf, long = mlf))
 	}

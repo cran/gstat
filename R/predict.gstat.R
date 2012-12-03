@@ -16,7 +16,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	} else
 		return.sp = TRUE
 	
-	.Call("gstat_init", as.integer(debug.level))
+	.Call(gstat_init, as.integer(debug.level))
 	bl_weights = numeric(0)
 	if (!missing(mask)) {
 		cat("argument mask is deprecated:")
@@ -46,17 +46,18 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 				stop("dummy data cannot have non-zero degree arg; use formula")
 			# loc.dim = length(attr(tr, "term.labels"))
 			loc.dim = dim(coordinates(newdata))[[2]]
-			.Call("gstat_new_dummy_data", as.integer(loc.dim), 
+			.Call(gstat_new_dummy_data, as.integer(loc.dim), 
 				as.integer(d$has.intercept), as.double(d$beta), 
 				nmax, nmin, maxdist, as.integer(d$vfn), 
 				as.integer(is.projected(newdata)), as.integer(d$vdist))
+			raw = list(xlevels = NULL)
 		} else {
 			if (is.null(d$weights))
 				w = numeric(0)
 			else
 				w = d$weights
 			raw = gstat.formula(d$formula, d$data)
-			.Call("gstat_new_data", as.double(raw$y), 
+			.Call(gstat_new_data, as.double(raw$y), 
 				as.double(raw$locations),
 				as.double(raw$X), as.integer(raw$has.intercept),
 				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
@@ -67,7 +68,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 		if (!is.null(object$model[[name]])) 
 			load.variogram.model(object$model[[name]], c(i - 1, i - 1))
 		raw = gstat.formula.predict(d$formula, newdata, na.action = na.action,
-			(length(BLUE) == 2 && BLUE[2]))
+			(length(BLUE) == 2 && BLUE[2]), xlev = raw$xlevels)
 		if (is.null(new.X)) 
 			new.X = raw$X
 		else new.X = cbind(new.X, raw$X)
@@ -143,7 +144,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			nsim = -abs(nsim)
 	# random path: randomly permute row indices
 		perm = sample(seq(along = new.X[, 1]))
-		ret = .Call("gstat_predict", as.integer(nrow(as.matrix(new.X))),
+		ret = .Call(gstat_predict, as.integer(nrow(as.matrix(new.X))),
 			as.double(as.vector(raw$locations[perm, ])),
 			as.double(as.vector(new.X[perm,])),
 			as.integer(block.cols), as.vector(block), as.vector(bl_weights),
@@ -156,12 +157,12 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 			matrix(ret[order(perm), colsel], nrow(as.matrix(new.X)), abs(nsim) * nvars)))
 	}
 	else {
-		ret = .Call("gstat_predict", as.integer(nrow(as.matrix(new.X))),
+		ret = .Call(gstat_predict, as.integer(nrow(as.matrix(new.X))),
 			as.double(as.vector(raw$locations)), as.vector(new.X), as.integer(block.cols), 
 			as.vector(block), as.vector(bl_weights), as.integer(nsim), as.integer(BLUE))[[1]]
 		ret = data.frame(cbind(raw$locations, ret))
 	}
-	.Call("gstat_exit", NULL)
+	.Call(gstat_exit, NULL)
 	if (!is.null(valid.pattern) && any(valid.pattern)) {
 		ret.all = data.frame(matrix(NA, length(valid.pattern), ncol(ret)))
 		ret.all[, 1:ncol(raw$locations.all)] = raw$locations.all

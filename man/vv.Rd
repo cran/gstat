@@ -12,6 +12,7 @@ data(vv)
 }
 \examples{
 \dontrun{
+# obtained by:
 data(air)
 rr = rural[,"2005::2010"]
 unsel = which(apply(as(rr, "xts"), 2, function(x) all(is.na(x))))

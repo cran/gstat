@@ -1,5 +1,5 @@
 
-R version 2.15.1 (2012-06-22) -- "Roasted Marshmallows"
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
 Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
@@ -20,10 +20,11 @@ Type 'q()' to quit R.
 + 	q()
 Loading required package: rgdal
 Loading required package: sp
+rgdal: version: 0.8-2, (SVN revision 416:417)
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.9.1, released 2012/05/15
+Loaded GDAL runtime: GDAL 1.9.2, released 2012/10/08
 Path to GDAL shared files: /usr/share/gdal/1.9
-Loaded PROJ.4 runtime: Rel. 4.7.1, 23 September 2009, [PJ_VERSION: 470]
+Loaded PROJ.4 runtime: Rel. 4.8.0, 6 March 2012, [PJ_VERSION: 480]
 Path to PROJ.4 shared files: (autodetected)
 > 
 > # for validity of covariance functions on the sphere, see also:
@@ -35,16 +36,6 @@ Path to PROJ.4 shared files: (autodetected)
 > proj4string(meuse) = CRS("+init=epsg:28992")
 > meuse.ll = spTransform(meuse, CRS("+proj=longlat"))
 > library(gstat)
-Loading required package: spacetime
-Loading required package: zoo
-
-Attaching package: 'zoo'
-
-The following object(s) are masked from 'package:base':
-
-    as.Date, as.Date.numeric
-
-Loading required package: xts
 > variogram(log(zinc)~1, meuse.ll)
     np       dist     gamma dir.hor dir.ver   id
 1   57 0.07927429 0.1234479       0       0 var1
@@ -164,4 +155,4 @@ spDistsN1 Distances:
 > 
 > proc.time()
    user  system elapsed 
-  1.524   0.080   1.604 
+  2.184   0.092   2.291 

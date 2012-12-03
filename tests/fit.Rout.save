@@ -1,6 +1,6 @@
 
-R version 2.14.0 (2011-10-31)
-Copyright (C) 2011 The R Foundation for Statistical Computing
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
+Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -18,16 +18,6 @@ Type 'q()' to quit R.
 
 > library(gstat)
 Loading required package: sp
-Loading required package: spacetime
-Loading required package: zoo
-
-Attaching package: 'zoo'
-
-The following object(s) are masked from 'package:base':
-
-    as.Date, as.Date.numeric
-
-Loading required package: xts
 > data(meuse)
 > v=variogram(log(zinc)~1,~x+y,meuse,cutoff=500,wi=100)
 > v$gamma=c(0.5,1,2,3,3)
@@ -43,3 +33,6 @@ In fit.variogram(v, vgm(1, "Sph", 300, 0), warn.if.neg = TRUE) :
 1   Nug 0.000000    0.000
 2   Sph 7.878087 1567.749
 > 
+> proc.time()
+   user  system elapsed 
+  0.448   0.016   0.453 

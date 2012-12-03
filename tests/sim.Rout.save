@@ -1,6 +1,6 @@
 
-R version 2.14.0 (2011-10-31)
-Copyright (C) 2011 The R Foundation for Statistical Computing
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
+Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -19,16 +19,6 @@ Type 'q()' to quit R.
 > options(digits=6)
 > library(gstat)
 Loading required package: sp
-Loading required package: spacetime
-Loading required package: zoo
-
-Attaching package: 'zoo'
-
-The following object(s) are masked from 'package:base':
-
-    as.Date, as.Date.numeric
-
-Loading required package: xts
 > data(meuse)
 > set.seed(158229572)
 > new.locs <- data.frame(x = c(181170, 180310, 180205, 178673, 178770, 178270),
@@ -53,3 +43,6 @@ drawing 10 GLS realisations of beta...
 5 480.1281  788.6581 662.220
 6  70.6981 1303.2202 507.446
 > 
+> proc.time()
+   user  system elapsed 
+  0.520   0.040   0.545 

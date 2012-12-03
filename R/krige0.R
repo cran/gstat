@@ -26,8 +26,8 @@ idw0 = function(formula, data, newdata, y) {
 
 CHsolve = function(A, b) {
 	# solves A x = b for x if A is PD symmetric
-	#A = chol(A, LINPACK=TRUE)
-	A = chol(A)
+	#A = chol(A, LINPACK=TRUE) -> deprecated
+	A = chol(A) # but use pivot=TRUE?
 	backsolve(A, forwardsolve(A, b, upper.tri = TRUE, transpose = TRUE))
 }
 
@@ -52,8 +52,8 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 			covariance=TRUE)
 		c0 = variogramLine(model, dist_vector = c(0), covariance=TRUE)$gamma
 	} else {
-		V = model(data)
-		v0 = model(data, newdata)
+		V = model(data, data, ...)
+		v0 = model(data, newdata, ...)
 		if (computeVar) {
 			if (is(newdata, "SpatialLines") || 
 					is(newdata, "SpatialPolygons"))
@@ -93,11 +93,17 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 
 krigeST <- function(formula, data, newdata, modelList, y, ..., 
 		computeVar = FALSE, fullCovariance = FALSE) {
-
+  
 	if (is(data, "ST") && is(newdata, "ST")) {
 		stopifnot(identical(proj4string(data@sp), proj4string(newdata@sp)))
-		stopifnot(is(data, "STFDF"))
+		stopifnot(is(data, "STFDF") || 
+			(is(data, "STSDF") && modelList$stModel == "sumMetric"))
 	}
+  
+	# maintaining jss816 code compatibility:
+	if(is.null(modelList$stModel))
+		modelList$stModel <- "separable"
+  
 	lst = extractFormula(formula, data, newdata)
 	X = lst$X
 	x0 = lst$x0
@@ -105,14 +111,17 @@ krigeST <- function(formula, data, newdata, modelList, y, ...,
 		y = lst$y
 
 	V = covfn.ST(data, model = modelList)
-	stopifnot(!is.null(V$T) && !is.null(V$S))
-	v0 = covfn.ST(data, newdata, model = modelList)
-	stopifnot(!is.null(v0$T) && !is.null(v0$S))
-	d0 = data[1, 1, drop=FALSE]
-	c0 = as.numeric(covfn.ST(d0, d0, separate = FALSE, model = modelList))
-	skwts = STsolve(V, v0, X)
-	#ViX = skwts[,-(1:ncol(v0))]
-	#skwts = skwts[,1:ncol(v0)]
+	v0 = covfn.ST(data, newdata, modelList)
+  if (is(data,"STSDF"))
+    d0 <- data[data@index[1,1],data@index[1,2],drop=F]
+  else
+    d0 = data[1, 1, drop=FALSE]
+	c0 = as.numeric(covfn.ST(d0, d0, modelList, separate = FALSE))
+	skwts = switch(modelList$stModel, 
+                 separable=STsolve(V, v0, X), 
+                 CHsolve(V,cbind(v0,X))) # can CHsolve be simplified for the productSum and sumMetric model
+	# ViX = skwts[,-(1:ncol(v0))]
+	# skwts = skwts[,1:ncol(v0)]
 	npts = prod(dim(newdata)[1:2])
 	ViX = skwts[,-(1:npts)]
 	skwts = skwts[,1:npts]
@@ -120,7 +129,8 @@ krigeST <- function(formula, data, newdata, modelList, y, ...,
 	pred = x0 %*% beta + t(skwts) %*% (y - X %*% beta)
 	if (computeVar) {
 		# get (x0-X'C-1 c0)'(X'C-1X)-1 (x0-X'C-1 c0) -- precompute term 1+3:
-		v0 = v0$Tm %x% v0$Sm
+		if(is.list(v0)) # in the separable case
+			v0 = v0$Tm %x% v0$Sm
 		Q = t(x0) - t(ViX) %*% v0
 		var = c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q)
 		if (!fullCovariance)
@@ -162,19 +172,80 @@ STsolve = function(A, b, X) {
 	cbind(ret1, ret2)
 }
 
-covfn.ST = function(x, y = x, separate = TRUE, model) {
-	if (is(model$space, "variogramModel")) 
-		Sm = variogramLine(model$space, covariance = TRUE, dist_vector = 
-    		spDists(coordinates(x@sp), coordinates(y@sp)))
-	else
-		Sm = model$space(x, y)
-	if (is(model$time, "variogramModel")) 
-    	Tm = variogramLine(model$time, covariance = TRUE, dist_vector = 
-    		abs(outer(as.numeric(index(x@time)), as.numeric(index(y@time)), "-")))
-	else
-		Tm = model$time(x, y)
-    if (separate)
-        list(Sm = Sm, Tm = Tm)
-    else
-        Tm %x% Sm # kronecker product
+modelList <- list(space="sp",time="t")
+
+covfn.ST = function(x, y = x, model, separate=T) {
+    switch(model$stModel,
+           separable=covSep(x, y, model, separate),
+           productSum=covProdSum(x, y, model),
+           sumMetric=covSumMetric(x, y, model),
+           stop("Argument \"model$stModel\" must refer to one of \"separable\", \"productSum\" or \"sumMetric\"."))
+}
+
+covSep <- function(x, y, model, separate=TRUE) {
+  if (is(model$space, "variogramModel")) 
+    Sm = variogramLine(model$space, covariance = TRUE, dist_vector = 
+      spDists(coordinates(x@sp), coordinates(y@sp)))
+  else
+    Sm = model$space(x, y)
+  stopifnot(!is.null(Sm))
+  if (is(model$time, "variogramModel")) 
+    Tm = variogramLine(model$time, covariance = TRUE, dist_vector = 
+      abs(outer(as.numeric(index(x@time)), as.numeric(index(y@time)), "-")))
+  else
+    Tm = model$time(x, y)
+  stopifnot(!is.null(Tm))
+  if (separate)
+    list(Sm = Sm, Tm = Tm)
+  else
+    Tm %x% Sm # kronecker product
+}
+
+## product-sum model, BG
+covProdSum <- function(x, y, model) {
+  
+  k <- (sum(model$space$psill)+sum(model$time$psill)-model$sill)/(sum(model$space$psill)*sum(model$time$psill))
+  if (k <= 0 | k > 1/max(model$space$psill[2],model$time$psill[2])) 
+    stop("k is negative or too large, non valid model!")
+  
+  covST <- covSep(x, y, model, separate=TRUE)
+  return((1-model$k*model$sill)*( covST$Tm %x% matrix(1,nrow(covST$Sm),ncol(covST$Sm)) + matrix(1,nrow(covST$Tm),ncol(covST$Tm)) %x% covST$Sm - model$sill ) + model$k * covST$Tm %x% covST$Sm)
+}
+
+
+
+## sumMetric model
+covSumMetric <- function(x, y, model) {
+  if(!class(x) %in% c("STFDF","STSDF", "STF", "STS") | !class(y) %in% c("STFDF","STSDF", "STF", "STS")) 
+    stop("Only dataframes of type STFDF or STSDF are supported.")
+
+  ds = spDists(coordinates(x@sp), coordinates(y@sp))
+  dt = abs(outer(as.numeric(index(x@time)), as.numeric(index(y@time)), "-"))
+  
+  if (is(x, "STFDF") && is(y, "STFDF")) {
+    Sm = variogramLine(model$space, covariance = TRUE, dist_vector = ds)
+    Tm = variogramLine(model$time, covariance = TRUE, dist_vector = dt)
+    
+    h  = sqrt(rep(ds,length(dt))^2 + (model$stAni * rep(dt,each=length(ds)))^2)
+    Mm = variogramLine(model$joint, covariance = TRUE, dist_vector = h)
+    
+    return(matrix(1,nrow(Tm),ncol(Tm)) %x% Sm + Tm %x% matrix(1,nrow(Sm),ncol(Sm)) + Mm)
+  } 
+  
+  if (is(x,"STFDF") | is(x,"STF")) x = as(x, "STS")
+  if (is(y,"STFDF") | is(y,"STF")) y = as(y, "STS")
+  
+  sMat <- NULL
+  tMat <- NULL
+  for(r in 1:nrow(x@index)) {
+    sMat <- rbind(sMat,ds[x@index[r,1],y@index[,1]])
+    tMat <- rbind(tMat,dt[x@index[r,2],y@index[,2]])
+  }
+  Sm = variogramLine(model$space, covariance = TRUE, dist_vector = sMat)
+  Tm = variogramLine(model$time, covariance = TRUE, dist_vector = tMat)
+  
+  h  = sqrt(sMat^2 + (model$stAni * tMat)^2)
+  Mm = variogramLine(model$joint, covariance = TRUE, dist_vector = h)
+  
+  return(Sm + Tm + Mm)
 }

@@ -24,7 +24,7 @@ gstat.set <- function(set) {
 gstat.load.set <- function(set) {
 	str = gstat.set(set)
 	if (!is.null(str)) {
-		ret = .Call("gstat_load_command", str)
+		ret = .Call(gstat_load_command, str)
 		if (ret != 0) {
 			print(list(class = class(ret), value = ret))
 			stop(paste("error occured when parsing command:", str[ret]))
@@ -58,7 +58,7 @@ gstat.load.merge <- function(obj) {
 		obj$merge = list(c(obj$merge[1], 1, obj$merge[2], 1))
 	if (is.list(obj$merge)) {
 		str = gstat.merge(obj)
-		ret = .Call("gstat_load_command", str)
+		ret = .Call(gstat_load_command, str)
 		if (ret != 0) {
 			print(list(class = class(ret), value = ret))
 			stop(paste("error occured when parsing command:", str[ret]))

@@ -35,7 +35,7 @@ coordinates(pr) = ~x+y
 pr.df = overlay(pr, areas.r, fn = mean)
 # match non-empty (and relevant) areas:
 #areas = SpatialPolygonsDataFrame(areas.r[c(2,3,4,16),"WSVGEB_"], pr.df[c(1,2,3,5),])#,match.ID=F)
-areas = SpatialPolygonsDataFrame(areas.r[c(1,2,12,7),"WSVGEB_"], pr.df[c(1,2,3,5),],match.ID=F)
+areas = SpatialPolygonsDataFrame(areas.r[c(1,2,12,7),"WSVGEB_"], as.data.frame(pr.df[c(1,2,3,5),]),match.ID=F)
 # areas ID's 0 1 2 14
 sk = predict(g, areas)
 cok = predict(h, areas)
