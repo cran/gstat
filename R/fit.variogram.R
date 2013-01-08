@@ -6,8 +6,10 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
 {
     if (missing(object)) 
         stop("nothing to fit to")
-	if (!inherits(object, "gstatVariogram"))
-		stop("object should be of class gstatVariogram")
+	if (!inherits(object, "gstatVariogram") && !inherits(object, "variogramCloud"))
+		stop("object should be of class gstatVariogram or variogramCloud")
+	if (inherits(object, "variogramCloud"))
+		object$np = rep(1, nrow(object))
 	if (length(unique(object$id)) > 1)
 		stop("to use fit.variogram, variogram object should be univariable")
     if (missing(model)) 
@@ -22,14 +24,14 @@ function (object, model, fit.sills = TRUE, fit.ranges = TRUE,
         fit.ranges = rep(fit.ranges, length(model$model))
 	if (fit.method == 7 && any(object$dist == 0))
 		stop("fit.method 7 will not work with zero distance semivariances; use another fit.method value")
-    fit.ranges = fit.ranges & (model$model != "Nug")
+    fit.ranges = fit.ranges & !(model$model %in% c("Nug", "Err"))
 	initialRange = model$range
-    .Call("gstat_init", as.integer(debug.level))
-    .Call("gstat_load_ev", object$np, object$dist, object$gamma)
+    .Call(gstat_init, as.integer(debug.level))
+    .Call(gstat_load_ev, object$np, object$dist, object$gamma)
     load.variogram.model(model)
-    ret = .Call("gstat_fit_variogram", as.integer(fit.method), 
+    ret = .Call(gstat_fit_variogram, as.integer(fit.method), 
         as.integer(fit.sills), as.integer(fit.ranges))
-    .Call("gstat_exit", 0)
+    .Call(gstat_exit, 0)
     model$psill = ret[[1]]
     model$range = ret[[2]]
 	attr(model, "singular") = as.logical(ret[[3]]);

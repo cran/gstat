@@ -1,4 +1,6 @@
 #pdf("wind.pdf")
+# PLEASE read the vignette of package spacetime for a more
+# clever way to do all this!
 library(gstat)
 library(rgdal)
 library(maptools)

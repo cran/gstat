@@ -712,11 +712,10 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 		if (vgm->ev->cloud)
 			nest = vgm->ev->n_est;
 		else {
-			/*
-			if (vgm->ev->zero != ZERO_INCLUDE)
+			/* Rprintf("[zero: %d]\n", vgm->ev->zero); */
+			if (vgm->ev->zero == ZERO_SPECIAL)
 				nest = vgm->ev->n_est;
 			else 
-			*/
 				nest = vgm->ev->n_est - 1;
 		}
 		PROTECT(ret = NEW_LIST(4));
@@ -1028,10 +1027,8 @@ SEXP gstat_load_ev(SEXP np, SEXP dist, SEXP gamma) {
 			cloud = 0;
 	}
 	vgm->ev->cloud = cloud;
-#ifndef WIN32
 	if (DEBUG_VGMFIT)
 		fprint_sample_vgm(NULL, vgm->ev);
-#endif
 	return(np);
 }
 

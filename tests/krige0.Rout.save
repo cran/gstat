@@ -1,6 +1,6 @@
 
-R version 2.14.0 (2011-10-31)
-Copyright (C) 2011 The R Foundation for Statistical Computing
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
+Copyright (C) 2012 The R Foundation for Statistical Computing
 ISBN 3-900051-07-0
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -19,16 +19,6 @@ Type 'q()' to quit R.
 > # test -- load data:
 > library(gstat)
 Loading required package: sp
-Loading required package: spacetime
-Loading required package: zoo
-
-Attaching package: 'zoo'
-
-The following object(s) are masked from 'package:base':
-
-    as.Date, as.Date.numeric
-
-Loading required package: xts
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > data(meuse.grid)
@@ -47,7 +37,7 @@ Loading required package: xts
 > x <- krige(zinc~1, meuse, meuse.grid, v, beta = 500)
 [using simple kriging]
 > all.equal(x$var1.pred, x0$pred[,1])
-[1] TRUE
+[1] "names for current but not for target"
 > all.equal(x$var1.var, x0$var)
 [1] TRUE
 > # test ok:
@@ -55,7 +45,7 @@ Loading required package: xts
 > x <- krige(zinc~1, meuse, meuse.grid, v)
 [using ordinary kriging]
 > all.equal(x$var1.pred, x0$pred[,1])
-[1] TRUE
+[1] "names for current but not for target"
 > all.equal(x$var1.var, x0$var)
 [1] TRUE
 > # test uk:
@@ -68,3 +58,6 @@ Loading required package: xts
 > all.equal(x$var1.var, x0$var)
 [1] TRUE
 > 
+> proc.time()
+   user  system elapsed 
+  9.160   1.056   7.305 

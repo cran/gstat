@@ -148,7 +148,8 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 			/* pseudo: always, else: only if set */
 		else
 			v->ev->is_asym = 0;
-	}
+	} else
+		v->ev->is_asym = v->ev->pseudo = 0;
 	if (gl_zero_est == ZERO_DEFAULT) { /* choose a suitable default */
 		if (is_covariogram(v))
 			v->ev->zero = ZERO_SPECIAL;

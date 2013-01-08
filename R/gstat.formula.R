@@ -20,6 +20,9 @@ function (formula, data)
 	else
 		grid = numeric(0)
 
+	xlevels = .getXlevels(Terms, m)
+
     list(y = Y, locations = coordinates(data), X = X, call = call,
-        has.intercept = has.intercept, grid = as.double(unlist(grid)))
+        has.intercept = has.intercept, grid = as.double(unlist(grid)),
+		xlevels = xlevels)
 }

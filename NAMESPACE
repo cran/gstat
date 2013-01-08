@@ -1,6 +1,23 @@
-useDynLib(gstat)
+useDynLib(gstat, 
+	gstat_debug_level,
+	gstat_exit,
+	gstat_fit_variogram,
+	gstat_get_variogram_models,
+	gstat_init,
+	gstat_load_command,
+	gstat_load_ev,
+	gstat_load_variogram,
+	gstat_new_data,
+	gstat_new_dummy_data,
+	gstat_predict,
+	gstat_variogram,
+	gstat_variogram_values
+)
 
 import(lattice)
+import(sp)
+import(spacetime)
+importFrom(zoo, as.zoo, is.regular)
 
 export(as.vgm.variomodel,
 	cross.name,
@@ -8,6 +25,7 @@ export(as.vgm.variomodel,
 	fit.variogram,
 	fit.variogram.reml,
 	fit.variogram.gls,
+	fit.StVariogram,
 	get.contr,
 	gstat,
 	gstat.cv,
@@ -25,6 +43,7 @@ export(as.vgm.variomodel,
 	variogramST,
 	variogram.line,
 	variogramLine,
+	variogramSurface,
 	vgm,
 	vgm.panel.xyplot,
 	panel.pointPairs,

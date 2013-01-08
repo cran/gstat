@@ -1,0 +1,1976 @@
+
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
+Copyright (C) 2012 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "gstat"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> library('gstat')
+Loading required package: sp
+> 
+> assign(".oldSearch", search(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("coalash")
+> ### * coalash
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: coalash
+> ### Title: Coal ash samples from a mine in Pennsylvania
+> ### Aliases: coalash
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(coalash)
+> summary(coalash)
+       x                y            coalash      
+ Min.   : 1.000   Min.   : 1.00   Min.   : 7.000  
+ 1st Qu.: 5.000   1st Qu.: 8.00   1st Qu.: 8.960  
+ Median : 7.000   Median :13.00   Median : 9.785  
+ Mean   : 7.534   Mean   :12.91   Mean   : 9.779  
+ 3rd Qu.:10.000   3rd Qu.:18.00   3rd Qu.:10.568  
+ Max.   :16.000   Max.   :23.00   Max.   :17.610  
+> 
+> 
+> 
+> cleanEx()
+> nameEx("fit.StVariogram")
+> ### * fit.StVariogram
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fit.StVariogram
+> ### Title: Fit a spatio-temporal sample variogram to a sample variogram
+> ### Aliases: fit.StVariogram
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> # separable model: spatial and temporal sill and nugget will be ignored
+> # and kept constant at 1 and 0 respectively. Only a joint sill and nugget
+> # are used.
+> separableModel <- list(space=vgm(1,"Exp", 147, 0),
++                        time =vgm(1,"Exp", 3.5, 0),
++                        sill=40, nugget=16, stModel="separable")
+> 
+> # product sum model: spatial and temporal nugget will be ignored and kept
+> # constant at 0. Only a joint nugget is used.
+> prodSumModel <- list(space=vgm(39, "Sph", 343, 0),
++                      time= vgm(36, "Exp",   3, 0), 
++                      sill=41, nugget=17, stModel="productSum")
+> 
+> # sum metric model: spatial, temporal and joint nugget will be estimated
+> sumMetricModel <- list(space=vgm( 6.9, "Lin", 200, 3.0),
++                        time =vgm(10.3, "Lin",  15, 3.6),
++                        joint=vgm(37.2, "Exp",  84,11.7),
++                        nugget=6.7, stAni=77.7, stModel="sumMetric")
+> 
+>                        
+> # simplified sumMetric model, only a overall nugget is fitted. The spatial, 
+> # temporal and jont nuggets are set to 0.
+> simpleSumMetricModel <- list(space=vgm(20,"Lin", 150, 0),
++                              time =vgm(20,"Lin", 10,  0),
++                              joint=vgm(20,"Exp", 150, 0),
++                              nugget=1, stAni=15, stModel="simpleSumMetric")
+> 
+> # metric model
+> metricModel <- list(joint=vgm(60, "Exp", 150, 10),
++                     stAni=60, stModel="metric")
+> 
+> data(vv)
+> fit.StVariogram(vv[1:77,],separableModel,method = "L-BFGS-B")$StVgmFit
+$space
+  model psill    range
+1   Nug     0   0.0000
+2   Exp     1 109.0723
+
+$time
+  model psill    range
+1   Nug     0 0.000000
+2   Exp     1 2.106038
+
+$sill
+    sill 
+42.84031 
+
+$nugget
+  nugget 
+9.585171 
+
+$stModel
+[1] "separable"
+
+> 
+> 
+> 
+> cleanEx()
+> nameEx("fit.variogram")
+> ### * fit.variogram
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fit.variogram
+> ### Title: Fit a Variogram Model to a Sample Variogram
+> ### Aliases: fit.variogram
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> vgm1 <- variogram(log(zinc)~1, ~x+y, meuse)
+> fit.variogram(vgm1, vgm(1,"Sph",300,1))
+  model     psill    range
+1   Nug 0.0506555   0.0000
+2   Sph 0.5906009 896.9702
+> 
+> 
+> 
+> cleanEx()
+> nameEx("fit.variogram.gls")
+> ### * fit.variogram.gls
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fit.variogram.gls
+> ### Title: GLS fitting of variogram parameters
+> ### Aliases: fit.variogram.gls
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> coordinates(meuse) = ~x+y
+> fit.variogram.gls(log(zinc)~1, meuse[1:40,], vgm(1, "Sph", 900,1))
+[1]   0.0000000   0.5433039 721.3554680
+[1] 4.846680e-05 5.004239e-01 1.022720e+03
+[1] 4.846680e-05 2.912359e-01 1.197143e+03
+[1] 4.846680e-05 3.261385e-01 1.281039e+03
+[1] 4.846680e-05 3.462590e-01 1.361355e+03
+[1] 4.846680e-05 3.657127e-01 1.361355e+03
+[1] 4.846680e-05 3.656921e-01 1.361355e+03
+Warning in fit.variogram.gls(log(zinc) ~ 1, meuse[1:40, ], vgm(1, "Sph",  :
+  range parameter at search space boundary
+  model        psill    range
+1   Nug 0.0000484668    0.000
+2   Sph 0.3656921273 1361.355
+> 
+> 
+> 
+> cleanEx()
+> nameEx("fit.variogram.reml")
+> ### * fit.variogram.reml
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fit.variogram.reml
+> ### Title: REML Fit Direct Variogram Partial Sills to Data
+> ### Aliases: fit.variogram.reml
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> fit.variogram.reml(log(zinc)~1, ~x+y, meuse, model = vgm(1, "Sph", 900,1))
+  model      psill range
+1   Nug 0.02547708     0
+2   Sph 0.61088826   900
+> 
+> 
+> 
+> cleanEx()
+> nameEx("fulmar")
+> ### * fulmar
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: fulmar
+> ### Title: Fulmaris glacialis data
+> ### Aliases: fulmar
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(fulmar)
+> summary(fulmar)
+      year            x                y               depth     
+ Min.   :1998   Min.   :476210   Min.   :5694947   Min.   : 1.0  
+ 1st Qu.:1998   1st Qu.:535522   1st Qu.:5806777   1st Qu.:13.0  
+ Median :1999   Median :568618   Median :5896021   Median :25.0  
+ Mean   :1999   Mean   :576982   Mean   :5889112   Mean   :23.6  
+ 3rd Qu.:1999   3rd Qu.:604579   3rd Qu.:5946550   3rd Qu.:32.0  
+ Max.   :1999   Max.   :739042   Max.   :6150942   Max.   :54.0  
+     coast             fulmar      
+ Min.   :  1.024   Min.   : 0.000  
+ 1st Qu.:  4.857   1st Qu.: 0.000  
+ Median : 38.696   Median : 0.000  
+ Mean   : 56.642   Mean   : 1.005  
+ 3rd Qu.: 89.929   3rd Qu.: 0.000  
+ Max.   :263.205   Max.   :46.487  
+> ## Not run: 
+> ##D demo(fulmar)
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("gstat")
+> ### * gstat
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: gstat
+> ### Title: Create gstat objects, or subset it
+> ### Aliases: gstat print.gstat [.gstat
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> # let's do some manual fitting of two direct variograms and a cross variogram
+> g <- gstat(id = "ln.zinc", formula = log(zinc)~1, locations = ~x+y, 
++ 	data = meuse)
+> g <- gstat(g, id = "ln.lead", formula = log(lead)~1, locations = ~x+y, 
++ 	data = meuse)
+> # examine variograms and cross variogram:
+> plot(variogram(g))
+> # enter direct variograms:
+> g <- gstat(g, id = "ln.zinc", model = vgm(.55, "Sph", 900, .05))
+> g <- gstat(g, id = "ln.lead", model = vgm(.55, "Sph", 900, .05))
+> # enter cross variogram:
+> g <- gstat(g, id = c("ln.zinc", "ln.lead"), model = vgm(.47, "Sph", 900, .03))
+> # examine fit:
+> plot(variogram(g), model = g$model, main = "models fitted by eye")
+> # see also demo(cokriging) for a more efficient approach
+> g["ln.zinc"]
+data:
+ln.zinc : formula = log(zinc)`~`1 ; data dim = 155 x 12
+variograms:
+           model psill range
+ln.zinc[1]   Nug  0.05     0
+ln.zinc[2]   Sph  0.55   900
+> g["ln.lead"]
+data:
+ln.lead : formula = log(lead)`~`1 ; data dim = 155 x 12
+variograms:
+           model psill range
+ln.lead[1]   Nug  0.05     0
+ln.lead[2]   Sph  0.55   900
+> g[c("ln.zinc", "ln.lead")]
+data:
+ln.zinc : formula = log(zinc)`~`1 ; data dim = 155 x 12
+ln.lead : formula = log(lead)`~`1 ; data dim = 155 x 12
+variograms:
+                   model psill range
+ln.zinc[1]           Nug  0.05     0
+ln.zinc[2]           Sph  0.55   900
+ln.lead[1]           Nug  0.05     0
+ln.lead[2]           Sph  0.55   900
+ln.zinc.ln.lead[1]   Nug  0.03     0
+ln.zinc.ln.lead[2]   Sph  0.47   900
+> g[1]
+data:
+ln.zinc : formula = log(zinc)`~`1 ; data dim = 155 x 12
+variograms:
+           model psill range
+ln.zinc[1]   Nug  0.05     0
+ln.zinc[2]   Sph  0.55   900
+> g[2]
+data:
+ln.lead : formula = log(lead)`~`1 ; data dim = 155 x 12
+variograms:
+           model psill range
+ln.lead[1]   Nug  0.05     0
+ln.lead[2]   Sph  0.55   900
+> 
+> # Inverse distance interpolation with inverse distance power set to .5:
+> # (kriging variants need a variogram model to be specified)
+> data(meuse)
+> data(meuse.grid)
+> meuse.gstat <- gstat(id = "zinc", formula = zinc ~ 1, locations = ~ x + y,
++ 	data = meuse, nmax = 7, set = list(idp = .5))
+> meuse.gstat
+data:
+zinc : formula = zinc`~`1 ; data dim = 155 x 12 nmax = 7
+set idp = 0.5; 
+~x + y
+> z <- predict(meuse.gstat, meuse.grid)
+[inverse distance weighted interpolation]
+> library(lattice) # for levelplot
+> levelplot(zinc.pred~x+y, z, aspect = "iso")
+> # see demo(cokriging) and demo(examples) for further examples, 
+> # and the manuals for predict.gstat and image
+> 
+> 
+> 
+> 
+> cleanEx()
+
+detaching ‘package:lattice’
+
+> nameEx("hscat")
+> ### * hscat
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: hscat
+> ### Title: Produce h-scatterplot
+> ### Aliases: hscat
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> coordinates(meuse) = ~x+y
+> hscat(log(zinc)~1, meuse, c(0, 80, 120, 250, 500, 1000))
+> 
+> 
+> 
+> cleanEx()
+> nameEx("image")
+> ### * image
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: image
+> ### Title: Image Gridded Coordinates in Data Frame
+> ### Aliases: image.data.frame image xyz2img
+> ### Keywords: dplot
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> data(meuse.grid)
+> g <- gstat(formula=log(zinc)~1,locations=~x+y,data=meuse,model=vgm(1,"Exp",300))
+> x <- predict(g, meuse.grid)
+[using ordinary kriging]
+> image(x, 4, main="kriging variance and data points")
+> points(meuse$x, meuse$y, pch = "+")
+> # non-square cell test:
+> image(x[((x$y - 20) %% 80) == 0,], main = "40 x 80 cells")
+> image(x[((x$x - 20) %% 80) == 0,], main = "80 x 40 cells")
+> # the following works for square cells only:
+> oldpin <- par("pin")
+> ratio <- length(unique(x$x))/length(unique(x$y))
+> par(pin = c(oldpin[2]*ratio,oldpin[2]))
+> image(x, main="Exactly square cells, using par(pin)")
+> par(pin = oldpin)
+> library(lattice)
+> levelplot(var1.var~x+y, x, aspect = "iso", main = "kriging variance")
+> 
+> 
+> 
+> graphics::par(get("par.postscript", pos = 'CheckExEnv'))
+> cleanEx()
+
+detaching ‘package:lattice’
+
+> nameEx("jura")
+> ### * jura
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: jura
+> ### Title: Jura data set
+> ### Aliases: jura prediction.dat validation.dat transect.dat juragrid.dat
+> ###   jura.grid jura.pred jura.val
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(jura)
+> summary(prediction.dat)
+      Xloc            Yloc          Landuse           Rock      
+ Min.   :0.626   Min.   :0.580   Min.   :1.000   Min.   :1.000  
+ 1st Qu.:2.282   1st Qu.:1.487   1st Qu.:2.000   1st Qu.:2.000  
+ Median :3.043   Median :2.581   Median :3.000   Median :2.000  
+ Mean   :2.980   Mean   :2.665   Mean   :2.548   Mean   :2.699  
+ 3rd Qu.:3.665   3rd Qu.:3.752   3rd Qu.:3.000   3rd Qu.:3.000  
+ Max.   :4.920   Max.   :5.690   Max.   :4.000   Max.   :5.000  
+       Cd               Co               Cr              Cu        
+ Min.   :0.1350   Min.   : 1.552   Min.   : 8.72   Min.   :  3.96  
+ 1st Qu.:0.6375   1st Qu.: 6.520   1st Qu.:27.44   1st Qu.: 11.02  
+ Median :1.0700   Median : 9.760   Median :34.84   Median : 17.60  
+ Mean   :1.3091   Mean   : 9.303   Mean   :35.07   Mean   : 23.73  
+ 3rd Qu.:1.7150   3rd Qu.:11.980   3rd Qu.:42.22   3rd Qu.: 27.82  
+ Max.   :5.1290   Max.   :17.720   Max.   :67.60   Max.   :166.40  
+       Ni              Pb               Zn        
+ Min.   : 4.20   Min.   : 18.96   Min.   : 25.20  
+ 1st Qu.:13.80   1st Qu.: 36.52   1st Qu.: 55.00  
+ Median :20.56   Median : 46.40   Median : 73.56  
+ Mean   :19.73   Mean   : 53.92   Mean   : 75.08  
+ 3rd Qu.:25.42   3rd Qu.: 60.40   3rd Qu.: 89.92  
+ Max.   :53.20   Max.   :229.56   Max.   :219.32  
+> summary(validation.dat)
+      Xloc            Yloc          Landuse          Rock            Cd        
+ Min.   :0.491   Min.   :0.524   Min.   :1.00   Min.   :1.00   Min.   :0.3250  
+ 1st Qu.:2.207   1st Qu.:1.593   1st Qu.:2.00   1st Qu.:2.00   1st Qu.:0.6765  
+ Median :3.001   Median :2.389   Median :3.00   Median :2.00   Median :1.1865  
+ Mean   :2.921   Mean   :2.546   Mean   :2.41   Mean   :2.36   Mean   :1.2343  
+ 3rd Qu.:3.716   3rd Qu.:3.339   3rd Qu.:3.00   3rd Qu.:3.00   3rd Qu.:1.6350  
+ Max.   :4.745   Max.   :5.285   Max.   :4.00   Max.   :5.00   Max.   :3.7800  
+       Co               Cr              Cu                Ni       
+ Min.   : 1.652   Min.   : 3.32   Min.   :  3.552   Min.   : 1.98  
+ 1st Qu.: 7.950   1st Qu.:28.44   1st Qu.:  9.150   1st Qu.:15.28  
+ Median :10.060   Median :34.54   Median : 16.140   Median :21.28  
+ Mean   : 9.793   Mean   :34.88   Mean   : 23.218   Mean   :20.76  
+ 3rd Qu.:12.490   3rd Qu.:40.59   3rd Qu.: 23.190   3rd Qu.:25.36  
+ Max.   :20.600   Max.   :70.00   Max.   :154.600   Max.   :43.68  
+       Pb               Zn        
+ Min.   : 18.68   Min.   : 25.00  
+ 1st Qu.: 35.31   1st Qu.: 53.19  
+ Median : 47.00   Median : 73.92  
+ Mean   : 56.48   Mean   : 77.96  
+ 3rd Qu.: 60.10   3rd Qu.: 90.40  
+ Max.   :300.00   Max.   :259.84  
+> summary(transect.dat)
+       X           Rock.type        Block.Ni            Cd       
+ Min.   :1.000   Min.   :1.000   Min.   : 6.611   Min.   :0.135  
+ 1st Qu.:2.312   1st Qu.:1.000   1st Qu.:17.938   1st Qu.:0.655  
+ Median :3.625   Median :2.000   Median :20.242   Median :1.317  
+ Mean   :3.625   Mean   :2.047   Mean   :19.988   Mean   :1.486  
+ 3rd Qu.:4.938   3rd Qu.:2.000   3rd Qu.:23.565   3rd Qu.:1.961  
+ Max.   :6.250   Max.   :4.000   Max.   :37.047   Max.   :3.925  
+                                                  NA's   :96     
+       Ni       
+ Min.   : 4.20  
+ 1st Qu.:13.31  
+ Median :20.52  
+ Mean   :19.62  
+ 3rd Qu.:24.98  
+ Max.   :43.68  
+ NA's   :90     
+> summary(juragrid.dat)
+      Xloc            Yloc          Landuse               Rock     
+ Min.   :0.300   Min.   :0.100   Forest : 986   Argovian    :1185  
+ 1st Qu.:2.050   1st Qu.:1.550   Pasture:1553   Kimmeridgian:2036  
+ Median :3.000   Median :2.450   Meadow :3247   Sequanian   :1628  
+ Mean   :2.884   Mean   :2.558   Tillage: 171   Portlandian : 316  
+ 3rd Qu.:3.750   3rd Qu.:3.400                  Quaternary  : 792  
+ Max.   :5.100   Max.   :5.900                                     
+> 
+> # the following commands create objects with factors instead
+> # of the integer codes for Landuse and Rock:
+> require(sp)
+> jura.pred = prediction.dat
+> jura.val = validation.dat
+> jura.grid = juragrid.dat
+> 
+> jura.pred$Landuse = factor(prediction.dat$Landuse, 
++ 	labels=levels(juragrid.dat$Landuse))
+> jura.pred$Rock = factor(prediction.dat$Rock, 
++ 	labels=levels(juragrid.dat$Rock))
+> jura.val$Landuse = factor(validation.dat$Landuse, 
++ 	labels=levels(juragrid.dat$Landuse))
+> jura.val$Rock = factor(validation.dat$Rock, 
++ 	labels=levels(juragrid.dat$Rock))
+> 
+> # the following commands convert data.frame objects into spatial (sp) objects:
+> coordinates(jura.pred) = ~Xloc+Yloc
+> coordinates(jura.val) = ~Xloc+Yloc
+> coordinates(jura.grid) = ~Xloc+Yloc
+> gridded(jura.grid) = TRUE
+> 
+> 
+> 
+> cleanEx()
+> nameEx("krige")
+> ### * krige
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: krige
+> ### Title: Simple, Ordinary or Universal, global or local, Point or Block
+> ###   Kriging, or simulation.
+> ### Aliases: krige krige0 krigeST krige.locations krige.spatial idw idw0
+> ###   idw.locations idw.spatial krige-methods idw-methods
+> ###   krige,formula,formula-method krige,formula,Spatial-method
+> ###   krige,formula,NULL-method idw,formula,formula-method
+> ###   idw,formula,Spatial-method idw,formula,ST-method
+> ###   krige,formula,ST-method
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> coordinates(meuse) = ~x+y
+> data(meuse.grid)
+> gridded(meuse.grid) = ~x+y
+> m <- vgm(.59, "Sph", 874, .04)
+> # ordinary kriging:
+> x <- krige(log(zinc)~1, meuse, meuse.grid, model = m)
+[using ordinary kriging]
+> spplot(x["var1.pred"], main = "ordinary kriging predictions")
+> spplot(x["var1.var"],  main = "ordinary kriging variance")
+> # simple kriging:
+> x <- krige(log(zinc)~1, meuse, meuse.grid, model = m, beta = 5.9)
+[using simple kriging]
+> # residual variogram:
+> m <- vgm(.4, "Sph", 954, .06)
+> # universal block kriging:
+> x <- krige(log(zinc)~x+y, meuse, meuse.grid, model = m, block = c(40,40))
+[using universal kriging]
+> spplot(x["var1.pred"], main = "universal kriging predictions")
+> 
+> # krige0, using user-defined covariance function and multiple responses in y:
+> # exponential variogram with range 500, defined as covariance function:
+> v = function(x, y = x) { exp(-spDists(coordinates(x),coordinates(y))/500) }
+> # krige two variables in a single pass (using 1 covariance model):
+> y = cbind(meuse$zinc,meuse$copper,meuse$lead,meuse$cadmium)
+> x <- krige0(zinc~1, meuse, meuse.grid, v, y = y)
+> meuse.grid$zinc = x[,1]
+> spplot(meuse.grid["zinc"], main = "zinc")
+> meuse.grid$copper = x[,2]
+> spplot(meuse.grid["copper"], main = "copper")
+> 
+> 
+> 
+> cleanEx()
+> nameEx("krige.cv")
+> ### * krige.cv
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: krige.cv
+> ### Title: (co)kriging cross validation, n-fold or leave-one-out
+> ### Aliases: krige.cv krige.cv.spatial krige.cv.locations gstat.cv
+> ###   krige.cv,formula,formula-method krige.cv,formula,Spatial-method
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> coordinates(meuse) <- ~x+y
+> m <- vgm(.59, "Sph", 874, .04)
+> # five-fold cross validation:
+> x <- krige.cv(log(zinc)~1, meuse, m, nmax = 40, nfold=5)
+  |                                                                              |                                                                      |   0%  |                                                                              |==================                                                    |  25%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================================                  |  75%  |                                                                              |======================================================================| 100%
+> bubble(x, "residual", main = "log(zinc): 5-fold CV residuals")
+> 
+> # multivariable; thanks to M. Rufino:
+> meuse.g <- gstat(id = "zn", formula = log(zinc) ~ 1, data = meuse)
+> meuse.g <- gstat(meuse.g, "cu", log(copper) ~ 1, meuse)
+> meuse.g <- gstat(meuse.g, model = vgm(1, "Sph", 900, 1), fill.all = TRUE)
+> x <- variogram(meuse.g, cutoff = 1000)
+> meuse.fit = fit.lmc(x, meuse.g)
+> out = gstat.cv(meuse.fit, nmax = 40, nfold = 5) 
+Linear Model of Coregionalization found. Good.
+[using ordinary cokriging]
+Linear Model of Coregionalization found. Good.
+[using ordinary cokriging]
+Linear Model of Coregionalization found. Good.
+[using ordinary cokriging]
+Linear Model of Coregionalization found. Good.
+[using ordinary cokriging]
+Linear Model of Coregionalization found. Good.
+[using ordinary cokriging]
+> summary(out)
+Object of class SpatialPointsDataFrame
+Coordinates:
+     min    max
+x 178605 181390
+y 329714 333611
+Is projected: NA 
+proj4string : [NA]
+Number of points: 155
+Data attributes:
+    zn.pred          zn.var           observed        residual         
+ Min.   :4.637   Min.   :0.04127   Min.   :4.727   Min.   :-1.2960207  
+ 1st Qu.:5.313   1st Qu.:0.04993   1st Qu.:5.288   1st Qu.:-0.1337847  
+ Median :5.779   Median :0.05428   Median :5.787   Median : 0.0005123  
+ Mean   :5.893   Mean   :0.05548   Mean   :5.886   Mean   :-0.0075069  
+ 3rd Qu.:6.461   3rd Qu.:0.05907   3rd Qu.:6.514   3rd Qu.: 0.1603414  
+ Max.   :7.724   Max.   :0.09852   Max.   :7.517   Max.   : 0.5392008  
+     zscore               fold    
+ Min.   :-5.014239   Min.   :1.0  
+ 1st Qu.:-0.569222   1st Qu.:2.0  
+ Median : 0.002081   Median :3.0  
+ Mean   :-0.022752   Mean   :2.8  
+ 3rd Qu.: 0.670624   3rd Qu.:4.0  
+ Max.   : 2.327937   Max.   :5.0  
+> out = gstat.cv(meuse.fit, nmax = 40, nfold = c(rep(1,100), rep(2,55))) 
+Linear Model of Coregionalization found. Good.
+[using ordinary cokriging]
+Linear Model of Coregionalization found. Good.
+[using ordinary cokriging]
+> summary(out)
+Object of class SpatialPointsDataFrame
+Coordinates:
+     min    max
+x 178605 181390
+y 329714 333611
+Is projected: NA 
+proj4string : [NA]
+Number of points: 155
+Data attributes:
+    zn.pred          zn.var           observed        residual       
+ Min.   :4.856   Min.   :0.04393   Min.   :4.727   Min.   :-1.52437  
+ 1st Qu.:5.382   1st Qu.:0.05944   1st Qu.:5.288   1st Qu.:-0.27045  
+ Median :5.903   Median :0.07107   Median :5.787   Median :-0.09095  
+ Mean   :5.966   Mean   :0.07283   Mean   :5.886   Mean   :-0.07990  
+ 3rd Qu.:6.428   3rd Qu.:0.08454   3rd Qu.:6.514   3rd Qu.: 0.14914  
+ Max.   :7.734   Max.   :0.10621   Max.   :7.517   Max.   : 0.55106  
+     zscore             fold      
+ Min.   :-4.7612   Min.   :1.000  
+ 1st Qu.:-0.9359   1st Qu.:1.000  
+ Median :-0.3354   Median :1.000  
+ Mean   :-0.2678   Mean   :1.355  
+ 3rd Qu.: 0.6001   3rd Qu.:2.000  
+ Max.   : 2.3860   Max.   :2.000  
+> # mean error, ideally 0:
+> mean(out$residual)
+[1] -0.07990434
+> # MSPE, ideally small
+> mean(out$residual^2)
+[1] 0.1101475
+> # Mean square normalized error, ideally close to 1
+> mean(out$zscore^2)
+[1] 1.487834
+> # correlation observed and predicted, ideally 1
+> cor(out$observed, out$observed - out$residual)
+[1] 0.8955611
+> # correlation predicted and residual, ideally 0
+> cor(out$observed - out$residual, out$residual)
+[1] -0.1103516
+> 
+> 
+> 
+> cleanEx()
+> nameEx("krigeTg")
+> ### * krigeTg
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: krigeTg
+> ### Title: TransGaussian kriging using Box-Cox transforms
+> ### Aliases: krigeTg
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> coordinates(meuse) = ~x+y
+> data(meuse.grid)
+> gridded(meuse.grid) = ~x+y
+> v = vgm(1, "Exp", 300)
+> x1 = krigeTg(zinc~1,meuse,meuse.grid,v, lambda=1) # no transform
+[using ordinary kriging]
+[generalized least squares trend estimation]
+[using simple kriging]
+> x2 = krige(zinc~1,meuse,meuse.grid,v)
+[using ordinary kriging]
+> summary(x2$var1.var-x1$var1TG.var)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      0       0       0       0       0       0 
+> summary(x2$var1.pred-x1$var1TG.pred)
+      Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+-2.274e-13  0.000e+00  0.000e+00 -3.700e-15  0.000e+00  4.547e-13 
+> lambda = -0.25
+> m = fit.variogram(variogram((zinc^lambda-1)/lambda ~ 1,meuse), vgm(1, "Exp", 300))
+> x = krigeTg(zinc~1,meuse,meuse.grid,m,lambda=-.25)
+[using ordinary kriging]
+[generalized least squares trend estimation]
+[using simple kriging]
+> spplot(x["var1TG.pred"], col.regions=bpy.colors())
+> summary(meuse$zinc)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  113.0   198.0   326.0   469.7   674.5  1839.0 
+> summary(x$var1TG.pred)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  130.7   229.7   299.5   403.2   521.3  1894.0 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("meuse.all")
+> ### * meuse.all
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: meuse.all
+> ### Title: Meuse river data set - original, full data set
+> ### Aliases: meuse.all
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(meuse.all)
+> summary(meuse.all)
+     sample             x                y             cadmium      
+ Min.   :  1.00   Min.   :178605   Min.   :329714   Min.   : 0.000  
+ 1st Qu.: 41.75   1st Qu.:179358   1st Qu.:330771   1st Qu.: 0.800  
+ Median : 82.50   Median :179945   Median :331558   Median : 1.900  
+ Mean   : 82.50   Mean   :179989   Mean   :331614   Mean   : 3.109  
+ 3rd Qu.:123.25   3rd Qu.:180626   3rd Qu.:332410   3rd Qu.: 3.725  
+ Max.   :164.00   Max.   :181390   Max.   :333611   Max.   :18.100  
+                                                                    
+     copper            lead             zinc             elev       
+ Min.   : 14.00   Min.   : 27.00   Min.   : 107.0   Min.   : 0.000  
+ 1st Qu.: 23.00   1st Qu.: 68.75   1st Qu.: 191.8   1st Qu.: 7.390  
+ Median : 29.50   Median :116.00   Median : 307.5   Median : 8.124  
+ Mean   : 39.42   Mean   :148.55   Mean   : 464.6   Mean   : 7.775  
+ 3rd Qu.: 48.00   3rd Qu.:201.75   3rd Qu.: 662.5   3rd Qu.: 8.915  
+ Max.   :128.00   Max.   :654.00   Max.   :1839.0   Max.   :10.520  
+                                                                    
+     dist.m             om             ffreq            soil      
+ Min.   :  10.0   Min.   : 1.000   Min.   :1.000   Min.   :1.000  
+ 1st Qu.:  80.0   1st Qu.: 5.000   1st Qu.:1.000   1st Qu.:1.000  
+ Median : 270.0   Median : 6.550   Median :1.000   Median :1.000  
+ Mean   : 294.2   Mean   : 7.291   Mean   :1.604   Mean   :1.463  
+ 3rd Qu.: 450.0   3rd Qu.: 8.950   3rd Qu.:2.000   3rd Qu.:2.000  
+ Max.   :1000.0   Max.   :17.000   Max.   :3.000   Max.   :3.000  
+                  NA's   :2                                       
+      lime           landuse     in.pit        in.meuse155      in.BMcD       
+ Min.   :0.0000   W      :54   Mode :logical   Mode :logical   Mode :logical  
+ 1st Qu.:0.0000   Ah     :42   FALSE:156       FALSE:9         FALSE:66       
+ Median :0.0000   Am     :22   TRUE :8         TRUE :155       TRUE :98       
+ Mean   :0.2988   Fw     :10   NA's :0         NA's :0         NA's :0        
+ 3rd Qu.:1.0000   Ab     : 8                                                  
+ Max.   :1.0000   (Other):27                                                  
+                  NA's   : 1                                                  
+> 
+> 
+> 
+> cleanEx()
+> nameEx("meuse.alt")
+> ### * meuse.alt
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: meuse.alt
+> ### Title: Meuse river altitude data set
+> ### Aliases: meuse.alt
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(meuse.alt)
+> library(lattice)
+> xyplot(y~x, meuse.alt, aspect = "iso")
+> 
+> 
+> 
+> cleanEx()
+
+detaching ‘package:lattice’
+
+> nameEx("ncp.grid")
+> ### * ncp.grid
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: ncp.grid
+> ### Title: Grid for the NCP, the Dutch part of the North Sea
+> ### Aliases: ncp.grid
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(ncp.grid)
+> summary(ncp.grid)
+       x                y               depth           coast       
+ Min.   :466500   Min.   :5699000   Min.   : 1.00   Min.   :  1.00  
+ 1st Qu.:531500   1st Qu.:5859000   1st Qu.:25.00   1st Qu.: 38.00  
+ Median :566500   Median :5954000   Median :31.00   Median : 76.00  
+ Mean   :572625   Mean   :5940147   Mean   :31.79   Mean   : 89.72  
+ 3rd Qu.:606500   3rd Qu.:6024000   3rd Qu.:40.00   3rd Qu.:136.00  
+ Max.   :736500   Max.   :6129000   Max.   :59.00   Max.   :248.00  
+      area      
+ Min.   : 1.00  
+ 1st Qu.: 1.00  
+ Median : 1.00  
+ Mean   : 1.87  
+ 3rd Qu.: 2.00  
+ Max.   :19.00  
+> 
+> 
+> 
+> cleanEx()
+> nameEx("ossfim")
+> ### * ossfim
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: ossfim
+> ### Title: Kriging standard errors as function of grid spacing and block
+> ###   size
+> ### Aliases: ossfim
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> x <- ossfim(1:15,1:15, model = vgm(1,"Exp",15))
+> library(lattice)
+> levelplot(kriging.se~spacing+block.size, x, 
++   main = "Ossfim results, variogram 1 Exp(15)")
+> # if you wonder about the decrease in the upper left corner of the graph,
+> # try the above with nmax set to 100, or perhaps 200.
+> 
+> 
+> 
+> cleanEx()
+
+detaching ‘package:lattice’
+
+> nameEx("oxford")
+> ### * oxford
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: oxford
+> ### Title: Oxford soil samples
+> ### Aliases: oxford
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(oxford)
+> summary(oxford)
+    PROFILE           XCOORD        YCOORD          ELEV       PROFCLASS
+ Min.   :  1.00   Min.   :100   Min.   : 100   Min.   :540.0   Cr:19    
+ 1st Qu.: 32.25   1st Qu.:200   1st Qu.: 600   1st Qu.:558.0   Ct:36    
+ Median : 63.50   Median :350   Median :1100   Median :573.0   Ia:71    
+ Mean   : 63.50   Mean   :350   Mean   :1100   Mean   :573.6            
+ 3rd Qu.: 94.75   3rd Qu.:500   3rd Qu.:1600   3rd Qu.:584.5            
+ Max.   :126.00   Max.   :600   Max.   :2100   Max.   :632.0            
+ MAPCLASS      VAL1            CHR1           LIME1            VAL2     
+ Cr:31    Min.   :2.000   Min.   :1.000   Min.   :0.000   Min.   :4.00  
+ Ct:36    1st Qu.:3.000   1st Qu.:2.000   1st Qu.:1.000   1st Qu.:4.00  
+ Ia:59    Median :4.000   Median :2.000   Median :4.000   Median :8.00  
+          Mean   :3.508   Mean   :2.468   Mean   :2.643   Mean   :6.23  
+          3rd Qu.:4.000   3rd Qu.:3.000   3rd Qu.:4.000   3rd Qu.:8.00  
+          Max.   :4.000   Max.   :4.000   Max.   :4.000   Max.   :8.00  
+      CHR2       LIME2          DEPTHCM         DEP2LIME         PCLAY1     
+ Min.   :2   Min.   :0.000   Min.   :10.00   Min.   :20.00   Min.   :10.00  
+ 1st Qu.:2   1st Qu.:4.000   1st Qu.:25.00   1st Qu.:20.00   1st Qu.:20.00  
+ Median :2   Median :5.000   Median :36.00   Median :20.00   Median :24.50  
+ Mean   :3   Mean   :3.889   Mean   :46.25   Mean   :30.32   Mean   :24.44  
+ 3rd Qu.:4   3rd Qu.:5.000   3rd Qu.:64.75   3rd Qu.:40.00   3rd Qu.:28.00  
+ Max.   :6   Max.   :5.000   Max.   :91.00   Max.   :90.00   Max.   :37.00  
+     PCLAY2           MG1              OM1              CEC1      
+ Min.   :10.00   Min.   : 19.00   Min.   : 2.600   Min.   : 7.00  
+ 1st Qu.:10.00   1st Qu.: 44.00   1st Qu.: 4.100   1st Qu.:12.00  
+ Median :10.00   Median : 72.00   Median : 5.350   Median :15.00  
+ Mean   :14.76   Mean   : 93.53   Mean   : 5.995   Mean   :18.88  
+ 3rd Qu.:20.00   3rd Qu.:123.25   3rd Qu.: 7.175   3rd Qu.:25.25  
+ Max.   :40.00   Max.   :308.00   Max.   :13.100   Max.   :43.00  
+      PH1            PHOS1             POT1      
+ Min.   :4.200   Min.   : 1.700   Min.   : 83.0  
+ 1st Qu.:7.200   1st Qu.: 6.200   1st Qu.:127.0  
+ Median :7.500   Median : 8.500   Median :164.0  
+ Mean   :7.152   Mean   : 8.752   Mean   :181.7  
+ 3rd Qu.:7.600   3rd Qu.:10.500   3rd Qu.:194.8  
+ Max.   :7.700   Max.   :25.000   Max.   :847.0  
+> # open the following file with a jpg viewer:
+> system.file("external/oxford.jpg", package="gstat")
+[1] "/home/edzer/svn/geostatistics/main/gstat/gstat.Rcheck/gstat/external/oxford.jpg"
+> 
+> 
+> 
+> cleanEx()
+> nameEx("pcb")
+> ### * pcb
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: pcb
+> ### Title: PCB138 measurements in sediment at the NCP, the Dutch part of
+> ###   the North Sea
+> ### Aliases: pcb
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(pcb)
+> library(lattice)
+> xyplot(y~x|as.factor(yf), pcb, aspect = "iso")
+> # demo(pcb)
+> 
+> 
+> 
+> cleanEx()
+
+detaching ‘package:lattice’
+
+> nameEx("plot.gstatVariogram")
+> ### * plot.gstatVariogram
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: plot.gstatVariogram
+> ### Title: Plot a sample variogram, and possibly a fitted model
+> ### Aliases: plot.gstatVariogram plot.variogramMap plot.StVariogram
+> ### Keywords: dplot
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> coordinates(meuse) = ~x+y
+> vgm1 <- variogram(log(zinc)~1, meuse)
+> plot(vgm1)
+> model.1 <- fit.variogram(vgm1,vgm(1,"Sph",300,1))
+> plot(vgm1, model=model.1)
+> plot(vgm1, plot.numbers = TRUE, pch = "+")
+> vgm2 <- variogram(log(zinc)~1, meuse, alpha=c(0,45,90,135))
+> plot(vgm2)
+> # the following demonstrates plotting of directional models:
+> model.2 <- vgm(.59,"Sph",926,.06,anis=c(0,0.3))
+> plot(vgm2, model=model.2)
+>  
+> g = gstat(NULL, "zinc < 200", I(zinc<200)~1, meuse)
+> g = gstat(g, "zinc < 400", I(zinc<400)~1, meuse)
+> g = gstat(g, "zinc < 800", I(zinc<800)~1, meuse)
+> # calculate multivariable, directional variogram:
+> v = variogram(g, alpha=c(0,45,90,135))
+> plot(v, group.id = FALSE, auto.key = TRUE) # id and id pairs panels
+> plot(v, group.id = TRUE, auto.key = TRUE)  # direction panels
+> 
+> # variogram maps:
+> plot(variogram(g, cutoff=1000, width=100, map=TRUE),
++     main = "(cross) semivariance maps")
+> plot(variogram(g, cutoff=1000, width=100, map=TRUE), np=TRUE,
++     main = "number of point pairs")
+> 
+> 
+> 
+> cleanEx()
+> nameEx("plot.pointPairs")
+> ### * plot.pointPairs
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: plot.pointPairs
+> ### Title: Plot a point pairs, identified from a variogram cloud
+> ### Aliases: plot.pointPairs
+> ### Keywords: dplot
+> 
+> ### ** Examples
+> 
+> ### The following requires interaction, and is therefore outcommented
+> #data(meuse)
+> #coordinates(meuse) = ~x+y
+> #vgm1 <- variogram(log(zinc)~1, meuse, cloud = TRUE)
+> #pp <- plot(vgm1, id = TRUE)
+> ### Identify the point pairs
+> #plot(pp, data = meuse) # meuse has x and y as coordinates
+> 
+> 
+> 
+> cleanEx()
+> nameEx("plot.variogramCloud")
+> ### * plot.variogramCloud
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: plot.variogramCloud
+> ### Title: Plot and Identify Data Pairs on Sample Variogram Cloud
+> ### Aliases: plot.variogramCloud
+> ### Keywords: dplot
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> coordinates(meuse) = ~x+y
+> plot(variogram(log(zinc)~1, meuse, cloud=TRUE))
+> ## commands that require interaction:
+> # x <- variogram(log(zinc)~1, loc=~x+y, data=meuse, cloud=TRUE)
+> # plot(plot(x, identify = TRUE), meuse)
+> # plot(plot(x, digitize = TRUE), meuse)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("predict.gstat")
+> ### * predict.gstat
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: predict.gstat
+> ### Title: Multivariable Geostatistical Prediction and Simulation
+> ### Aliases: predict.gstat
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> # generate 5 conditional simulations
+> data(meuse)
+> coordinates(meuse) = ~x+y
+> v <- variogram(log(zinc)~1, meuse)
+> m <- fit.variogram(v, vgm(1, "Sph", 300, 1))
+> plot(v, model = m)
+> set.seed(131)
+> data(meuse.grid)
+> gridded(meuse.grid) = ~x+y
+> sim <- krige(formula = log(zinc)~1, meuse, meuse.grid, model = m, 
++ 	nmax = 15, beta = 5.9, nsim = 5)
+[using conditional Gaussian simulation]
+> # show all 5 simulation
+> spplot(sim)
+> 
+> # calculate generalised least squares residuals w.r.t. constant trend:
+> g <- gstat(NULL, "log.zinc", log(zinc)~1, meuse, model = m)
+> blue0 <- predict(g, newdata = meuse, BLUE = TRUE)
+[generalized least squares trend estimation]
+> blue0$blue.res <- log(meuse$zinc) - blue0$log.zinc.pred
+> bubble(blue0, zcol = "blue.res", main = "GLS residuals w.r.t. constant")
+> 
+> # calculate generalised least squares residuals w.r.t. linear trend:
+> m <- fit.variogram(variogram(log(zinc)~sqrt(dist.m), meuse), 
++ 	vgm(1, "Sph", 300, 1))
+> g <- gstat(NULL, "log.zinc", log(zinc)~sqrt(dist.m), meuse, model = m)
+> blue1 <- predict(g, meuse, BLUE = TRUE)
+[generalized least squares trend estimation]
+> blue1$blue.res <- log(meuse$zinc) - blue1$log.zinc.pred
+> bubble(blue1, zcol = "blue.res", 
++ 	main = "GLS residuals w.r.t. linear trend")
+> 
+> # unconditional simulation on a 100 x 100 grid
+> xy <- expand.grid(1:100, 1:100)
+> names(xy) <- c("x","y")
+> g.dummy <- gstat(formula = z~1, locations = ~x+y, dummy = TRUE, beta = 0,
++ 	model = vgm(1,"Exp",15), nmax = 20)
+> yy <- predict(g.dummy, newdata = xy, nsim = 4)
+[using unconditional Gaussian simulation]
+> # show one realisation:
+> gridded(yy) = ~x+y
+> spplot(yy[1])
+> # show all four:
+> spplot(yy)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("show.vgms")
+> ### * show.vgms
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: show.vgms
+> ### Title: Plot Variogram Model Functions
+> ### Aliases: show.vgms
+> ### Keywords: dplot
+> 
+> ### ** Examples
+> 
+> show.vgms()
+> show.vgms(models = c("Exp", "Mat", "Gau"), nugget = 0.1)
+> # show a set of Matern models with different smoothness:
+> show.vgms(kappa.range = c(.1, .2, .5, 1, 2, 5, 10), max = 10)
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+> # show a set of Exponential class models with different shape parameter:
+> show.vgms(kappa.range = c(.05, .1, .2, .5, 1, 1.5, 1.8, 1.9, 2), models = "Exc", max = 10)
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+> # show a set of models with different shape parameter of M. Stein's representation of the Matern:
+> show.vgms(kappa.range = c(.01, .02, .05, .1, .2, .5, 1, 2, 5, 1000), models = "Ste", max = 2)
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+Warning in v.level[(i * n + 1):((i + 1) * n)] = rep(m.name, n) :
+  number of items to replace is not a multiple of replacement length
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("sic2004")
+> ### * sic2004
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: sic2004
+> ### Title: Spatial Interpolation Comparison 2004 data set: Natural Ambient
+> ###   Radioactivity
+> ### Aliases: sic2004 sic.train sic.pred sic.grid sic.test sic.val
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(sic2004) 
+> # FIGURE 1. Locations of the 200 monitoring stations for the 11 data sets. 
+> # The values taken by the variable are known.
+> plot(y~x,sic.train,pch=1,col="red", asp=1)
+> 
+> # FIGURE 2. Locations of the 808 remaining monitoring stations at which 
+> # the values of the variable must be estimated.
+> plot(y~x,sic.pred,pch="?", asp=1, cex=.8) # Figure 2
+> 
+> # FIGURE 3. Locations of the 1008 monitoring stations (exhaustive data sets). 
+> # Red circles are used to estimate values located at the questions marks
+> plot(y~x,sic.train,pch=1,col="red", asp=1)
+> points(y~x, sic.pred, pch="?", cex=.8)
+> 
+> 
+> 
+> 
+> cleanEx()
+> nameEx("sic97")
+> ### * sic97
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: sic97
+> ### Title: Spatial Interpolation Comparison 1997 data set: Swiss Rainfall
+> ### Aliases: sic_obs sic_full demstd
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(sic97) 
+> image(demstd)
+> points(sic_full, pch=1)
+> points(sic_obs, pch=3)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("tull")
+> ### * tull
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: tull
+> ### Title: S<c3><bc>dliche Tullnerfeld data set
+> ### Aliases: tull TULLNREG tull36 Chlorid92
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(tull)
+> 
+> # TULLNREG = read.csv("TULLNREG.csv")
+> 
+> # I modified tulln36des.csv, such that the first line only contained: x,y
+> # resulting in row.names that reflect the station ID, as in
+> # tull36 = read.csv("tulln36des.csv")
+> 
+> # Chlorid92 was read & converted by:
+> #Chlorid92=read.csv("Chlorid92.csv")
+> #Chlorid92$Datum = as.POSIXct(strptime(Chlorid92$Datum, "%d.%m.%y"))
+> 
+> summary(tull36)
+       x                   y           
+ Min.   :-0.770000   Min.   :-0.12951  
+ 1st Qu.:-0.203624   1st Qu.:-0.02397  
+ Median :-0.046292   Median : 0.02776  
+ Mean   : 0.001507   Mean   : 0.02739  
+ 3rd Qu.: 0.293820   3rd Qu.: 0.07935  
+ Max.   : 0.670000   Max.   : 0.20951  
+> summary(TULLNREG)
+       x                  y           
+ Min.   :-0.95700   Min.   :-0.14900  
+ 1st Qu.:-0.29800   1st Qu.:-0.04300  
+ Median :-0.04300   Median : 0.00000  
+ Mean   :-0.01215   Mean   : 0.01995  
+ 3rd Qu.: 0.27700   3rd Qu.: 0.06400  
+ Max.   : 0.95700   Max.   : 0.27700  
+> summary(Chlorid92)
+     Datum                          S411            S429            S849      
+ Min.   :1992-01-16 00:00:00   Min.   :10.00   Min.   :53.70   Min.   :51.00  
+ 1st Qu.:1993-03-23 00:00:00   1st Qu.:12.15   1st Qu.:57.23   1st Qu.:57.00  
+ Median :1994-10-17 00:00:00   Median :14.20   Median :59.00   Median :58.20  
+ Mean   :1994-08-31 08:16:46   Mean   :15.30   Mean   :59.31   Mean   :58.26  
+ 3rd Qu.:1996-01-16 00:00:00   3rd Qu.:17.20   3rd Qu.:61.48   3rd Qu.:60.00  
+ Max.   :1997-03-25 00:00:00   Max.   :24.30   Max.   :65.00   Max.   :62.30  
+                               NA's   :119     NA's   :121     NA's   :124    
+      S854           S1502           S1584           S1591      
+ Min.   :56.70   Min.   :21.90   Min.   :45.00   Min.   : 6.80  
+ 1st Qu.:65.38   1st Qu.:51.25   1st Qu.:50.08   1st Qu.: 8.70  
+ Median :68.75   Median :61.90   Median :54.00   Median :10.30  
+ Mean   :70.22   Mean   :57.39   Mean   :53.90   Mean   :11.07  
+ 3rd Qu.:73.47   3rd Qu.:65.95   3rd Qu.:56.88   3rd Qu.:12.30  
+ Max.   :86.90   Max.   :71.00   Max.   :65.00   Max.   :20.10  
+ NA's   :137     NA's   :119     NA's   :131     NA's   :140    
+     S2046           S2047           S2048            S2049      
+ Min.   :10.70   Min.   :4.700   Min.   : 4.400   Min.   :17.90  
+ 1st Qu.:11.60   1st Qu.:5.900   1st Qu.: 5.700   1st Qu.:20.20  
+ Median :15.20   Median :6.600   Median : 6.900   Median :25.60  
+ Mean   :14.58   Mean   :6.626   Mean   : 7.297   Mean   :24.14  
+ 3rd Qu.:17.70   3rd Qu.:7.200   3rd Qu.: 9.030   3rd Qu.:26.90  
+ Max.   :19.00   Max.   :8.830   Max.   :10.800   Max.   :30.90  
+ NA's   :140     NA's   :140     NA's   :140      NA's   :140    
+     S2051           S2052           S2053           S2054      
+ Min.   :16.40   Min.   :31.30   Min.   :20.60   Min.   :25.00  
+ 1st Qu.:28.10   1st Qu.:35.40   1st Qu.:29.10   1st Qu.:33.80  
+ Median :28.90   Median :36.30   Median :30.70   Median :37.90  
+ Mean   :29.37   Mean   :36.92   Mean   :36.32   Mean   :38.72  
+ 3rd Qu.:31.20   3rd Qu.:38.70   3rd Qu.:38.80   3rd Qu.:40.60  
+ Max.   :46.20   Max.   :41.90   Max.   :68.60   Max.   :66.90  
+ NA's   :140     NA's   :140     NA's   :140     NA's   :140    
+     S2055           S2057          S2058           S2059           S2060      
+ Min.   :39.20   Min.   :16.4   Min.   :21.00   Min.   : 8.00   Min.   :41.60  
+ 1st Qu.:40.50   1st Qu.:33.1   1st Qu.:29.73   1st Qu.:14.40   1st Qu.:47.40  
+ Median :45.20   Median :42.4   Median :39.40   Median :22.70   Median :51.60  
+ Mean   :45.83   Mean   :38.9   Mean   :38.80   Mean   :23.99   Mean   :52.52  
+ 3rd Qu.:47.58   3rd Qu.:45.4   3rd Qu.:45.10   3rd Qu.:30.00   3rd Qu.:54.45  
+ Max.   :63.70   Max.   :49.0   Max.   :70.80   Max.   :50.00   Max.   :72.20  
+ NA's   :141     NA's   :140    NA's   :141     NA's   :140     NA's   :142    
+     S2061           S2062           S2063           S2064      
+ Min.   :44.50   Min.   :49.10   Min.   :36.60   Min.   :50.70  
+ 1st Qu.:49.90   1st Qu.:65.30   1st Qu.:49.20   1st Qu.:61.20  
+ Median :62.55   Median :67.00   Median :53.20   Median :63.70  
+ Mean   :63.59   Mean   :66.52   Mean   :52.24   Mean   :66.52  
+ 3rd Qu.:68.05   3rd Qu.:70.45   3rd Qu.:58.20   3rd Qu.:66.60  
+ Max.   :90.80   Max.   :73.40   Max.   :61.20   Max.   :97.50  
+ NA's   :137     NA's   :142     NA's   :140     NA's   :140    
+     S2065           S2066            S2067           S2070      
+ Min.   :30.40   Min.   : 29.80   Min.   :30.00   Min.   : 8.70  
+ 1st Qu.:57.50   1st Qu.: 44.35   1st Qu.:37.60   1st Qu.: 9.50  
+ Median :61.70   Median : 50.30   Median :39.50   Median :10.10  
+ Mean   :61.49   Mean   : 64.69   Mean   :41.38   Mean   :10.47  
+ 3rd Qu.:70.10   3rd Qu.: 70.95   3rd Qu.:41.20   3rd Qu.:11.10  
+ Max.   :79.40   Max.   :242.00   Max.   :90.10   Max.   :16.30  
+ NA's   :140     NA's   :142      NA's   :140     NA's   :142    
+     S2071           S2072           S2128           S5319      
+ Min.   :11.70   Min.   :78.50   Min.   :5.300   Min.   :50.30  
+ 1st Qu.:13.20   1st Qu.:82.10   1st Qu.:6.500   1st Qu.:52.95  
+ Median :14.90   Median :84.00   Median :7.600   Median :55.60  
+ Mean   :14.81   Mean   :84.12   Mean   :7.418   Mean   :54.37  
+ 3rd Qu.:16.00   3rd Qu.:86.50   3rd Qu.:8.300   3rd Qu.:56.40  
+ Max.   :18.80   Max.   :89.90   Max.   :9.600   Max.   :57.20  
+ NA's   :140     NA's   :140     NA's   :140     NA's   :158    
+     S5320           S5321         S5322           S5323      
+ Min.   :114.0   Min.   :119   Min.   :28.50   Min.   :46.20  
+ 1st Qu.:115.5   1st Qu.:119   1st Qu.:41.90   1st Qu.:53.05  
+ Median :117.0   Median :119   Median :55.30   Median :59.90  
+ Mean   :116.0   Mean   :119   Mean   :47.97   Mean   :55.57  
+ 3rd Qu.:117.0   3rd Qu.:119   3rd Qu.:57.70   3rd Qu.:60.25  
+ Max.   :117.0   Max.   :119   Max.   :60.10   Max.   :60.60  
+ NA's   :158     NA's   :160   NA's   :158     NA's   :158    
+> 
+> # stack & join data to x,y,Date,Chloride form:
+> cl.st = stack(Chlorid92[-1])
+> names(cl.st) = c("Chloride", "Station")
+> cl.st$Date = rep(Chlorid92$Datum, length(names(Chlorid92))-1)
+> cl.st$x = tull36[match(cl.st[,"Station"], row.names(tull36)), "x"]
+> cl.st$y = tull36[match(cl.st[,"Station"], row.names(tull36)), "y"]
+> # library(lattice)
+> # xyplot(Chloride~Date|Station, cl.st)
+> # xyplot(y~x|Date, cl.st, asp="iso", layout=c(16,11))
+> summary(cl.st)
+    Chloride         Station          Date                    
+ Min.   :  4.40   S1502  : 161   Min.   :1992-01-16 00:00:00  
+ 1st Qu.: 18.52   S1584  : 161   1st Qu.:1993-03-23 00:00:00  
+ Median : 43.70   S1591  : 161   Median :1994-10-17 00:00:00  
+ Mean   : 41.89   S2046  : 161   Mean   :1994-08-31 08:16:46  
+ 3rd Qu.: 59.90   S2047  : 161   3rd Qu.:1996-01-16 00:00:00  
+ Max.   :242.00   S2048  : 161   Max.   :1997-03-25 00:00:00  
+ NA's   :5050     (Other):4830                                
+       x                   y           
+ Min.   :-0.770000   Min.   :-0.12951  
+ 1st Qu.:-0.203624   1st Qu.:-0.02397  
+ Median :-0.046292   Median : 0.02776  
+ Mean   : 0.001507   Mean   : 0.02739  
+ 3rd Qu.: 0.293820   3rd Qu.: 0.07935  
+ Max.   : 0.670000   Max.   : 0.20951  
+                                       
+> plot(TULLNREG, pch=3, asp=1)
+> points(y~x, cl.st, add=TRUE, pch=16)
+Warning in plot.xy(xy.coords(x, y), type = type, ...) :
+  "add" is not a graphical parameter
+> 
+> 
+> 
+> cleanEx()
+> nameEx("variogram")
+> ### * variogram
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: variogram
+> ### Title: Calculate Sample or Residual Variogram or Variogram Cloud
+> ### Aliases: variogram variogram.gstat variogram.formula variogram.default
+> ###   variogramST variogram.line print.gstatVariogram print.variogramCloud
+> ###   as.data.frame.variogramCloud
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> data(meuse)
+> # no trend:
+> coordinates(meuse) = ~x+y
+> variogram(log(zinc)~1, meuse)
+    np       dist     gamma dir.hor dir.ver   id
+1   57   79.29244 0.1234479       0       0 var1
+2  299  163.97367 0.2162185       0       0 var1
+3  419  267.36483 0.3027859       0       0 var1
+4  457  372.73542 0.4121448       0       0 var1
+5  547  478.47670 0.4634128       0       0 var1
+6  533  585.34058 0.5646933       0       0 var1
+7  574  693.14526 0.5689683       0       0 var1
+8  564  796.18365 0.6186769       0       0 var1
+9  589  903.14650 0.6471479       0       0 var1
+10 543 1011.29177 0.6915705       0       0 var1
+11 500 1117.86235 0.7033984       0       0 var1
+12 477 1221.32810 0.6038770       0       0 var1
+13 452 1329.16407 0.6517158       0       0 var1
+14 457 1437.25620 0.5665318       0       0 var1
+15 415 1543.20248 0.5748227       0       0 var1
+> # residual variogram w.r.t. a linear trend:
+> variogram(log(zinc)~x+y, meuse)
+    np       dist     gamma dir.hor dir.ver   id
+1   57   79.29244 0.1060834       0       0 var1
+2  299  163.97367 0.1829983       0       0 var1
+3  419  267.36483 0.2264256       0       0 var1
+4  457  372.73542 0.2847192       0       0 var1
+5  547  478.47670 0.3162418       0       0 var1
+6  533  585.34058 0.3571578       0       0 var1
+7  574  693.14526 0.3701742       0       0 var1
+8  564  796.18365 0.4201289       0       0 var1
+9  589  903.14650 0.4216983       0       0 var1
+10 543 1011.29177 0.4772549       0       0 var1
+11 500 1117.86235 0.5075874       0       0 var1
+12 477 1221.32810 0.4617632       0       0 var1
+13 452 1329.16407 0.5512305       0       0 var1
+14 457 1437.25620 0.4352155       0       0 var1
+15 415 1543.20248 0.4556815       0       0 var1
+> # directional variogram:
+> variogram(log(zinc)~x+y, meuse, alpha=c(0,45,90,135))
+    np       dist      gamma dir.hor dir.ver   id
+1   12   84.36080 0.04114593       0       0 var1
+2   76  165.59800 0.19091543       0       0 var1
+3  109  270.29441 0.21867508       0       0 var1
+4  134  371.27824 0.23112878       0       0 var1
+5  158  478.06480 0.38337565       0       0 var1
+6  154  583.35601 0.35513567       0       0 var1
+7  159  692.50911 0.35709265       0       0 var1
+8  158  797.52941 0.46221222       0       0 var1
+9  156  901.86529 0.47081724       0       0 var1
+10 156 1011.55318 0.50937290       0       0 var1
+11 137 1115.24492 0.57358764       0       0 var1
+12 135 1220.31674 0.43193998       0       0 var1
+13 109 1328.07859 0.68882673       0       0 var1
+14 120 1436.93237 0.53015452       0       0 var1
+15  96 1544.68559 0.66909962       0       0 var1
+16  11   82.06663 0.07619858      45       0 var1
+17  91  165.75829 0.11957011      45       0 var1
+18 118  266.93093 0.20557549      45       0 var1
+19 136  374.24886 0.27864922      45       0 var1
+20 172  479.40618 0.23932562      45       0 var1
+21 177  587.53554 0.28038440      45       0 var1
+22 209  693.02620 0.34028114      45       0 var1
+23 226  796.37554 0.37201935      45       0 var1
+24 283  905.25038 0.36146985      45       0 var1
+25 264 1012.26326 0.36891951      45       0 var1
+26 274 1121.20926 0.36831067      45       0 var1
+27 275 1221.63704 0.33875319      45       0 var1
+28 282 1330.93431 0.33848846      45       0 var1
+29 297 1438.21262 0.31476883      45       0 var1
+30 299 1542.75515 0.31707228      45       0 var1
+31  16   78.75466 0.07583160      90       0 var1
+32  70  160.01667 0.20149652      90       0 var1
+33  97  267.68973 0.20686187      90       0 var1
+34  98  372.02688 0.28167260      90       0 var1
+35 118  479.76226 0.30366429      90       0 var1
+36  98  585.85589 0.46344817      90       0 var1
+37 115  691.04342 0.36401272      90       0 var1
+38 100  796.22142 0.36912878      90       0 var1
+39  88  901.26201 0.50261434      90       0 var1
+40  72 1004.66642 0.56369456      90       0 var1
+41  68 1109.43463 0.77219638      90       0 var1
+42  51 1223.73294 0.79679699      90       0 var1
+43  44 1322.80887 0.82262644      90       0 var1
+44  30 1430.99001 0.80073011      90       0 var1
+45  16 1544.27842 1.17421050      90       0 var1
+46  18   74.69621 0.19452856     135       0 var1
+47  62  163.83075 0.24550456     135       0 var1
+48  95  264.21071 0.28119200     135       0 var1
+49  89  373.39690 0.37803627     135       0 var1
+50  99  475.98691 0.35772223     135       0 var1
+51 104  584.05805 0.39065627     135       0 var1
+52  91  697.18636 0.46947283     135       0 var1
+53  80  792.93648 0.53667425     135       0 var1
+54  62  899.44175 0.45817366     135       0 var1
+55  51 1014.81674 0.81777411     135       0 var1
+56  21 1118.55839 1.03741404     135       0 var1
+57  16 1216.88607 1.75971197     135       0 var1
+58  17 1323.20745 2.49557308     135       0 var1
+59  10 1431.53529 1.77666963     135       0 var1
+60   4 1536.74264 2.82057119     135       0 var1
+> variogram(log(zinc)~1, meuse, width=90, cutoff=1300)
+    np       dist     gamma dir.hor dir.ver   id
+1   41   72.24836 0.1404979       0       0 var1
+2  212  142.88031 0.1719093       0       0 var1
+3  320  227.32202 0.2554929       0       0 var1
+4  371  315.85549 0.3469081       0       0 var1
+5  423  406.44801 0.4255276       0       0 var1
+6  458  496.09401 0.5042025       0       0 var1
+7  455  586.78634 0.5650016       0       0 var1
+8  466  677.39566 0.5478706       0       0 var1
+9  503  764.55712 0.6076682       0       0 var1
+10 480  856.69422 0.6852387       0       0 var1
+11 468  944.02864 0.6516089       0       0 var1
+12 460 1033.62277 0.6797202       0       0 var1
+13 422 1125.63214 0.7001957       0       0 var1
+14 408 1212.62350 0.6145586       0       0 var1
+15 173 1280.65364 0.6213803       0       0 var1
+> 
+> # GLS residual variogram:
+> v = variogram(log(zinc)~x+y, meuse)
+> v.fit = fit.variogram(v, vgm(1, "Sph", 700, 1))
+> v.fit
+  model     psill    range
+1   Nug 0.0823414    0.000
+2   Sph 0.3886635 1098.557
+> set = list(gls=1)
+> v
+    np       dist     gamma dir.hor dir.ver   id
+1   57   79.29244 0.1060834       0       0 var1
+2  299  163.97367 0.1829983       0       0 var1
+3  419  267.36483 0.2264256       0       0 var1
+4  457  372.73542 0.2847192       0       0 var1
+5  547  478.47670 0.3162418       0       0 var1
+6  533  585.34058 0.3571578       0       0 var1
+7  574  693.14526 0.3701742       0       0 var1
+8  564  796.18365 0.4201289       0       0 var1
+9  589  903.14650 0.4216983       0       0 var1
+10 543 1011.29177 0.4772549       0       0 var1
+11 500 1117.86235 0.5075874       0       0 var1
+12 477 1221.32810 0.4617632       0       0 var1
+13 452 1329.16407 0.5512305       0       0 var1
+14 457 1437.25620 0.4352155       0       0 var1
+15 415 1543.20248 0.4556815       0       0 var1
+> g = gstat(NULL, "log-zinc", log(zinc)~x+y, meuse, model=v.fit, set = set)
+> variogram(g)
+    np       dist     gamma dir.hor dir.ver       id
+1   57   79.29244 0.1059824       0       0 log-zinc
+2  299  163.97367 0.1826061       0       0 log-zinc
+3  419  267.36483 0.2256106       0       0 log-zinc
+4  457  372.73542 0.2839249       0       0 log-zinc
+5  547  478.47670 0.3156089       0       0 log-zinc
+6  533  585.34058 0.3566521       0       0 log-zinc
+7  574  693.14526 0.3686389       0       0 log-zinc
+8  564  796.18365 0.4203338       0       0 log-zinc
+9  589  903.14650 0.4212183       0       0 log-zinc
+10 543 1011.29177 0.4766290       0       0 log-zinc
+11 500 1117.86235 0.5089493       0       0 log-zinc
+12 477 1221.32810 0.4637837       0       0 log-zinc
+13 452 1329.16407 0.5501710       0       0 log-zinc
+14 457 1437.25620 0.4388562       0       0 log-zinc
+15 415 1543.20248 0.4580369       0       0 log-zinc
+> 
+> if (require(rgdal)) {
++   proj4string(meuse) = CRS("+init=epsg:28992")
++   meuse.ll = spTransform(meuse, CRS("+proj=longlat"))
++ # variogram of unprojected data, using great-circle distances, returning km as units
++   variogram(log(zinc) ~ 1, meuse.ll)
++ }
+Loading required package: rgdal
+Geospatial Data Abstraction Library extensions to R successfully loaded
+Loaded GDAL runtime: GDAL 1.9.2, released 2012/10/08
+Path to GDAL shared files: /usr/share/gdal/1.9
+Loaded PROJ.4 runtime: Rel. 4.8.0, 6 March 2012, [PJ_VERSION: 480]
+Path to PROJ.4 shared files: (autodetected)
+    np       dist     gamma dir.hor dir.ver   id
+1   57 0.07927429 0.1234479       0       0 var1
+2  299 0.16393279 0.2162185       0       0 var1
+3  419 0.26729856 0.3027859       0       0 var1
+4  457 0.37264154 0.4121448       0       0 var1
+5  547 0.47835030 0.4634128       0       0 var1
+6  533 0.58518328 0.5646933       0       0 var1
+7  574 0.69296369 0.5689683       0       0 var1
+8  565 0.79606409 0.6176067       0       0 var1
+9  588 0.90298675 0.6482246       0       0 var1
+10 543 1.01099706 0.6915705       0       0 var1
+11 501 1.11764852 0.7027385       0       0 var1
+12 477 1.22118526 0.6038118       0       0 var1
+13 451 1.32888347 0.6524032       0       0 var1
+14 458 1.43693105 0.5653087       0       0 var1
+15 415 1.54297395 0.5748096       0       0 var1
+> 
+> 
+> 
+> 
+> cleanEx()
+
+detaching ‘package:rgdal’
+
+> nameEx("variogramLine")
+> ### * variogramLine
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: variogramLine
+> ### Title: Semivariance Values For a Given Variogram Model
+> ### Aliases: variogramLine getGammas
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> variogramLine(vgm(5, "Exp", 10, 5), 10, 10)
+       dist    gamma
+1   0.00001 5.000005
+2   1.11112 5.525807
+3   2.22223 5.996316
+4   3.33334 6.417346
+5   4.44445 6.794100
+6   5.55556 7.131234
+7   6.66667 7.432915
+8   7.77778 7.702871
+9   8.88889 7.944439
+10 10.00000 8.160603
+> # anisotropic variogram, plotted in E-W direction:
+> variogramLine(vgm(1, "Sph", 10, anis=c(0,0.5)), 10, 10)
+       dist     gamma
+1   0.00001 0.0000030
+2   1.11112 0.3278489
+3   2.22223 0.6227728
+4   3.33334 0.8518530
+5   4.44445 0.9821677
+6   5.55556 1.0000000
+7   6.66667 1.0000000
+8   7.77778 1.0000000
+9   8.88889 1.0000000
+10 10.00000 1.0000000
+> # anisotropic variogram, plotted in N-S direction:
+> variogramLine(vgm(1, "Sph", 10, anis=c(0,0.5)), 10, 10, dir=c(0,1,0))
+       dist     gamma
+1   0.00001 0.0000015
+2   1.11112 0.1659821
+3   2.22223 0.3278475
+4   3.33334 0.4814824
+5   4.44445 0.6227716
+6   5.55556 0.7475999
+7   6.66667 0.8518521
+8   7.77778 0.9314130
+9   8.88889 0.9821674
+10 10.00000 1.0000000
+> variogramLine(vgm(1, "Sph", 10, anis=c(0,0.5)), dir=c(0,1,0), dist_vector = 0.5)
+  dist     gamma
+1  0.5 0.0749375
+> variogramLine(vgm(1, "Sph", 10, anis=c(0,0.5)), dir=c(0,1,0), dist_vector = c(0, 0.5, 0.75))
+  dist     gamma
+1 0.00 0.0000000
+2 0.50 0.0749375
+3 0.75 0.1122891
+> 
+> 
+> 
+> cleanEx()
+> nameEx("variogramSurface")
+> ### * variogramSurface
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: variogramSurface
+> ### Title: Semivariance values for a given spatio-temporal variogram model
+> ### Aliases: variogramSurface
+> ### Keywords: models spatio-temporal
+> 
+> ### ** Examples
+> 
+> # separable model: spatial and temporal sill and nugget will be ignored
+> # and kept constant at 1 and 0 respectively. Only a joint sill and nugget
+> # are used.
+> separableModel <- list(space=vgm(1,"Exp", 147, 0),
++                        time =vgm(1,"Exp", 3.5, 0),
++                        sill=40, nugget=16, stModel="separable")
+> 
+> # product sum model: spatial and temporal nugget will be ignored and kept
+> # constant at 0. Only a joint nugget is used.
+> prodSumModel <- list(space=vgm(39, "Sph", 343, 0),
++                      time= vgm(36, "Exp",   3, 0), 
++                      sill=41, nugget=17, stModel="productSum")
+> 
+> # sum metric model: spatial, temporal and joint nugget will be estimated
+> sumMetricModel <- list(space=vgm( 6.9, "Lin", 200, 3.0),
++                        time =vgm(10.3, "Lin",  15, 3.6),
++                        joint=vgm(37.2, "Exp",  84,11.7),
++                        stAni=77.7, stModel="sumMetric")
+>                        
+> # simplified sumMetric model, only a overall nugget is fitted. The spatial, 
+> # temporal and jont nuggets are set to 0.
+> simpleSumMetricModel <- list(space=vgm(20,"Lin", 150, 0),
++                              time =vgm(20,"Lin", 10,  0),
++                              joint=vgm(20,"Exp", 150, 0),
++                              nugget=1, stAni=15, stModel="simpleSumMetric")
+> 
+> # metric model
+> metricModel <- list(joint=vgm(60, "Exp", 150, 10),
++                     stAni=60, stModel="metric")
+>                        
+> data(vv)
+> 
+> if(require(lattice)) {
++ wireframe(model~spacelag+timelag, variogramSurface(separableModel,vv))
++ }
+Loading required package: lattice
+> 
+> # plotting of sample and model variogram
+> plot(vv,separableModel)
+> 
+> 
+> 
+> 
+> cleanEx()
+
+detaching ‘package:lattice’
+
+> nameEx("vgm")
+> ### * vgm
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: vgm
+> ### Title: Generate, or Add to Variogram Model
+> ### Aliases: vgm print.variogramModel as.vgm.variomodel
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> vgm()
+   short                                      long
+1    Nug                              Nug (nugget)
+2    Exp                         Exp (exponential)
+3    Sph                           Sph (spherical)
+4    Gau                            Gau (gaussian)
+5    Exc               Exclass (Exponential class)
+6    Mat                              Mat (Matern)
+7    Ste Mat (Matern, M. Stein's parameterization)
+8    Cir                            Cir (circular)
+9    Lin                              Lin (linear)
+10   Bes                              Bes (bessel)
+11   Pen                      Pen (pentaspherical)
+12   Per                            Per (periodic)
+13   Hol                                Hol (hole)
+14   Log                         Log (logarithmic)
+15   Pow                               Pow (power)
+16   Spl                              Spl (spline)
+17   Leg                            Leg (Legendre)
+18   Err                   Err (Measurement error)
+19   Int                           Int (Intercept)
+> vgm(10, "Exp", 300)
+  model psill range
+1   Exp    10   300
+> x <- vgm(10, "Exp", 300)
+> vgm(10, "Nug", 0)
+  model psill range
+1   Nug    10     0
+> vgm(10, "Exp", 300, 4.5)
+  model psill range
+1   Nug   4.5     0
+2   Exp  10.0   300
+> vgm(10, "Mat", 300, 4.5, kappa = 0.7)
+  model psill range kappa
+1   Nug   4.5     0   0.0
+2   Mat  10.0   300   0.7
+> vgm( 5, "Exp", 300, add.to = vgm(5, "Exp", 60, nugget = 2.5))
+  model psill range
+1   Nug   2.5     0
+2   Exp   5.0    60
+3   Exp   5.0   300
+> vgm(10, "Exp", 300, anis = c(30, 0.5))
+  model psill range ang1 anis1
+1   Exp    10   300   30   0.5
+> vgm(10, "Exp", 300, anis = c(30, 10, 0, 0.5, 0.3))
+  model psill range ang1 ang2 ang3 anis1 anis2
+1   Exp    10   300   30   10    0   0.5   0.3
+> # Matern variogram model:
+> vgm(1, "Mat", 1, kappa=.3)
+  model psill range kappa
+1   Mat     1     1   0.3
+> x <- vgm(0.39527463, "Sph", 953.8942, nugget = 0.06105141)
+> x
+  model      psill    range
+1   Nug 0.06105141   0.0000
+2   Sph 0.39527463 953.8942
+> print(x, digits = 3);
+  model  psill range
+1   Nug 0.0611     0
+2   Sph 0.3953   954
+> # to see all components, do
+> print.data.frame(x)
+  model      psill    range kappa ang1 ang2 ang3 anis1 anis2
+1   Nug 0.06105141   0.0000   0.0    0    0    0     1     1
+2   Sph 0.39527463 953.8942   0.5    0    0    0     1     1
+> vv=vgm(model = "Tab",  covtable = 
++ 	variogramLine(vgm(1, "Sph", 1), 1, n=1e4, min = 0, covariance = TRUE))
+> 
+> 
+> 
+> cleanEx()
+> nameEx("vgm.panel")
+> ### * vgm.panel
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: vgm.panel.xyplot
+> ### Title: panel functions for most of the variogram plots through lattice
+> ### Aliases: vgm.panel.xyplot panel.pointPairs
+> ### Keywords: models
+> 
+> ### ** Examples
+>  
+> library(lattice)
+> data(meuse)
+> coordinates(meuse) <- c("x", "y")
+> mypanel = function(x,y,...) { 
++ 	vgm.panel.xyplot(x,y,...)
++ 	panel.abline(h=var(log(meuse$zinc)), color = 'red')
++ }
+> plot(variogram(log(zinc)~1,meuse), panel = mypanel)
+> 
+> 
+> 
+> cleanEx()
+
+detaching ‘package:lattice’
+
+> nameEx("vv")
+> ### * vv
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: vv
+> ### Title: Precomputed variogram for PM10 in data set air
+> ### Aliases: vv
+> 
+> ### ** Examples
+> 
+> ## Not run: 
+> ##D # obtained by:
+> ##D data(air)
+> ##D rr = rural[,"2005::2010"]
+> ##D unsel = which(apply(as(rr, "xts"), 2, function(x) all(is.na(x))))
+> ##D rrr = rr[-unsel,]
+> ##D vv = variogram(PM10~1, rrr, width=20, cutoff = 200)
+> ## End(Not run)
+> 
+> 
+> 
+> cleanEx()
+> nameEx("walker")
+> ### * walker
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: walker
+> ### Title: Walker Lake sample and exhaustive data sets
+> ### Aliases: walker walker.exh
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(walker)
+> summary(walker)
+Object of class SpatialPointsDataFrame
+Coordinates:
+  min max
+X   8 251
+Y   8 291
+Is projected: NA 
+proj4string : [NA]
+Number of points: 470
+Data attributes:
+       Id              V                U                 T        
+ Min.   :  1.0   Min.   :   0.0   Min.   :   0.00   Min.   :1.000  
+ 1st Qu.:118.2   1st Qu.: 184.6   1st Qu.:  82.15   1st Qu.:2.000  
+ Median :235.5   Median : 424.0   Median : 319.30   Median :2.000  
+ Mean   :235.5   Mean   : 435.3   Mean   : 604.08   Mean   :1.904  
+ 3rd Qu.:352.8   3rd Qu.: 640.9   3rd Qu.: 844.55   3rd Qu.:2.000  
+ Max.   :470.0   Max.   :1528.1   Max.   :5190.10   Max.   :2.000  
+                                  NA's   :195                      
+> summary(walker.exh)
+Object of class SpatialGridDataFrame
+Coordinates:
+  min   max
+X 0.5 260.5
+Y 0.5 300.5
+Is projected: NA 
+proj4string : [NA]
+Grid attributes:
+  cellcentre.offset cellsize cells.dim
+X                 1        1       260
+Y                 1        1       300
+Data attributes:
+       U                  V         
+ Min.   :   0.000   Min.   :   0.0  
+ 1st Qu.:   6.674   1st Qu.:  67.8  
+ Median :  56.902   Median : 221.2  
+ Mean   : 266.044   Mean   : 278.0  
+ 3rd Qu.: 316.351   3rd Qu.: 429.3  
+ Max.   :9499.508   Max.   :1631.2  
+> 
+> 
+> 
+> cleanEx()
+> nameEx("wind")
+> ### * wind
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: wind
+> ### Title: Ireland wind data, 1961-1978
+> ### Aliases: wind wind.loc
+> ### Keywords: datasets
+> 
+> ### ** Examples
+> 
+> data(wind)
+> summary(wind)
+      year          month             day             RPT       
+ Min.   :61.0   Min.   : 1.000   Min.   : 1.00   Min.   : 0.67  
+ 1st Qu.:65.0   1st Qu.: 4.000   1st Qu.: 8.00   1st Qu.: 8.12  
+ Median :69.5   Median : 7.000   Median :16.00   Median :11.71  
+ Mean   :69.5   Mean   : 6.523   Mean   :15.73   Mean   :12.36  
+ 3rd Qu.:74.0   3rd Qu.:10.000   3rd Qu.:23.00   3rd Qu.:15.92  
+ Max.   :78.0   Max.   :12.000   Max.   :31.00   Max.   :35.80  
+      VAL             ROS             KIL              SHA       
+ Min.   : 0.21   Min.   : 1.50   Min.   : 0.000   Min.   : 0.13  
+ 1st Qu.: 6.67   1st Qu.: 8.00   1st Qu.: 3.580   1st Qu.: 6.75  
+ Median :10.17   Median :10.92   Median : 5.750   Median : 9.96  
+ Mean   :10.65   Mean   :11.66   Mean   : 6.306   Mean   :10.46  
+ 3rd Qu.:14.04   3rd Qu.:14.67   3rd Qu.: 8.420   3rd Qu.:13.54  
+ Max.   :33.37   Max.   :33.84   Max.   :28.460   Max.   :37.54  
+      BIR              DUB              CLA              MUL        
+ Min.   : 0.000   Min.   : 0.000   Min.   : 0.000   Min.   : 0.000  
+ 1st Qu.: 4.000   1st Qu.: 6.000   1st Qu.: 5.090   1st Qu.: 5.370  
+ Median : 6.830   Median : 9.210   Median : 8.080   Median : 8.170  
+ Mean   : 7.092   Mean   : 9.797   Mean   : 8.494   Mean   : 8.496  
+ 3rd Qu.: 9.670   3rd Qu.:12.960   3rd Qu.:11.420   3rd Qu.:11.210  
+ Max.   :26.160   Max.   :30.370   Max.   :31.080   Max.   :25.880  
+      CLO              BEL             MAL       
+ Min.   : 0.040   Min.   : 0.13   Min.   : 0.67  
+ 1st Qu.: 5.330   1st Qu.: 8.71   1st Qu.:10.71  
+ Median : 8.290   Median :12.50   Median :15.00  
+ Mean   : 8.707   Mean   :13.12   Mean   :15.60  
+ 3rd Qu.:11.630   3rd Qu.:16.88   3rd Qu.:19.83  
+ Max.   :28.210   Max.   :42.38   Max.   :42.54  
+> wind.loc
+         Station Code       Latitude     Longitude MeanWind
+1       Valentia  VAL        51d56'N       10d15'W     5.48
+2      Belmullet  BEL        54d14'N       10d00'W     6.75
+3    Claremorris  CLA        53d43'N        8d59'W     4.32
+4        Shannon  SHA        52d42'N        8d55'W     5.38
+5  Roche's Point  RPT        51d48'N        8d15'W     6.36
+6           Birr  BIR        53d05'N        7d53'W     3.65
+7      Mullingar  MUL        53d32'N        7d22'W     4.38
+8     Malin Head  MAL        55d22'N        7d20'W     8.03
+9       Kilkenny  KIL        52d40'N        7d16'W     3.25
+10        Clones  CLO        54d11'N        7d14'W     4.48
+11        Dublin  DUB        53d26'N        6d15'W     5.05
+12       Roslare  ROS 52d16'56.791"N 6d21'25.056"W     6.00
+> wind.loc$y = as.numeric(char2dms(as.character(wind.loc[["Latitude"]])))
+> wind.loc$x = as.numeric(char2dms(as.character(wind.loc[["Longitude"]])))
+> coordinates(wind.loc) = ~x+y
+> # fig 1:
+> wind$time = ISOdate(wind$year+1900, wind$month, wind$day)
+> # time series of e.g. Dublin data:
+> plot(DUB~time, wind, type= 'l', ylab = "windspeed (knots)", main = "Dublin")
+> 
+> # fig 2:
+> #wind = wind[!(wind$month == 2 & wind$day == 29),]
+> wind$jday = as.numeric(format(wind$time, '%j'))
+> windsqrt = sqrt(0.5148 * as.matrix(wind[4:15]))
+> Jday = 1:366
+> windsqrt = windsqrt - mean(windsqrt)
+> daymeans = sapply(split(windsqrt, wind$jday), mean)
+> plot(daymeans ~ Jday)
+> lines(lowess(daymeans ~ Jday, f = 0.1))
+> 
+> # subtract the trend:
+> meanwind = lowess(daymeans ~ Jday, f = 0.1)$y[wind$jday]
+> velocity = apply(windsqrt, 2, function(x) { x - meanwind })
+> 
+> # match order of columns in wind to Code in wind.loc:
+> pts = coordinates(wind.loc[match(names(wind[4:15]), wind.loc$Code),])
+> 
+> # fig 3, but not really yet...
+> dists = spDists(pts, longlat=TRUE)
+> corv = cor(velocity)
+> sel = !(as.vector(dists) == 0)
+> plot(as.vector(corv[sel]) ~ as.vector(dists[sel]),
++ 	xlim = c(0,500), ylim = c(.4, 1), xlab = "distance (km.)", 
++ 	ylab = "correlation") 
+> # plots all points twice, ignores zero distance 
+> 
+> # now really get fig 3:
+> ros = rownames(corv) == "ROS"
+> dists.nr = dists[!ros,!ros]
+> corv.nr = corv[!ros,!ros]
+> sel = !(as.vector(dists.nr) == 0)
+> plot(as.vector(corv.nr[sel]) ~ as.vector(dists.nr[sel]), pch = 3,
++ 	xlim = c(0,500), ylim = c(.4, 1), xlab = "distance (km.)", 
++ 	ylab = "correlation") 
+> # add outlier:
+> points(corv[ros,!ros] ~ dists[ros,!ros], pch=16, cex=.5)
+> xdiscr = 1:500
+> # add correlation model:
+> lines(xdiscr, .968 * exp(- .00134 * xdiscr))
+> 
+> 
+> 
+> ### * <FOOTER>
+> ###
+> cat("Time elapsed: ", proc.time() - get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  31.994 0.388 32.492 0 0 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

@@ -1,7 +1,7 @@
 # $Id: gstat.formula.predict.q,v 1.14 2008-02-19 10:01:22 edzer Exp $
 
 "gstat.formula.predict" <-
-function (formula, newdata, na.action, BLUE.estimates = FALSE) 
+function (formula, newdata, na.action, BLUE.estimates = FALSE, xlev = NULL) 
 {
 	if (is(newdata, "SpatialPolygons")) {
 		# locs = coordinates(getSpatialPolygonsLabelPoints(newdata)) -- deprecated, now use:
@@ -40,7 +40,7 @@ function (formula, newdata, na.action, BLUE.estimates = FALSE)
 
 	# resolve formula:
 	terms.f = delete.response(terms(formula))
-    mf.f = model.frame(terms.f, newdata, na.action = na.action)
+    mf.f = model.frame(terms.f, newdata, na.action = na.action, xlev = xlev)
     X = model.matrix(terms.f, mf.f)
 
 	if (BLUE.estimates) { # fake the whole thing to get a matrix with BLUE parameter estimates:

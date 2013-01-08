@@ -32,4 +32,7 @@ Changes. Environmetrics 16, (6), p 573-587.
 \examples{
 data(fulmar)
 summary(fulmar)
+\dontrun{
+demo(fulmar)
+}
 }

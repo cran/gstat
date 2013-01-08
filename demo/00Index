@@ -20,3 +20,4 @@ line		examples for lines support prediction
 weight		compute (the expensive way) kriging weights for a single prediction location
 wind		space-time kriging with the Irish wind data sets
 rep			10 x 10 matrix of fitted variograms from 100 simulated fields
+stkrige		space-time kriging

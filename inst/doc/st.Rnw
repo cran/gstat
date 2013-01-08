@@ -243,8 +243,11 @@ S/T variogram:
 <<>>=
 data(vv)
 @
-Plotting this object can be done in two ways, both shown in figure
-\ref{fig:map}:
+% remove the model column to keep text and figures in line.
+<<echo=FALSE>>=
+vv <- vv[c("np", "dist", "gamma", "id", "timelag", "spacelag")]
+@
+Plotting this object can be done in several ways, two 2D-plots are shown in figure~\ref{fig:map} and a 3D wireplot is shown in figure~\ref{fig:wire}:
 <<eval=FALSE>>=
 plot(vv, ylab = "time lag (days)")
 plot(vv, map = FALSE, ylab = "time lag (days)")
@@ -258,89 +261,111 @@ print(plot(vv, map = FALSE, ylab = "time lag (days)"), split = c(1,2,1,2))
 \end{center}
 \caption{Spatio-temporal sample variogram map (top) and sample variograms
 for each time lag (bottom); both figures depict the information of object
-{\tt vv} }
+{\tt vv}. }
 \label{fig:map}
 \end{figure}
 
 \subsection{Fitting a spatio-temporal variogram model}
 
-<<>>=
-ExpVgmMetric = function(x, s, t, nugget = 0) {
-	h = sqrt(s^2 + (x[3] * as.numeric(t))^2)
-	ifelse(h == 0, 0, nugget + x[1] * (1 - exp(-h / x[2])))
-}
-ExpFitFn = function(x, gfn, v, trace = FALSE, ...) {
-	mod = gfn(x, v$spacelag, v$timelag, ...)
-	resid = v$gamma - mod
-	if (trace)
-		print(c(x, MSE = mean(resid^2)))
-	mean(resid^2)
-}
+% <<>>=
+% ExpVgmMetric = function(x, s, t, nugget = 0) {
+% 	h = sqrt(s^2 + (x[3] * as.numeric(t))^2)
+% 	ifelse(h == 0, 0, nugget + x[1] * (1 - exp(-h / x[2])))
+% }
+% ExpFitFn = function(x, gfn, v, trace = FALSE, ...) {
+% 	mod = gfn(x, v$spacelag, v$timelag, ...)
+% 	resid = v$gamma - mod
+% 	if (trace)
+% 		print(c(x, MSE = mean(resid^2)))
+% 	mean(resid^2)
+% }
+% 
+% pars.M = optim(c(sill = 50, range = 100, anis = 50), ExpFitFn, 
+% 	gfn = ExpVgmMetric, v = vv, nugget = 10)
+% pars.M$par
+% @
+% The final model can be added, as fitted model to the sample variogram, and  plotted by (figure \ref{fig:mm}):
+% <<eval=FALSE>>=
+% vv$model = ExpVgmMetric(pars.M$par, vv$spacelag, vv$timelag, nugget = 10)
+% plot(vv)
+% @
 
-pars.M = optim(c(sill = 50, range = 100, anis = 50), ExpFitFn, 
-	gfn = ExpVgmMetric, v = vv, nugget = 10)
-pars.M$par
+At first, we try to fit a metric model with spatio-temporal anisotropy:
+<<>>==
+metricVgm <- list(joint=vgm(50,"Exp",100,0),
+                  nugget=10, stAni=50, stModel="metric")
+
+metricVgm <- fit.StVariogram(vv, metricVgm, method="L-BFGS-B")$StVgmFit
 @
-The final model can be added, as fitted model to the sample variogram, and  plotted by (figure \ref{fig:mm}):
+The final model can be plotted with the sample variogram (figure~\ref{fig:mm}):
+
 <<eval=FALSE>>=
-vv$model = ExpVgmMetric(pars.M$par, vv$spacelag, vv$timelag, nugget = 10)
-plot(vv)
+plot(vv, metricVgm)
 @
 
 \begin{figure}[hbt]
 \begin{center}
 <<fig=TRUE,echo=FALSE>>=
-vv$model = ExpVgmMetric(pars.M$par, vv$spacelag, vv$timelag, nugget = 10)
-print(plot(vv))
+print(plot(vv, metricVgm))
 @
 \end{center}
-\caption{ sample variogram map (right) and fitted metric model (left). }
+\caption{Fitted metric model (left) and sample variogram map (right). }
 \label{fig:mm}
 \end{figure}
 
-Now, let us try to fit and plot a separable model (figure \ref{fig:sm}):
-<<>>=
-ExpVgmSeparable = function(x, s, t, nugget = 0) {
-	#h = s/x[2] + as.numeric(t)/x[3]
-	#ifelse(h == 0, 0, nugget + x[1] * (1 - exp(-h)))
-	h = s/x[2] + as.numeric(t)/x[3]
-	ifelse(h == 0, 0, nugget + x[1] * (1 - exp(-h)))
-}
-pars.S = optim(c(sill = 40, srange = 90, trange = 2), ExpFitFn,
-	gfn = ExpVgmSeparable, v = vv, nugget = 10)
-vv$model = ExpVgmSeparable(pars.S$par, vv$spacelag, vv$timelag, nugget = 10)
-pars.S$par
-plot(vv)
+\pagebreak 
+
+Now, let us try to fit and plot a separable model (figure~\ref{fig:sm}):
+% # <<>>=
+% # ExpVgmSeparable = function(x, s, t, nugget = 0) {
+% # 	#h = s/x[2] + as.numeric(t)/x[3]
+% # 	#ifelse(h == 0, 0, nugget + x[1] * (1 - exp(-h)))
+% # 	h = s/x[2] + as.numeric(t)/x[3]
+% # 	ifelse(h == 0, 0, nugget + x[1] * (1 - exp(-h)))
+% # }
+% # pars.S = optim(c(sill = 40, srange = 90, trange = 2), ExpFitFn,
+% # 	gfn = ExpVgmSeparable, v = vv, nugget = 10)
+% # vv$model = ExpVgmSeparable(pars.S$par, vv$spacelag, vv$timelag, nugget = 10)
+% # pars.S$par
+% # plot(vv)
+% # @
+
+<<>>==
+sepVgm <- list(space=vgm(1,"Exp", 123, 0),
+               time =vgm(1,"Exp", 2.9, 0),
+               sill=45, nugget=10, stModel="separable")
+
+sepVgm <- fit.StVariogram(vv, sepVgm, method = "L-BFGS-B")$StVgmFit
+plot(vv,sepVgm)
 @
 
 \begin{figure}[hbt]
 \begin{center}
 <<fig=TRUE,echo=FALSE>>=
-vv$model = ExpVgmSeparable(pars.S$par, vv$spacelag, vv$timelag, nugget = 10)
-print(plot(vv))
+print(plot(vv,sepVgm))
 @
 \end{center}
-\caption{ sample variogram map (right) and fitted seperable model (left). }
+\caption{Fitted seperable model (left) and sample variogram map (right). }
 \label{fig:sm}
 \end{figure}
 A wireframe (3D) plot of the sample variogram can be obtained e.g. by
 <<eval=FALSE>>=
 library(lattice)
-wireframe(gamma~spacelag*timelag, vv, drape=TRUE, 
-	col.regions=bpy.colors)
+plot(vv,wireframe=T,col.regions=bpy.colors())
 @
-which is shown in figure \ref{fig:wire}.
+which is shown in figure \ref{fig:wire}. Further spatio-temporal model definitions can be found in the help pages of {\tt fit.StVariogram} and {\tt variogramSurface}. The demo {\tt stkrige} presents further examples and illustrates an interactive 3D-plot of sample variogram and the fitted variogram model.
 \begin{figure}[hbt]
 \begin{center}
 <<fig=TRUE,echo=FALSE>>=
 library(lattice)
-print(wireframe(gamma-model~spacelag*timelag, vv, drape=TRUE, 
-	col.regions=bpy.colors()))
+print(plot(vv,wireframe=T,col.regions=bpy.colors()))
 @
 \end{center}
 \caption{ Wireplot of sample space-time variogram }
 \label{fig:wire}
 \end{figure}
+
+\clearpage 
 
 \section{Spatio-temporal prediction}
 

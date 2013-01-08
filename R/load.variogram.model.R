@@ -17,7 +17,7 @@
 		if (dim(model)[1] > 1 || model$model != "Tab")
 			stop("table can only have one single model")
 	}
-	.Call("gstat_load_variogram", 
+	.Call(gstat_load_variogram, 
 		as.integer(ids),
 		as.character(model$model),
 		as.numeric(model$psill),
