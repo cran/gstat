@@ -50,10 +50,12 @@ sampling scheme for isarithmic mapping''.
 \link{krige}
 }
 \examples{
+\dontrun{
 x <- ossfim(1:15,1:15, model = vgm(1,"Exp",15))
 library(lattice)
 levelplot(kriging.se~spacing+block.size, x, 
   main = "Ossfim results, variogram 1 Exp(15)")
+}
 # if you wonder about the decrease in the upper left corner of the graph,
 # try the above with nmax set to 100, or perhaps 200.
 }

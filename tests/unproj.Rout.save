@@ -20,7 +20,7 @@ Type 'q()' to quit R.
 + 	q()
 Loading required package: rgdal
 Loading required package: sp
-rgdal: version: 0.8-2, (SVN revision 416:417)
+rgdal: version: 0.8-5, (SVN revision 449)
 Geospatial Data Abstraction Library extensions to R successfully loaded
 Loaded GDAL runtime: GDAL 1.9.2, released 2012/10/08
 Path to GDAL shared files: /usr/share/gdal/1.9
@@ -155,4 +155,4 @@ spDistsN1 Distances:
 > 
 > proc.time()
    user  system elapsed 
-  2.184   0.092   2.291 
+  2.016   0.036   2.049 

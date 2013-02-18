@@ -6,13 +6,15 @@ library(gstat)
 
 data(vv)
 
-separableModel <- list(space=vgm(1,"Exp", 123, 0),
-                       time =vgm(1,"Exp", 2.9, 0),
-                       sill=45, nugget=10, stModel="separable")
+separableModel <- vgmST("separable", 
+                        space=vgm(0.9,"Exp", 147, 0.1),
+                        time =vgm(0.9,"Exp", 3.5, 0.1),
+                        sill=40)
 
-prodSumModel <- list(space=vgm(50, "Sph", 150, 0),
-                     time= vgm(50, "Exp",  10, 0), 
-                     sill=65, nugget=10, stModel="productSum")
+prodSumModel <- vgmST("productSum",
+                      space=vgm(39, "Sph", 343, 0),
+                      time= vgm(36, "Exp",   3, 0), 
+                      sill=41, nugget=17)
 
 # lower and upper bounds of the metric model
 pars.l <- c(sill.s = 1E-2, range.s = 1E1, nugget.s = 0,
@@ -23,10 +25,11 @@ pars.u <- c(sill.s = 1E2, range.s = 200, nugget.s = 1E2,
             sill.t = 1E2, range.t = 15, nugget.t = 1E2,
             sill.st = 1E2, range.st = 1E5, nugget.st = 1E2,
             anis = 1E4)
-sumMetricModel <- list(space=vgm(20,"Lin", 150, 1),
-                       time =vgm(20,"Lin", 10,  1),
-                       joint=vgm(20,"Exp", 150, 1),
-                       stAni=15, stModel="sumMetric")
+sumMetricModel <- vgmST("sumMetric",
+                        space=vgm( 6.9, "Lin", 200, 3.0),
+                        time =vgm(10.3, "Lin",  15, 3.6),
+                        joint=vgm(37.2, "Exp",  84,11.7),
+                        stAni=77.7)
 
 # simplified sumMetric model?
 pars.simple.l <- c(sill.s = 1E-2, range.s = 1E2, 
@@ -38,16 +41,18 @@ pars.simple.u <- c(sill.s = 1E2, range.s = 200,
                    sill.st = 1E2, range.st = 1E3, 
                    nugget = 1E2, anis = 1E4)
 
-simpleSumMetricModel <- list(space=vgm(20,"Lin", 150, 0),
-                             time =vgm(20,"Lin", 10,  0),
-                             joint=vgm(20,"Exp", 150, 0),
-                             nugget=1, stAni=15, stModel="simpleSumMetric")
+simpleSumMetricModel <- vgmST("simpleSumMetric",
+                              space=vgm(20,"Lin", 150, 0),
+                              time =vgm(20,"Lin", 10,  0),
+                              joint=vgm(20,"Exp", 150, 0),
+                              nugget=1, stAni=15)
 
-metricModel <- list(joint=vgm(60, "Exp", 150, 10),
-                    stAni=60, stModel="metric")
+
+metricModel <- vgmST("metric",
+                     joint=vgm(60, "Exp", 150, 10),
+                     stAni=60)
 
 # fitting
-
 fitSepModel <- fit.StVariogram(vv, separableModel, method = "L-BFGS-B", 
                                control = list(maxit = 1000))
 fittedSepModel <- fitSepModel$StVgmFit

@@ -226,7 +226,7 @@ dim(r5to10)
 @
 
 We can fit a spatio-temporal variogram the usual way, by passing an
-object of class {\tt STFDF}:
+object of class {\tt STFDF} (Pebesma, 2012):
 <<eval=FALSE>>=
 vv = variogram(PM10~1, r5to10, width=20, cutoff = 200)
 @
@@ -292,10 +292,11 @@ for each time lag (bottom); both figures depict the information of object
 
 At first, we try to fit a metric model with spatio-temporal anisotropy:
 <<>>==
-metricVgm <- list(joint=vgm(50,"Exp",100,0),
-                  nugget=10, stAni=50, stModel="metric")
+metricVgm <- vgmST("metric",
+                   joint=vgm(50,"Exp",100,0),
+                   stAni=50)
 
-metricVgm <- fit.StVariogram(vv, metricVgm, method="L-BFGS-B")$StVgmFit
+metricVgm <- fit.StVariogram(vv, metricVgm, method="L-BFGS-B")
 @
 The final model can be plotted with the sample variogram (figure~\ref{fig:mm}):
 
@@ -331,12 +332,13 @@ Now, let us try to fit and plot a separable model (figure~\ref{fig:sm}):
 % # @
 
 <<>>==
-sepVgm <- list(space=vgm(1,"Exp", 123, 0),
-               time =vgm(1,"Exp", 2.9, 0),
-               sill=45, nugget=10, stModel="separable")
+sepVgm <- vgmST("separable",
+                space=vgm(0.9,"Exp", 123, 0.1),
+                time =vgm(0.9,"Exp", 2.9, 0.1),
+                sill=45)
 
-sepVgm <- fit.StVariogram(vv, sepVgm, method = "L-BFGS-B")$StVgmFit
-plot(vv,sepVgm)
+sepVgm <- fit.StVariogram(vv, sepVgm, method = "L-BFGS-B")
+plot(vv, sepVgm)
 @
 
 \begin{figure}[hbt]
@@ -416,6 +418,10 @@ Spatial Data Analysis with R. Springer.
 
 \item Cressie, N. and C. Wikle, 2011. Statistics for Spatio-temporal
 Data. Wiley.
+
+\item Pebesma, E., 2012. spacetime: Spatio-Temporal Data
+in R. Journal of Statistical Software, volume 51, issue 7;
+\href{http://www.jstatsoft.org/v51/i07/}{1-30}.
 
 \item Pebesma, E.J., Wesseling, C.G., 1998. Gstat, a program for
 geostatistical modelling, prediction and simulation. Computers \&

@@ -93,16 +93,13 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 
 krigeST <- function(formula, data, newdata, modelList, y, ..., 
 		computeVar = FALSE, fullCovariance = FALSE) {
+	stopifnot(inherits(modelList, "StVariogramModel"))
   
 	if (is(data, "ST") && is(newdata, "ST")) {
 		stopifnot(identical(proj4string(data@sp), proj4string(newdata@sp)))
 		stopifnot(is(data, "STFDF") || 
 			(is(data, "STSDF") && modelList$stModel == "sumMetric"))
 	}
-  
-	# maintaining jss816 code compatibility:
-	if(is.null(modelList$stModel))
-		modelList$stModel <- "separable"
   
 	lst = extractFormula(formula, data, newdata)
 	X = lst$X
@@ -112,14 +109,14 @@ krigeST <- function(formula, data, newdata, modelList, y, ...,
 
 	V = covfn.ST(data, model = modelList)
 	v0 = covfn.ST(data, newdata, modelList)
-  if (is(data,"STSDF"))
-    d0 <- data[data@index[1,1],data@index[1,2],drop=F]
-  else
-    d0 = data[1, 1, drop=FALSE]
+	if (is(data,"STSDF"))
+		d0 <- data[data@index[1,1],data@index[1,2],drop=F]
+	else
+    	d0 = data[1, 1, drop=FALSE]
 	c0 = as.numeric(covfn.ST(d0, d0, modelList, separate = FALSE))
 	skwts = switch(modelList$stModel, 
                  separable=STsolve(V, v0, X), 
-                 CHsolve(V,cbind(v0,X))) # can CHsolve be simplified for the productSum and sumMetric model
+                 CHsolve(V, cbind(v0,X))) # can CHsolve be simplified for the productSum and sumMetric model
 	# ViX = skwts[,-(1:ncol(v0))]
 	# skwts = skwts[,1:ncol(v0)]
 	npts = prod(dim(newdata)[1:2])
@@ -135,9 +132,16 @@ krigeST <- function(formula, data, newdata, modelList, y, ...,
 		var = c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q)
 		if (!fullCovariance)
 			var = diag(var)
-		list(pred = pred, var = var)
+		res <- data.frame(pred = pred, var = var)
 	} else
-		pred
+		res <- data.frame(pred)
+  
+  # wrapping the predictions in ST*DF again
+	if (ncol(res) == 1)
+	  names(res) = "var1.pred"
+	if (ncol(res) == 2)
+	  names(res) = c("var1.pred", "var1.var")
+	addAttrToGeom(geometry(newdata), res)
 }
 
 STsolve = function(A, b, X) {
@@ -172,8 +176,6 @@ STsolve = function(A, b, X) {
 	cbind(ret1, ret2)
 }
 
-modelList <- list(space="sp",time="t")
-
 covfn.ST = function(x, y = x, model, separate=T) {
     switch(model$stModel,
            separable=covSep(x, y, model, separate),
@@ -185,7 +187,7 @@ covfn.ST = function(x, y = x, model, separate=T) {
 covSep <- function(x, y, model, separate=TRUE) {
   if (is(model$space, "variogramModel")) 
     Sm = variogramLine(model$space, covariance = TRUE, dist_vector = 
-      spDists(coordinates(x@sp), coordinates(y@sp)))
+      spDists(coordinates(x@sp), coordinates(y@sp)))*model$sill
   else
     Sm = model$space(x, y)
   stopifnot(!is.null(Sm))
@@ -204,15 +206,22 @@ covSep <- function(x, y, model, separate=TRUE) {
 ## product-sum model, BG
 covProdSum <- function(x, y, model) {
   
-  k <- (sum(model$space$psill)+sum(model$time$psill)-model$sill)/(sum(model$space$psill)*sum(model$time$psill))
-  if (k <= 0 | k > 1/max(model$space$psill[2],model$time$psill[2])) 
-    stop("k is negative or too large, non valid model!")
+  vs = variogramLine(model$space, 
+                     dist_vector=spDists(coordinates(x@sp), coordinates(y@sp)))
+  vt = variogramLine(model$time, 
+                     dist_vector = abs(outer(as.numeric(index(x@time)), as.numeric(index(y@time)), "-")))
   
-  covST <- covSep(x, y, model, separate=TRUE)
-  return((1-model$k*model$sill)*( covST$Tm %x% matrix(1,nrow(covST$Sm),ncol(covST$Sm)) + matrix(1,nrow(covST$Tm),ncol(covST$Tm)) %x% covST$Sm - model$sill ) + model$k * covST$Tm %x% covST$Sm)
+  k <- (sum(model$space$psill)+sum(model$time$psill)-model$sill)/(sum(model$space$psill)*sum(model$time$psill))
+  
+  if (k <= 0 | k > 1/max(model$space$psill[2],model$time$psill[2])) 
+    stop("k is negative or too large: no valid model!")
+
+  # VGM: vs+vt-k*vs*vt+model$nugget
+
+  return(model$sill-(vt %x% matrix(1,nrow(vs),ncol(vs)) 
+                     + matrix(1,nrow(vt),ncol(vt)) %x% vs
+                     - k * vt %x% vs))
 }
-
-
 
 ## sumMetric model
 covSumMetric <- function(x, y, model) {
