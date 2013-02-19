@@ -59,11 +59,13 @@ tgrd = seq(min(index(w)), max(index(w)), length=n)
 pred = krige0(sqrt(values)~1, w, STF(grd, tgrd), covfn)
 layout = list(list("sp.points", pts, first=F, cex=.5),
 	list("sp.lines", m, col='grey'))
-wind.pr0 = STFDF(grd, tgrd, data.frame(pred = pred))
+wind.pr0 = STFDF(grd, tgrd, data.frame(var1.pred = pred))
 
-v = list(space = vgm(0.6, "Exp", 750000), time = vgm(1, "Exp", 1.5 * 3600 * 24))
-pred = krigeST(sqrt(values)~1, w, STF(grd, tgrd), v)
-wind.ST = STFDF(grd, tgrd, data.frame(pred = pred))
+v = vgmST("separable",
+          space = vgm(1, "Exp", 750000), 
+          time = vgm(1, "Exp", 1.5 * 3600 * 24),
+          sill = 0.6)
+wind.ST = krigeST(sqrt(values)~1, w, STF(grd, tgrd), v)
 
 all.equal(wind.pr0, wind.ST)
 }

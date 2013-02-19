@@ -3,7 +3,7 @@
 \docType{methods}
 \alias{krige}
 \alias{krige0}
-\alias{krigeST}
+%\alias{krigeST}
 \alias{krige.locations}
 \alias{krige.spatial}
 \alias{idw}
@@ -17,10 +17,12 @@
 \alias{krige,formula,NULL-method}
 \alias{idw,formula,formula-method}
 \alias{idw,formula,Spatial-method}
-\alias{idw,formula,ST-method}
-\alias{krige,formula,ST-method} % calling krigeST
+\alias{idw,formula,ST-method} % move to krigeST as well?
+% \alias{krige,formula,ST-method} % calling krigeST
+
 \title{ Simple, Ordinary or Universal, global or local, Point or Block Kriging,
 or simulation. }
+
 \description{
 Function for simple, ordinary or universal kriging (sometimes called
 external drift kriging), kriging in a local neighbourhood, point kriging
@@ -38,8 +40,6 @@ krige.spatial(formula, locations, newdata, model, ..., beta, nmax
 = Inf, nmin = 0, omax = 0, maxdist = Inf, block, nsim = 0, indicators = FALSE,
 na.action = na.pass, debug.level = 1)
 krige0(formula, data, newdata, model, beta, y, ..., computeVar = FALSE,
-	fullCovariance = FALSE)
-krigeST(formula, data, newdata, modelList, y, ..., computeVar = FALSE,
 	fullCovariance = FALSE)
 idw(formula, locations, ...)
 idw.locations(formula, locations, data, newdata, nmax = Inf, 
@@ -68,10 +68,6 @@ idw0(formula, data, newdata, y)
  \item{model}{ variogram model of dependent variable (or its residuals), 
   defined by a call to \link{vgm} or \link{fit.variogram}; for \code{krige0}
   also a user-supplied covariance function is allowed (see example below) }
- \item{modelList}{ list with two named elements: space and time; these should
- either be the output of \link{vgm}, or user-defined covariance functions that
- take one or two ST objects; a separable covariance model is assumed and 
- exploited }
  \item{beta}{ for simple kriging (and simulation based on simple
   kriging): vector with the trend coefficients (including intercept);
   if no independent variables are defined the model only contains an

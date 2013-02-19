@@ -15,29 +15,32 @@ Calculates the sample variogram from data, or in case of a linear model
 is given, for the residuals, with options for directional, robust,
 and pooled variogram, and for irregular distance intervals.  
 }
-\synopsis{ variogram(object, ...) }
 \usage{
 \method{variogram}{gstat}(object, ...)
-\method{variogram}{formula}(formula, locations, data, ...)
-\method{variogram}{default}(y, locations, X, cutoff, width = cutoff/15, alpha =
+\method{variogram}{formula}(object, locations = coordinates(data), data, ...)
+\method{variogram}{default}(object, locations, X, cutoff, width = cutoff/15, alpha =
 	0, beta = 0, tol.hor = 90/length(alpha), tol.ver =
 	90/length(beta), cressie = FALSE, dX = numeric(0), boundaries =
 	numeric(0), cloud = FALSE, trend.beta = NULL, debug.level = 1,
 	cross = TRUE, grid, map = FALSE, g = NULL, ..., projected = TRUE, 
 	lambda = 1.0, verbose = FALSE, covariogram = FALSE, PR = FALSE, 
-	pseudo = FALSE)
+	pseudo = -1)
 \method{variogram}{line}(..., deprecate = TRUE)
-variogramST(formula, locations, data, ..., tlags = 0:15,
-		progress = TRUE, pseudo = TRUE)
-\method{print}{gstatVariogram}(v, ...)
-\method{print}{variogramCloud}(v, ...)
+variogramST(formula, locations, data, ..., tlags = 0:15,  cutoff,
+	width = cutoff/15, boundaries = seq(0, cutoff, width),
+	progress = TRUE, pseudo = TRUE)
+\method{print}{gstatVariogram}(x, ...)
+\method{print}{variogramCloud}(x, ...)
 }
 \arguments{
 \item{object}{object of class \code{gstat}; in this form, direct
 and cross (residual) variograms are calculated for all variables and
-variable pairs defined in \code{object}}
-\item{formula}{formula defining the response vector and (possible) 
-regressors, in case of absence of regressors, use e.g. \code{z~1}}
+variable pairs defined in \code{object}; in case of \code{variogram.formula},
+formula defining the response vector and (possible) 
+regressors, in case of absence of regressors, use e.g. \code{z~1};
+in case of \code{variogram.default}: list with for each variable 
+the vector with responses (should not be called directly)
+}
 \item{data}{data frame where the names in formula are to be found}
 \item{locations}{ spatial data locations.  For variogram.formula: a
 formula with only the coordinate variables in the right hand (explanatory
@@ -49,9 +52,6 @@ should match the number of spatial dimensions spanned by the data (1
 (x), 2 (x,y) or 3 (x,y,z)).  }
 \item{...}{any other arguments that will be passed to
 \link{variogram.default} (ignored)}
-\item{y}{ list with for each variable the vector with responses; please
-note that it is not recommended to call variogram.default directly, as
-it may make undocumented assumptions. }
 \item{X}{ (optional) list with for each variable the matrix with
 regressors/covariates; the number of rows should match that of the
 correspoding element in y, the number of columns equals the number of
@@ -90,7 +90,8 @@ TRUE, all direct and cross variograms are computed; if
 equal to "ST", direct and cross variograms are computed for all pairs 
 involving the first (non-time lagged) variable; if equal to "ONLY",
 only cross variograms are computed (no direct variograms). }
-\item{v}{ object of class \code{variogram} or \code{variogramCloud}
+\item{formula}{formula, specifying the dependent variable and possible covariates}
+\item{x}{ object of class \code{variogram} or \code{variogramCloud}
 to be printed}
 \item{grid}{ grid parameters, if data are gridded (not to be called
 directly; this is filled automatically) }

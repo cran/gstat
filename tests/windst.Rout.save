@@ -78,16 +78,18 @@ Loading required package: sp
 + pred = krige0(sqrt(values)~1, w, STF(grd, tgrd), covfn)
 + layout = list(list("sp.points", pts, first=F, cex=.5),
 + 	list("sp.lines", m, col='grey'))
-+ wind.pr0 = STFDF(grd, tgrd, data.frame(pred = pred))
++ wind.pr0 = STFDF(grd, tgrd, data.frame(var1.pred = pred))
 + 
-+ v = list(space = vgm(0.6, "Exp", 750000), time = vgm(1, "Exp", 1.5 * 3600 * 24))
-+ pred = krigeST(sqrt(values)~1, w, STF(grd, tgrd), v)
-+ wind.ST = STFDF(grd, tgrd, data.frame(pred = pred))
++ v = vgmST("separable",
++           space = vgm(1, "Exp", 750000), 
++           time = vgm(1, "Exp", 1.5 * 3600 * 24),
++           sill = 0.6)
++ wind.ST = krigeST(sqrt(values)~1, w, STF(grd, tgrd), v)
 + 
 + all.equal(wind.pr0, wind.ST)
 + }
 Loading required package: rgdal
-rgdal: version: 0.8-2, (SVN revision 416:417)
+rgdal: version: 0.8-5, (SVN revision 449)
 Geospatial Data Abstraction Library extensions to R successfully loaded
 Loaded GDAL runtime: GDAL 1.9.2, released 2012/10/08
 Path to GDAL shared files: /usr/share/gdal/1.9
@@ -102,4 +104,4 @@ Checking rgeos availability: TRUE
 > 
 > proc.time()
    user  system elapsed 
-  4.908   0.152   4.926 
+  4.112   0.048   4.163 

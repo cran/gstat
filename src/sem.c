@@ -138,11 +138,12 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 
 	if (v->ev->evt == CROSSVARIOGRAM && 
 			(v->ev->pseudo == -1 || v->ev->is_asym == -1)) {
-		/* v's first time */
-		if (coordinates_are_equal(d[v->id1], d[v->id2]))
-			v->ev->pseudo = 0;
-		else
-			v->ev->pseudo = 1;
+		if (v->ev->pseudo == -1) { /* v's first time, need to find out pseudo */
+			if (coordinates_are_equal(d[v->id1], d[v->id2]))
+				v->ev->pseudo = 0;
+			else
+				v->ev->pseudo = 1;
+		}
 		if (gl_sym_ev == 0)
 			v->ev->is_asym = v->ev->pseudo;
 			/* pseudo: always, else: only if set */

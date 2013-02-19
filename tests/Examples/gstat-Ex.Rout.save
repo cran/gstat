@@ -63,59 +63,51 @@ Loading required package: sp
 > 
 > ### ** Examples
 > 
-> # separable model: spatial and temporal sill and nugget will be ignored
-> # and kept constant at 1 and 0 respectively. Only a joint sill and nugget
-> # are used.
-> separableModel <- list(space=vgm(1,"Exp", 147, 0),
-+                        time =vgm(1,"Exp", 3.5, 0),
-+                        sill=40, nugget=16, stModel="separable")
-> 
-> # product sum model: spatial and temporal nugget will be ignored and kept
-> # constant at 0. Only a joint nugget is used.
-> prodSumModel <- list(space=vgm(39, "Sph", 343, 0),
-+                      time= vgm(36, "Exp",   3, 0), 
-+                      sill=41, nugget=17, stModel="productSum")
-> 
-> # sum metric model: spatial, temporal and joint nugget will be estimated
-> sumMetricModel <- list(space=vgm( 6.9, "Lin", 200, 3.0),
-+                        time =vgm(10.3, "Lin",  15, 3.6),
-+                        joint=vgm(37.2, "Exp",  84,11.7),
-+                        nugget=6.7, stAni=77.7, stModel="sumMetric")
-> 
->                        
-> # simplified sumMetric model, only a overall nugget is fitted. The spatial, 
-> # temporal and jont nuggets are set to 0.
-> simpleSumMetricModel <- list(space=vgm(20,"Lin", 150, 0),
-+                              time =vgm(20,"Lin", 10,  0),
-+                              joint=vgm(20,"Exp", 150, 0),
-+                              nugget=1, stAni=15, stModel="simpleSumMetric")
-> 
-> # metric model
-> metricModel <- list(joint=vgm(60, "Exp", 150, 10),
-+                     stAni=60, stModel="metric")
+> # separable model: spatial and temporal sill will be ignored
+> # and kept constant at 1-nugget respectively. A joint sill is used.
+> separableModel <- vgmST("separable",
++                         space=vgm(0.9,"Exp", 147, 0.1),
++                         time =vgm(0.9,"Exp", 3.5, 0.1),
++                         sill=40)
 > 
 > data(vv)
-> fit.StVariogram(vv[1:77,],separableModel,method = "L-BFGS-B")$StVgmFit
+> fit.StVariogram(vv[1:77,], separableModel, method = "L-BFGS-B")
 $space
-  model psill    range
-1   Nug     0   0.0000
-2   Exp     1 109.0723
+  model     psill    range
+1   Nug 0.2335489   0.0000
+2   Exp 0.7664511 138.6307
 
 $time
-  model psill    range
-1   Nug     0 0.000000
-2   Exp     1 2.106038
+  model     psill    range
+1   Nug 0.3367276 0.000000
+2   Exp 0.6632724 5.959166
 
 $sill
     sill 
-42.84031 
-
-$nugget
-  nugget 
-9.585171 
+57.99471 
 
 $stModel
 [1] "separable"
+
+attr(,"class")
+[1] "StVariogramModel" "list"            
+attr(,"optim.output")
+attr(,"optim.output")$par
+    range.s    nugget.s     range.t    nugget.t        sill 
+138.6307142   0.2335489   5.9591656   0.3367276  57.9947149 
+
+attr(,"optim.output")$value
+[1] 3.788254
+
+attr(,"optim.output")$counts
+function gradient 
+      77       77 
+
+attr(,"optim.output")$convergence
+[1] 0
+
+attr(,"optim.output")$message
+[1] "CONVERGENCE: REL_REDUCTION_OF_F <= FACTR*EPSMCH"
 
 > 
 > 
@@ -157,19 +149,9 @@ $stModel
 > 
 > data(meuse)
 > coordinates(meuse) = ~x+y
-> fit.variogram.gls(log(zinc)~1, meuse[1:40,], vgm(1, "Sph", 900,1))
-[1]   0.0000000   0.5433039 721.3554680
-[1] 4.846680e-05 5.004239e-01 1.022720e+03
-[1] 4.846680e-05 2.912359e-01 1.197143e+03
-[1] 4.846680e-05 3.261385e-01 1.281039e+03
-[1] 4.846680e-05 3.462590e-01 1.361355e+03
-[1] 4.846680e-05 3.657127e-01 1.361355e+03
-[1] 4.846680e-05 3.656921e-01 1.361355e+03
-Warning in fit.variogram.gls(log(zinc) ~ 1, meuse[1:40, ], vgm(1, "Sph",  :
-  range parameter at search space boundary
-  model        psill    range
-1   Nug 0.0000484668    0.000
-2   Sph 0.3656921273 1361.355
+> ## Not run: 
+> ##D fit.variogram.gls(log(zinc)~1, meuse[1:40,], vgm(1, "Sph", 900,1))
+> ## End(Not run)
 > 
 > 
 > 
@@ -498,12 +480,11 @@ detaching ‘package:lattice’
 > ### Name: krige
 > ### Title: Simple, Ordinary or Universal, global or local, Point or Block
 > ###   Kriging, or simulation.
-> ### Aliases: krige krige0 krigeST krige.locations krige.spatial idw idw0
+> ### Aliases: krige krige0 krige.locations krige.spatial idw idw0
 > ###   idw.locations idw.spatial krige-methods idw-methods
 > ###   krige,formula,formula-method krige,formula,Spatial-method
 > ###   krige,formula,NULL-method idw,formula,formula-method
 > ###   idw,formula,Spatial-method idw,formula,ST-method
-> ###   krige,formula,ST-method
 > ### Keywords: models
 > 
 > ### ** Examples
@@ -652,6 +633,50 @@ Data attributes:
 > 
 > 
 > cleanEx()
+> nameEx("krigeST")
+> ### * krigeST
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: krigeST
+> ### Title: Ordinary global Spatio-Temporal Kriging
+> ### Aliases: krigeST krige,formula,ST-method
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> library(spacetime)
+> sumMetricVgm <- vgmST("sumMetric",
++                       space=vgm( 4.4, "Lin", 196.6,  3),
++                       time =vgm( 2.2, "Lin",   1.1,  2),
++                       joint=vgm(34.6, "Exp", 136.6, 12),
++                       stAni=51.7)
+> 
+> data(air)
+> 
+> rr <- rural[,"2005-06-01/2005-06-03"]
+> rr <- as(rr,"STSDF")
+> 
+> x1 <- seq(from=6,to=15,by=1)
+> x2 <- seq(from=48,to=55,by=1)
+> 
+> DE_gridded <- SpatialPoints(cbind(rep(x1,length(x2)), rep(x2,each=length(x1))), 
++                             proj4string=CRS(proj4string(rr@sp)))
+> gridded(DE_gridded) <- TRUE
+> DE_pred <- STF(sp=as(DE_gridded,"SpatialPoints"), time=rr@time)
+> DE_kriged <- krigeST(PM10~1, data=rr, newdata=DE_pred,
++                      modelList=sumMetricVgm)
+Warning in xts(matrix(1:nrow(x@time), dimnames = list(NULL, "timeIndex")),  :
+  ‘tzone’ setting ignored for Date indexes
+> gridded(DE_kriged@sp) <- TRUE
+> stplot(DE_kriged)
+> 
+> 
+> 
+> cleanEx()
+
+detaching ‘package:spacetime’
+
 > nameEx("krigeTg")
 > ### * krigeTg
 > 
@@ -815,19 +840,18 @@ detaching ‘package:lattice’
 > 
 > ### ** Examples
 > 
-> x <- ossfim(1:15,1:15, model = vgm(1,"Exp",15))
-> library(lattice)
-> levelplot(kriging.se~spacing+block.size, x, 
-+   main = "Ossfim results, variogram 1 Exp(15)")
+> ## Not run: 
+> ##D x <- ossfim(1:15,1:15, model = vgm(1,"Exp",15))
+> ##D library(lattice)
+> ##D levelplot(kriging.se~spacing+block.size, x, 
+> ##D   main = "Ossfim results, variogram 1 Exp(15)")
+> ## End(Not run)
 > # if you wonder about the decrease in the upper left corner of the graph,
 > # try the above with nmax set to 100, or perhaps 200.
 > 
 > 
 > 
 > cleanEx()
-
-detaching ‘package:lattice’
-
 > nameEx("oxford")
 > ### * oxford
 > 
@@ -879,7 +903,7 @@ detaching ‘package:lattice’
  Max.   :7.700   Max.   :25.000   Max.   :847.0  
 > # open the following file with a jpg viewer:
 > system.file("external/oxford.jpg", package="gstat")
-[1] "/home/edzer/svn/geostatistics/main/gstat/gstat.Rcheck/gstat/external/oxford.jpg"
+[1] "/home/edzer/svn/gstat/gstat.Rcheck/gstat/external/oxford.jpg"
 > 
 > 
 > 
@@ -1517,6 +1541,7 @@ Warning in plot.xy(xy.coords(x, y), type = type, ...) :
 +   variogram(log(zinc) ~ 1, meuse.ll)
 + }
 Loading required package: rgdal
+rgdal: version: 0.8-4, (SVN revision 431)
 Geospatial Data Abstraction Library extensions to R successfully loaded
 Loaded GDAL runtime: GDAL 1.9.2, released 2012/10/08
 Path to GDAL shared files: /usr/share/gdal/1.9
@@ -1620,36 +1645,13 @@ detaching ‘package:rgdal’
 > 
 > ### ** Examples
 > 
-> # separable model: spatial and temporal sill and nugget will be ignored
-> # and kept constant at 1 and 0 respectively. Only a joint sill and nugget
-> # are used.
-> separableModel <- list(space=vgm(1,"Exp", 147, 0),
-+                        time =vgm(1,"Exp", 3.5, 0),
-+                        sill=40, nugget=16, stModel="separable")
+> # separable model: spatial and temporal sill will be ignored
+> # and kept constant at 1-nugget respectively. A joint sill is used.
+> separableModel <- vgmST("separable", 
++                         space=vgm(0.9,"Exp", 147, 0.1),
++                         time =vgm(0.9,"Exp", 3.5, 0.1),
++                         sill=40)
 > 
-> # product sum model: spatial and temporal nugget will be ignored and kept
-> # constant at 0. Only a joint nugget is used.
-> prodSumModel <- list(space=vgm(39, "Sph", 343, 0),
-+                      time= vgm(36, "Exp",   3, 0), 
-+                      sill=41, nugget=17, stModel="productSum")
-> 
-> # sum metric model: spatial, temporal and joint nugget will be estimated
-> sumMetricModel <- list(space=vgm( 6.9, "Lin", 200, 3.0),
-+                        time =vgm(10.3, "Lin",  15, 3.6),
-+                        joint=vgm(37.2, "Exp",  84,11.7),
-+                        stAni=77.7, stModel="sumMetric")
->                        
-> # simplified sumMetric model, only a overall nugget is fitted. The spatial, 
-> # temporal and jont nuggets are set to 0.
-> simpleSumMetricModel <- list(space=vgm(20,"Lin", 150, 0),
-+                              time =vgm(20,"Lin", 10,  0),
-+                              joint=vgm(20,"Exp", 150, 0),
-+                              nugget=1, stAni=15, stModel="simpleSumMetric")
-> 
-> # metric model
-> metricModel <- list(joint=vgm(60, "Exp", 150, 10),
-+                     stAni=60, stModel="metric")
->                        
 > data(vv)
 > 
 > if(require(lattice)) {
@@ -1777,6 +1779,55 @@ detaching ‘package:lattice’
 
 detaching ‘package:lattice’
 
+> nameEx("vgmST")
+> ### * vgmST
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: vgmST
+> ### Title: Constructing a spatio-temporal variogram
+> ### Aliases: vgmST
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> # separable model: spatial and temporal sill will be ignored
+> # and kept constant at 1-nugget respectively. A joint sill is used.
+> separableModel <- vgmST("separable", 
++                         space=vgm(0.9,"Exp", 147, 0.1),
++                         time =vgm(0.9,"Exp", 3.5, 0.1),
++                         sill=40)
+> 
+> # product sum model: spatial and temporal nugget will be ignored and kept
+> # constant at 0. Only a joint nugget is used.
+> prodSumModel <- vgmST("productSum",
++                       space=vgm(39, "Sph", 343, 0),
++                       time= vgm(36, "Exp",   3, 0), 
++                       sill=41, nugget=17)
+> 
+> # sum metric model: spatial, temporal and joint nugget will be estimated
+> sumMetricModel <- vgmST("sumMetric",
++                         space=vgm( 6.9, "Lin", 200, 3.0),
++                         time =vgm(10.3, "Lin",  15, 3.6),
++                         joint=vgm(37.2, "Exp",  84,11.7),
++                         stAni=77.7)
+>                        
+> # simplified sumMetric model, only a overall nugget is fitted. The spatial, 
+> # temporal and jont nuggets are set to 0.
+> simpleSumMetricModel <- vgmST("simpleSumMetric",
++                               space=vgm(20,"Lin", 150, 0),
++                               time =vgm(20,"Lin", 10,  0),
++                               joint=vgm(20,"Exp", 150, 0),
++                               nugget=1, stAni=15)
+> 
+> # metric model
+> metricModel <- vgmST("metric",
++                      joint=vgm(60, "Exp", 150, 10),
++                      stAni=60)
+> 
+> 
+> 
+> cleanEx()
 > nameEx("vv")
 > ### * vv
 > 
@@ -1964,7 +2015,7 @@ Data attributes:
 > ### * <FOOTER>
 > ###
 > cat("Time elapsed: ", proc.time() - get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  31.994 0.388 32.492 0 0 
+Time elapsed:  14.816 0.208 15.188 0 0 
 > grDevices::dev.off()
 null device 
           1 

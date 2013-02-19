@@ -15,7 +15,7 @@ Creates a variogram plot
 	plot.numbers = FALSE, scales, ids = x$id, group.id = TRUE, skip, 
 	layout, ...)
 \method{plot}{variogramMap}(x, np = FALSE, skip, threshold, ...)
-\method{plot}{StVariogram}(x, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
+\method{plot}{StVariogram}(x, model = NULL, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
 		convertMonths = FALSE, wireframe = FALSE, both = FALSE)
 }
 \arguments{

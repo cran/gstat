@@ -52,6 +52,8 @@ code from Ernst Glatzer, author of package vardiag.
 \examples{
 data(meuse)
 coordinates(meuse) = ~x+y
+\dontrun{
 fit.variogram.gls(log(zinc)~1, meuse[1:40,], vgm(1, "Sph", 900,1))
+}
 }
 \keyword{models}

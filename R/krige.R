@@ -35,14 +35,17 @@ setMethod("krige", c("formula", "Spatial"), krige.spatial)
 setMethod("krige", c("formula", "NULL"), krige.spatial)
 
 setMethod(krige, signature("formula", "ST"),
-	function(formula, locations, newdata, model, ...) {
-		d = data.frame(krigeST(formula, locations, newdata, model,...))
-		if (ncol(d) == 1)
-			names(d) = "var1.pred"
-		if (ncol(d) == 2)
-			names(d) = c("var1.pred", "var1.var")
-		addAttrToGeom(geometry(newdata), d)
-	}
+          function(formula, locations, newdata, model, ...) {
+            krigeST(formula, locations, newdata, model,...) 
+          }
+# 	function(formula, locations, newdata, model, ...) {
+# 		d = data.frame(krigeST(formula, locations, newdata, model,...))
+# 		if (ncol(d) == 1)
+# 			names(d) = "var1.pred"
+# 		if (ncol(d) == 2)
+# 			names(d) = c("var1.pred", "var1.var")
+# 		addAttrToGeom(geometry(newdata), d)
+# 	}
 )
 
 if (!isGeneric("idw"))
@@ -77,10 +80,12 @@ STx2SpatialPoints = function(x, multiplyTimeWith = 1.0) {
 	cc = cbind(coordinates(x), time)
 	SpatialPoints(cc, proj4string = CRS(proj4string(x))) 
 }
+
 STxDF2SpatialPointsDataFrame = function(x, multiplyTimeWith = 1.0) { 
 	pts = STx2SpatialPoints(geometry(x), multiplyTimeWith)
 	SpatialPointsDataFrame(pts, x@data)
 }
+
 SpatialPointsDataFrame2STxDF = function(x, class, tz = "", 
 		origin = as.POSIXct("1970-01-01",tz=tz)) { 
 	cc = coordinates(x)
@@ -89,6 +94,7 @@ SpatialPointsDataFrame2STxDF = function(x, class, tz = "",
 	st = as(STI(sp, time), class)
 	addAttrToGeom(STI(sp, time), x@data)
 }
+
 idw.ST <- function (formula, locations, 
 		newdata, nmax = Inf, nmin = 0, omax = 0, 
 		maxdist = Inf, block = numeric(0), 

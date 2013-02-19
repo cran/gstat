@@ -44,7 +44,7 @@ export(as.vgm.variomodel,
 	variogram.line,
 	variogramLine,
 	variogramSurface,
-	vgm,
+	vgm, vgmST,
 	vgm.panel.xyplot,
 	panel.pointPairs,
 	xyz2img)
