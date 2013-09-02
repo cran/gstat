@@ -1,4 +1,4 @@
-library(gstat)
+library(sp)
 
 data(meuse)
 data(meuse.grid)
@@ -10,6 +10,7 @@ set.seed(13131) # reproduce results
 m = meuse.grid[sample(nrow(meuse.grid), 10), ]
 m[c(2,8), "x"] = NA
 
+library(gstat)
 ## this is not allowed anymore:
 try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.pass))
 try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.omit))

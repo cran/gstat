@@ -1,7 +1,6 @@
 
-R version 2.15.2 (2012-10-26) -- "Trick or Treat"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -17,9 +16,9 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > # try bivariate cokriging; cross validate first variable
-> library(gstat)
-Loading required package: sp
+> library(sp)
 > data(meuse)
+> library(gstat)
 > g=gstat(NULL, "log-zinc", log(zinc)~1,  ~x+y, meuse, nmax=10)
 > g=gstat(g, "log-lead", log(lead)~1,     ~x+y, meuse, nmax=10)
 > g=gstat(g, "log-copper", log(copper)~1, ~x+y, meuse, nmax=10)
@@ -100,4 +99,4 @@ In checkNames(value) :
 > 
 > proc.time()
    user  system elapsed 
-  0.848   0.024   0.872 
+  1.408   0.060   1.469 

@@ -10,6 +10,7 @@ kriging.weights = function(x, formula, newdata, model) {
 	unlist(ret[,3])
 }
 # example, at first cell of meuse.grid:
+require(sp)
 require(gstat)
 data(meuse)
 data(meuse.grid)

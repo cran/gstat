@@ -1,5 +1,6 @@
-library(gstat)
+library(sp)
 data(meuse)
+library(gstat)
 v=variogram(log(zinc)~1,~x+y,meuse,cutoff=500,wi=100)
 v$gamma=c(0.5,1,2,3,3)
 fit.variogram(v, vgm(1, "Sph", 300, 0),warn.if.neg=TRUE)

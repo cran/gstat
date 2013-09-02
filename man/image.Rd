@@ -57,6 +57,7 @@ and play with \code{par("pin")} if you want to learn more about this.
 }
 \author{ Edzer Pebesma }
 \examples{
+library(sp)
 data(meuse)
 data(meuse.grid)
 g <- gstat(formula=log(zinc)~1,locations=~x+y,data=meuse,model=vgm(1,"Exp",300))

@@ -1,4 +1,5 @@
 # $Id: fulmar.R,v 1.3 2006-02-10 19:05:02 edzer Exp $
+library(sp)
 library(gstat)
 data(fulmar)
 data(ncp.grid)
@@ -32,10 +33,12 @@ library(maptools)
 areas.r = readShapePoly(system.file("external/ncp.shp", package="gstat"))
 #areas.r <- as.SpatialRings.Shapes(areas.shp$Shapes, areas.shp$att.data$WSVGEB_)
 coordinates(pr) = ~x+y
-pr.df = overlay(pr, areas.r, fn = mean)
+#pr.df = overlay(pr, areas.r, fn = mean)
+pr.df = na.omit(as(aggregate(pr, areas.r), "data.frame"))
 # match non-empty (and relevant) areas:
 #areas = SpatialPolygonsDataFrame(areas.r[c(2,3,4,16),"WSVGEB_"], pr.df[c(1,2,3,5),])#,match.ID=F)
-areas = SpatialPolygonsDataFrame(areas.r[c(1,2,12,7),"WSVGEB_"], as.data.frame(pr.df[c(1,2,3,5),]),match.ID=F)
+areas = SpatialPolygonsDataFrame(areas.r[c(1,2,12,7),"WSVGEB_"], 
+	pr.df[c(1,2,3,5),], match.ID=F)
 # areas ID's 0 1 2 14
 sk = predict(g, areas)
 cok = predict(h, areas)

@@ -1,7 +1,6 @@
 
-R version 2.15.2 (2012-10-26) -- "Trick or Treat"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -22,9 +21,8 @@ Type 'q()' to quit R.
 > source(file.path(R.home("share"), "R", "examples-header.R"))
 > options(warn = 1)
 > library('gstat')
-Loading required package: sp
 > 
-> assign(".oldSearch", search(), pos = 'CheckExEnv')
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
 > cleanEx()
 > nameEx("coalash")
 > ### * coalash
@@ -125,6 +123,7 @@ attr(,"optim.output")$message
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > vgm1 <- variogram(log(zinc)~1, ~x+y, meuse)
 > fit.variogram(vgm1, vgm(1,"Sph",300,1))
@@ -135,6 +134,9 @@ attr(,"optim.output")$message
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("fit.variogram.gls")
 > ### * fit.variogram.gls
 > 
@@ -147,6 +149,7 @@ attr(,"optim.output")$message
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > ## Not run: 
@@ -156,6 +159,9 @@ attr(,"optim.output")$message
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("fit.variogram.reml")
 > ### * fit.variogram.reml
 > 
@@ -168,6 +174,7 @@ attr(,"optim.output")$message
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > fit.variogram.reml(log(zinc)~1, ~x+y, meuse, model = vgm(1, "Sph", 900,1))
   model      psill range
@@ -177,6 +184,9 @@ attr(,"optim.output")$message
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("fulmar")
 > ### * fulmar
 > 
@@ -224,6 +234,7 @@ attr(,"optim.output")$message
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > # let's do some manual fitting of two direct variograms and a cross variogram
 > g <- gstat(id = "ln.zinc", formula = log(zinc)~1, locations = ~x+y, 
@@ -304,7 +315,7 @@ set idp = 0.5;
 > 
 > cleanEx()
 
-detaching ‘package:lattice’
+detaching ‘package:lattice’, ‘package:sp’
 
 > nameEx("hscat")
 > ### * hscat
@@ -318,6 +329,7 @@ detaching ‘package:lattice’
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > hscat(log(zinc)~1, meuse, c(0, 80, 120, 250, 500, 1000))
@@ -325,6 +337,9 @@ detaching ‘package:lattice’
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("image")
 > ### * image
 > 
@@ -337,6 +352,7 @@ detaching ‘package:lattice’
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > data(meuse.grid)
 > g <- gstat(formula=log(zinc)~1,locations=~x+y,data=meuse,model=vgm(1,"Exp",300))
@@ -361,7 +377,7 @@ detaching ‘package:lattice’
 > graphics::par(get("par.postscript", pos = 'CheckExEnv'))
 > cleanEx()
 
-detaching ‘package:lattice’
+detaching ‘package:lattice’, ‘package:sp’
 
 > nameEx("jura")
 > ### * jura
@@ -450,6 +466,7 @@ detaching ‘package:lattice’
 > # the following commands create objects with factors instead
 > # of the integer codes for Landuse and Rock:
 > require(sp)
+Loading required package: sp
 > jura.pred = prediction.dat
 > jura.val = validation.dat
 > jura.grid = juragrid.dat
@@ -472,6 +489,9 @@ detaching ‘package:lattice’
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("krige")
 > ### * krige
 > 
@@ -489,6 +509,7 @@ detaching ‘package:lattice’
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > data(meuse.grid)
@@ -523,6 +544,9 @@ detaching ‘package:lattice’
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("krige.cv")
 > ### * krige.cv
 > 
@@ -536,12 +560,12 @@ detaching ‘package:lattice’
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > coordinates(meuse) <- ~x+y
 > m <- vgm(.59, "Sph", 874, .04)
 > # five-fold cross validation:
 > x <- krige.cv(log(zinc)~1, meuse, m, nmax = 40, nfold=5)
-  |                                                                              |                                                                      |   0%  |                                                                              |==================                                                    |  25%  |                                                                              |===================================                                   |  50%  |                                                                              |====================================================                  |  75%  |                                                                              |======================================================================| 100%
 > bubble(x, "residual", main = "log(zinc): 5-fold CV residuals")
 > 
 > # multivariable; thanks to M. Rufino:
@@ -633,6 +657,9 @@ Data attributes:
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("krigeST")
 > ### * krigeST
 > 
@@ -645,6 +672,7 @@ Data attributes:
 > 
 > ### ** Examples
 > 
+> library(sp)
 > library(spacetime)
 > sumMetricVgm <- vgmST("sumMetric",
 +                       space=vgm( 4.4, "Lin", 196.6,  3),
@@ -675,7 +703,7 @@ Warning in xts(matrix(1:nrow(x@time), dimnames = list(NULL, "timeIndex")),  :
 > 
 > cleanEx()
 
-detaching ‘package:spacetime’
+detaching ‘package:spacetime’, ‘package:sp’
 
 > nameEx("krigeTg")
 > ### * krigeTg
@@ -689,6 +717,7 @@ detaching ‘package:spacetime’
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > data(meuse.grid)
@@ -723,6 +752,9 @@ detaching ‘package:spacetime’
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("meuse.all")
 > ### * meuse.all
 > 
@@ -944,6 +976,7 @@ detaching ‘package:lattice’
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > vgm1 <- variogram(log(zinc)~1, meuse)
@@ -974,6 +1007,9 @@ detaching ‘package:lattice’
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("plot.pointPairs")
 > ### * plot.pointPairs
 > 
@@ -1009,6 +1045,7 @@ detaching ‘package:lattice’
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > plot(variogram(log(zinc)~1, meuse, cloud=TRUE))
@@ -1020,6 +1057,9 @@ detaching ‘package:lattice’
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("predict.gstat")
 > ### * predict.gstat
 > 
@@ -1033,6 +1073,7 @@ detaching ‘package:lattice’
 > ### ** Examples
 > 
 > # generate 5 conditional simulations
+> library(sp)
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > v <- variogram(log(zinc)~1, meuse)
@@ -1081,6 +1122,9 @@ detaching ‘package:lattice’
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("show.vgms")
 > ### * show.vgms
 > 
@@ -1365,12 +1409,13 @@ Warning in plot.xy(xy.coords(x, y), type = type, ...) :
 > ### Name: variogram
 > ### Title: Calculate Sample or Residual Variogram or Variogram Cloud
 > ### Aliases: variogram variogram.gstat variogram.formula variogram.default
-> ###   variogramST variogram.line print.gstatVariogram print.variogramCloud
+> ###   variogram.line print.gstatVariogram print.variogramCloud
 > ###   as.data.frame.variogramCloud
 > ### Keywords: models
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(meuse)
 > # no trend:
 > coordinates(meuse) = ~x+y
@@ -1541,7 +1586,7 @@ Warning in plot.xy(xy.coords(x, y), type = type, ...) :
 +   variogram(log(zinc) ~ 1, meuse.ll)
 + }
 Loading required package: rgdal
-rgdal: version: 0.8-4, (SVN revision 431)
+rgdal: version: 0.8-11, (SVN revision 479M)
 Geospatial Data Abstraction Library extensions to R successfully loaded
 Loaded GDAL runtime: GDAL 1.9.2, released 2012/10/08
 Path to GDAL shared files: /usr/share/gdal/1.9
@@ -1569,7 +1614,7 @@ Path to PROJ.4 shared files: (autodetected)
 > 
 > cleanEx()
 
-detaching ‘package:rgdal’
+detaching ‘package:rgdal’, ‘package:sp’
 
 > nameEx("variogramLine")
 > ### * variogramLine
@@ -1629,6 +1674,39 @@ detaching ‘package:rgdal’
 1 0.00 0.0000000
 2 0.50 0.0749375
 3 0.75 0.1122891
+> 
+> 
+> 
+> cleanEx()
+> nameEx("variogramST")
+> ### * variogramST
+> 
+> flush(stderr()); flush(stdout())
+> 
+> ### Name: variogramST
+> ### Title: Calculate Spatio-Temporal Sample Variogram
+> ### Aliases: variogramST
+> ### Keywords: models
+> 
+> ### ** Examples
+> 
+> # The following spatio-temporal variogram has been calcualted through
+> # vv = variogramST(PM10~1, r5to10, width=20, cutoff = 200)
+> # in the vignette "st".
+> 
+> data(vv)
+> str(vv)
+Classes ‘StVariogram’ and 'data.frame':	175 obs. of  6 variables:
+ $ np      : num  3456 16554 21257 33547 26053 ...
+ $ dist    : num  13.8 29.5 49.1 70.4 91.6 ...
+ $ gamma   : num  11 23.4 29.6 31.2 34.8 ...
+ $ id      : chr  "lag0" "lag0" "lag0" "lag0" ...
+ $ timelag : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ spacelag: num  10 30 50 70 90 110 130 150 170 190 ...
+ - attr(*, "boundaries")= num  0 20 40 60 80 100 120 140 160 180 ...
+ - attr(*, "na.action")=Class 'omit'  Named int 1
+  .. ..- attr(*, "names")= chr "1"
+> plot(vv)
 > 
 > 
 > 
@@ -1764,9 +1842,10 @@ detaching ‘package:lattice’
 > 
 > ### ** Examples
 >  
-> library(lattice)
+> library(sp)
 > data(meuse)
 > coordinates(meuse) <- c("x", "y")
+> library(lattice)
 > mypanel = function(x,y,...) { 
 + 	vgm.panel.xyplot(x,y,...)
 + 	panel.abline(h=var(log(meuse$zinc)), color = 'red')
@@ -1777,7 +1856,7 @@ detaching ‘package:lattice’
 > 
 > cleanEx()
 
-detaching ‘package:lattice’
+detaching ‘package:lattice’, ‘package:sp’
 
 > nameEx("vgmST")
 > ### * vgmST
@@ -1863,6 +1942,7 @@ detaching ‘package:lattice’
 > 
 > ### ** Examples
 > 
+> library(sp)
 > data(walker)
 > summary(walker)
 Object of class SpatialPointsDataFrame
@@ -1906,6 +1986,9 @@ Data attributes:
 > 
 > 
 > cleanEx()
+
+detaching ‘package:sp’
+
 > nameEx("wind")
 > ### * wind
 > 
@@ -1962,6 +2045,7 @@ Data attributes:
 10        Clones  CLO        54d11'N        7d14'W     4.48
 11        Dublin  DUB        53d26'N        6d15'W     5.05
 12       Roslare  ROS 52d16'56.791"N 6d21'25.056"W     6.00
+> library(sp) # char2dms
 > wind.loc$y = as.numeric(char2dms(as.character(wind.loc[["Latitude"]])))
 > wind.loc$x = as.numeric(char2dms(as.character(wind.loc[["Longitude"]])))
 > coordinates(wind.loc) = ~x+y
@@ -2014,8 +2098,9 @@ Data attributes:
 > 
 > ### * <FOOTER>
 > ###
-> cat("Time elapsed: ", proc.time() - get("ptime", pos = 'CheckExEnv'),"\n")
-Time elapsed:  14.816 0.208 15.188 0 0 
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  15.404 0.316 15.78 0 0 
 > grDevices::dev.off()
 null device 
           1 

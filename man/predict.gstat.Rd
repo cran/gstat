@@ -162,6 +162,7 @@ For bucket PR quadtrees, excellent demos are found at
 
 \examples{
 # generate 5 conditional simulations
+library(sp)
 data(meuse)
 coordinates(meuse) = ~x+y
 v <- variogram(log(zinc)~1, meuse)

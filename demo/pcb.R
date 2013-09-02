@@ -1,5 +1,6 @@
 # $Id: pcb.R,v 1.9 2008-02-01 22:39:44 edzer Exp $
 # FIGURE 1:
+library(sp)
 library(gstat)
 library(maptools)
 library(lattice)

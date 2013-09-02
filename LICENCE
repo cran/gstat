@@ -3,16 +3,16 @@ possible individual files also carry brief copyright notices.
 
 Copyrights
 ==========
-Most files are copyrighted by Edzer J. Pebesma; some have more authors
-(e.g. nsearch.c, polygon.c), see the files in ./src for more info;
-all other files (R/S files; documentation) are (C) Edzer J. Pebesma.
+Most files are copyrighted by Edzer Pebesma; some have more authors
+(e.g. nsearch.c, polygon.c), see the source files in ./src for more info;
+all other files (R/S files; documentation) are (C) Edzer Pebesma.
 
     Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2002 (C) Edzer J. Pebesma
+    Copyright 1992, 2013 (C) Edzer Pebesma and others
 
-    Edzer J. Pebesma, e.pebesma@geog.uu.nl
-    Department of physical geography, Utrecht University
-    P.O. Box 80.115, 3508 TC Utrecht, The Netherlands
+    Edzer Pebesma, edzer.pebesma@uni-muenster.de
+	Institute for Geoinformatics
+	University of Muenster, Germany
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

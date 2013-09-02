@@ -82,6 +82,7 @@ Wiley.
 \seealso{ \link{gstat}, \link{predict.gstat} }
 
 \examples{
+library(sp)
 data(meuse)
 coordinates(meuse) = ~x+y
 data(meuse.grid)

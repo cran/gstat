@@ -5,6 +5,7 @@
 ## calcute sample variogram and plot fitted model
 ##
 
+library(sp)
 par(ask = TRUE)
 data(meuse)
 coordinates(meuse)=~x+y

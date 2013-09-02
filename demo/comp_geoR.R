@@ -1,5 +1,6 @@
-require(gstat)
-require(geoR)
+library(sp)
+library(gstat)
+library(geoR)
 xyz = data.frame(x = c(0,0,1), y = c(0, 1, 1), z = c(1,2,3))
 coordinates(xyz)=~x+y
 x0 = SpatialPoints(data.frame(x=0,y=.5))

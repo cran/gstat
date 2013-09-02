@@ -1,5 +1,5 @@
 options(digits=5)
-library(gstat)
+library(sp)
 data(meuse.grid)
 gridded(meuse.grid) = ~x+y
 data(meuse)
@@ -15,6 +15,7 @@ plot(Sl,add=T,col='green')
 pts=spsample(Sl,n=500,'regular',offset=c(.5,.5))
 plot(pts, pch=3, cex=.2, add=T)
 
+library(gstat)
 v = vgm(.6, "Sph", 900, .06)
 out1 = krige(log(zinc)~1, meuse, Sl, v)
 out1

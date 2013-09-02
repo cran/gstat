@@ -1,3 +1,4 @@
+library(sp)
 library(gstat)
 data(meuse.grid)
 gridded(meuse.grid) = ~x+y

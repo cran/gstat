@@ -1,4 +1,5 @@
 # $Id: block.R,v 1.5 2006-02-10 19:05:02 edzer Exp $
+library(sp)
 data(meuse)
 coordinates(meuse) = ~x+y
 data(meuse.grid)

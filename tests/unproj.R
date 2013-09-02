@@ -5,6 +5,7 @@ if (require(rgdal) == FALSE)
 # DOI 10.1007/s11004-011-9344-7
 # http://mypage.iu.edu/~srobeson/Pubs/variogram_sphere_mathgeo_2011.pdf
 
+library(sp)
 data(meuse)
 coordinates(meuse) = ~x+y
 proj4string(meuse) = CRS("+init=epsg:28992")

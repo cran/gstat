@@ -1,7 +1,6 @@
 
-R version 2.15.2 (2012-10-26) -- "Trick or Treat"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -20,7 +19,7 @@ Type 'q()' to quit R.
 + 	q()
 Loading required package: rgdal
 Loading required package: sp
-rgdal: version: 0.8-5, (SVN revision 449)
+rgdal: version: 0.8-11, (SVN revision 479M)
 Geospatial Data Abstraction Library extensions to R successfully loaded
 Loaded GDAL runtime: GDAL 1.9.2, released 2012/10/08
 Path to GDAL shared files: /usr/share/gdal/1.9
@@ -31,6 +30,7 @@ Path to PROJ.4 shared files: (autodetected)
 > # DOI 10.1007/s11004-011-9344-7
 > # http://mypage.iu.edu/~srobeson/Pubs/variogram_sphere_mathgeo_2011.pdf
 > 
+> library(sp)
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > proj4string(meuse) = CRS("+init=epsg:28992")
@@ -62,7 +62,8 @@ Path to PROJ.4 shared files: (autodetected)
 > 
 > library(fields)
 Loading required package: spam
-Spam version 0.29-2 (2012-08-17) is loaded.
+Loading required package: grid
+Spam version 0.30-1 (2013-08-25) is loaded.
 Type 'help( Spam)' or 'demo( spam)' for a short introduction 
 and overview of this package.
 Help for individual functions is also obtained by adding the
@@ -70,10 +71,11 @@ suffix '.spam' to the function name, e.g. 'help( chol.spam)'.
 
 Attaching package: 'spam'
 
-The following object(s) are masked from 'package:base':
+The following object is masked from 'package:base':
 
     backsolve, forwardsolve
 
+Loading required package: maps
 > data(ozone2)
 > oz = SpatialPointsDataFrame(ozone2$lon.lat, 
 + 		data.frame(t(ozone2$y)), 
@@ -155,4 +157,4 @@ spDistsN1 Distances:
 > 
 > proc.time()
    user  system elapsed 
-  2.016   0.036   2.049 
+  2.404   0.080   2.488 

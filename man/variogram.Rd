@@ -4,7 +4,6 @@
 \alias{variogram.gstat}
 \alias{variogram.formula}
 \alias{variogram.default}
-\alias{variogramST}
 \alias{variogram.line}
 \alias{print.gstatVariogram}
 \alias{print.variogramCloud}
@@ -13,22 +12,22 @@
 \description{
 Calculates the sample variogram from data, or in case of a linear model
 is given, for the residuals, with options for directional, robust,
-and pooled variogram, and for irregular distance intervals.  
+and pooled variogram, and for irregular distance intervals.
+
+In case spatio-temporal data is provided, the function \code{\link{variogramST}}
+is called with a different set of parameters.
 }
 \usage{
 \method{variogram}{gstat}(object, ...)
 \method{variogram}{formula}(object, locations = coordinates(data), data, ...)
-\method{variogram}{default}(object, locations, X, cutoff, width = cutoff/15, alpha =
-	0, beta = 0, tol.hor = 90/length(alpha), tol.ver =
+\method{variogram}{default}(object, locations, X, cutoff, width = cutoff/15,
+	alpha = 0, beta = 0, tol.hor = 90/length(alpha), tol.ver =
 	90/length(beta), cressie = FALSE, dX = numeric(0), boundaries =
 	numeric(0), cloud = FALSE, trend.beta = NULL, debug.level = 1,
 	cross = TRUE, grid, map = FALSE, g = NULL, ..., projected = TRUE, 
 	lambda = 1.0, verbose = FALSE, covariogram = FALSE, PR = FALSE, 
 	pseudo = -1)
 \method{variogram}{line}(..., deprecate = TRUE)
-variogramST(formula, locations, data, ..., tlags = 0:15,  cutoff,
-	width = cutoff/15, boundaries = seq(0, cutoff, width),
-	progress = TRUE, pseudo = TRUE)
 \method{print}{gstatVariogram}(x, ...)
 \method{print}{variogramCloud}(x, ...)
 }
@@ -112,8 +111,6 @@ deriving from class Spatial, projection is detected automatically using
 \code{is.projected}}
 \item{lambda}{test feature; not working (yet)}
 \item{verbose}{logical; print some progress indication}
-\item{tlags}{ integer; time lags to consider; see details below }
-\item{progress}{ logical; show text progress bar }
 \item{pseudo}{ integer; use pseudo cross variogram for computing
 time-lagged spatial variograms? -1: find out from coordinates -- if they
 are equal then yes, else no; 0: no; 1: yes. }
@@ -148,16 +145,8 @@ the data pair}
 \item{right}{for variogramCloud: data id (row number) of the other 
 data in the pair}
 
-In case of a spatio-temporal variogram, the sample variogram
-contains two additional fields, \code{timelag} and \code{spacelag},
-the first of which indicates the time lag used, the second the space
-lag. \code{spacelag} is the midpoint in the spatial lag intervals,
-whereas \code{dist} is the average distance between the point
-pairs found in a distance interval. To compute variograms
-for space lag $h$ and time lag $t$, the pseudo cross variogram
-$(Z_i(s)-Z_{i+t}(s+h))^2$ is averaged over all time lagged observation
-sets $Z_i$ and $Z_{i+t}$ available.
-
+In case of a spatio-temporal variogram is sought see \code{\link{variogramST}} 
+for details.
 }
 \note{ \code{variogram.default} should not be called by users directly,
 as it makes many assumptions about the organization of the data, that
@@ -187,8 +176,10 @@ variogramLine instead.
 for variogram models: \link{vgm},
 to fit a variogram model to a sample variogram: 
 \link{fit.variogram}
+\code{\link{variogramST}} for details on the spatio-temporal sample variogram.
 }
 \examples{
+library(sp)
 data(meuse)
 # no trend:
 coordinates(meuse) = ~x+y

@@ -77,6 +77,7 @@ Haslett and Raftery proposed to use a sqrt-transform to stabilize the variance.
 data(wind)
 summary(wind)
 wind.loc
+library(sp) # char2dms
 wind.loc$y = as.numeric(char2dms(as.character(wind.loc[["Latitude"]])))
 wind.loc$x = as.numeric(char2dms(as.character(wind.loc[["Longitude"]])))
 coordinates(wind.loc) = ~x+y

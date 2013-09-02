@@ -1,4 +1,5 @@
 # $Id: uisim.R,v 1.5 2008-09-25 10:26:00 edzer Exp $
+library(sp)
 library(gstat)
 
 # prediction grid:

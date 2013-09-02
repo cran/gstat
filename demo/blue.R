@@ -1,5 +1,6 @@
 # how to get the BLUE trend coefficients out of a predict.gstat call?
 # prepare data
+library(sp)
 library(gstat)
 data(meuse)
 coordinates(meuse) = ~x+y

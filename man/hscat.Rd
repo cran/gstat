@@ -40,6 +40,7 @@ Computers \& Geosciences, 30: 683-691.
 
 }
 \examples{
+library(sp)
 data(meuse)
 coordinates(meuse) = ~x+y
 hscat(log(zinc)~1, meuse, c(0, 80, 120, 250, 500, 1000))

@@ -1,4 +1,5 @@
 # $Id: ugsim.R,v 1.2 2006-02-10 19:05:02 edzer Exp $
+library(sp)
 library(gstat)
 
 # prediction grid:

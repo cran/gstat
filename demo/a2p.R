@@ -1,5 +1,6 @@
 Rprof()
 # import NC SIDS data:
+library(sp)
 library(maptools)
 fname = system.file("shapes/sids.shp", package="maptools")[1]
 nc = readShapePoly(fname, proj4string=CRS("+proj=longlat +datum=NAD27"))

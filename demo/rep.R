@@ -1,7 +1,8 @@
+library(sp)
 library(gstat)
 data(meuse)
-data(meuse.grid)
 coordinates(meuse) = ~x + y
+data(meuse.grid)
 coordinates(meuse.grid) = ~x + y
 
 # Variogram log Zn
