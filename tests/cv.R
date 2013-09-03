@@ -1,6 +1,7 @@
 # try bivariate cokriging; cross validate first variable
-library(gstat)
+library(sp)
 data(meuse)
+library(gstat)
 g=gstat(NULL, "log-zinc", log(zinc)~1,  ~x+y, meuse, nmax=10)
 g=gstat(g, "log-lead", log(lead)~1,     ~x+y, meuse, nmax=10)
 g=gstat(g, "log-copper", log(copper)~1, ~x+y, meuse, nmax=10)

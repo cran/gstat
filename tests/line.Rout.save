@@ -1,7 +1,6 @@
 
-R version 2.15.2 (2012-10-26) -- "Trick or Treat"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -17,8 +16,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > options(digits=5)
-> library(gstat)
-Loading required package: sp
+> library(sp)
 > data(meuse.grid)
 > gridded(meuse.grid) = ~x+y
 > data(meuse)
@@ -34,6 +32,7 @@ Loading required package: sp
 > pts=spsample(Sl,n=500,'regular',offset=c(.5,.5))
 > plot(pts, pch=3, cex=.2, add=T)
 > 
+> library(gstat)
 > v = vgm(.6, "Sph", 900, .06)
 > out1 = krige(log(zinc)~1, meuse, Sl, v)
 [using ordinary kriging]
@@ -204,4 +203,4 @@ CRS arguments: NA
 > 
 > proc.time()
    user  system elapsed 
-  0.760   0.048   0.807 
+  1.444   0.064   1.513 

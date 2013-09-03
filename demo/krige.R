@@ -1,4 +1,5 @@
 # $Id: krige.R,v 1.5 2007-02-27 22:09:31 edzer Exp $
+library(sp)
 data(meuse)
 coordinates(meuse) = ~x+y
 data(meuse.grid)

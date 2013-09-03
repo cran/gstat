@@ -1,3 +1,4 @@
+library(sp)
 library(gstat)
 
 # roughly follows the case presented in:

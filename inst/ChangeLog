@@ -1,3 +1,376 @@
+2013-07-09 15:12  edzer
+
+	* /pkg/DESCRIPTION: reversed import order of xts and zoo
+
+2013-06-30 15:35  edzer
+
+	* /pkg/inst/doc, /pkg/vignettes, /pkg/vignettes/gstat.Rnw,
+	  /pkg/vignettes/gstat.Rout.save, /pkg/vignettes/gstat.pdf,
+	  /pkg/vignettes/ifgi-logo_int.pdf, /pkg/vignettes/prs.Rnw,
+	  /pkg/vignettes/prs.Rout.save, /pkg/vignettes/prs.pdf,
+	  /pkg/vignettes/st.Rnw, /pkg/vignettes/st.pdf: moved vignettes to
+	  vignettes directory
+
+2013-06-17 08:41  edzer
+
+	* /pkg/NAMESPACE, /pkg/R/variogramST.R: changed as.zoo into zoo, to
+	  sync with spacetime-devel.
+
+2013-05-15 10:48  ben_graeler
+
+	* /pkg/demo/stkrige.R: - bug in stkrige.R: the change in the return
+	  value of fit.StVariogram has not been taken care of in the demo
+
+2013-04-29 18:13  edzer
+
+	* /pkg/tests/Examples/gstat-Ex.Rout.save,
+	  /pkg/tests/unproj.Rout.save, /pkg/tests/windst.Rout.save: clean
+	  make with new sp and spacetime
+
+2013-04-26 22:15  edzer
+
+	* /pkg/DESCRIPTION: changed Ben's role
+
+2013-04-16 15:11  ben_graeler
+
+	* /pkg/R/variogramST.R, /pkg/man/variogramST.Rd: - changed the
+	  defaul na.omit behavoiour to "FALSE"
+
+2013-04-16 13:49  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/stVariogramModels.R,
+	  /pkg/R/variogramST.R, /pkg/man/variogramST.Rd: - introduced an
+	  option to not omit NAs in the sample variogram
+
+2013-04-15 15:12  edzer
+
+	* /pkg/src/lm.c: removed warning about subtracting pre-defined
+	  mean, as this is what the user asks for.
+
+2013-04-15 12:05  edzer
+
+	* /pkg/R/variogramST.R: have beta set in variogramST.
+
+2013-04-15 11:43  edzer
+
+	* /pkg/man/gstat.Rd: documented beta for the cross variogram case
+
+2013-04-15 11:41  edzer
+
+	* /pkg/R/variogram.gstat.R: beta was taken from the wrong object.
+
+2013-03-04 17:10  edzer
+
+	* /pkg/DESCRIPTION, /pkg/LICENCE: added LICENCE to DESCRIPTION;
+	  updated LICENCE
+
+2013-03-03 12:34  edzer
+
+	* /pkg/R/gstat.cv.R, /pkg/R/krige.cv.R, /pkg/R/variogramST.R,
+	  /pkg/man/krige.cv.Rd, /pkg/man/variogram.Rd,
+	  /pkg/man/variogramST.Rd, /pkg/tests/Examples/gstat-Ex.Rout.save:
+	  made progress default interactive()
+
+2013-02-28 15:13  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/variogramST.R, /pkg/inst/doc/st.Rnw,
+	  /pkg/man/plot.gstatVariogram.Rd, /pkg/man/variogram.Rd,
+	  /pkg/man/variogramST.Rd: - resolved bug in setting a cutoff in
+	  variogramST
+	  - added a parameter "assumeRegular" to variogramST to avoid
+	  averaged temporal gaps
+	  - variogramST has now an own help file
+
+2013-02-19 16:27  edzer
+
+	* /pkg/inst/doc/st.Rnw: added Ben as author
+
+2013-02-19 16:20  edzer
+
+	* /makefile, /pkg/DESCRIPTION, /pkg/R/variogramST.R: 1.0-17 starts
+	  here;
+	  variogramST broke on NA proj4string
+
+2013-02-19 16:20  edzer
+
+	* /pkg/man/variogram.Rd: updated doc for 1.0-16, submitted to CRAN
+
+2013-02-19 13:03  edzer
+
+	* /pkg/man/variogram.Rd: removed synopsis()
+
+2013-02-19 12:04  edzer
+
+	* /pkg/tests/Examples/gstat-Ex.Rout.save,
+	  /pkg/tests/unproj.Rout.save, /pkg/tests/windst.Rout.save: update
+	  test outputs; submitted to CRAN
+
+2013-02-18 19:55  edzer
+
+	* /pkg/DESCRIPTION: date update, to trigger r-forge build
+
+2013-02-15 21:49  edzer
+
+	* /pkg/R/stVariogramModels.R, /pkg/R/variogramST.R,
+	  /pkg/inst/doc/st.Rnw, /pkg/inst/doc/st.pdf: added reference to
+	  st.Rnw;
+	  tidy stVariogramModels.R file;
+	  set xlim and ylim for xyplot of ST variograms
+
+2013-02-15 15:38  ben_graeler
+
+	* /pkg/R/variogramST.R, /pkg/data/vv.rda: - bug fixes for sparse
+	  and very sparse data sets
+	  - improved averaging in variogramST
+
+2013-02-15 11:03  ben_graeler
+
+	* /pkg/R/variogramST.R: - catch the error caused by empty time
+	  steps in the temporal-lag-wise calculation of variogramST.R
+
+2013-02-14 17:41  edzer
+
+	* /pkg/R/krige0.R, /pkg/R/stVariogramModels.R: added some
+	  requirements to typing
+
+2013-02-14 13:15  edzer
+
+	* /pkg/DESCRIPTION: update
+
+2013-02-14 12:59  edzer
+
+	* /pkg/DESCRIPTION: date correction
+
+2013-02-14 12:58  edzer
+
+	* /pkg/tests/Examples/gstat-Ex.Rout.save,
+	  /pkg/tests/windst.Rout.save: updated test outputs
+
+2013-02-13 21:27  ben_graeler
+
+	* /pkg/NAMESPACE, /pkg/R/krige0.R, /pkg/R/stVariogramModels.R,
+	  /pkg/demo/stkrige.R, /pkg/inst/doc/st.Rnw,
+	  /pkg/man/fit.StVariogram.Rd, /pkg/man/krigeST.Rd,
+	  /pkg/man/variogramSurface.Rd, /pkg/man/vgmST.Rd,
+	  /pkg/tests/Examples/gstat-Ex.Rout.save, /pkg/tests/windst.R,
+	  /pkg/tests/windst.Rout.save: - new vgmST function to construct
+	  proper spatio-temporal variogram models
+
+2013-02-09 16:19  edzer
+
+	* /pkg/tests/windst.R: updated model component of ST variogram list
+
+2013-02-08 14:28  ben_graeler
+
+	* /pkg/man/krigeST.Rd: - added krigeST.Rd
+
+2013-02-08 12:59  ben_graeler
+
+	* /pkg/demo/stkrige.R: - a small typo in stkrige.R
+
+2013-02-08 12:15  ben_graeler
+
+	* /pkg/R/krige.R, /pkg/R/krige0.R, /pkg/demo/stkrige.R,
+	  /pkg/man/krige.Rd: - splited the help page for krige and krigeST
+	  - krigeST now produces directly a ST-object according to newdata
+
+2013-02-05 12:59  edzer
+
+	* /pkg/demo/lnsim.R: update
+
+2013-02-05 12:33  edzer
+
+	* /pkg/demo/00Index, /pkg/demo/lnsim.R: added log-normal kriging,
+	  based on simulation demo script
+
+2013-01-25 10:10  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/man/krige.Rd: - updated the description in
+	  krige.Rd to meet the new spatio-temporal model definitions (i.e.
+	  parameter modelList)
+
+2013-01-19 21:40  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/stVariogramModels.R,
+	  /pkg/R/variogramST.R, /pkg/man/plot.gstatVariogram.Rd: -
+	  integrated plot.stVariogramModel into plot.StVariogram
+
+2013-01-18 14:57  edzer
+
+	* /pkg/DESCRIPTION, /pkg/src/sem.c: sem.c: skip ->pseudo
+	  determination if it was already set prior.
+
+2013-01-15 22:31  edzer
+
+	* /www/index.html: tidy
+
+2013-01-15 21:07  edzer
+
+	* /www/index.html: check
+
+2013-01-15 21:07  edzer
+
+	* /www/index.html, /www/index.php: changed php into html
+
+2013-01-14 20:32  edzer
+
+	* /pkg/DESCRIPTION: updated source URL
+
+2013-01-14 09:26  ben_graeler
+
+	* /pkg/R/krige0.R, /pkg/R/stVariogramModels.R: dos2unix EOL
+
+2013-01-13 17:30  edzer
+
+	* /pkg/man/fit.StVariogram.Rd, /pkg/man/krige.Rd,
+	  /pkg/man/variogramSurface.Rd: dos2unix; added note on some
+	  krigeST limitations to krige.Rd
+
+2013-01-11 15:37  ben_graeler
+
+	* /, /pkg/R/krige0.R, /pkg/R/stVariogramModels.R,
+	  /pkg/inst/doc/st.Rnw, /pkg/man/fit.StVariogram.Rd,
+	  /pkg/man/variogramSurface.Rd, /pkg/tests/windst.R: - corrected
+	  the separable covariance model in terms of its nuggets
+
+2013-01-11 11:47  edzer
+
+	* /pkg/R/krige0.R, /pkg/R/stVariogramModels.R: updated from Ben
+	  Graeler to space-time kriging models
+
+2013-01-08 15:42  edzer
+
+	* /pkg/DESCRIPTION, /pkg/man/fit.variogram.gls.Rd,
+	  /pkg/man/ossfim.Rd, /pkg/tests/Examples/gstat-Ex.Rout.save:
+	  version update; \dontrun examples that took too much time.
+
+2013-01-08 15:05  edzer
+
+	* /pkg/inst/doc/st.Rout.save, /pkg/tests/unproj.Rout.save,
+	  /pkg/tests/windst.Rout.save: updated test outputs; st.Rout has
+	  some random output.
+
+2013-01-08 14:52  edzer
+
+	* /pkg/tests/windst.R: removed deprecated mean(data.frame); now
+	  uses colMeans
+
+2012-12-27 19:28  edzer
+
+	* /makefile, /pkg/CHANGES, /pkg/DESCRIPTION, /pkg/LICENCE,
+	  /pkg/NAMESPACE, /pkg/R/fit.lmc.R, /pkg/R/fit.variogram.R,
+	  /pkg/R/fit.variogram.gls.R, /pkg/R/fit.variogram.reml.R,
+	  /pkg/R/get.contr.R, /pkg/R/gstat.R, /pkg/R/gstat.cv.R,
+	  /pkg/R/gstat.debug.R, /pkg/R/gstat.formula.R,
+	  /pkg/R/gstat.formula.predict.R, /pkg/R/hscat.R,
+	  /pkg/R/image.data.frame.R, /pkg/R/krige.R, /pkg/R/krige.cv.R,
+	  /pkg/R/krige0.R, /pkg/R/krigeTg.R, /pkg/R/load.variogram.model.R,
+	  /pkg/R/map.to.lev.R, /pkg/R/ossfim.R, /pkg/R/panel.pointPairs.R,
+	  /pkg/R/plot.gstatVariogram.R, /pkg/R/plot.pointPairs.R,
+	  /pkg/R/plot.variogramCloud.R, /pkg/R/predict.gstat.R,
+	  /pkg/R/print.gstat.R, /pkg/R/print.variogram.R,
+	  /pkg/R/print.variogramCloud.R, /pkg/R/print.variogramModel.R,
+	  /pkg/R/set.R, /pkg/R/show.vgms.R, /pkg/R/smenu.R,
+	  /pkg/R/spplot.R, /pkg/R/stVariogramModels.R,
+	  /pkg/R/variogram.default.R, /pkg/R/variogram.formula.R,
+	  /pkg/R/variogram.gstat.R, /pkg/R/variogramLine.R,
+	  /pkg/R/variogramST.R, /pkg/R/vgm.R, /pkg/R/vgm.panel.R,
+	  /pkg/R/xyz2img.R, /pkg/R/zzz.R, /pkg/aclocal.m4, /pkg/cleanup,
+	  /pkg/configure, /pkg/configure.in, /pkg/configure.win, /pkg/data,
+	  /pkg/data/coalash.rda, /pkg/data/fulmar.rda, /pkg/data/jura.rda,
+	  /pkg/data/meuse.all.rda, /pkg/data/meuse.alt.rda,
+	  /pkg/data/ncp.grid.rda, /pkg/data/oxford.rda, /pkg/data/pcb.rda,
+	  /pkg/data/sic2004.rda, /pkg/data/sic97.rda, /pkg/data/tull.rda,
+	  /pkg/data/vv.rda, /pkg/data/walker.rda, /pkg/data/wind.rda,
+	  /pkg/demo, /pkg/demo/00Index, /pkg/demo/a2p.R, /pkg/demo/block.R,
+	  /pkg/demo/blue.R, /pkg/demo/cokriging.R, /pkg/demo/comp_geoR.R,
+	  /pkg/demo/cosimulation.R, /pkg/demo/examples.R,
+	  /pkg/demo/fulmar.R, /pkg/demo/grass.R, /pkg/demo/gstat3D.R,
+	  /pkg/demo/ikr.R, /pkg/demo/krige.R, /pkg/demo/lhs.R,
+	  /pkg/demo/line.R, /pkg/demo/pcb.R, /pkg/demo/rep.R,
+	  /pkg/demo/sic2004.R, /pkg/demo/snow.R, /pkg/demo/stkrige.R,
+	  /pkg/demo/ugsim.R, /pkg/demo/uisim.R, /pkg/demo/weight.R,
+	  /pkg/demo/wind.R, /pkg/inst, /pkg/inst/CITATION,
+	  /pkg/inst/ChangeLog, /pkg/inst/ChangeLog0, /pkg/inst/doc,
+	  /pkg/inst/doc/gstat.Rnw, /pkg/inst/doc/gstat.Rout.save,
+	  /pkg/inst/doc/gstat.pdf, /pkg/inst/doc/ifgi-logo_int.pdf,
+	  /pkg/inst/doc/prs.Rnw, /pkg/inst/doc/prs.Rout.save,
+	  /pkg/inst/doc/prs.pdf, /pkg/inst/doc/st.Rnw,
+	  /pkg/inst/doc/st.Rout.save, /pkg/inst/doc/st.pdf,
+	  /pkg/inst/external, /pkg/inst/external/cluster.txt,
+	  /pkg/inst/external/ncp.dbf, /pkg/inst/external/ncp.shp,
+	  /pkg/inst/external/ncp.shx, /pkg/inst/external/oxford.jpg,
+	  /pkg/makefile.in, /pkg/man/coalash.Rd,
+	  /pkg/man/fit.StVariogram.Rd, /pkg/man/fit.lmc.Rd,
+	  /pkg/man/fit.variogram.Rd, /pkg/man/fit.variogram.gls.Rd,
+	  /pkg/man/fit.variogram.reml.Rd, /pkg/man/fulmar.Rd,
+	  /pkg/man/get.contr.Rd, /pkg/man/gstat-internal.Rd,
+	  /pkg/man/gstat.Rd, /pkg/man/hscat.Rd, /pkg/man/image.Rd,
+	  /pkg/man/jura.Rd, /pkg/man/krige.Rd, /pkg/man/krige.cv.Rd,
+	  /pkg/man/krigeTg.Rd, /pkg/man/map.to.lev.Rd,
+	  /pkg/man/meuse.all.Rd, /pkg/man/meuse.alt.Rd,
+	  /pkg/man/ncp.grid.Rd, /pkg/man/ossfim.Rd, /pkg/man/oxford.Rd,
+	  /pkg/man/pcb.Rd, /pkg/man/plot.gstatVariogram.Rd,
+	  /pkg/man/plot.pointPairs.Rd, /pkg/man/plot.variogramCloud.Rd,
+	  /pkg/man/predict.gstat.Rd, /pkg/man/show.vgms.Rd,
+	  /pkg/man/sic2004.Rd, /pkg/man/sic97.Rd, /pkg/man/spplot.vcov.Rd,
+	  /pkg/man/tull.Rd, /pkg/man/variogram.Rd,
+	  /pkg/man/variogramLine.Rd, /pkg/man/variogramSurface.Rd,
+	  /pkg/man/vgm.Rd, /pkg/man/vgm.panel.Rd, /pkg/man/vv.Rd,
+	  /pkg/man/walker.Rd, /pkg/man/wind.Rd, /pkg/src, /pkg/src/block.c,
+	  /pkg/src/block.h, /pkg/src/chfactor.c, /pkg/src/config.hin,
+	  /pkg/src/config.w32, /pkg/src/copy.c, /pkg/src/data.c,
+	  /pkg/src/data.h, /pkg/src/debug.h, /pkg/src/defaults.h,
+	  /pkg/src/defs.h, /pkg/src/direct.c, /pkg/src/direct.h,
+	  /pkg/src/err.c, /pkg/src/err.h, /pkg/src/ext_dbase.h,
+	  /pkg/src/fit.c, /pkg/src/fit.h, /pkg/src/gcdist.c,
+	  /pkg/src/gcdist.h, /pkg/src/getest.c, /pkg/src/getest.h,
+	  /pkg/src/gls.c, /pkg/src/gls.h, /pkg/src/glvars.c,
+	  /pkg/src/glvars.h, /pkg/src/hsehldr.c, /pkg/src/init.c,
+	  /pkg/src/ivecop.c, /pkg/src/lex.c, /pkg/src/lex.h,
+	  /pkg/src/lex.l, /pkg/src/lm.c, /pkg/src/lm.h,
+	  /pkg/src/lufactor.c, /pkg/src/machine.c, /pkg/src/machine.hin,
+	  /pkg/src/machine.w32, /pkg/src/mapio.c, /pkg/src/mapio.h,
+	  /pkg/src/matop.c, /pkg/src/matrix.h, /pkg/src/matrix2.h,
+	  /pkg/src/meminfo.c, /pkg/src/meminfo.h, /pkg/src/memory.c,
+	  /pkg/src/meschach, /pkg/src/meschach/dmacheps.c,
+	  /pkg/src/meschach/fmacheps.c, /pkg/src/meschach/maxint.c,
+	  /pkg/src/msim.c, /pkg/src/msim.h, /pkg/src/norm.c,
+	  /pkg/src/nsearch.c, /pkg/src/nsearch.h, /pkg/src/parse.c,
+	  /pkg/src/parse.h, /pkg/src/plot.h, /pkg/src/polygon.c,
+	  /pkg/src/polygon.h, /pkg/src/pqueue.c, /pkg/src/pqueue.h,
+	  /pkg/src/predict.c, /pkg/src/predict.h, /pkg/src/pxop.c,
+	  /pkg/src/qrfactor.c, /pkg/src/random.c, /pkg/src/random.h,
+	  /pkg/src/read.c, /pkg/src/read.h, /pkg/src/reml.c,
+	  /pkg/src/reml.h, /pkg/src/report.h, /pkg/src/s.c, /pkg/src/s.h,
+	  /pkg/src/select.c, /pkg/src/select.h, /pkg/src/sem.c,
+	  /pkg/src/sem.h, /pkg/src/sim.c, /pkg/src/sim.h, /pkg/src/solve.c,
+	  /pkg/src/sparse.c, /pkg/src/sparse.h, /pkg/src/sparse2.h,
+	  /pkg/src/sprow.c, /pkg/src/stat.c, /pkg/src/stat.h,
+	  /pkg/src/submat.c, /pkg/src/userio.c, /pkg/src/userio.h,
+	  /pkg/src/utils.c, /pkg/src/utils.h, /pkg/src/vario.c,
+	  /pkg/src/vario.h, /pkg/src/vario_fn.c, /pkg/src/vario_fn.h,
+	  /pkg/src/vario_io.c, /pkg/src/vario_io.h, /pkg/src/vecop.c,
+	  /pkg/src/version.c, /pkg/src/version.h, /pkg/src/zmatrix.h,
+	  /pkg/src/zmatrix2.h, /pkg/tests, /pkg/tests/Examples,
+	  /pkg/tests/Examples/gstat-Ex.Rout.save, /pkg/tests/blockkr.R,
+	  /pkg/tests/blockkr.Rout.save, /pkg/tests/covtable.R,
+	  /pkg/tests/covtable.Rout.save, /pkg/tests/cv.R,
+	  /pkg/tests/cv.Rout.save, /pkg/tests/cv3d.R,
+	  /pkg/tests/cv3d.Rout.save, /pkg/tests/fit.R,
+	  /pkg/tests/fit.Rout.save, /pkg/tests/krige0.R,
+	  /pkg/tests/krige0.Rout.save, /pkg/tests/line.R,
+	  /pkg/tests/line.Rout.save, /pkg/tests/merge.R,
+	  /pkg/tests/merge.Rout.save, /pkg/tests/na.action.R,
+	  /pkg/tests/na.action.Rout.save, /pkg/tests/rings.R,
+	  /pkg/tests/rings.Rout.save, /pkg/tests/sim.R,
+	  /pkg/tests/sim.Rout.save, /pkg/tests/unproj.R,
+	  /pkg/tests/unproj.Rout.save, /pkg/tests/variogram.R,
+	  /pkg/tests/variogram.Rout.save, /pkg/tests/vdist.R,
+	  /pkg/tests/vdist.Rout.save, /pkg/tests/windst.R,
+	  /pkg/tests/windst.Rout.save: initial commit from 52N svn sources
+	  to r-forge
+
 2008-11-24 08:47  stefan7th
 
 	* /README, /pkg, /pkg/R, /pkg/man, /www, /www/index.php: README

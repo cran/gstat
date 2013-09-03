@@ -32,6 +32,7 @@ This data sets were obtained from the data sets on
 }
 \keyword{datasets}
 \examples{
+library(sp)
 data(walker)
 summary(walker)
 summary(walker.exh)

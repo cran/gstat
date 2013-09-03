@@ -62,6 +62,7 @@ class \code{pointPairs} is present, containing the point pairs identified.
 \link{locator}
 }
 \examples{
+library(sp)
 data(meuse)
 coordinates(meuse) = ~x+y
 plot(variogram(log(zinc)~1, meuse, cloud=TRUE))

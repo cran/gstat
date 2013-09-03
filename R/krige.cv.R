@@ -6,7 +6,7 @@ if (!isGeneric("krige.cv"))
 
 krige.cv.locations = function (formula, locations, data = sys.frame(sys.frame(sys.parent())), 
 	model = NULL, ..., beta = NULL, nmax = Inf, nmin = 0, maxdist = Inf, 
-	nfold = nrow(data), verbose = TRUE, debug.level = 0) {
+	nfold = nrow(data), verbose = interactive(), debug.level = 0) {
 
 	gstat.cv(gstat(g = NULL, id = "var1", formula = formula, locations = 
 		locations, data = data, model = model, beta = beta, nmax = nmax, 
@@ -16,7 +16,7 @@ krige.cv.locations = function (formula, locations, data = sys.frame(sys.frame(sy
 setMethod("krige.cv", c("formula", "formula"), krige.cv.locations)
 
 krige.cv.spatial = function (formula, locations, model = NULL, ..., beta = NULL,
-	nmax = Inf, nmin = 0, maxdist = Inf, nfold = nrow(locations), verbose = TRUE,
+	nmax = Inf, nmin = 0, maxdist = Inf, nfold = nrow(locations), verbose = interactive(),
 	debug.level = 0) {
 
 	# data = locations 

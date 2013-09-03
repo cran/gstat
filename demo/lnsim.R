@@ -1,5 +1,9 @@
+library(sp)
 library(gstat)
-loadMeuse()
+data(meuse)
+coordinates(meuse) = ~x+y
+data(meuse.grid)
+gridded(meuse.grid) = ~x+y
 
 # NLKrige: non-linear kriging (e.g. log-normal kriging), simulation based.
 # arguments:

@@ -80,6 +80,7 @@ vgmMetric <- function(model, dist_grid, covariance) {
 }
 
 fit.StVariogram <- function(object, model, ..., wles=FALSE) {
+  object <- na.omit(object)
   if (!inherits(object, "StVariogram"))
     stop("\"object\" must be of class \"StVariogram\"")
   if (!inherits(model, "StVariogramModel"))

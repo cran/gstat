@@ -50,6 +50,7 @@ code from Ernst Glatzer, author of package vardiag.
 \link{fit.variogram},
 }
 \examples{
+library(sp)
 data(meuse)
 coordinates(meuse) = ~x+y
 \dontrun{

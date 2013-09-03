@@ -84,6 +84,7 @@ Computers \& Geosciences, 30: 683-691.
 }
 
 \examples{
+library(sp)
 data(meuse)
 vgm1 <- variogram(log(zinc)~1, ~x+y, meuse)
 fit.variogram(vgm1, vgm(1,"Sph",300,1))

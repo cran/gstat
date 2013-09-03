@@ -1,7 +1,6 @@
 
-R version 2.15.2 (2012-10-26) -- "Trick or Treat"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -16,8 +15,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+> library(sp)
 > library(gstat)
-Loading required package: sp
 > 
 > data(meuse)
 > coordinates(meuse) = ~x+y
@@ -30,14 +29,14 @@ Loading required package: sp
 > krige(log(zinc)~1,meuse,mg,vgm(1, "Exp", 300, anis=c(0,0.01)),
 + 	vdist=FALSE, maxdist=1000,nmax=10)
 [using ordinary kriging]
-       coordinates var1.pred var1.var
-1 (180260, 331300)  5.007376 1.102622
+          coordinates var1.pred var1.var
+1500 (180260, 331300)  5.007376 1.102622
 > krige(log(zinc)~1,meuse,mg,vgm(1, "Exp", 300, anis=c(0,0.01)),
 + 	vdist=TRUE, maxdist=1000,nmax=10)
 [using ordinary kriging]
-       coordinates var1.pred var1.var
-1 (180260, 331300)   5.50671 1.100095
+          coordinates var1.pred var1.var
+1500 (180260, 331300)   5.50671 1.100095
 > 
 > proc.time()
    user  system elapsed 
-  0.476   0.044   0.505 
+  1.308   0.052   1.370 

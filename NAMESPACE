@@ -14,10 +14,11 @@ useDynLib(gstat,
 	gstat_variogram_values
 )
 
+import(methods)
 import(lattice)
+importFrom(zoo, zoo, is.regular)
 import(sp)
 import(spacetime)
-importFrom(zoo, as.zoo, is.regular)
 
 export(as.vgm.variomodel,
 	cross.name,

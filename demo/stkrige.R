@@ -1,4 +1,5 @@
 # Ben Graeler, Nov 20, 2012.
+library(sp)
 library(spacetime)
 library(gstat)
 
@@ -55,37 +56,32 @@ metricModel <- vgmST("metric",
 # fitting
 fitSepModel <- fit.StVariogram(vv, separableModel, method = "L-BFGS-B", 
                                control = list(maxit = 1000))
-fittedSepModel <- fitSepModel$StVgmFit
-fitSepModel$value # RMSE: 3.49
+attr(fitSepModel, "optim.output")$value
 
 fitProdSumModel <- fit.StVariogram(vv, prodSumModel, method = "L-BFGS-B", 
                                    lower=rep(0.0001,7),control = list(maxit = 1000))
-fittedProdSumModel <- fitProdSumModel$StVgmFit
-fitProdSumModel$value # RMSE: 3.32
+attr(fitProdSumModel, "optim.output")$value
 
 fitSumMetricModel <- fit.StVariogram(vv, sumMetricModel, method = "L-BFGS-B",
                                      lower=pars.l, upper=pars.u, 
                                      control = list(maxit = 1000))
-fittedSumMetricModel <- fitSumMetricModel$StVgmFit
-fitSumMetricModel$value # RMSE: 3.16, wles RMSE: 0.0143
+attr(fitSumMetricModel, "optim.output")$value
 
 fitSimpleSumMetricModel <- fit.StVariogram(vv, simpleSumMetricModel, method = "L-BFGS-B",
                                            lower=pars.simple.l, upper=pars.simple.u,
                                            control = list(maxit = 1000))
-fittedSimpleSumMetricModel <- fitSimpleSumMetricModel$StVgmFit
-fitSimpleSumMetricModel$value # RMSE: 2.94, wles RMSE: 0.0140
+attr(fitSimpleSumMetricModel, "optim.output")$value
 
 fitMetricModel <- fit.StVariogram(vv, metricModel, method = "L-BFGS-B",
                                   lower=rep(0.0001,4), control = list(maxit = 1000))
-fittedMetricModel <- fitMetricModel$StVgmFit
-fitMetricModel$value # RMSE: 3.67
+attr(fitMetricModel, "optim.output")$value 
 
 
-plot(vv, fittedSepModel) # the plot differs slightly from the vignette as the nugget is fitted as well
-plot(vv, fittedProdSumModel)
-plot(vv, fittedSumMetricModel)
-plot(vv, fittedSimpleSumMetricModel)
-plot(vv, fittedMetricModel)
+plot(vv, fitSepModel)
+plot(vv, fitProdSumModel)
+plot(vv, fitSumMetricModel)
+plot(vv, fitSimpleSumMetricModel)
+plot(vv, fitMetricModel)
 
 # plot rgl
 library(rgl)
@@ -166,16 +162,16 @@ lollipop3d <- function(data.x, data.y, data.z, surf.fun, surf.n=50,
 }
 # run script plotStVariogram3D.R before
 lollipop3d(vv$spacelag, vv$timelag, vv$gamma,  main="separable model",
-           function(x,y) variogramSurface(fittedSepModel,data.frame(spacelag=x,timelag=y))[,3],
+           function(x,y) variogramSurface(fitSepModel,data.frame(spacelag=x,timelag=y))[,3],
            col.stem=c("red","blue"), ptsize=sqrt(vv$np/1000))
 lollipop3d(vv$spacelag, vv$timelag, vv$gamma, main="product-sum model",
-           function(x,y) variogramSurface(fittedProdSumModel,data.frame(spacelag=x,timelag=y))[,3],
+           function(x,y) variogramSurface(fitProdSumModel,data.frame(spacelag=x,timelag=y))[,3],
            col.stem=c("red","blue"), ptsize=sqrt(vv$np/1000))
 lollipop3d(vv$spacelag, vv$timelag, vv$gamma,  main="sum-metric model",
-           function(x,y) variogramSurface(fittedSumMetricModel,data.frame(spacelag=x,timelag=y))[,3],
+           function(x,y) variogramSurface(fitSumMetricModel,data.frame(spacelag=x,timelag=y))[,3],
            col.stem=c("red","blue"), ptsize=sqrt(vv$np/1000))
 lollipop3d(vv$spacelag, vv$timelag, vv$gamma,  main="simplified sum-metric model",
-           function(x,y) variogramSurface(fittedSimpleSumMetricModel,data.frame(spacelag=x,timelag=y))[,3],
+           function(x,y) variogramSurface(fitSimpleSumMetricModel,data.frame(spacelag=x,timelag=y))[,3],
            col.stem=c("red","blue"), ptsize=sqrt(vv$np/1000))
 
 ## kriging using the sumMetric model (supports STS structures now as well)
@@ -192,7 +188,7 @@ DE_gridded <- SpatialPoints(cbind(rep(x1,length(x2)), rep(x2,each=length(x1))),
 gridded(DE_gridded) <- T
 DE_pred <- STF(sp=as(DE_gridded,"SpatialPoints"), time=rr@time)
 DE_kriged <- krige(PM10~1,locations=rr, newdata=DE_pred,
-	modelList=fittedSumMetricModel)
+	modelList=fitSumMetricModel)
 gridded(DE_kriged@sp) <- TRUE
 stplot(DE_kriged,col.regions=bpy.colors())
 stplot(as(rr, "STFDF"),col.regions=bpy.colors())
@@ -201,7 +197,7 @@ stplot(as(rr, "STFDF"),col.regions=bpy.colors())
 DE_pred_day <- STF(sp=as(DE_gridded,"SpatialPoints"), time=rr[,1,drop=F]@time, 
 		endTime=rr[,1,drop=F]@endTime)
 DE_kriged_day <- krige(PM10~1,locations=rr[,1,drop=F],
-		newdata=DE_pred_day, modelList=fittedSumMetricModel)
+		newdata=DE_pred_day, modelList=fitSumMetricModel)
 gridded(DE_kriged_day@sp) <- TRUE
 
 spplot(DE_kriged_day[,1], col.regions=bpy.colors)

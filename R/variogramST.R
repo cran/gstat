@@ -48,19 +48,20 @@ StVgmLag = function(formula, data, dt, pseudo, ...) {
 	} else {
 		for (i in 1:(d[2] - dt)) {
 			d1 = data[, i]
-      valid1 = .ValidObs(formula, d1)
+			valid1 = .ValidObs(formula, d1)
 			d2 = data[, i + dt]
 			valid2 = .ValidObs(formula, d2)
-      if(sum(valid1)==0 || sum(valid2)==0)
-        ret[[i]] <- NULL
-      else {
-        d1 = d1[valid1,]
-        d2 = d2[valid2,]
-			  obj = gstat(NULL, paste("D", i, sep=""), formula, d1, 
-				  set = list(zero_dist = 3))
-			  obj = gstat(obj, paste("D", i+dt, sep=""), formula, d2)
-			  ret[[i]] = variogram(obj, cross = "ONLY", pseudo = pseudo, ...)
-      }
+			if(sum(valid1)==0 || sum(valid2)==0)
+				ret[[i]] <- NULL
+			else {
+				d1 = d1[valid1,]
+				d2 = d2[valid2,]
+				obj = gstat(NULL, paste("D", i, sep=""), formula, d1, 
+					set = list(zero_dist = 3), beta = 0)
+				obj = gstat(obj, paste("D", i+dt, sep=""), formula, d2, 
+					beta = 0)
+				ret[[i]] = variogram(obj, cross = "ONLY", pseudo = pseudo, ...)
+			}
 		}
 	}
 	VgmAverage(ret, ...)
@@ -68,22 +69,24 @@ StVgmLag = function(formula, data, dt, pseudo, ...) {
 
 variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff, 
                        width = cutoff/15, boundaries=seq(0,cutoff,width),
-                       progress = TRUE, pseudo = TRUE) {
+                       progress = interactive(), pseudo = TRUE, 
+                       assumeRegular=FALSE, na.omit=FALSE) {
   if (missing(data))
     data = locations
-  if(missing(cutoff))
-    cutoff <- spDists(t(data@sp@bbox),!is.projected(data@sp))[1,2]/3
+  if(missing(cutoff)) {
+    ll = !is.na(is.projected(data@sp)) && !is.projected(data@sp)
+    cutoff <- spDists(t(data@sp@bbox), longlat = ll)[1,2]/3
+  }
 	stopifnot(is(data, "STFDF") || is(data, "STSDF"))
 	it = index(data@time)
-# 	if (is.regular(
-# 				as.zoo(matrix(1:length(it)), order.by = it), 
-# 				strict = TRUE)) {
+	if (assumeRegular || is.regular(zoo(matrix(1:length(it)), order.by = it),
+                                  strict = TRUE)) {
 		twidth = diff(it)[1]
 		tlags = tlags[tlags <= min(max(tlags), length(unique(it)) - 1)]
-# 	} else {
-# 		warning("strictly irregular time steps were assumed to be regular")
-# 		twidth = mean(diff(it))
-# 	}
+	} else {
+		warning("strictly irregular time steps were assumed to be regular")
+		twidth = mean(diff(it))
+	}
 	ret = vector("list", length(tlags))
 	obj = NULL
 	t = twidth * tlags
@@ -105,14 +108,17 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
 		class(v$timelag) = "yearmon"
 	b = attr(ret[[2]], "boundaries")
 	b = c(0, b[2]/1e6, b[-1])
-	ix = findInterval(v$dist, b)
+	# ix = findInterval(v$dist, b) will use all spacelags
 	b = b[-2]
-	spacelags = c(0, b[-length(b)] + diff(b)/2)
-	v$spacelag = spacelags[ix]
+	# spacelags = c(0, b[-length(b)] + diff(b)/2) will use all spacelags
+	v$spacelag = c(0, b[-length(b)] + diff(b)/2) # spacelags[ix] will use all spacelags
 	if (isTRUE(!is.projected(data)))
 		attr(v$spacelag, "units") = "km"
 	class(v) = c("StVariogram", "data.frame")
-	na.omit(v)
+	if(na.omit)
+    return(na.omit(v))
+  else
+    return(v)
 }
 
 plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab, map = TRUE,

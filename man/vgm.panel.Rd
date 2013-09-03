@@ -48,9 +48,10 @@ ignored; the enclosing function returns a plot of class \code{trellis}
 \author{ Edzer Pebesma }
 \seealso{ \link{plot.gstatVariogram}, \link{vgm}}
 \examples{ 
-library(lattice)
+library(sp)
 data(meuse)
 coordinates(meuse) <- c("x", "y")
+library(lattice)
 mypanel = function(x,y,...) { 
 	vgm.panel.xyplot(x,y,...)
 	panel.abline(h=var(log(meuse$zinc)), color = 'red')

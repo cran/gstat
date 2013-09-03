@@ -5,6 +5,7 @@
 #  c. it assumes that mask_map is present, and contains the mask map values
 #     (i.e., the study area)
 
+library(sp)
 library(GRASS)           # load R GRASS interface
 
 G = gmeta()              # retrieves active data base locations and topology

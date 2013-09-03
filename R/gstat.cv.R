@@ -2,7 +2,7 @@
 
 "gstat.cv" <-
 function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE, 
-	verbose = FALSE, all.residuals = FALSE, ...) 
+	verbose = interactive(), all.residuals = FALSE, ...) 
 {
 	if (!inherits(object, "gstat")) 
 		stop("first argument should be of class gstat")

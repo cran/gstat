@@ -1,3 +1,4 @@
+library(sp)
 library(gstat)
 set.seed(13331)
 

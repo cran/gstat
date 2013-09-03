@@ -4,6 +4,7 @@ blue		how to get BLUE coefficients out of a predict.gstat call
 cokriging	fitting a linear model of coregionalization and cokriging
 comp_geoR	compare gstat kriging output with that obtained from geoR
 cosimulation	fitting a linear model of coregionalization and cosimulation
+depend		check gstat package dependencies
 examples	how to do the original gstat example files in S
 grass		example grass/R/gstat run; requires grass meuse data set installed
 gstat3D		example of 3D interpolation of random points

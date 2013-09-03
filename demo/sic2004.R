@@ -10,6 +10,7 @@
 #joker = read.csv("SIC2004_joker.csv", header=F)
 #names(joker) = c("record", "x", "y", "dayx")
 
+library(sp)
 library(gstat)
 library(lattice)
 data(sic2004) # load directly from R data base

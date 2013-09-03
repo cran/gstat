@@ -71,6 +71,7 @@ Computers \& Geosciences, 30: 683-691.
 \seealso{ \code{\link{krige0}}, \code{\link{gstat}}, \code{\link{predict.gstat}} }
 
 \examples{
+library(sp)
 library(spacetime)
 sumMetricVgm <- vgmST("sumMetric",
                       space=vgm( 4.4, "Lin", 196.6,  3),

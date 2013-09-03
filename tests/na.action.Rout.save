@@ -1,7 +1,6 @@
 
-R version 2.15.2 (2012-10-26) -- "Trick or Treat"
-Copyright (C) 2012 The R Foundation for Statistical Computing
-ISBN 3-900051-07-0
+R version 3.0.1 (2013-05-16) -- "Good Sport"
+Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -16,8 +15,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
-> library(gstat)
-Loading required package: sp
+> library(sp)
 > 
 > data(meuse)
 > data(meuse.grid)
@@ -29,19 +27,20 @@ Loading required package: sp
 > m = meuse.grid[sample(nrow(meuse.grid), 10), ]
 > m[c(2,8), "x"] = NA
 > 
+> library(gstat)
 > ## this is not allowed anymore:
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.pass))
-Error in validityMethod(object) : 
-  number of rows in data.frame and SpatialPoints don't match
+Error in dimnames(coords@coords)[[1]] = row.names(data) : 
+  length of 'dimnames' [1] not equal to array extent
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.omit))
-Error in validityMethod(object) : 
-  number of rows in data.frame and SpatialPoints don't match
+Error in dimnames(coords@coords)[[1]] = row.names(data) : 
+  length of 'dimnames' [1] not equal to array extent
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.exclude))
-Error in validityMethod(object) : 
-  number of rows in data.frame and SpatialPoints don't match
+Error in dimnames(coords@coords)[[1]] = row.names(data) : 
+  length of 'dimnames' [1] not equal to array extent
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.fail))
-Error in validityMethod(object) : 
-  number of rows in data.frame and SpatialPoints don't match
+Error in dimnames(coords@coords)[[1]] = row.names(data) : 
+  length of 'dimnames' [1] not equal to array extent
 > 
 > # select 10 random rows;
 > # create two missing values in the regressor variable:
@@ -62,30 +61,30 @@ Error in validityMethod(object) :
 10 179540 329900  6.314501 0.2402659
 > krige(log(zinc)~dist,~x+y,meuse,m, na.action = na.omit)
 [ordinary or weighted least squares prediction]
-       x      y var1.pred  var1.var
-1 180260 331740  5.110655 0.2425253
-2 180420 331180  4.024709 0.2580362
-3 178780 330180  5.815051 0.2392971
-4 180900 333220  6.343871 0.2404070
-5 179980 331580  5.272101 0.2413105
-6 180660 330140  6.462357 0.2410713
-7 179980 331700  5.345455 0.2408518
-8 179540 329900  6.314501 0.2402659
+          x      y var1.pred  var1.var
+1121 180260 331740  5.110655 0.2425253
+1613 180420 331180  4.024709 0.2580362
+2684 178780 330180  5.815051 0.2392971
+134  180900 333220  6.343871 0.2404070
+1251 179980 331580  5.272101 0.2413105
+2757 180660 330140  6.462357 0.2410713
+1149 179980 331700  5.345455 0.2408518
+2951 179540 329900  6.314501 0.2402659
 > krige(log(zinc)~dist,~x+y,meuse,m, na.action = na.exclude)
 [ordinary or weighted least squares prediction]
-       x      y var1.pred  var1.var
-1 180260 331740  5.110655 0.2425253
-2 180420 331180  4.024709 0.2580362
-3 178780 330180  5.815051 0.2392971
-4 180900 333220  6.343871 0.2404070
-5 179980 331580  5.272101 0.2413105
-6 180660 330140  6.462357 0.2410713
-7 179980 331700  5.345455 0.2408518
-8 179540 329900  6.314501 0.2402659
+          x      y var1.pred  var1.var
+1121 180260 331740  5.110655 0.2425253
+1613 180420 331180  4.024709 0.2580362
+2684 178780 330180  5.815051 0.2392971
+134  180900 333220  6.343871 0.2404070
+1251 179980 331580  5.272101 0.2413105
+2757 180660 330140  6.462357 0.2410713
+1149 179980 331700  5.345455 0.2408518
+2951 179540 329900  6.314501 0.2402659
 > try(krige(log(zinc)~dist,~x+y,meuse,m, na.action = na.fail))
 Error in na.fail.default(structure(list(dist = c(0.527108, 0.929323, NA,  : 
   missing values in object
 > 
 > proc.time()
    user  system elapsed 
-  0.548   0.036   0.567 
+  1.176   0.064   1.244 

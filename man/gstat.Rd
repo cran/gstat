@@ -41,10 +41,12 @@ gstat(g, id, formula, locations, data, model = NULL, beta, nmax = Inf,
   variables, and locations. }
   \item{model}{ variogram model for this \code{id}; defined by a call to 
   \link{vgm}; see argument \code{id} to see how cross variograms are entered }
-  \item{beta}{ only for simple kriging (and simulation based on simple
-  kriging); vector with the trend coefficients (including intercept);
+  \item{beta}{ for simple kriging (and simulation based on simple
+  kriging): vector with the trend coefficients (including intercept);
   if no independent variables are defined the model only contains an
-  intercept and this should be the simple kriging mean }
+  intercept and this should be the expected value; for cross 
+  variogram computations: mean parameters to be used instead of the 
+  OLS estimates }
   \item{nmax}{ for local kriging: the number of nearest observations that
   should be used for a kriging prediction or simulation, where nearest
   is defined in terms of the space of the spatial locations }
@@ -143,6 +145,7 @@ which merges slopes across years, but with year-dependent intercept.
 \seealso{ \link{predict.gstat}, \link{krige} }
 
 \examples{
+library(sp)
 data(meuse)
 # let's do some manual fitting of two direct variograms and a cross variogram
 g <- gstat(id = "ln.zinc", formula = log(zinc)~1, locations = ~x+y, 

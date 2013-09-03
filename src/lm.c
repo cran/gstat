@@ -202,7 +202,9 @@ void make_residuals_lm(DATA *d) {
 	if (d->is_residual)
 		return;
 	if (d->beta) {
+		/*
 		pr_warning("calculating residuals with respect to pre-defined mean"); 
+		*/
 		for (i = 0; i < d->n_list; i++)
 			d->list[i]->attr -= calc_mu(d, d->list[i]);
 	} else {

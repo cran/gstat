@@ -1,10 +1,11 @@
 # test -- load data:
-library(gstat)
+library(sp)
 data(meuse)
 coordinates(meuse) = ~x+y
 data(meuse.grid)
 gridded(meuse.grid) = ~x+y
 
+library(gstat)
 # test -- idw
 meuse.grid$idw <- idw0(zinc~1, meuse, meuse.grid)[,1]
 x <- idw(zinc~1, meuse, meuse.grid)
