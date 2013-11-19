@@ -20,20 +20,19 @@ krigeST(formula, data, newdata, modelList, y, ..., computeVar = FALSE,
   for simple kriging also define \code{beta} (see below); for universal
   kriging, suppose \code{z} is linearly dependent on \code{x} and \code{y},
   use the formula \code{z~x+y}}
- \item{data}{ data frame: should contain the dependent variable, independent
-  variables, and coordinates, should be missing if locations contains data. }
- \item{newdata}{ data frame or Spatial object with prediction/simulation 
-  locations; should 
-  contain attribute columns with the independent variables (if present) and 
-  (if locations is a formula) the coordinates with names as defined in 
-  \code{locations} }
+ \item{data}{ ST object: should contain the dependent variable and independent
+  variables.}
+ \item{newdata}{ ST object with prediction/simulation locations in
+ space and time; should contain attribute columns with the independent variables
+ (if present).}
  \item{modelList}{ list with named elements: space, time and/or joint depending 
   on the spatio-temporal covariance family and an entry stModel. Currently 
   implemented families that may be used for stModel are \code{separable}, 
   \code{productSum}, \code{metric}, \code{sumMetric} and \code{simpleSumMetric}. 
   See the examples section in \code{\link{fit.StVariogram}} or 
   \code{\link{variogramSurface}} for details on how to define spatio-temporal 
-  covariance models.}
+  covariance models. \code{krigeST} will look for a "temporal unit" attribute
+  in the provided modelList in order to adjust the temporal scales.}
  \item{y}{matrix; to krige multiple fields in a single step, pass data 
   as columns of matrix \code{y}. This will ignore the value of the 
   response in \code{formula}.}
@@ -45,8 +44,8 @@ krigeST(formula, data, newdata, modelList, y, ..., computeVar = FALSE,
 }
 \details{
  Function \code{krigeST} is a R implementation of the kriging function from 
- \link{gstat} using spatio-temporal covariance modells follwoing the 
- implementaion of \code{\link{krige0}}. Function \code{krigeST} offers some 
+ \link{gstat} using spatio-temporal covariance models following the 
+ implementation of \code{\link{krige0}}. Function \code{krigeST} offers some 
  particular methods for ordinary spatio-temporal (ST) kriging. In particular, it does not
  support block kriging or kriging in a local neighbourhood, and does not
  provide simulation.

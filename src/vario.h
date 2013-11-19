@@ -73,6 +73,7 @@ typedef enum {
 	BESSEL, 
 	PENTASPHERICAL, 
 	PERIODIC, 
+	WAVE, 
 	HOLE,
 	LOGARITHMIC, 
 	POWER, 

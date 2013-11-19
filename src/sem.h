@@ -19,7 +19,7 @@ void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev);
 
 #define LONGSIZE (sizeof(unsigned long))
 #define MAX_NH (1UL << (4 * LONGSIZE))
-#define TO_NH(x,y) (x + (y << (4 * LONGSIZE)))
+#define TO_NH(x,y) (x + ((unsigned long)y << (4 * LONGSIZE)))
 #define HIGH_NH(x) (x / (1UL << (4 * LONGSIZE)))
 #define LOW_NH(x) (x % (1UL << (4 * LONGSIZE)))
 #endif /* SEM_H */

@@ -8,6 +8,11 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
 	grid, map = FALSE, g = NULL, ..., projected = TRUE, lambda = 1.0,
 	verbose = FALSE, covariogram = FALSE, PR = FALSE, pseudo = -1) 
 {
+	dots = list(...)
+	if (length(dots) > 0) {
+		warning("the following arguments are ignored:")
+		print(dots)
+	}
     id1 = id2 = 0
     ret = NULL
     if (missing(cutoff)) {

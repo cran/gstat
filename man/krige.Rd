@@ -48,7 +48,7 @@ idw.locations(formula, locations, data, newdata, nmax = Inf,
 idw.spatial(formula, locations, newdata, nmax = Inf, nmin = 0, 
     omax = 0, maxdist = Inf, block = numeric(0), na.action = na.pass, idp = 2.0,
 	debug.level = 1)
-idw0(formula, data, newdata, y)
+idw0(formula, data, newdata, y, idp = 2.0)
 }
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear

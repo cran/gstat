@@ -16,16 +16,19 @@ Creates a variogram plot
 	layout, ...)
 \method{plot}{variogramMap}(x, np = FALSE, skip, threshold, ...)
 \method{plot}{StVariogram}(x, model = NULL, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
-		convertMonths = FALSE, wireframe = FALSE, both = FALSE)
+convertMonths = FALSE, as.table=T, wireframe = FALSE, 
+both = FALSE, all = FALSE)
 }
 \arguments{
 \item{x}{ object obtained from the method 
 \link{variogram}, possibly containing directional or cross variograms,
 space-time variograms and variogram model information }
-\item{model}{ in case of a single variogram: a variogram model, as 
+\item{model}{in case of a single variogram: a variogram model, as 
 obtained from \link{vgm} or \link{fit.variogram}, to be drawn as 
 a line in the variogram plot; in case of a set of variograms and
-cross variograms: a list with variogram models }
+cross variograms: a list with variogram models; in the spatio-temporal case,
+a single or a list of spatio-temporal models that will be plotted next to each
+other for visual comparison.}
 \item{ylim}{ numeric; vector of length 2, limits of the y-axis}
 \item{xlim}{ numeric; vector of length 2, limits of the x-axis}
 \item{xlab}{ character; x-axis label }
@@ -59,9 +62,11 @@ than threshold will not be plotted}
 \item{convertMonths}{logical; if TRUE, \code{yearmon} time lags will
 be unit converted and plotted as (integer) months, and no longer match the
 numeric representation of \code{yearmon}, which has years as unit }
+\item{as.table}{controls the plotting order for multiple panles, see \code{\link{xyplot}} for details.}
 \item{wireframe}{logical; if TRUE, produce a wireframe plot}
 \item{both}{logical; if TRUE, plot model and sample variogram in a single
 wireplot}
+\item{all}{logical; if TRUE, plot sample and model variogram(s) in single wireframes.}
 }
 \value{
 returns (or plots) the variogram plot

@@ -1,4 +1,4 @@
-VgmFillNA = function(x, boundaries) {
+VgmFillNA <- function(x, boundaries) {
   # pads the sample variogram with NA rows where no data are available.
 	n = length(boundaries) - 1
 	ix = rep(NA, n)
@@ -106,6 +106,8 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
 	v$timelag = rep(t, sapply(ret, nrow))
 	if (is(t, "yearmon"))
 		class(v$timelag) = "yearmon"
+  attr(v$timelag,"units") <- attr(twidth,"units")
+  
 	b = attr(ret[[2]], "boundaries")
 	b = c(0, b[2]/1e6, b[-1])
 	# ix = findInterval(v$dist, b) will use all spacelags
@@ -121,8 +123,9 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
     return(v)
 }
 
-plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
-		convertMonths = FALSE, wireframe = FALSE, both = FALSE) {
+plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab,
+                            map = TRUE, convertMonths = FALSE, as.table=T,
+                            wireframe = FALSE, both = FALSE, all=FALSE) {
 	lst = list(...)
 	if (!is.null(lst$col.regions))
 		col = lst$col.regions
@@ -146,35 +149,64 @@ plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab, 
 			ylab = paste(ylab, " (", u, ")", sep="")
 	}
   if(!is.null(model)) {
-    x[["model"]] <- variogramSurface(model, x[,c("spacelag","timelag")])$model
+    if (is(model,"StVariogramModel"))
+      model <- list(model)
+    for (mod in model) {
+      x[[mod$stModel]] <- variogramSurface(mod, x[,c("spacelag","timelag")])$model
+    }
   }
 	x0 = x # needed by wireframe()
-	if (!is.null(x$model)) {
-		v0 = rbind(x, x)
-		v0$what = c(rep("sample", nrow(x)), rep("model", nrow(x)))
-		v0$gamma = c(x$gamma, x$model)
+	if (!is.null(model)) {
+    modelNames  <- sapply(model, function(x) x$stModel)
+    v0 <- x[,c("dist","id","spacelag","timelag")]
+    for (i in modelNames) {
+      v0 <- rbind(v0, x[,c("dist","id","spacelag","timelag")])
+    }
+		v0$what = factor(c(rep("sample", nrow(x)), rep(modelNames, each=nrow(x))),
+                     levels=c("sample", modelNames),ordered=T)
+		v0$gamma = c(x$gamma, unlist(x[,modelNames]))
 		x = v0
 	}
 	if (wireframe) { 
-		if (!is.null(x$model)) {
-			if (both)
-				wireframe(model+gamma ~ spacelag*timelag, 
-					x0, drape = TRUE, col.regions = col, 
-					xlab = xlab, ylab = ylab, ...)
-			else
-				wireframe(model ~ spacelag*timelag, x0, drape = TRUE, 
-					col.regions = col, xlab = xlab, ylab = ylab, ...)
-		} else
+		if (!is.null(model)) {
+			if (both) { # plot sample and first model in one wireframe plot
+			  if (length(model) > 1)
+			    warning("Only the first of the provided variogram models will be used.")
+			  wireframe(as.formula(paste(model[[1]]$stModel,"+gamma ~ spacelag*timelag")),
+                  x0, drape = TRUE, col.regions = col, 
+                  xlab = xlab, ylab = ylab, ...)
+			} else {
+        if (all) { # plot sample and all models in separate wireframes
+          if (length(model) > 1)
+            wireframe(gamma ~ spacelag*timelag | what, 
+                      x, drape = TRUE, col.regions = col, 
+                      xlab = xlab, ylab = ylab, as.table=as.table, ...)
+          else 
+            wireframe(as.formula(paste(model[[1]]$stModel,"~ spacelag*timelag")), 
+                      x0, drape = TRUE, col.regions = col, 
+                      xlab = xlab, ylab = ylab, as.table=as.table, ...)
+        } else { # plot all theoretical models in separate wireframes, the default
+          if (length(model) > 1)
+            wireframe(gamma ~ spacelag*timelag | what, 
+                      x[-(1:nrow(x0)),], drape = TRUE, col.regions = col, 
+                      xlab = xlab, ylab = ylab, as.table=as.table, ...)
+          else 
+            wireframe(as.formula(paste(model[[1]]$stModel,"~ spacelag*timelag")), 
+                      x0, drape = TRUE, col.regions = col, 
+                      xlab = xlab, ylab = ylab, as.table=as.table, ...)
+        }
+			}
+		} else # without a model, plot only the sample variogram as a wireframe
 			wireframe(gamma ~ spacelag * timelag, x0, drape = TRUE, col = col,
 				xlab = xlab, ylab = ylab, ...)
 	} else if (map) {
-		if (!is.null(x$model))
+		if (!is.null(model))
 			f = gamma ~ spacelag + timelag | what
 		else
 			f = gamma ~ spacelag + timelag
-		levelplot(f, x, xlab = xlab, ylab = ylab, col.regions = col, ...)
+		levelplot(f, x, xlab = xlab, ylab = ylab, col.regions = col, as.table=as.table, ...)
 	} else { # not map, not wireplot
-		if (!is.null(x$model))
+		if (!is.null(model))
 			f = gamma ~ dist | what
 		else
 			f = gamma ~ dist

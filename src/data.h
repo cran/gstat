@@ -265,10 +265,11 @@ typedef struct {		/* structure that holds data info and lists */
 
 /* following routines do not depend on sizeof(int) (K&R II, p. 48, 49) */
 #define left_bits(x) ((x) >> 1) /* shift one, zero most left bit */
-#define right_bit(x) ((x) & ~(~0 << 1)) /* zero all except right bit */
+/* #define right_bit(x) ((x) & ~(~0 << 1)) */ /* zero all except right bit */
+#define right_bit(x) ((x) & ~((unsigned long)~0 << 1))
 #define set_right_bit_on(x) (x = (x) | 1)
-#define set_right_bit_off(x) (x = (x) & (~0 << 1))
-#define set_left_bits(x,val) (x = (val << 1) | right_bit(x))
+#define set_right_bit_off(x) (x = (x) & ((unsigned long)~0 << 1))
+#define set_left_bits(x,val) (x = ((unsigned long)val << 1) | right_bit(x))
 
 #define GET_INDEX(p)     (left_bits((p)->bitfield))
 #define SET_INDEX(p,val) (set_left_bits((p)->bitfield,val))

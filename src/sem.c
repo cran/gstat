@@ -40,7 +40,7 @@
 
 #ifdef USING_R
 # include <R.h>
-# include <Rdefines.h>
+# include <Rinternals.h>
 #endif
 
 #include "defs.h"

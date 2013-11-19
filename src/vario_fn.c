@@ -177,6 +177,16 @@ double da_fn_periodic(double h, double *r) {
 	return (2.0 * PI * h/((*r) * (*r))) * sin(2.0 * PI * h/(*r));
 }
 
+double fn_wave(double h, double *r) {
+	if (h == 0.0)
+		return 0.0;
+	return 1.0 - (*r) * sin(PI * h/(*r)) / (PI * h);
+}
+
+double da_fn_wave(double h, double *r) {
+	return cos(PI * h / (*r)) / (*r) - sin(PI * h / (*r)) / PI * h;
+}
+
 double fn_hole(double h, double *r) {
 	if (h == 0.0)
 		return 0.0;

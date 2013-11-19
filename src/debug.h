@@ -8,16 +8,16 @@ extern int debug_level;
  */
 #define DB_HELP  (-1) /* print debug help */
 #define DB_SILENT (0)
-#define DB_NORMAL (1 << 0)
-#define DB_DUMP   (1 << 1) /* dump global variabels */
-#define DB_FIT    (1 << 2) /* fit diagnostics */
-#define DB_DATA   (1 << 3) /* drop data */
-#define DB_SEL    (1 << 4) /* drop selection */
-#define DB_COV    (1 << 5) /* drop covariances */
-#define DB_ORDER  (1 << 6) /* order relation violation */
-#define DB_FORCE  (1 << 7) /* print warning if neighbourhood selection */
-#define DB_TRACE  (1 << 8) /* print numbers */
-#define DB_BLOCK  (1 << 9) /* block discretization diagnostics (data) */
+#define DB_NORMAL (1UL << 0)
+#define DB_DUMP   (1UL << 1) /* dump global variabels */
+#define DB_FIT    (1UL << 2) /* fit diagnostics */
+#define DB_DATA   (1UL << 3) /* drop data */
+#define DB_SEL    (1UL << 4) /* drop selection */
+#define DB_COV    (1UL << 5) /* drop covariances */
+#define DB_ORDER  (1UL << 6) /* order relation violation */
+#define DB_FORCE  (1UL << 7) /* print warning if neighbourhood selection */
+#define DB_TRACE  (1UL << 8) /* print numbers */
+#define DB_BLOCK  (1UL << 9) /* block discretization diagnostics (data) */
 
 extern void printlog(const char *fmt, ...);
 #define DUMP(a); {if(debug_level & DB_DUMP) { printlog("%s", a); }}
