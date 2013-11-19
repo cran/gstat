@@ -1,3 +1,127 @@
+2013-11-07 16:17  ben_graeler
+
+	* /pkg/R/krige0.R, /pkg/R/variogramST.R,
+	  /pkg/man/fit.StVariogram.Rd, /pkg/man/krigeST.Rd,
+	  /pkg/man/plot.gstatVariogram.Rd: - krigeST does now know about
+	  temporal units (the function units() does the job)
+
+2013-11-06 17:04  ben_graeler
+
+	* /pkg/R/krige0.R, /pkg/R/stVariogramModels.R,
+	  /pkg/R/variogramST.R, /pkg/demo/stkrige.R,
+	  /pkg/man/fit.StVariogram.Rd, /pkg/man/krigeST.Rd,
+	  /pkg/man/plot.gstatVariogram.Rd: - new plotting capabilities for
+	  spatio-temporal variograms
+	  - fitted variogram models carry now a unit attribute
+	  - cleanup of some model definitions and their parameter handling
+
+2013-10-28 22:11  edzer
+
+	* /pkg/R/plot.variogramCloud.R: catch single point selection case,
+	  reported by Juergen Symanzik
+	  and Roger Bivand.
+
+2013-10-23 10:05  ben_graeler
+
+	* /pkg/demo/localKrigeST.R: - fixed demo/localKrigeST.R for missing
+	  "@index"
+
+2013-10-09 13:27  edzer
+
+	* /pkg/R/vgm.R: patch from Etienne Racine, adding "wave" model from
+	  geoR -> gstat
+
+2013-09-26 12:50  edzer
+
+	* /pkg/R/krige0.R, /pkg/man/krige.Rd, /pkg/src/s.c, /pkg/src/sem.c,
+	  /pkg/tests/Examples/gstat-Ex.Rout.save,
+	  /pkg/tests/windst.Rout.save: update to C files, removed need for
+	  Rdefines.h;
+	  correction to krigeST
+
+2013-09-24 19:47  ben_graeler
+
+	* /pkg/demo/00Index, /pkg/demo/localKrigeST.R: - added
+	  demo/localKrigeST.R; performs local spatio-temporal kriging
+
+2013-09-20 15:50  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/krige0.R, /pkg/R/stVariogramModels.R,
+	  /pkg/man/krigeST.Rd, /pkg/man/variogramSurface.Rd: - krigeST
+	  handles now STIDF, STSDF and STFDF for all implemented covarince
+	  models (i.e.: metric, simpleSumMetric, sumMetric, separable,
+	  productSum)
+	  - predictions for single locations (based on one or many) in
+	  space and time are now as well possible
+
+2013-09-19 13:24  edzer
+
+	* /pkg/R/variogram.default.R, /pkg/man/vgmST.Rd: added
+	  documentation on meaning of ST anisotropy ratio, with Ben's help;
+	  variogram now tries to catch unused arguments
+
+2013-09-19 13:23  ben_graeler
+
+	* /pkg/R/krige0.R: - added metric model to be accepted in krigeST
+
+2013-09-05 09:05  ben_graeler
+
+	* /pkg/R/variogramST.R, /pkg/demo/depend.R: - Added attribute
+	  "units" to obj$timelag in variogramST obtained from the "units"
+	  attribute of difftime. Thus "mins" and "secs" appear e.g. in the
+	  ylab of the empirical variogram plot.
+	  - Added missing demo file "depend.R" from gstat_1.0-17.tar.gz on
+	  CRAN.
+
+2013-09-03 12:40  edzer
+
+	* /pkg/DESCRIPTION, /pkg/src/vario.c, /pkg/src/vario.h,
+	  /pkg/src/vario_fn.c, /pkg/src/vario_fn.h: patch by Etienne B.
+	  Racine, adding the wave variogram model.
+
+2013-09-03 07:17  edzer
+
+	* /pkg/man/krigeST.Rd, /pkg/tests/Examples/gstat-Ex.Rout.save,
+	  /pkg/vignettes/st.Rnw: added library(sp) instances.
+
+2013-09-02 17:09  edzer
+
+	* /pkg/inst/ChangeLog: changelog
+
+2013-09-02 17:09  edzer
+
+	* /pkg/.Rbuildignore, /pkg/DESCRIPTION, /pkg/NAMESPACE,
+	  /pkg/demo/00Index, /pkg/demo/a2p.R, /pkg/demo/block.R,
+	  /pkg/demo/blue.R, /pkg/demo/cokriging.R, /pkg/demo/comp_geoR.R,
+	  /pkg/demo/cosimulation.R, /pkg/demo/examples.R,
+	  /pkg/demo/fulmar.R, /pkg/demo/grass.R, /pkg/demo/gstat3D.R,
+	  /pkg/demo/ikr.R, /pkg/demo/krige.R, /pkg/demo/lhs.R,
+	  /pkg/demo/line.R, /pkg/demo/lnsim.R, /pkg/demo/pcb.R,
+	  /pkg/demo/rep.R, /pkg/demo/sic2004.R, /pkg/demo/snow.R,
+	  /pkg/demo/stkrige.R, /pkg/demo/ugsim.R, /pkg/demo/uisim.R,
+	  /pkg/demo/weight.R, /pkg/demo/wind.R, /pkg/inst/ChangeLog,
+	  /pkg/man/fit.variogram.Rd, /pkg/man/fit.variogram.gls.Rd,
+	  /pkg/man/fit.variogram.reml.Rd, /pkg/man/gstat.Rd,
+	  /pkg/man/hscat.Rd, /pkg/man/image.Rd, /pkg/man/krige.Rd,
+	  /pkg/man/krige.cv.Rd, /pkg/man/krigeTg.Rd,
+	  /pkg/man/plot.gstatVariogram.Rd, /pkg/man/plot.variogramCloud.Rd,
+	  /pkg/man/predict.gstat.Rd, /pkg/man/variogram.Rd,
+	  /pkg/man/vgm.panel.Rd, /pkg/man/walker.Rd, /pkg/man/wind.Rd,
+	  /pkg/tests/Examples/gstat-Ex.Rout.save, /pkg/tests/blockkr.R,
+	  /pkg/tests/blockkr.Rout.save, /pkg/tests/cv.R,
+	  /pkg/tests/cv.Rout.save, /pkg/tests/fit.R,
+	  /pkg/tests/fit.Rout.save, /pkg/tests/krige0.R,
+	  /pkg/tests/krige0.Rout.save, /pkg/tests/line.R,
+	  /pkg/tests/line.Rout.save, /pkg/tests/na.action.R,
+	  /pkg/tests/na.action.Rout.save, /pkg/tests/rings.R,
+	  /pkg/tests/rings.Rout.save, /pkg/tests/sim.R,
+	  /pkg/tests/sim.Rout.save, /pkg/tests/unproj.R,
+	  /pkg/tests/unproj.Rout.save, /pkg/tests/variogram.R,
+	  /pkg/tests/variogram.Rout.save, /pkg/tests/vdist.R,
+	  /pkg/tests/vdist.Rout.save, /pkg/tests/windst.R,
+	  /pkg/tests/windst.Rout.save, /pkg/vignettes/gstat.Rnw,
+	  /pkg/vignettes/prs.Rnw: added library(sp) to examples and demos
+
 2013-07-09 15:12  edzer
 
 	* /pkg/DESCRIPTION: reversed import order of xts and zoo

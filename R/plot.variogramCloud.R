@@ -16,14 +16,14 @@ function (x, identify = FALSE, digitize = FALSE,
 			print("mouse-left identifies, mouse-right or Esc stops")
         	labs = paste(head, tail, sep = ",")
         	sel = identify(x$dist, x$gamma, labs, pos = keep)
-			ret = data.frame(cbind(head, tail)[sel, ])
+			ret = data.frame(cbind(head, tail)[sel,, drop = FALSE])
 		} else {
 			print("mouse-left digitizes, mouse-right closes polygon")
 			poly = locator(n = 512, type = "l")
 			if (!is.null(poly))
 				sel = point.in.polygon(x$dist, x$gamma, poly$x, poly$y)
 			else stop("digitized selection is empty")
-			ret = data.frame(cbind(head, tail)[sel == 1, ])
+			ret = data.frame(cbind(head, tail)[sel == 1,,drop = FALSE])
 		}
 		class(ret) = c("pointPairs", "data.frame")
         if (keep) {

@@ -15,7 +15,7 @@ vgmST(stModel, ..., space, time, joint, sill, nugget, stAni)
   \item{joint}{A joint spatio-temporal variogram.}
   \item{sill}{A joint spatio-temporal sill.}
   \item{nugget}{A joint spatio-temporal nugget.}
-  \item{stAni}{A spatio-temporal anisotropy.}
+  \item{stAni}{A spatio-temporal anisotropy; the number of space units equivalent to one time unit.}
 }
 
 \details{

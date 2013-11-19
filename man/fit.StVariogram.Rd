@@ -14,7 +14,7 @@ fit.StVariogram(object, model, ..., wles = FALSE)
   \item{wles}{Resiudals are weighted by the number of points in each lag class.}
 }
 \value{
-Returns a spatio-temporal variogram model, as S3 class StvariogramModel.
+Returns a spatio-temporal variogram model, as S3 class StVariogramModel. It carries the temporal and spatial unit as attributes in order to allow \code{\link{krigeST}} to adjust for different units. The units are obtained from the provided empirical variogram.
 }
 \author{
 Benedikt Graeler
@@ -26,13 +26,14 @@ Benedikt Graeler
 \examples{
 # separable model: spatial and temporal sill will be ignored
 # and kept constant at 1-nugget respectively. A joint sill is used.
+\dontrun{
 separableModel <- vgmST("separable",
-                        space=vgm(0.9,"Exp", 147, 0.1),
-                        time =vgm(0.9,"Exp", 3.5, 0.1),
-                        sill=40)
+                        space=vgm(0.8,"Exp", 140, 0.2),
+                        time =vgm(0.7,"Exp",   6, 0.3),
+                        sill=60)
 
 data(vv)
-fit.StVariogram(vv[1:77,], separableModel, method = "L-BFGS-B")
+fit.StVariogram(vv[1:77,], separableModel)}
 }
 
 \keyword{models}

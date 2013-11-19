@@ -114,6 +114,10 @@ const V_MODEL v_models[] = { /* the variogram model ``data base'': */
 		"Per(a,x) = 1 - cos(2*pi*x/a)",
 		"Per(a,x) = cos(2*pi*x/a)",
 		fn_periodic, da_fn_periodic },
+	{	WAVE, "Wav", "Wav (wave)", 
+		"Wav(a,x) = 1 - (a*sin(pi*x/a)/pi*x)",
+		"Wav(a,x) = a*sin(pi*x/a)/pi*x",
+		fn_wave, da_fn_wave },
 	{ 	HOLE, "Hol", "Hol (hole)",
 		"Hol(a,x) = 1 - sin(x/a)/(x/a)",
 		"Hol(a,x) = sin(x/a)/(x/a)",
@@ -366,7 +370,7 @@ void update_variogram(VARIOGRAM *vp) {
 				p->model == EXPONENTIAL || p->model == LOGARITHMIC ||
 				p->model == POWER || p->model == PERIODIC ||
 				p->model == EXCLASS || p->model == LEGENDRE ||
-				p->model == HOLE || /* more??? */
+				p->model == HOLE || p->model == WAVE || /* more??? */
 #ifdef USING_R
 				p->model == MATERN ||
 				p->model == STEIN ||

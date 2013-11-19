@@ -2,21 +2,18 @@
 \alias{variogramSurface}
 \title{Semivariance values for a given spatio-temporal variogram model}
 \description{
-Generates a surface of semivariance values given a spatio-temporal variogram model (one of separable, productSum or sumMetric)
+Generates a surface of semivariance values given a spatio-temporal variogram model (one of separable, productSum, sumMetric, simpleSumMetric or metric)
 }
 \usage{
-variogramSurface(model, dist_grid, covariance = FALSE, ...)
+variogramSurface(model, dist_grid, ...)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{model}{
   A spatio-temporal variogram model generated through \code{\link{vgmST}} or \code{\link{fit.StVariogram}}.
 }
   \item{dist_grid}{
   A data.frame with two columns: \code{spacelag} and \code{timelag}.
-}
-  \item{covariance}{
-  Shall covariances instead of semivariances be returned?
 }
   \item{\dots}{
 Additional arguments passed on to the underlying variogram functions.

@@ -92,6 +92,8 @@ as.vgm.variomodel = function(m) {
 		stop("no correct conversion available; use power model with power 1?")
 	else if (m$cov.model == "matern")
 		model = "Mat"
+	else if (m$cov.model == "wave")
+		model = "Wav"
 	else if (m$cov.model == "power")
 		model = "Pow"
 	else if (m$cov.model == "spherical")

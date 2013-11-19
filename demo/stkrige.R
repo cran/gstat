@@ -17,7 +17,7 @@ prodSumModel <- vgmST("productSum",
                       time= vgm(36, "Exp",   3, 0), 
                       sill=41, nugget=17)
 
-# lower and upper bounds of the metric model
+# lower and upper bounds of the sum metric model
 pars.l <- c(sill.s = 1E-2, range.s = 1E1, nugget.s = 0,
             sill.t = 1E-2, range.t = 1E0, nugget.t = 0,
             sill.st = 1E-2, range.st = 1E2, nugget.st = 0, 

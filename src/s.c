@@ -38,7 +38,7 @@
 
 #ifdef USING_R
 # include <R.h>
-# include <Rdefines.h>
+# include <Rinternals.h>
 /* # include <R_ext/Utils.h> */
 /* # include <Rinternals.h> */
 # define R_UNIFORM unif_rand()
@@ -105,7 +105,7 @@ SEXP gstat_init(SEXP s_debug_level) {
 	RANDIN; /* load R/S seed into rng */
 	seed_is_in = 1;
 	set_rng_functions(s_r_uniform, s_r_normal, "S/R random number generator");
-	debug_level = INTEGER_POINTER(s_debug_level)[0];
+	debug_level = INTEGER(s_debug_level)[0];
 	if (debug_level < 0) {
 		debug_level = -debug_level;
 		set_gstat_progress_handler(s_gstat_progress);
@@ -137,9 +137,10 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 
 	S_EVALUATOR
 
-	sy = AS_NUMERIC(sy);
+	/* sy = AS_NUMERIC(sy); */
+	sy = coerceVector(sy,REALSXP);
 	n = LENGTH(sy);
-	y = NUMERIC_POINTER(sy);
+	y = REAL(sy);
 	if (n == 0)
 		ErrMsg(ER_IMPOSVAL, "no data read");
 
@@ -151,16 +152,16 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		PROBLEM "too few spatial dimensions: %ld", dim ERROR;
 	if (dim > 3)
 		PROBLEM "too many spatial dimensions: %ld", dim ERROR;
-	locs = NUMERIC_POINTER(slocs);
+	locs = REAL(slocs);
 
 	if (LENGTH(sw) == n)
-		w = NUMERIC_POINTER(sw);
+		w = REAL(sw);
 
 	if (LENGTH(sX) % n != 0)
 		PROBLEM "dimensions do not match: X %d and data %ld: missing values in data?",
 			LENGTH(sX), n ERROR;
 	n_X = LENGTH(sX) / n;
-	X = NUMERIC_POINTER(sX);
+	X = REAL(sX);
 
 	assert(n_X > 0);
 	current.z = 0.0;
@@ -179,32 +180,32 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	d[id]->z_coord = "z";
 	d[id]->variable = "R data";
 	d[id]->fname = "R data";
-	d[id]->lambda = NUMERIC_POINTER(lambda)[0];
-	has_int = INTEGER_POINTER(has_intercept)[0];
+	d[id]->lambda = REAL(lambda)[0];
+	has_int = INTEGER(has_intercept)[0];
 	/* increase d[id]->n_X and set d[id]->colX[i]: */
 	for (i = d[id]->n_X = 0; i < n_X; i++) 
 		data_add_X(d[id], i + (has_int ? 0 : 1)); 
 	assert(d[id]->n_X == n_X);
 	for (i = 0; i < LENGTH(beta); i++) /* do nothing if beta is numeric(0) */
-		d[id]->beta = push_d_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
-	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
-		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
-	if (INTEGER_POINTER(omax)[0] > 0) /* leave default (0) if <= 0 */
-		d[id]->oct_max = INTEGER_POINTER(nmax)[0];
-	if (INTEGER_POINTER(nmin)[0] > 0) /* leave default (0) if <= 0 */
-		d[id]->sel_min = INTEGER_POINTER(nmin)[0];
-	if (NUMERIC_POINTER(maxdist)[0] > 0.0)
-		d[id]->sel_rad = NUMERIC_POINTER(maxdist)[0];
-	switch(INTEGER_POINTER(vfn)[0]) {
+		d[id]->beta = push_d_vector(REAL(beta)[i], d[id]->beta);
+	if (INTEGER(nmax)[0] > 0) /* leave default (large) if < 0 */
+		d[id]->sel_max = INTEGER(nmax)[0];
+	if (INTEGER(omax)[0] > 0) /* leave default (0) if <= 0 */
+		d[id]->oct_max = INTEGER(nmax)[0];
+	if (INTEGER(nmin)[0] > 0) /* leave default (0) if <= 0 */
+		d[id]->sel_min = INTEGER(nmin)[0];
+	if (REAL(maxdist)[0] > 0.0)
+		d[id]->sel_rad = REAL(maxdist)[0];
+	switch(INTEGER(vfn)[0]) {
 		case 1: /* d[id]->variance_fn = v_identity; == leave NULL */ break;
 		case 2: d[id]->variance_fn = v_mu; break;
 		case 3: d[id]->variance_fn = v_bin; break;
 		case 4: d[id]->variance_fn = v_mu2; break;
 		case 5: d[id]->variance_fn = v_mu3; break;
 		default: PROBLEM "unknown variance function %d", 
-				 	INTEGER_POINTER(vfn)[0] ERROR;
+				 	INTEGER(vfn)[0] ERROR;
 	}
-	gl_longlat = (INTEGER_POINTER(is_projected)[0] == 0);
+	gl_longlat = (INTEGER(is_projected)[0] == 0);
 	d[id]->mode = X_BIT_SET | V_BIT_SET;
 	if (dim > 1)
 		d[id]->mode = d[id]->mode | Y_BIT_SET;
@@ -219,7 +220,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		default: PROBLEM 
 			"length of grid topology %d unrecognized", LENGTH(grid) ERROR;
 	}
-	d[id]->polynomial_degree = INTEGER_POINTER(degree)[0];
+	d[id]->polynomial_degree = INTEGER(degree)[0];
 	if (d[id]->polynomial_degree < 0 || d[id]->polynomial_degree > 3) {
 		PROBLEM "polynomial degree should be 0, 1, 2 or 3" ERROR;
 	}
@@ -232,7 +233,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		}
 		setup_polynomial_X(d[id]); /* standardized coordinate polynomials */
 	}
-	d[id]->vdist = INTEGER_POINTER(vdist)[0];
+	d[id]->vdist = INTEGER(vdist)[0];
 	assert(n_X <= d[id]->n_X);
 	current.X = (double *) emalloc(d[id]->n_X * sizeof(double));
 
@@ -279,7 +280,7 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 	DATA **d = NULL;
 
 	S_EVALUATOR
-	dim = INTEGER_POINTER(loc_dim)[0];
+	dim = INTEGER(loc_dim)[0];
 	if (dim <= 0)
 		PROBLEM "dimension value impossible: %d", dim ERROR;
 	if (dim > 3)
@@ -299,32 +300,32 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 	d[id]->z_coord = "z";
 	d[id]->variable = "R data";
 	d[id]->fname = "R data";
-	has_int = INTEGER_POINTER(has_intercept)[0];
+	has_int = INTEGER(has_intercept)[0];
 	for (i = d[id]->n_X = 0; i < LENGTH(beta); i++)
 		data_add_X(d[id], i + (has_int ? 0 : 1));
 	assert(d[id]->n_X == LENGTH(beta));
 	d[id]->dummy = 1;
 	for (i = 0; i < LENGTH(beta); i++)
-		d[id]->beta = push_d_vector(NUMERIC_POINTER(beta)[i], d[id]->beta);
-	if (INTEGER_POINTER(nmax)[0] > 0) /* leave default (large) if < 0 */
-		d[id]->sel_max = INTEGER_POINTER(nmax)[0];
+		d[id]->beta = push_d_vector(REAL(beta)[i], d[id]->beta);
+	if (INTEGER(nmax)[0] > 0) /* leave default (large) if < 0 */
+		d[id]->sel_max = INTEGER(nmax)[0];
 /* I doubt whether using nmin for dummy data _ever_ can have a
  * meaning, but hey, let's add it anyway. */
-	if (INTEGER_POINTER(nmin)[0] > 0) /* leave default (0) if <= 0 */
-		d[id]->sel_min = INTEGER_POINTER(nmin)[0];
-	if (NUMERIC_POINTER(maxdist)[0] > 0.0)
-		d[id]->sel_rad = NUMERIC_POINTER(maxdist)[0];
-	switch(INTEGER_POINTER(vfn)[0]) {
+	if (INTEGER(nmin)[0] > 0) /* leave default (0) if <= 0 */
+		d[id]->sel_min = INTEGER(nmin)[0];
+	if (REAL(maxdist)[0] > 0.0)
+		d[id]->sel_rad = REAL(maxdist)[0];
+	switch(INTEGER(vfn)[0]) {
 		case 1: /* d[id]->variance_fn = v_identity; -> leave NULL */ break;
 		case 2: d[id]->variance_fn = v_mu; break;
 		case 3: d[id]->variance_fn = v_bin; break;
 		case 4: d[id]->variance_fn = v_mu2; break;
 		case 5: d[id]->variance_fn = v_mu3; break;
 		default: PROBLEM "unknown variance function %d", 
-				 	INTEGER_POINTER(vfn)[0] ERROR;
+				 	INTEGER(vfn)[0] ERROR;
 	}
-	gl_longlat = (INTEGER_POINTER(is_projected)[0] == 0);
-	d[id]->vdist = INTEGER_POINTER(vdist)[0];
+	gl_longlat = (INTEGER(is_projected)[0] == 0);
+	d[id]->vdist = INTEGER(vdist)[0];
 	d[id]->mode = X_BIT_SET | V_BIT_SET;
 	if (dim > 1)
 		d[id]->mode = d[id]->mode | Y_BIT_SET;
@@ -353,7 +354,7 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 
 	nvars = get_n_vars();
 	nest = nvars + (nvars * (nvars + 1))/2;
-	n = INTEGER_POINTER(sn)[0];
+	n = INTEGER(sn)[0];
 	if (n <= 0 || LENGTH(slocs) == 0 || LENGTH(sX) == 0)
 		ErrMsg(ER_IMPOSVAL, "newdata empty or only NA's");
 	if (LENGTH(slocs) % n != 0)
@@ -364,7 +365,7 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		PROBLEM "too many spatial dimensions: %ld", dim ERROR;
 	if (dim <= 0)
 		PROBLEM "too few spatial dimensions: %ld", dim ERROR;
-	locs = NUMERIC_POINTER(slocs);
+	locs = REAL(slocs);
 	if (LENGTH(sX) % n != 0)
 		PROBLEM "dimensions do not match: X %d and data %ld",
 			LENGTH(sX), n ERROR;
@@ -379,17 +380,17 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		bp = get_block_p();
 		bp->x = bp->y = bp->z = 0.0; /* obsolete, I'd guess */
 		if (LENGTH(block) >= 1) {
-			bp->x = NUMERIC_POINTER(block)[0];
+			bp->x = REAL(block)[0];
 			SET_BLOCK(&current);
 		}
 		if (LENGTH(block) >= 2)
-			bp->y = NUMERIC_POINTER(block)[1];
+			bp->y = REAL(block)[1];
 		if (LENGTH(block) >= 3)
-			bp->z = NUMERIC_POINTER(block)[2];
+			bp->z = REAL(block)[2];
 		if (LENGTH(block) > 3)
 			pr_warning("block dimension can only be 3; using the first 3");
 	} else if (LENGTH(block_cols) == 1) { /* if > 1, block contains multiple 2D blocks */
-		ncols_block = INTEGER_POINTER(block_cols)[0];
+		ncols_block = INTEGER(block_cols)[0];
 		if (ncols_block < 1 || ncols_block > 3)
 			ErrMsg(ER_IMPOSVAL, "block dimensions should be in [1..3]");
 		nrows_block = LENGTH(block) / ncols_block; /* nr of rows */
@@ -404,14 +405,14 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 			if (ncols_block > 2)
 				area->mode = area->mode & Z_BIT_SET;
 			for (i = 0; i < nrows_block; i++) {
-				current.x = NUMERIC_POINTER(block)[i];
+				current.x = REAL(block)[i];
 				if (ncols_block > 1)
-					current.y = NUMERIC_POINTER(block)[nrows_block + i];
+					current.y = REAL(block)[nrows_block + i];
 				if (ncols_block > 2)
-					current.z = NUMERIC_POINTER(block)[2 * nrows_block + i];
+					current.z = REAL(block)[2 * nrows_block + i];
 				if (LENGTH(weights) > 0) {
 					area->colnvariance = 1;
-					current.variance = NUMERIC_POINTER(weights)[i];
+					current.variance = REAL(weights)[i];
 				}
 				push_point(area, &current);
 			}
@@ -421,7 +422,7 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 			print_data_list(area);
 	}
 
-	X = NUMERIC_POINTER(sX);
+	X = REAL(sX);
 	assert(n_X > 0);
 	current.X = (double *) emalloc(n_X * sizeof(double));
 	current.u.stratum = 0;
@@ -474,18 +475,18 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 	}
 
 	/* so far for the faking; now let's see what gstat makes out of this: */
-	if (INTEGER_POINTER(nsim)[0] == 0) {
-		if (INTEGER_POINTER(blue)[0] == 0) { /* FALSE */
+	if (INTEGER(nsim)[0] == 0) {
+		if (INTEGER(blue)[0] == 0) { /* FALSE */
 			if (get_method() == NSP) /* choose default */
 				set_method(get_default_method());
 		} else 
 			set_method(LSLM);
 	} else {
-		if (INTEGER_POINTER(nsim)[0] < 0) {
-			gl_nsim = -(INTEGER_POINTER(nsim)[0]);
+		if (INTEGER(nsim)[0] < 0) {
+			gl_nsim = -(INTEGER(nsim)[0]);
 			set_method(ISI);
 		} else {
-			gl_nsim = INTEGER_POINTER(nsim)[0];
+			gl_nsim = INTEGER(nsim)[0];
 			set_method(GSI);
 		}
 		n_pred_locs = n;
@@ -529,39 +530,40 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 #endif
 	}
 	print_progress(100, 100);
-	PROTECT(ret = NEW_LIST(1));
-	PROTECT(retvector_dim = NEW_NUMERIC(2));
-	NUMERIC_POINTER(retvector_dim)[0] = n; /* nrows */
+	PROTECT(ret = allocVector(VECSXP, 1));
+	PROTECT(retvector_dim = allocVector(REALSXP, 2));
+	REAL(retvector_dim)[0] = n; /* nrows */
 	if (gl_nsim > 1) {
-		PROTECT(retvector = NEW_NUMERIC(gl_nsim * nvars * n));
+		PROTECT(retvector = allocVector(REALSXP, gl_nsim * nvars * n));
 		msim = get_msim();
 		for (i = pos = 0; i < nvars; i++)
 			for (j = 0; j < gl_nsim; j++) 
 				for (k = 0; k < n; k++)
-					NUMERIC_POINTER(retvector)[pos++] = msim[i][k][j];
-		NUMERIC_POINTER(retvector_dim)[1] = nvars * gl_nsim; /* ncols */
+					REAL(retvector)[pos++] = msim[i][k][j];
+		REAL(retvector_dim)[1] = nvars * gl_nsim; /* ncols */
 	} else {
-		PROTECT(retvector = NEW_NUMERIC(n * nest));
+		PROTECT(retvector = allocVector(REALSXP, n * nest));
 		for (j = pos = 0; j < nest; j++) {
 			for (i = 0; i < n; i++) {
 				if (is_mv_double(&(est_all[i][j])))
 #ifdef USING_R /* avoid NaN's to be returned */
-					NUMERIC_POINTER(retvector)[pos] = NA_REAL;
+					REAL(retvector)[pos] = NA_REAL;
 #else
-					na_set(NUMERIC_POINTER(retvector) + pos, S_MODE_DOUBLE);
+					na_set(REAL(retvector) + pos, S_MODE_DOUBLE);
 					/* the documentation says it should be DOUBLE */
 #endif
 				else
-					NUMERIC_POINTER(retvector)[pos] = est_all[i][j];
+					REAL(retvector)[pos] = est_all[i][j];
 				pos++;
 			}
 		}
-		NUMERIC_POINTER(retvector_dim)[1] = nest; /* ncols */
+		REAL(retvector_dim)[1] = nest; /* ncols */
 	}
 	if (gl_nsim > 0)
 		free_simulations();
-	SET_DIM(retvector, retvector_dim);
-	SET_ELEMENT(ret, 0, retvector);
+	/* SET_DIM(retvector, retvector_dim); */
+	setAttrib(retvector, R_DimSymbol, retvector_dim);
+	SET_VECTOR_ELT(ret, 0, retvector);
 	for (i = 0; i < n; i++)
 		efree(est_all[i]);
 	efree(est_all);
@@ -578,11 +580,11 @@ static void gstat_set_block(long i, SEXP block, SEXP block_cols, DPOINT *current
 	if (i >= LENGTH(block_cols) || i < 0)
 		ErrMsg(ER_IMPOSVAL, "block_cols length less than nr of prediction locations");
 	nrows_block = LENGTH(block) / 2; /* nr of rows */
-	start = INTEGER_POINTER(block_cols)[i];
+	start = INTEGER(block_cols)[i];
 	if (i == LENGTH(block_cols) - 1)
 		end = nrows_block;
 	else
-		end = INTEGER_POINTER(block_cols)[i+1] - 1;
+		end = INTEGER(block_cols)[i+1] - 1;
 	area = get_data_area();
 	if (area != NULL)
 		free_data(area);
@@ -591,8 +593,8 @@ static void gstat_set_block(long i, SEXP block, SEXP block_cols, DPOINT *current
 	area->id = ID_OF_AREA;
 	area->mode = X_BIT_SET & Y_BIT_SET;
 	for (j = start - 1; j < end; j++) {
-		current->x = NUMERIC_POINTER(block)[j];
-		current->y = NUMERIC_POINTER(block)[nrows_block + j];
+		current->x = REAL(block)[j];
+		current->y = REAL(block)[nrows_block + j];
 		push_point(area, current);
 	}
 	SET_BLOCK(current);
@@ -626,48 +628,48 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 
 	S_EVALUATOR
 
-	id1 = INTEGER_POINTER(s_ids)[0];
+	id1 = INTEGER(s_ids)[0];
 	if (LENGTH(s_ids) > 1)
-		id2 = INTEGER_POINTER(s_ids)[1];
+		id2 = INTEGER(s_ids)[1];
 	else
 		id2 = id1;
 	vgm = get_vgm(LTI(id1,id2));
 	vgm->id = LTI(id1,id2);
 	vgm->id1 = id1;
 	vgm->id2 = id2;
-	if (INTEGER_POINTER(cov)[0] == 0)
+	if (INTEGER(cov)[0] == 0)
 		vgm->ev->evt = (id1 == id2 ? SEMIVARIOGRAM : CROSSVARIOGRAM);
-	else if (INTEGER_POINTER(cov)[0] == 1)
+	else if (INTEGER(cov)[0] == 1)
 		vgm->ev->evt = (id1 == id2 ? COVARIOGRAM : CROSSCOVARIOGRAM);
 	else {
 		if (id1 != id2)
 			ErrMsg(ER_IMPOSVAL,
 			"cannot compute pairwise relative cross semivariogram");
-		if (INTEGER_POINTER(cov)[0] == 2)
+		if (INTEGER(cov)[0] == 2)
 			vgm->ev->evt = PRSEMIVARIOGRAM;
 	}
-	/* vgm->ev->is_asym = INTEGER_POINTER(asym)[0]; */
-	vgm->ev->pseudo = INTEGER_POINTER(pseudo)[0];
+	/* vgm->ev->is_asym = INTEGER(asym)[0]; */
+	vgm->ev->pseudo = INTEGER(pseudo)[0];
 	vgm->ev->recalc = 1;
 	vgm->fname = NULL;
 	if (LENGTH(cutoff) > 0)
-		gl_cutoff = NUMERIC_POINTER(cutoff)[0];
+		gl_cutoff = REAL(cutoff)[0];
 	if (LENGTH(width) > 0)
-		gl_iwidth = NUMERIC_POINTER(width)[0];
-	gl_alpha = NUMERIC_POINTER(direction)[0];
-	gl_beta = NUMERIC_POINTER(direction)[1];
-	gl_tol_hor = NUMERIC_POINTER(direction)[2];
-	gl_tol_ver = NUMERIC_POINTER(direction)[3];
-	gl_cressie = INTEGER_POINTER(cressie)[0];
+		gl_iwidth = REAL(width)[0];
+	gl_alpha = REAL(direction)[0];
+	gl_beta = REAL(direction)[1];
+	gl_tol_hor = REAL(direction)[2];
+	gl_tol_ver = REAL(direction)[3];
+	gl_cressie = INTEGER(cressie)[0];
 	if (LENGTH(dX) > 0) {
 		d = get_gstat_data();
-		d[id1]->dX = NUMERIC_POINTER(dX)[0];
-		d[id2]->dX = NUMERIC_POINTER(dX)[0];
+		d[id1]->dX = REAL(dX)[0];
+		d[id2]->dX = REAL(dX)[0];
 		/* printf("dX1: %g ", d[id1]->dX);
 		printf("dX2: %g\n", d[id2]->dX); */
 	} 
 	for (i = 0; i < LENGTH(boundaries); i++) /* does nothing if LENGTH is 0 */
-		push_bound(NUMERIC_POINTER(boundaries)[i]);
+		push_bound(REAL(boundaries)[i]);
 	switch (LENGTH(grid)) {
 		case 0: case 1: break;
 		case 6: vgm->ev->S_grid = gstat_S_fillgrid(grid); break;
@@ -678,35 +680,35 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 	calc_variogram(vgm, NULL);
 
 	if (vgm->ev->S_grid != NULL) {
-		PROTECT(ret = NEW_LIST(4));
+		PROTECT(ret = allocVector(VECSXP, 4));
 		m = vgm->ev->map;
 		n = m->rows * m->cols;
-		PROTECT(np = NEW_NUMERIC(n));
-		PROTECT(gamma = NEW_NUMERIC(n));
-		PROTECT(sx = NEW_NUMERIC(n));
-		PROTECT(sy = NEW_NUMERIC(n));
+		PROTECT(np = allocVector(REALSXP, n));
+		PROTECT(gamma = allocVector(REALSXP, n));
+		PROTECT(sx = allocVector(REALSXP, n));
+		PROTECT(sy = allocVector(REALSXP, n));
 
 		for (row = i = 0; row < m->rows; row++) {
 			for (col = 0; col < m->cols; col++) {
-				map_rowcol2xy(m, row, col, &(NUMERIC_POINTER(sx)[i]), 
-								&(NUMERIC_POINTER(sy)[i]));
-				NUMERIC_POINTER(np)[i] = vgm->ev->nh[i];
+				map_rowcol2xy(m, row, col, &(REAL(sx)[i]), 
+								&(REAL(sy)[i]));
+				REAL(np)[i] = vgm->ev->nh[i];
 				if (vgm->ev->nh[i] > 0)
-					NUMERIC_POINTER(gamma)[i] = vgm->ev->gamma[i];
+					REAL(gamma)[i] = vgm->ev->gamma[i];
 				else 
 #ifdef USING_R /* avoid NaN's to be returned */
-					NUMERIC_POINTER(gamma)[i] = NA_REAL;
+					REAL(gamma)[i] = NA_REAL;
 #else
-					na_set(NUMERIC_POINTER(gamma) + i, S_MODE_DOUBLE);
+					na_set(REAL(gamma) + i, S_MODE_DOUBLE);
 					/* the documentation says it should be DOUBLE */
 #endif
 				i++;
 			}
 		}
-		SET_ELEMENT(ret, 0, sx);
-		SET_ELEMENT(ret, 1, sy);
-		SET_ELEMENT(ret, 2, np);
-		SET_ELEMENT(ret, 3, gamma);
+		SET_VECTOR_ELT(ret, 0, sx);
+		SET_VECTOR_ELT(ret, 1, sy);
+		SET_VECTOR_ELT(ret, 2, np);
+		SET_VECTOR_ELT(ret, 3, gamma);
 		UNPROTECT(5);
 	} else {
 		if (vgm->ev->cloud)
@@ -718,26 +720,26 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 			else 
 				nest = vgm->ev->n_est - 1;
 		}
-		PROTECT(ret = NEW_LIST(4));
+		PROTECT(ret = allocVector(VECSXP, 4));
 		if (nest <= 0)
 			return(ret);
-		PROTECT(np = NEW_NUMERIC(nest));
-		PROTECT(dist = NEW_NUMERIC(nest));
-		PROTECT(gamma = NEW_NUMERIC(nest));
-		PROTECT(ev_parameters = NEW_NUMERIC(4));
-		NUMERIC_POINTER(ev_parameters)[0] = vgm->ev->cutoff;
-		NUMERIC_POINTER(ev_parameters)[1] = vgm->ev->iwidth;
-		NUMERIC_POINTER(ev_parameters)[2] = vgm->ev->pseudo;
-		NUMERIC_POINTER(ev_parameters)[3] = vgm->ev->is_asym;
+		PROTECT(np = allocVector(REALSXP, nest));
+		PROTECT(dist = allocVector(REALSXP, nest));
+		PROTECT(gamma = allocVector(REALSXP, nest));
+		PROTECT(ev_parameters = allocVector(REALSXP, 4));
+		REAL(ev_parameters)[0] = vgm->ev->cutoff;
+		REAL(ev_parameters)[1] = vgm->ev->iwidth;
+		REAL(ev_parameters)[2] = vgm->ev->pseudo;
+		REAL(ev_parameters)[3] = vgm->ev->is_asym;
 		for (i = 0; i < nest; i++) {
-			NUMERIC_POINTER(np)[i] = vgm->ev->nh[i];
-			NUMERIC_POINTER(dist)[i] = vgm->ev->dist[i];
-			NUMERIC_POINTER(gamma)[i] = vgm->ev->gamma[i];
+			REAL(np)[i] = vgm->ev->nh[i];
+			REAL(dist)[i] = vgm->ev->dist[i];
+			REAL(gamma)[i] = vgm->ev->gamma[i];
 		}
-		SET_ELEMENT(ret, 0, np);
-		SET_ELEMENT(ret, 1, dist);
-		SET_ELEMENT(ret, 2, gamma);
-		SET_ELEMENT(ret, 3, ev_parameters);
+		SET_VECTOR_ELT(ret, 0, np);
+		SET_VECTOR_ELT(ret, 1, dist);
+		SET_VECTOR_ELT(ret, 2, gamma);
+		SET_VECTOR_ELT(ret, 3, ev_parameters);
 		UNPROTECT(5);
 	}
 	return(ret);
@@ -752,13 +754,13 @@ SEXP gstat_load_variogram(SEXP s_ids, SEXP s_model, SEXP s_sills, SEXP s_ranges,
 		*kappas, *anis_all;
 	const char *model;
 
-	sills = NUMERIC_POINTER(s_sills);
-	ranges = NUMERIC_POINTER(s_ranges);
-	kappas = NUMERIC_POINTER(s_kappas);
-	anis_all = NUMERIC_POINTER(s_anis_all);
+	sills = REAL(s_sills);
+	ranges = REAL(s_ranges);
+	kappas = REAL(s_kappas);
+	anis_all = REAL(s_anis_all);
 
-	id1 = INTEGER_POINTER(s_ids)[0];
-	id2 = INTEGER_POINTER(s_ids)[1];
+	id1 = INTEGER(s_ids)[0];
+	id2 = INTEGER(s_ids)[1];
 	max_id = MAX(id1, id2);
 
 	if (get_n_vars() == 0)
@@ -780,7 +782,7 @@ SEXP gstat_load_variogram(SEXP s_ids, SEXP s_model, SEXP s_sills, SEXP s_ranges,
 #ifdef USING_R
 		model = CHAR(STRING_ELT(s_model, i));
 #else
-		model = CHARACTER_POINTER(s_model)[i];
+		model = STRING_POINTER(s_model)[i];
 #endif
 		anis[0] = anis_all[0 * n + i];
 		anis[1] = anis_all[1 * n + i];
@@ -791,7 +793,7 @@ SEXP gstat_load_variogram(SEXP s_ids, SEXP s_model, SEXP s_sills, SEXP s_ranges,
 		rpars[1] = kappas[i];
 		if (LENGTH(s_table) > 0)
 			push_to_v_table(vgm, rpars[0], 
-					LENGTH(s_table), NUMERIC_POINTER(s_table),
+					LENGTH(s_table), REAL(s_table),
 					(anis[3] == 1.0 && anis[4] == 1.0) ? NULL : anis);
 		else
 			push_to_v(vgm, model, sills[i], rpars, 2,
@@ -815,47 +817,47 @@ SEXP gstat_variogram_values(SEXP ids, SEXP pars, SEXP covariance, SEXP dist_valu
 
 	if (LENGTH(pars) != 3 && LENGTH(pars) != 6)
 		PROBLEM "supply three or six distance parameters" ERROR;
-	from = NUMERIC_POINTER(pars)[0];
-	to = NUMERIC_POINTER(pars)[1];
-	n = NUMERIC_POINTER(pars)[2];
+	from = REAL(pars)[0];
+	to = REAL(pars)[1];
+	n = REAL(pars)[2];
 	ndist = LENGTH(dist_values);
-	cov = INTEGER_POINTER(covariance)[0];
+	cov = INTEGER(covariance)[0];
 	if (LENGTH(pars) == 6) {
-		x = NUMERIC_POINTER(pars)[3];
-		y = NUMERIC_POINTER(pars)[4];
-		z = NUMERIC_POINTER(pars)[5];
+		x = REAL(pars)[3];
+		y = REAL(pars)[4];
+		z = REAL(pars)[5];
 	}
 
-	id1 = INTEGER_POINTER(ids)[0];
-	id2 = INTEGER_POINTER(ids)[1];
+	id1 = INTEGER(ids)[0];
+	id2 = INTEGER(ids)[1];
 	vgm = get_vgm(LTI(id1,id2));
 
 	if (ndist > 0) {
-		PROTECT(dist = NEW_NUMERIC(ndist));
-		PROTECT(gamma = NEW_NUMERIC(ndist));
+		PROTECT(dist = allocVector(REALSXP, ndist));
+		PROTECT(gamma = allocVector(REALSXP, ndist));
 		for (i = 0; i < ndist; i++) {
-			d = NUMERIC_POINTER(dist_values)[i];
-			NUMERIC_POINTER(dist)[i] = d;
-			NUMERIC_POINTER(gamma)[i] = (cov ? 
+			d = REAL(dist_values)[i];
+			REAL(dist)[i] = d;
+			REAL(gamma)[i] = (cov ? 
 				get_covariance(vgm, d * x, d * y, d * z) : 
 				get_semivariance(vgm, d * x, d * y, d * z));
 		}
 	} else {
-		PROTECT(dist = NEW_NUMERIC(n));
-		PROTECT(gamma = NEW_NUMERIC(n));
+		PROTECT(dist = allocVector(REALSXP, n));
+		PROTECT(gamma = allocVector(REALSXP, n));
 		for (i = 0; i < n; i++) {
 			d = from;
 			if (i > 0) /* implies n > 1 */
 				d += (i/(n-1))*(to-from);
-			NUMERIC_POINTER(dist)[i] = d;
-			NUMERIC_POINTER(gamma)[i] = (cov ? 
+			REAL(dist)[i] = d;
+			REAL(gamma)[i] = (cov ? 
 				get_covariance(vgm, d * x, d * y, d * z) : 
 				get_semivariance(vgm, d * x, d * y, d * z));
 		}
 	}
-	PROTECT(ret = NEW_LIST(2));
-	SET_ELEMENT(ret, 0, dist);
-	SET_ELEMENT(ret, 1, gamma);
+	PROTECT(ret = allocVector(VECSXP, 2));
+	SET_VECTOR_ELT(ret, 0, dist);
+	SET_VECTOR_ELT(ret, 1, gamma);
 	UNPROTECT(3);
 	return(ret);
 }
@@ -872,24 +874,24 @@ SEXP get_covariance_list(SEXP ids, SEXP covariance, SEXP dist_list) {
 
 	S_EVALUATOR
 
-	cov = INTEGER_POINTER(covariance)[0];
+	cov = INTEGER(covariance)[0];
 
-	id1 = INTEGER_POINTER(ids)[0];
-	id2 = INTEGER_POINTER(ids)[1];
+	id1 = INTEGER(ids)[0];
+	id2 = INTEGER(ids)[1];
 	vgm = get_vgm(LTI(id1,id2));
 
-	PROTECT(dist = NEW_NUMERIC(length_list));
-	PROTECT(gamma = NEW_NUMERIC(length_list));
+	PROTECT(dist = allocVector(REALSXP, length_list));
+	PROTECT(gamma = allocVector(REALSXP, length_list));
 	for (i = 0; i < length_list; i++) {
-		d = NUMERIC_POINTER(dist_list)[i];
-		NUMERIC_POINTER(dist)[i] = d;
-		NUMERIC_POINTER(gamma)[i] = (cov ? 
+		d = REAL(dist_list)[i];
+		REAL(dist)[i] = d;
+		REAL(gamma)[i] = (cov ? 
 			get_covariance(vgm, d * x, d * y, d * z) : 
 			get_semivariance(vgm, d * x, d * y, d * z));
 	}
-	PROTECT(ret = NEW_LIST(2));
-	SET_ELEMENT(ret, 0, dist);
-	SET_ELEMENT(ret, 1, gamma);
+	PROTECT(ret = allocVector(VECSXP, 2));
+	SET_VECTOR_ELT(ret, 0, dist);
+	SET_VECTOR_ELT(ret, 1, gamma);
 	UNPROTECT(3);
 	return(ret);
 }
@@ -901,14 +903,14 @@ SEXP gstat_get_variogram_models(SEXP dolong) {
 	for (i = 1; v_models[i].model != NOT_SP; i++)
 		n++;
 
-	do_long = INTEGER_POINTER(dolong)[0];
-	PROTECT(ret = NEW_CHARACTER(n));
+	do_long = INTEGER(dolong)[0];
+	PROTECT(ret = allocVector(STRSXP, n));
 	for (i = 1; v_models[i].model != NOT_SP; i++)
 #ifdef USING_R
 		SET_STRING_ELT(ret, i-1, 
-				COPY_TO_USER_STRING(do_long ? v_models[i].name_long : v_models[i].name));
+				mkChar(do_long ? v_models[i].name_long : v_models[i].name));
 #else
-		CHARACTER_POINTER(ret)[i-1] = 
+		STRING_POINTER(ret)[i-1] = 
 					string_dup(do_long ? v_models[i].name_long : v_models[i].name);
 #endif
 	UNPROTECT(1);
@@ -920,8 +922,8 @@ SEXP gstat_load_command(SEXP commands) {
 	const char *cmd;
 	SEXP error;
 
-	PROTECT(error = NEW_INTEGER(1));
-	INTEGER_POINTER(error)[0] = 0;
+	PROTECT(error = allocVector(INTSXP, 1));
+	INTEGER(error)[0] = 0;
 	for (i = 0; i < LENGTH(commands); i++) {
 #ifdef USING_R
 		cmd = CHAR(STRING_ELT(commands, i));
@@ -930,7 +932,7 @@ SEXP gstat_load_command(SEXP commands) {
 #endif
 		if (parse_cmd(cmd, NULL)) {
 			Rprintf("internal gstat string parse error on [%s]", cmd);
-			INTEGER_POINTER(error)[0] = i+1;
+			INTEGER(error)[0] = i+1;
 			UNPROTECT(1);
 			return(error); 
 		}
@@ -1008,7 +1010,7 @@ SEXP gstat_load_ev(SEXP np, SEXP dist, SEXP gamma) {
 
 	which_identifier("xx");
 	/*
-	 * vgm = get_vgm(LTI(INTEGER_POINTER(id)[0], INTEGER_POINTER(id)[1]));
+	 * vgm = get_vgm(LTI(INTEGER(id)[0], INTEGER(id)[1]));
 	 * */
 	vgm = get_vgm(LTI(0, 0));
 	if (vgm->ev == NULL)
@@ -1020,9 +1022,9 @@ SEXP gstat_load_ev(SEXP np, SEXP dist, SEXP gamma) {
 	vgm->ev->dist = (double *) emalloc (sizeof(double) * vgm->ev->n_max);
 	vgm->ev->nh = (unsigned long *) emalloc (sizeof(long) * vgm->ev->n_max);
 	for (i = 0; i < vgm->ev->n_est; i++) {
-		vgm->ev->nh[i] = NUMERIC_POINTER(np)[i];
-		vgm->ev->dist[i] = NUMERIC_POINTER(dist)[i];
-		vgm->ev->gamma[i] = NUMERIC_POINTER(gamma)[i];
+		vgm->ev->nh[i] = REAL(np)[i];
+		vgm->ev->dist[i] = REAL(dist)[i];
+		vgm->ev->gamma[i] = REAL(gamma)[i];
 		if (cloud && vgm->ev->nh[i] > 1)
 			cloud = 0;
 	}
@@ -1042,10 +1044,10 @@ SEXP gstat_fit_variogram(SEXP fit, SEXP fit_sill, SEXP fit_range) {
 	SEXP fit_is_singular;
 
 	vgm = get_vgm(LTI(0, 0));
-	vgm->ev->fit = INTEGER_POINTER(fit)[0];
+	vgm->ev->fit = INTEGER(fit)[0];
 	for (i = 0; i < vgm->n_models; i++) {
-		vgm->part[i].fit_sill = INTEGER_POINTER(fit_sill)[i];
-		vgm->part[i].fit_range = INTEGER_POINTER(fit_range)[i];
+		vgm->part[i].fit_sill = INTEGER(fit_sill)[i];
+		vgm->part[i].fit_range = INTEGER(fit_range)[i];
 	}
 	update_variogram(vgm);
 	if (DEBUG_VGMFIT)
@@ -1054,31 +1056,31 @@ SEXP gstat_fit_variogram(SEXP fit, SEXP fit_sill, SEXP fit_range) {
 	if (DEBUG_VGMFIT)
 		logprint_variogram(vgm, 1);
 
-	PROTECT(sills = NEW_NUMERIC(vgm->n_models));
-	PROTECT(ranges = NEW_NUMERIC(vgm->n_models));
+	PROTECT(sills = allocVector(REALSXP, vgm->n_models));
+	PROTECT(ranges = allocVector(REALSXP, vgm->n_models));
 	for (i = 0; i < vgm->n_models; i++) {
-		NUMERIC_POINTER(sills)[i] = vgm->part[i].sill;
-		NUMERIC_POINTER(ranges)[i] = vgm->part[i].range[0];
+		REAL(sills)[i] = vgm->part[i].sill;
+		REAL(ranges)[i] = vgm->part[i].range[0];
 	}
 
-	PROTECT(ret = NEW_LIST(4));
-	SET_ELEMENT(ret, 0, sills);
-	SET_ELEMENT(ret, 1, ranges);
+	PROTECT(ret = allocVector(VECSXP, 4));
+	SET_VECTOR_ELT(ret, 0, sills);
+	SET_VECTOR_ELT(ret, 1, ranges);
 
-	PROTECT(fit_is_singular = NEW_NUMERIC(1));
-	NUMERIC_POINTER(fit_is_singular)[0] = vgm->fit_is_singular;
-	SET_ELEMENT(ret, 2, fit_is_singular);
+	PROTECT(fit_is_singular = allocVector(REALSXP, 1));
+	REAL(fit_is_singular)[0] = vgm->fit_is_singular;
+	SET_VECTOR_ELT(ret, 2, fit_is_singular);
 
-	PROTECT(SSErr = NEW_NUMERIC(1));
-	NUMERIC_POINTER(SSErr)[0] = vgm->SSErr;
-	SET_ELEMENT(ret, 3, SSErr);
+	PROTECT(SSErr = allocVector(REALSXP, 1));
+	REAL(SSErr)[0] = vgm->SSErr;
+	SET_VECTOR_ELT(ret, 3, SSErr);
 
 	UNPROTECT(5);
 	return(ret);
 }
 
 SEXP gstat_debug_level(SEXP level) {
-	debug_level = INTEGER_POINTER(level)[0];
+	debug_level = INTEGER(level)[0];
 	return(level);
 }
 
@@ -1118,12 +1120,12 @@ static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams) {
 	double x_ul, y_ul, cellsizex, cellsizey;
 	unsigned int rows, cols;
 
-	cellsizex = NUMERIC_POINTER(gridparams)[2];
-	cellsizey = NUMERIC_POINTER(gridparams)[3];
-	rows = (unsigned int) NUMERIC_POINTER(gridparams)[5];
-	cols = (unsigned int) NUMERIC_POINTER(gridparams)[4];
-	x_ul = NUMERIC_POINTER(gridparams)[0] - 0.5 * cellsizex;
-	y_ul = NUMERIC_POINTER(gridparams)[1] + (rows - 0.5) * cellsizey;
+	cellsizex = REAL(gridparams)[2];
+	cellsizey = REAL(gridparams)[3];
+	rows = (unsigned int) REAL(gridparams)[5];
+	cols = (unsigned int) REAL(gridparams)[4];
+	x_ul = REAL(gridparams)[0] - 0.5 * cellsizex;
+	y_ul = REAL(gridparams)[1] + (rows - 0.5) * cellsizey;
 	/*
 	printf("%g %g %g %g %u %u\n", x_ul, y_ul, cellsizex, cellsizey, rows, cols);
 	fflush(stdout);
