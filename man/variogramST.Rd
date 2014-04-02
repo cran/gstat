@@ -14,10 +14,10 @@ variogramST(formula, locations, data, ..., tlags = 0:15,  cutoff,
 \item{locations}{A STFDF or STSDF containing the variable; kept for 
   compatibility reasons with variogram, either \code{locations} or \code{data} 
   must be provided.}
-\item{data}{A STFDF or STSDF containing the variable.}
+\item{data}{A \code{\linkS4class{STFDF}}, \code{\linkS4class{STSDF}} or \code{\linkS4class{STIDF}} containing the variable.}
 \item{...}{any other arguments that will be passed to the underlying 
-  \code{\link{variogram}} function.}
-\item{tlags}{ integer; time lags to consider; see details below.}
+  \code{\link{variogram}} function. In case of using data of type \code{\linkS4class{STIDF}}, the argument \code{tunit} is recommended to set the temporal unit of the \code{tlags}. Additionally, \code{twindow} can be passed to control the temporal window used for temporal distance calculations. This builds on the property of xts being ordered and only the next \code{twindow} instances are considered. This avoids the need of huge temporal distance matrices. The default uses twice the number as the average difference goes into the temporal cutoff.}
+\item{tlags}{ integer; time lags to consider or in case \code{data} is of class \code{\linkS4class{STIDF}} the actual temporal boundaries with time unit given by \code{tunit} otherwise the same unit as \code{\link{diff}} on the index of the time slot will generate is assumed.}
 \item{cutoff}{ spatial separation distance up to which point pairs
 are included in semivariance estimates; as a default, the
 length of the diagonal of the box spanning the data is divided by three. }
@@ -58,7 +58,7 @@ Cressie, N., C. Wikle, 2011, Statistics for Spatio-temporal Data, Wiley.
 Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
 Computers \& Geosciences, 30: 683-691.
 }
-\author{ Edzer Pebesma }
+\author{ Edzer Pebesma, Benedikt Graeler }
 
 \seealso{
 \code{\link{plot.StVariogram}},
@@ -68,7 +68,7 @@ to fit a spatio-temporal variogram model to a spatio-temporal sample variogram:
 }
 \examples{
 # The following spatio-temporal variogram has been calcualted through
-# vv = variogramST(PM10~1, r5to10, width=20, cutoff = 200)
+# vv = variogram(PM10~1, r5to10, width=20, cutoff = 200, tlags=0:5)
 # in the vignette "st".
 
 data(vv)

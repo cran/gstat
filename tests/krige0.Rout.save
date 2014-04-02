@@ -1,5 +1,5 @@
 
-R version 3.0.1 (2013-05-16) -- "Good Sport"
+R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
 Copyright (C) 2013 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -33,23 +33,27 @@ Type 'q()' to quit R.
 > v = vgm(1, "Exp", 500)
 > # test sk:
 > x0 <- krige0(zinc~1, meuse, meuse.grid, v, beta = 500, computeVar = TRUE)
+> rownames(x0$pred)=NULL
 > x <- krige(zinc~1, meuse, meuse.grid, v, beta = 500)
 [using simple kriging]
 > all.equal(x$var1.pred, x0$pred[,1])
-[1] "names for current but not for target"
+[1] TRUE
 > all.equal(x$var1.var, x0$var)
 [1] TRUE
 > # test ok:
 > x0 <- krige0(zinc~1, meuse, meuse.grid, v, computeVar = TRUE)
+> rownames(x0$pred)=NULL
+> names(x0$var)=NULL
 > x <- krige(zinc~1, meuse, meuse.grid, v)
 [using ordinary kriging]
 > all.equal(x$var1.pred, x0$pred[,1])
-[1] "names for current but not for target"
+[1] TRUE
 > all.equal(x$var1.var, x0$var)
 [1] TRUE
 > # test uk:
 > x0 <- krige0(zinc~sqrt(dist), meuse, meuse.grid, v, computeVar = TRUE)
 > rownames(x0$pred)=NULL
+> names(x0$var)=NULL
 > x <- krige(zinc~sqrt(dist), meuse, meuse.grid, v)
 [using universal kriging]
 > all.equal(x$var1.pred, x0$pred[,1])
@@ -59,4 +63,4 @@ Type 'q()' to quit R.
 > 
 > proc.time()
    user  system elapsed 
-  6.720   0.324   7.069 
+  3.424   0.064   3.490 

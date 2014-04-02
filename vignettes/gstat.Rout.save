@@ -1,6 +1,5 @@
 
-> library(gstat)
-Loading required package: sp
+> library(sp)
 
 > data(meuse)
 
@@ -54,12 +53,12 @@ Data attributes:
  NA's   : 1                   
 
 > coordinates(meuse)[1:5, ]
-          x      y
-[1,] 181072 333611
-[2,] 181025 333558
-[3,] 181165 333537
-[4,] 181298 333484
-[5,] 181307 333330
+       x      y
+1 181072 333611
+2 181025 333558
+3 181165 333537
+4 181298 333484
+5 181307 333330
 
 > bubble(meuse, "zinc", col = c("#00ff0088", "#00ff0088"), 
 +     main = "zinc concentrations (ppm)")
@@ -104,6 +103,8 @@ attr(,"package")
 > image(meuse.grid["dist"])
 
 > title("distance to river (red = 0)")
+
+> library(gstat)
 
 > zinc.idw = krige(zinc ~ 1, meuse, meuse.grid)
 [inverse distance weighted interpolation]
@@ -279,4 +280,4 @@ log(pb).log(cu)[2]   Exp 0.10267516   300
  *** Run successfully completed ***
 > proc.time()
    user  system elapsed 
-  5.716   0.152   5.866 
+  5.228   0.080   5.323 

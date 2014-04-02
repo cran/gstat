@@ -19,6 +19,7 @@ import(lattice)
 importFrom(zoo, zoo, is.regular)
 import(sp)
 import(spacetime)
+import(FNN)
 
 export(as.vgm.variomodel,
 	cross.name,
@@ -28,6 +29,7 @@ export(as.vgm.variomodel,
 	fit.variogram.gls,
 	fit.StVariogram,
 	get.contr,
+	get_gstat_progress,
 	gstat,
 	gstat.cv,
 	"[.gstat",
@@ -48,6 +50,7 @@ export(as.vgm.variomodel,
 	vgm, vgmST,
 	vgm.panel.xyplot,
 	panel.pointPairs,
+	set_gstat_progress,
 	xyz2img)
 
 exportMethods(krige, idw, krige.cv)
@@ -68,6 +71,7 @@ S3method(print, gstat)
 S3method(print, gstatVariogram)
 S3method(print, variogramCloud)
 S3method(print, variogramModel)
+S3method(print, StVariogramModel)
 
 S3method(variogram, default)
 S3method(variogram, formula)

@@ -21,6 +21,8 @@
 \date{\small \today }
 
 \begin{document}
+\setkeys{Gin}{width=0.9\textwidth}
+
 \maketitle
 
 \section{Introduction}
@@ -112,7 +114,7 @@ rn
 @
 
 In the following, autocorrelation functions are computed and plotted.
-The resulting plot is shown in figure \ref{fig:acf}.
+The resulting plot is shown in Figure~\ref{fig:acf}.
 <<fig=FALSE,eval=FALSE>>=cf(na.omit(as(r5to10[rn,], "xts")))
 par(mfrow=c(2,2))
 # select 4, 5, 6, 7
@@ -140,14 +142,14 @@ series object is passed to {\tt acf}:
 <<fig=FALSE,echo=TRUE,eval=FALSE>>=
 acf(na.omit(as(r5to10[rn,], "xts")))
 @
-The resulting plot is shown in figure \ref{fig:ccf}.
+The resulting plot is shown in Figure~\ref{fig:ccf}.
 \begin{figure}[hbt]
 \begin{center}
 <<fig=TRUE,echo=FALSE>>=
 acf(na.omit(as(r5to10[rn,], "xts")))
 @
 \end{center}
-\caption{autocorrelations (diagional) and cross correlations (off-diagional) for
+\caption{autocorrelations (diagonal) and cross correlations (off-diagonal) for
 the four stations selected; time lag unit in days. }
 \label{fig:ccf}
 \end{figure}
@@ -166,7 +168,7 @@ asymmetry is not very strong, but that cross correlations are fairly
 strong and of a similar form of autocorrelations.
 
 This kind of plot does not work very well in layouts of e.g. 10 x 10
-sub-plots; {\tt acf} automatically chooses 4 x 4 as the maximimum a
+sub-plots; {\tt acf} automatically chooses 4 x 4 as the maximum a
 single plot. To try this out, do a 7 x 7 plot
 <<eval=FALSE>>=
 acf(na.omit(as(r5to10[4:10,], "xts")))
@@ -198,21 +200,21 @@ Then, we can compute the pooled variogram
 library(gstat)
 v = variogram(PM10~ti, pts[!is.na(pts$PM10),], dX=0)
 @
-and plot it (figure \ref{fig:vgm}):
+and plot it (Figure~\ref{fig:vgm}):
 <<eval=FALSE>>=
-plot(v, fit.variogram(v, vgm(1, "Exp", 200, 1)))
+# plot(v, fit.variogram(v, vgm(1, "Exp", 200, 1)))
 vmod = fit.variogram(v, vgm(1, "Exp", 200, 1))
 plot(v, vmod)
 @
 \begin{figure}[hbt]
 \begin{center}
 <<fig=TRUE,echo=FALSE>>=
-plot(v, fit.variogram(v, vgm(1, "Exp", 200, 1)))
+# plot(v, fit.variogram(v, vgm(1, "Exp", 200, 1)))
 vmod = fit.variogram(v, vgm(1, "Exp", 200, 1))
 print(plot(v, vmod))
 @
 \end{center}
-\caption{sample spatial variogram, averaged over 100 time randomly
+\caption{sample spatial variogram, averaged over 100 randomly
 chosen time steps}
 \label{fig:vgm}
 \end{figure}
@@ -230,13 +232,13 @@ dim(r5to10)
 We can fit a spatio-temporal variogram the usual way, by passing an
 object of class {\tt STFDF} (Pebesma, 2012):
 <<eval=FALSE>>=
-vv = variogram(PM10~1, r5to10, width=20, cutoff = 200)
+vv = variogram(PM10~1, r5to10, width=20, cutoff = 200, tlags=0:5)
 @
 Alternatively, if 
 this takes too long, a temporal subset can be taken, e.g.
 using the first 200 days:
 <<eval=FALSE>>=
-vv = variogram(PM10~1, r5to10[,1:200], width=20, cutoff = 200)
+vv = variogram(PM10~1, r5to10, width=20, cutoff = 200, tlags=0:5)
 @
 taking random days from the full period will lead to the a wrong
 assumption that every time index increment reflect a constant
@@ -249,48 +251,27 @@ data(vv)
 <<echo=FALSE>>=
 vv <- vv[c("np", "dist", "gamma", "id", "timelag", "spacelag")]
 @
-Plotting this object can be done in several ways, two 2D-plots are shown in figure~\ref{fig:map} and a 3D wireplot is shown in figure~\ref{fig:wire}:
+Plotting this object can be done in several ways, two 2D-plots are 
+shown in Figure~\ref{fig:map} and a 3D wireplot is shown in 
+Figure~\ref{fig:wire}:
 <<eval=FALSE>>=
-plot(vv, ylab = "time lag (days)")
-plot(vv, map = FALSE, ylab = "time lag (days)")
+plot(vv)
+plot(vv, map = FALSE)
 @
 \begin{figure}[hbt]
 \begin{center}
 <<fig=TRUE,echo=FALSE>>=
-print(plot(vv, ylab = "time lag (days)"), split = c(1,1,1,2), more = TRUE)
-print(plot(vv, map = FALSE, ylab = "time lag (days)"), split = c(1,2,1,2))
+print(plot(vv), split = c(1,1,1,2), more = TRUE)
+print(plot(vv, map = FALSE), split = c(1,2,1,2))
 @
 \end{center}
-\caption{Spatio-temporal sample variogram map (top) and sample variograms
-for each time lag (bottom); both figures depict the information of object
-{\tt vv}. }
+\caption{Spatio-temporal sample variogram map (top) and sample 
+variograms for each time lag (bottom); both figures depict the 
+information of object {\tt vv}.}
 \label{fig:map}
 \end{figure}
 
 \subsection{Fitting a spatio-temporal variogram model}
-
-% <<>>=
-% ExpVgmMetric = function(x, s, t, nugget = 0) {
-% 	h = sqrt(s^2 + (x[3] * as.numeric(t))^2)
-% 	ifelse(h == 0, 0, nugget + x[1] * (1 - exp(-h / x[2])))
-% }
-% ExpFitFn = function(x, gfn, v, trace = FALSE, ...) {
-% 	mod = gfn(x, v$spacelag, v$timelag, ...)
-% 	resid = v$gamma - mod
-% 	if (trace)
-% 		print(c(x, MSE = mean(resid^2)))
-% 	mean(resid^2)
-% }
-% 
-% pars.M = optim(c(sill = 50, range = 100, anis = 50), ExpFitFn, 
-% 	gfn = ExpVgmMetric, v = vv, nugget = 10)
-% pars.M$par
-% @
-% The final model can be added, as fitted model to the sample variogram, and  plotted by (figure \ref{fig:mm}):
-% <<eval=FALSE>>=
-% vv$model = ExpVgmMetric(pars.M$par, vv$spacelag, vv$timelag, nugget = 10)
-% plot(vv)
-% @
 
 At first, we try to fit a metric model with spatio-temporal anisotropy:
 <<>>==
@@ -298,9 +279,16 @@ metricVgm <- vgmST("metric",
                    joint=vgm(50,"Exp",100,0),
                    stAni=50)
 
-metricVgm <- fit.StVariogram(vv, metricVgm, method="L-BFGS-B")
+metricVgm <- fit.StVariogram(vv, metricVgm)
 @
-The final model can be plotted with the sample variogram (figure~\ref{fig:mm}):
+As numerical criterion to judge the goodness of fit of model and 
+sample variogram, the root-mean-squared-difference between the 
+surfaces can be obtained by:
+<<>>=
+attr(metricVgm, "optim")$value
+@
+
+The final model can be plotted with the sample variogram (Figure~\ref{fig:mm}):
 
 <<eval=FALSE>>=
 plot(vv, metricVgm)
@@ -308,64 +296,74 @@ plot(vv, metricVgm)
 
 \begin{figure}[hbt]
 \begin{center}
-<<fig=TRUE,echo=FALSE>>=
+<<fig=TRUE,echo=FALSE,width=8, height=4>>=
 print(plot(vv, metricVgm))
 @
 \end{center}
-\caption{Fitted metric model (left) and sample variogram map (right). }
+\caption{Sample variogram map (left) and fitted metric model (right).}
 \label{fig:mm}
 \end{figure}
 
 \pagebreak 
 
-Now, let us try to fit and plot a separable model (figure~\ref{fig:sm}):
-% # <<>>=
-% # ExpVgmSeparable = function(x, s, t, nugget = 0) {
-% # 	#h = s/x[2] + as.numeric(t)/x[3]
-% # 	#ifelse(h == 0, 0, nugget + x[1] * (1 - exp(-h)))
-% # 	h = s/x[2] + as.numeric(t)/x[3]
-% # 	ifelse(h == 0, 0, nugget + x[1] * (1 - exp(-h)))
-% # }
-% # pars.S = optim(c(sill = 40, srange = 90, trange = 2), ExpFitFn,
-% # 	gfn = ExpVgmSeparable, v = vv, nugget = 10)
-% # vv$model = ExpVgmSeparable(pars.S$par, vv$spacelag, vv$timelag, nugget = 10)
-% # pars.S$par
-% # plot(vv)
-% # @
-
+Now, let us try to fit and plot a separable model (Figure~\ref{fig:sm}):
 <<>>==
 sepVgm <- vgmST("separable",
                 space=vgm(0.9,"Exp", 123, 0.1),
                 time =vgm(0.9,"Exp", 2.9, 0.1),
-                sill=45)
+                sill=100)
 
-sepVgm <- fit.StVariogram(vv, sepVgm, method = "L-BFGS-B")
-plot(vv, sepVgm)
+sepVgm <- fit.StVariogram(vv, sepVgm, method = "L-BFGS-B",
+                          lower = c(10,0,0.01,0,1),
+                          upper = c(500,1,20,1,200))
+@
+
+To compare this model with the previous one, we look at the optimized 
+root-mean-squared-differences between the two surfaces and plot sample
+and both models:
+<<>>=
+attr(sepVgm, "optim")$value
+plot(vv, list(sepVgm, metricVgm))
 @
 
 \begin{figure}[hbt]
 \begin{center}
-<<fig=TRUE,echo=FALSE>>=
-print(plot(vv,sepVgm))
+<<fig=TRUE,echo=FALSE,width=8,height=4>>=
+print(plot(vv, list(sepVgm, metricVgm)))
 @
 \end{center}
-\caption{Fitted seperable model (left) and sample variogram map (right). }
+\caption{Sample variogram map (left), fitted separable model (middle)
+and fittted metric model (right).}
 \label{fig:sm}
 \end{figure}
-A wireframe (3D) plot of the sample variogram can be obtained e.g. by
+A wireframe (3D) plot of sample variogram and fitted variogram models can be obtained e.g. by
 <<eval=FALSE>>=
 library(lattice)
-plot(vv,wireframe=T,col.regions=bpy.colors())
+plot(vv, list(sepVgm, metricVgm), all=T, wireframe=T, zlim=c(0,120),
+     zlab=NULL,
+     xlab=list("distance (km)", rot=30),
+     ylab=list("time lag (days)", rot=-35),
+     scales=list(arrows=F, z = list(distance = 5)))
 @
-which is shown in figure \ref{fig:wire}. Further spatio-temporal model definitions can be found in the help pages of {\tt fit.StVariogram} and {\tt variogramSurface}. The demo {\tt stkrige} presents further examples and illustrates an interactive 3D-plot of sample variogram and the fitted variogram model.
+which is shown in Figure~\ref{fig:wire}. Further spatio-temporal model
+definitions can be found in the help pages of {\tt fit.StVariogram} 
+and {\tt variogramSurface}. The demo {\tt stkrige} presents further 
+examples and illustrates an interactive 3D-plot of sample variogram 
+and the fitted variogram model. An interactive variogram exploration
+web-tool is avaialble at 
+\url{http://giv-graeler.uni-muenster.de:3838/spacetime/}.
 \begin{figure}[hbt]
 \begin{center}
-<<fig=TRUE,echo=FALSE>>=
+<<fig=TRUE,echo=FALSE,width=8,height=8>>=
 library(lattice)
-print(plot(vv,wireframe=T,col.regions=bpy.colors()))
+print(plot(vv, list(sepVgm, metricVgm), all=T, wireframe=T, zlim=c(0,120),
+           zlab=NULL,
+           xlab=list("distance (km)", rot=30),
+           ylab=list("time lag (days)", rot=-35),
+           scales=list(arrows=F, z = list(distance = 5))))
 @
 \end{center}
-\caption{ Wireplot of sample space-time variogram }
+\caption{Wireframe plots of sample and fitted space-time variograms.}
 \label{fig:wire}
 \end{figure}
 
@@ -375,11 +373,9 @@ print(plot(vv,wireframe=T,col.regions=bpy.colors()))
 
 The vignette in package \code{spacetime} gives an example of using
 the gstat function \code{krigeST} for spatio-temporal kriging of
-the Irish wind data. The variogram there needs to be specified as
-two separate variogram models, the product of which needs to be
-the target spatio-temporal variogram. The \code{krigeST} function
-uses global kriging, but only needs to invert the purely spatial
-and purely time covariance matrices.
+the Irish wind data. The \code{krigeST} function uses global kriging,
+but only needs to invert the purely spatial and purely time covariance
+matrices in the separable case.
 
 For more generic spatio-temporal kriging where space is
 two-dimensional, one could use \code{krige}, defining the
@@ -398,10 +394,13 @@ by specifying \code{nmax} (the nearest $n$ observations).  In both
 cases, it is advisable to transform time such that one can use an
 {\em isotropic} variogram model in the three dimensions, as only
 in that case the nearest $n$ observations correspond to the $n$
-most correlated observations. 
+most correlated observations. \code{krigeST} provides a solution 
+where a \code{bufferNmax}-times larger neighbourhood is evaluated 
+within the covariance model and the strongest correlated \code{nmax}
+neighbours are selected.
 
 An additional consideration is that in space-time, observations may
-not be regularly spaced. In some cases, the nearest $n$ obervations
+not be regularly spaced. In some cases, the nearest $n$ observations
 may come from a single measurement location, which may lead to sharp
 jumps/boundaries in the interpolated values. This might be solved
 by using larger neighbourhoods, or by setting the \code{omax}
@@ -439,18 +438,3 @@ Prediction.  Mathematical Geology, 25 (2), pp. 219--240.
 \end{itemize}
 
 \end{document}
-
-covfn = function(x, y = x) {
-	u = spDists(coordinates(x), coordinates(y))
-	t = abs(as.numeric(outer(index(x),index(y),"-")))
-	0.3 * exp(-sqrt(u^2 + (4833 * t)^2)/1552)
-}
-
-#         sill       srange       trange 
-#   0.3116616 1798.2002755    0.4005217 
-vmod.ST = list(space = vgm(.3, "Exp", 1800), time = vgm(1, "Exp", 0.4))
-ix = as.Date(index(sa@time))
-new = STF(sa@sp, seq(ix[1], ix[4], length.out = 25))
-saDate = STFDF(sa@sp, as.Date(index(sa@time)), sa@data)
-kr = krigeST(sst~1, saDate[,1:4], new, vmod.ST)
-stplot(STFDF(new@sp, new@time, data.frame(kr)), col.regions=bpy.colors())

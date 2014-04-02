@@ -30,6 +30,7 @@ VgmAverage = function(ret, boundaries) {
 }
 
 StVgmLag = function(formula, data, dt, pseudo, ...) {
+  dotLst <- list(...)
 	.ValidObs = function(formula, data)
 		!is.na(data[[as.character(as.list(formula)[[2]])]])
 	d = dim(data)
@@ -64,7 +65,7 @@ StVgmLag = function(formula, data, dt, pseudo, ...) {
 			}
 		}
 	}
-	VgmAverage(ret, ...)
+	VgmAverage(ret, dotLst$boundaries)
 }
 
 variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff, 
@@ -77,6 +78,11 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
     ll = !is.na(is.projected(data@sp)) && !is.projected(data@sp)
     cutoff <- spDists(t(data@sp@bbox), longlat = ll)[1,2]/3
   }
+  
+  if(is(data, "STIDF"))
+    return(variogramST.STIDF(formula, data, tlags, cutoff, width, 
+                             boundaries, progress, ...))
+  
 	stopifnot(is(data, "STFDF") || is(data, "STSDF"))
 	it = index(data@time)
 	if (assumeRegular || is.regular(zoo(matrix(1:length(it)), order.by = it),
@@ -106,23 +112,118 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
 	v$timelag = rep(t, sapply(ret, nrow))
 	if (is(t, "yearmon"))
 		class(v$timelag) = "yearmon"
-  attr(v$timelag,"units") <- attr(twidth,"units")
-  
+    
 	b = attr(ret[[2]], "boundaries")
 	b = c(0, b[2]/1e6, b[-1])
 	# ix = findInterval(v$dist, b) will use all spacelags
 	b = b[-2]
 	# spacelags = c(0, b[-length(b)] + diff(b)/2) will use all spacelags
 	v$spacelag = c(0, b[-length(b)] + diff(b)/2) # spacelags[ix] will use all spacelags
-	if (isTRUE(!is.projected(data)))
-		attr(v$spacelag, "units") = "km"
+	
 	class(v) = c("StVariogram", "data.frame")
 	if(na.omit)
-    return(na.omit(v))
-  else
-    return(v)
+    v <- na.omit(v)
+
+  # setting attributes to allow krigeST to double check metrics
+  attr(v$timelag,"units") <- attr(twidth,"units")
+  if (isTRUE(!is.projected(data)))
+    attr(v$spacelag, "units") = "km"
+  
+  return(v)
 }
 
+## very irregular data
+variogramST.STIDF <- function (formula, data, tlags, cutoff, 
+                               width, boundaries, progress, 
+                               twindow, tunit) {
+  ll = !is.na(is.projected(data@sp)) && !is.projected(data@sp)
+  
+  if (missing(cutoff))
+    cutoff <- spDists(t(data@sp@bbox), longlat = ll)[1, 2]/3
+  
+  m = model.frame(terms(formula), as(data, "data.frame"))
+  
+  diffTime <- diff(index(data))
+  timeScale <- units(diffTime)
+  if(missing(tunit))
+    warning(paste("The argument 'tunit' is missing: tlags are assumed to be given in ", timeScale, ".",sep=""))
+  else {
+    stopifnot(tunit %in% c("secs", "mins", "hours", "days", "weeks"))
+    units(diffTime) <- tunit
+    timeScale <- tunit
+  }
+  diffTime <- as.numeric(diffTime)
+  if (missing(twindow)) {
+    twindow <- round(2 * max(tlags, na.rm=TRUE)/mean(diffTime,na.rm=TRUE),0)
+  }
+    
+  nData <- nrow(data)
+  
+  # re-using the order propertie of the time slot to only store the next "twindow" distances
+  numTime <- as.numeric(index(data))
+  diffTimeMat <- matrix(NA, nData, twindow)
+  
+  for (i in 1:nData) { # i <- 1
+    diffTimeMat[i,1:min(nData,twindow)] <- cumsum(diffTime[i+0:min(nData,(twindow-1))])
+  }
+  
+  nSp <- length(boundaries)
+  nTp <- length(tlags)
+  
+  distTp <- matrix(NA, nSp-1, nTp-1)
+  distSp <- matrix(NA, nSp-1, nTp-1)
+  gamma  <- matrix(NA, nSp-1, nTp-1)
+  np     <- matrix(NA, nSp-1 ,nTp-1)
+  
+  # temporal selection
+  if(progress)
+    pb <- txtProgressBar(0, nTp-1, 0, style=3)
+  for (i in 1:(nTp-1)) { # i <- 1
+    ind <- which(diffTimeMat >= tlags[i] & diffTimeMat < tlags[i+1])
+    if (length(ind) < 1) 
+      next
+    tmpInd <- matrix(NA,nrow=length(ind),4)
+    tmpInd[,1] <- ind %% nData  # row number
+    tmpInd[,2] <- (ind %/% nData)+1 # col number
+    tmpInd[,3] <- apply(tmpInd[,1:2,drop=FALSE], 1, function(x) spDists(data@sp[x[1]], data@sp[x[2]+x[1],]))
+    tmpInd[,4] <- diffTimeMat[tmpInd[,1:2, drop=FALSE]]
+    
+    # spatial selection
+    for (j in 1:(nSp-1)) { # j <- 3
+      indSp <- which(tmpInd[,3] >= boundaries[j] & tmpInd[,3] < boundaries[j+1])
+      if (length(indSp) < 1)
+        next
+      distSp[j,i] <- mean(tmpInd[indSp,3])
+      distTp[j,i] <- mean(tmpInd[indSp,4])
+      
+      indSp <- cbind(ind[indSp] %% nData, (ind[indSp] %/% nData)+1)
+      np[j,i] <- length(indSp)
+      gamma[j,i] <- 0.5*mean((data[indSp[,1],,colnames(m)[1]]@data[[1]] - data[indSp[,1]+indSp[,2],,colnames(m)[1]]@data[[1]])^2,
+                             na.rm=T)
+    }
+    if(progress)
+      setTxtProgressBar(pb, value=i)
+  }
+  if(progress)
+    close(pb)
+  
+  res <- data.frame(np=as.vector(np),
+                    dist=as.vector(distSp),
+                    gamma=as.vector(gamma),
+                    id=paste("lag",rep(1:(nTp-1),each=nSp-1), sep=""),
+                    timelag=rep(tlags[-nTp]+diff(tlags)/2,each=nSp-1),
+                    spacelag=rep(boundaries[-nSp]+diff(boundaries)/2, nTp-1))
+  
+  attr(res$timelag, "units") <- timeScale
+  attr(res$spacelag, "units") <- ifelse(ll, "km", "m")
+  class(res) <- c("StVariogram", "data.frame")
+  
+  return(res)
+}
+
+
+
+## plotting
 plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab,
                             map = TRUE, convertMonths = FALSE, as.table=T,
                             wireframe = FALSE, both = FALSE, all=FALSE) {
@@ -177,14 +278,9 @@ plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab,
                   xlab = xlab, ylab = ylab, ...)
 			} else {
         if (all) { # plot sample and all models in separate wireframes
-          if (length(model) > 1)
-            wireframe(gamma ~ spacelag*timelag | what, 
-                      x, drape = TRUE, col.regions = col, 
-                      xlab = xlab, ylab = ylab, as.table=as.table, ...)
-          else 
-            wireframe(as.formula(paste(model[[1]]$stModel,"~ spacelag*timelag")), 
-                      x0, drape = TRUE, col.regions = col, 
-                      xlab = xlab, ylab = ylab, as.table=as.table, ...)
+          wireframe(gamma ~ spacelag*timelag | what, 
+                    x, drape = TRUE, col.regions = col, 
+                    xlab = xlab, ylab = ylab, as.table=as.table, ...)
         } else { # plot all theoretical models in separate wireframes, the default
           if (length(model) > 1)
             wireframe(gamma ~ spacelag*timelag | what, 
@@ -219,4 +315,18 @@ plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab,
 				auto.key = list(space = "right"), xlab = xlab, 
 				par.settings = ps, ...)
 	}
+}
+
+print.StVariogramModel <- function(x, ...) {
+  possComp <- c("space", "time", "joint")
+  for(comp in possComp[possComp %in% names(x)]) {
+    rownames(x[[comp]]) <- 1:nrow(x[[comp]])
+    cat(paste(comp,"component: \n"))
+    print(x[[comp]], ...)
+  }
+  
+  possAddPar <- c("sill", "nugget", "stAni")
+  for(addPar in possAddPar[possAddPar %in% names(x)]) {
+    cat(paste(addPar, ": ",x[[addPar]],"\n", sep=""))
+  }
 }

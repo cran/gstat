@@ -28,12 +28,17 @@ Benedikt Graeler
 # and kept constant at 1-nugget respectively. A joint sill is used.
 \dontrun{
 separableModel <- vgmST("separable",
-                        space=vgm(0.8,"Exp", 140, 0.2),
-                        time =vgm(0.7,"Exp",   6, 0.3),
-                        sill=60)
+                        space=vgm(0.9,"Exp", 123, 0.1),
+                        time =vgm(0.9,"Exp", 2.9, 0.1),
+                        sill=100)
 
 data(vv)
-fit.StVariogram(vv[1:77,], separableModel)}
+separableModel <- fit.StVariogram(vv, separableModel,
+                                  method="L-BFGS-B",
+                                  lower=c(10,0,0.01,0,1),
+                                  upper=c(500,1,20,1,200))
+plot(vv, separableModel)
+}
 }
 
 \keyword{models}

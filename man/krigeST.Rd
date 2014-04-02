@@ -10,8 +10,9 @@
 Function for ordinary global spatio-temporal kriging on point support
 }
 \usage{
-krigeST(formula, data, newdata, modelList, y, ..., computeVar = FALSE,
-	fullCovariance = FALSE)
+krigeST(formula, data, newdata, modelList, y, nmax = Inf, stAni = NULL,
+        computeVar = FALSE,	fullCovariance = FALSE,
+        checkNeighbourhood=TRUE, bufferNmax=4)
 }
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear
@@ -36,11 +37,15 @@ krigeST(formula, data, newdata, modelList, y, ..., computeVar = FALSE,
  \item{y}{matrix; to krige multiple fields in a single step, pass data 
   as columns of matrix \code{y}. This will ignore the value of the 
   response in \code{formula}.}
+ \item{nmax}{The maximum number of neighbouring locations for a spatio-temporal local neighbourhood}
+ \item{stAni}{a spatio-temporal anisotropy scaling assuming a metric spatio-temporal space. Used only for the selection of the closest neighbours. This scaling needs only to be provided in case the model does not have a stAni parameter, or if a different one should be used for the neighbourhood selection. Mind the correct spatial unit. Currently, no coordinate conversion is made for the neighbourhood selection (i.e. Lat and Lon require a spatio-temporal anisotropy scaling in degrees per second).}
  \item{\dots}{ further arguments (currently unused)}
  \item{computeVar}{logical; if TRUE, prediction variances will be returned}
  \item{fullCovariance}{logical; if FALSE a vector with prediction 
   variances will be returned, if TRUE the full covariance matrix of 
   all predictions will be returned}
+  \item{checkNeighbourhood}{whether the fast neareat neighbour search shall be extended and being reduced based on the actual covariance}
+  \item{bufferNmax}{factor with which nmax is multiplied for an extended search radius (default=4).}
 }
 \details{
  Function \code{krigeST} is a R implementation of the kriging function from 

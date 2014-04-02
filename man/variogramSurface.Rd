@@ -29,21 +29,19 @@ Benedikt Graeler
 See \code{\link{variogramLine}} for the spatial version and \code{\link{fit.StVariogram}} for the estimation of spatio-temporal variograms.
 }
 \examples{
-# separable model: spatial and temporal sill will be ignored
-# and kept constant at 1-nugget respectively. A joint sill is used.
 separableModel <- vgmST("separable", 
-                        space=vgm(0.9,"Exp", 147, 0.1),
-                        time =vgm(0.9,"Exp", 3.5, 0.1),
-                        sill=40)
+                        space=vgm(0.86, "Exp", 476, 0.14),
+                        time =vgm(   1, "Exp",   3, 0),
+                        sill=113)
 
 data(vv)
 
 if(require(lattice)) {
-wireframe(model~spacelag+timelag, variogramSurface(separableModel,vv))
+plot(vv, separableModel, wireframe=TRUE, all=TRUE)
 }
 
 # plotting of sample and model variogram
-plot(vv,separableModel)
+plot(vv, separableModel)
 
 }
 \keyword{models}

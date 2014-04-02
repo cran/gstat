@@ -3,8 +3,8 @@
 "plot.gstatVariogram" <-
 function (x, model = NULL, ylim, xlim, xlab = "distance", 
 	ylab = attr(x, "what"), 
-	panel = vgm.panel.xyplot, multipanel = TRUE, plot.numbers = FALSE, scales, 
-	ids = x$id, group.id = TRUE, skip, layout, ...) 
+	panel = vgm.panel.xyplot, multipanel = TRUE, plot.numbers = FALSE, 
+	scales = list(), ids = x$id, group.id = TRUE, skip, layout, ...) 
 {
     if (missing(ylim)) {
         ylim = c(min(0, 1.04 * min(x$gamma)), 1.04 * max(x$gamma))
@@ -29,17 +29,18 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
             if (length(levels(ids)) > 1) { # multivariate directional:
 				xyplot(gamma ~ dist | as.factor(dir.hor), data = x, 
 					type = c("p", "l"), xlim = xlim, ylim = ylim, xlab = xlab, 
-					ylab = ylab, groups = ids, ...)
+					ylab = ylab, groups = ids, scales = scales, ...)
 			} else # univariate directional, multipanel:
 				xyplot(gamma ~ dist | as.factor(dir.hor), subscripts = TRUE, 
                 	panel = panel, data = x, xlim = xlim, 
                 	ylim = ylim, xlab = xlab, ylab = ylab, direction = x$dir.hor, 
-                	labels = labels, model = model, shift = shift, mode = "directional", ...)
+                	labels = labels, model = model, shift = shift, 
+					mode = "directional", scales = scales, ...)
         } else { # univariate directional, using symbol/color to distinguish
             pch = as.integer(as.factor(x$dir.hor))
             xyplot(gamma ~ dist, data = x, type = c("p", "l"), 
                 groups = pch, xlim = xlim, ylim = ylim, xlab = xlab, 
-                ylab = ylab, pch = pch, ...)
+                ylab = ylab, pch = pch, scales = scales, ...)
         }
     } else if (length(unique(ids)) > 1) { # multivariable:
         n = floor(sqrt(2 * length(unique(ids))))
@@ -91,7 +92,7 @@ function (x, model = NULL, ylim, xlim, xlab = "distance",
 		xyplot(gamma ~ dist, data = x, panel = panel, xlim = xlim, 
 			ylim = ylim, xlab = xlab, ylab = ylab, labels = labels, model = model, 
 			direction = c(x$dir.hor[1], x$dir.ver[1]), shift = shift, 
-			mode = "direct", ...)
+			mode = "direct", scales = scales, ...)
 }
 
 "plot.variogramMap" <-

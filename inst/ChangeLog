@@ -1,3 +1,96 @@
+2014-03-10 19:46  ben_graeler
+
+	* /pkg/R/krige0.R, /pkg/R/variogramST.R, /pkg/man/variogramST.Rd: -
+	  added support for STIDF with irregular time steps in variogramST
+
+2014-03-09 20:45  edzer
+
+	* /pkg/R/gstat.formula.R: added na.action = na.fail, email from
+	  Robert Hijmans
+
+2014-03-09 20:23  edzer
+
+	* /pkg/tests/Examples/gstat-Ex.Rout.save: update
+
+2014-03-01 14:54  edzer
+
+	* /pkg/NAMESPACE, /pkg/R/gstatOptions.R,
+	  /pkg/R/plot.gstatVariogram.R, /pkg/man/progress.Rd,
+	  /pkg/tests/Examples/gstat-Ex.Rout.save,
+	  /pkg/tests/krige0.Rout.save, /pkg/tests/unproj.Rout.save,
+	  /pkg/tests/windst.Rout.save: update test outputs; pass on
+	  `scales' in plot.gstatVariogram to xyplot()
+
+2014-02-06 10:25  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/NAMESPACE, /pkg/R/variogramST.R,
+	  /pkg/data/vv.rda, /pkg/demo/stkrige.R,
+	  /pkg/man/fit.StVariogram.Rd, /pkg/man/variogramST.Rd,
+	  /pkg/man/variogramSurface.Rd, /pkg/man/vv.Rd,
+	  /pkg/vignettes/st.Rnw, /pkg/vignettes/st.pdf: - precomputed
+	  variogram vv spans now only the interesting 0:5 days lags
+	  (reduces as well calculation times)
+	  - updated vignettes/st.Rnw with smaller temporal extent of vv and
+	  new plotting capabilities of gstat
+	  - chnaged examples in Rd-files accordingly
+	  - changed demo stkrige.R accordingly
+
+2014-02-05 21:58  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/krige0.R, /pkg/R/variogramST.R,
+	  /pkg/data/vv.rda, /pkg/vignettes/st.Rnw, /pkg/vignettes/st.pdf: -
+	  added attributes to empirical sample variogram after na.omit
+	  might haven been called
+	  - added temporal unit control in covSeparable
+	  - updated the precomputed variogram vv.rda (gamme increased up to
+	  ~120)
+	  - updated the vignette "st" accordingly
+
+2014-01-08 17:01  ben_graeler
+
+	* /pkg/R/krige0.R, /pkg/man/krigeST.Rd: - extended local
+	  spatio-temporal kriging using a spatial buffer and selecting the
+	  most correlated ones.
+
+2014-01-06 12:01  ben_graeler
+
+	* /pkg/R/krige0.R: - local spatio-temporal kriging: removed two
+	  print statements (overlooked earlier)
+
+2014-01-06 11:54  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/NAMESPACE, /pkg/R/krige0.R,
+	  /pkg/demo/localKrigeST.R, /pkg/man/krigeST.Rd: - krigeST now
+	  takes nmax as argument for local spatio-temporal kriging
+	  - FNN is imported for a fast neighbourhood search
+
+2013-12-13 17:05  ben_graeler
+
+	* /pkg/R/krige0.R, /pkg/data/vv.rda: - correct as well krigeST for
+	  fullCovariance=TRUE
+	  - added temporal unit as attribute to the emoirical variogram
+	  from vv.rda
+
+2013-12-13 16:11  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/krige0.R, /pkg/tests/krige0.R: -
+	  correction in krige0 for full covariance matrix
+
+2013-11-26 10:24  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/krige0.R, /pkg/R/variogramST.R,
+	  /pkg/demo/localKrigeST.R: - version 1.0-19
+	  - added print.StVariogram
+	  - more efficient calculation of prediction variance
+	  - adopted localKrigeST to new requirement of temporal unit
+	  attribute
+
+2013-11-21 09:08  edzer
+
+	* /pkg/DESCRIPTION, /pkg/inst/ChangeLog, /pkg/src/data.h,
+	  /pkg/src/debug.h, /pkg/src/sem.h, /pkg/tests/windst.Rout.save:
+	  address clang warnings in bitwise shift operations on signed args
+
 2013-11-07 16:17  ben_graeler
 
 	* /pkg/R/krige0.R, /pkg/R/variogramST.R,

@@ -1,6 +1,5 @@
 
 > library(gstat)
-Loading required package: sp
 
 > cluster = read.table(system.file("external/cluster.txt", 
 +     package = "gstat"), header = TRUE)
@@ -20,6 +19,8 @@ Loading required package: sp
  Mean   :1.000      
  3rd Qu.:1.416      
  Max.   :2.023      
+
+> library(sp)
 
 > coordinates(cluster) = ~X + Y
 
@@ -91,4 +92,4 @@ Loading required package: sp
  *** Run successfully completed ***
 > proc.time()
    user  system elapsed 
-  1.428   0.088   1.504 
+  1.584   0.040   1.626 

@@ -1,6 +1,6 @@
 
-R version 3.0.1 (2013-05-16) -- "Good Sport"
-Copyright (C) 2013 The R Foundation for Statistical Computing
+R version 3.1.0 beta (2014-03-28 r65330) -- "Spring Dance"
+Copyright (C) 2014 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -19,11 +19,11 @@ Type 'q()' to quit R.
 + 	q()
 Loading required package: rgdal
 Loading required package: sp
-rgdal: version: 0.8-11, (SVN revision 479M)
+rgdal: version: 0.8-16, (SVN revision 498)
 Geospatial Data Abstraction Library extensions to R successfully loaded
-Loaded GDAL runtime: GDAL 1.9.2, released 2012/10/08
-Path to GDAL shared files: /usr/share/gdal/1.9
-Loaded PROJ.4 runtime: Rel. 4.8.0, 6 March 2012, [PJ_VERSION: 480]
+Loaded GDAL runtime: GDAL 1.10.1, released 2013/08/26
+Path to GDAL shared files: /usr/local/share/gdal
+Loaded PROJ.4 runtime: Rel. 4.9.0, 27 October 2013, [PJ_VERSION: 490]
 Path to PROJ.4 shared files: (autodetected)
 > 
 > # for validity of covariance functions on the sphere, see also:
@@ -63,7 +63,7 @@ Path to PROJ.4 shared files: (autodetected)
 > library(fields)
 Loading required package: spam
 Loading required package: grid
-Spam version 0.30-1 (2013-08-25) is loaded.
+Spam version 0.41-0 (2014-02-26) is loaded.
 Type 'help( Spam)' or 'demo( spam)' for a short introduction 
 and overview of this package.
 Help for individual functions is also obtained by adding the
@@ -71,7 +71,7 @@ suffix '.spam' to the function name, e.g. 'help( chol.spam)'.
 
 Attaching package: 'spam'
 
-The following object is masked from 'package:base':
+The following objects are masked from 'package:base':
 
     backsolve, forwardsolve
 
@@ -157,4 +157,4 @@ spDistsN1 Distances:
 > 
 > proc.time()
    user  system elapsed 
-  2.404   0.080   2.488 
+  2.264   0.076   2.345 

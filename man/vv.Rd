@@ -16,7 +16,7 @@ data(vv)
 data(air)
 rr = rural[,"2005::2010"]
 unsel = which(apply(as(rr, "xts"), 2, function(x) all(is.na(x))))
-rrr = rr[-unsel,]
-vv = variogram(PM10~1, rrr, width=20, cutoff = 200)
+r5to10 = rr[-unsel,]
+vv = variogram(PM10~1, r5to10, width=20, cutoff = 200, tlags=0:5)
 }
 }

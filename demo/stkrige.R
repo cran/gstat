@@ -1,4 +1,4 @@
-# Ben Graeler, Nov 20, 2012.
+# Ben Graeler, Feb 06, 2014.
 library(sp)
 library(spacetime)
 library(gstat)
@@ -7,75 +7,78 @@ library(gstat)
 
 data(vv)
 
-separableModel <- vgmST("separable", 
-                        space=vgm(0.9,"Exp", 147, 0.1),
-                        time =vgm(0.9,"Exp", 3.5, 0.1),
-                        sill=40)
+separableModel <- vgmST("separable",
+                        space=vgm(0.9,"Exp", 123, 0.1),
+                        time =vgm(0.9,"Exp", 2.9, 0.1),
+                        sill=100)
 
 prodSumModel <- vgmST("productSum",
-                      space=vgm(39, "Sph", 343, 0),
-                      time= vgm(36, "Exp",   3, 0), 
-                      sill=41, nugget=17)
+                      space=vgm(75, "Sph", 343, 0),
+                      time= vgm(70, "Exp",   3, 0), 
+                      sill=80, nugget=35)
 
 # lower and upper bounds of the sum metric model
-pars.l <- c(sill.s = 1E-2, range.s = 1E1, nugget.s = 0,
-            sill.t = 1E-2, range.t = 1E0, nugget.t = 0,
-            sill.st = 1E-2, range.st = 1E2, nugget.st = 0, 
-            anis = 1E-2)
-pars.u <- c(sill.s = 1E2, range.s = 200, nugget.s = 1E2,
-            sill.t = 1E2, range.t = 15, nugget.t = 1E2,
-            sill.st = 1E2, range.st = 1E5, nugget.st = 1E2,
-            anis = 1E4)
+pars.l <- c(sill.s = 0, range.s = 10, nugget.s = 0,
+            sill.t = 0, range.t = 1, nugget.t = 0,
+            sill.st = 0, range.st = 10, nugget.st = 0, 
+            anis = 1)
+pars.u <- c(sill.s = 200, range.s = 500, nugget.s = 100,
+            sill.t = 200, range.t = 15, nugget.t = 100,
+            sill.st = 200, range.st = 500, nugget.st = 100,
+            anis = 500)
 sumMetricModel <- vgmST("sumMetric",
-                        space=vgm( 6.9, "Lin", 200, 3.0),
-                        time =vgm(10.3, "Lin",  15, 3.6),
-                        joint=vgm(37.2, "Exp",  84,11.7),
-                        stAni=77.7)
+                        space=vgm(30, "Sph", 200,  6),
+                        time =vgm(30, "Sph",  15,  7),
+                        joint=vgm(60, "Exp",  84, 22),
+                        stAni=100)
 
-# simplified sumMetric model?
-pars.simple.l <- c(sill.s = 1E-2, range.s = 1E2, 
-                   sill.t = 1E-2, range.t = 1E1, 
-                   sill.st = 1E-2, range.st = 1E1,
-                   nugget=0, anis = 1E-2)
-pars.simple.u <- c(sill.s = 1E2, range.s = 200,
-                   sill.t = 1E3, range.t = 15, 
-                   sill.st = 1E2, range.st = 1E3, 
-                   nugget = 1E2, anis = 1E4)
+# simplified sumMetric model
+pars.simple.l <- c(sill.s = 0, range.s = 10, 
+                   sill.t = 0, range.t = 1, 
+                   sill.st = 0, range.st = 10,
+                   nugget=0, anis = 1)
+pars.simple.u <- c(sill.s = 200, range.s = 500,
+                   sill.t = 200, range.t = 15, 
+                   sill.st = 200, range.st = 500, 
+                   nugget = 100, anis = 500)
 
 simpleSumMetricModel <- vgmST("simpleSumMetric",
-                              space=vgm(20,"Lin", 150, 0),
-                              time =vgm(20,"Lin", 10,  0),
-                              joint=vgm(20,"Exp", 150, 0),
-                              nugget=1, stAni=15)
+                              space=vgm(30,"Sph", 150, 0),
+                              time =vgm(30,"Sph", 10,  0),
+                              joint=vgm(60,"Exp", 150, 0),
+                              nugget=10, stAni=100)
 
-
+# metric model
 metricModel <- vgmST("metric",
-                     joint=vgm(60, "Exp", 150, 10),
-                     stAni=60)
+                     joint=vgm(100, "Exp", 150, 10),
+                     stAni=100)
 
 # fitting
-fitSepModel <- fit.StVariogram(vv, separableModel, method = "L-BFGS-B", 
-                               control = list(maxit = 1000))
-attr(fitSepModel, "optim.output")$value
+fitSepModel <- fit.StVariogram(vv, separableModel, 
+                               method = "L-BFGS-B", 
+                               lower = c(10,0,0.01,0,1),
+                               upper = c(500,1,20,1,200))
+attr(fitSepModel, "optim.output")$value # 6.76
 
-fitProdSumModel <- fit.StVariogram(vv, prodSumModel, method = "L-BFGS-B", 
-                                   lower=rep(0.0001,7),control = list(maxit = 1000))
-attr(fitProdSumModel, "optim.output")$value
+fitProdSumModel <- fit.StVariogram(vv, prodSumModel, 
+                                   method = "L-BFGS-B", 
+                                   lower=rep(0.01,7))
+attr(fitProdSumModel, "optim.output")$value # 7.05
 
-fitSumMetricModel <- fit.StVariogram(vv, sumMetricModel, method = "L-BFGS-B",
-                                     lower=pars.l, upper=pars.u, 
-                                     control = list(maxit = 1000))
-attr(fitSumMetricModel, "optim.output")$value
+fitSumMetricModel <- fit.StVariogram(vv, sumMetricModel, 
+                                     method = "L-BFGS-B",
+                                     lower=pars.l, upper=pars.u)
+attr(fitSumMetricModel, "optim.output")$value # 6.62
 
-fitSimpleSumMetricModel <- fit.StVariogram(vv, simpleSumMetricModel, method = "L-BFGS-B",
-                                           lower=pars.simple.l, upper=pars.simple.u,
-                                           control = list(maxit = 1000))
-attr(fitSimpleSumMetricModel, "optim.output")$value
+fitSimpleSumMetricModel <- fit.StVariogram(vv, simpleSumMetricModel, 
+                                           method = "L-BFGS-B",
+                                           lower=pars.simple.l, 
+                                           upper=pars.simple.u)
+attr(fitSimpleSumMetricModel, "optim.output")$value # 6.44
 
 fitMetricModel <- fit.StVariogram(vv, metricModel, method = "L-BFGS-B",
-                                  lower=rep(0.0001,4), control = list(maxit = 1000))
-attr(fitMetricModel, "optim.output")$value 
-
+                                  lower=rep(0.0001,4))
+attr(fitMetricModel, "optim.output")$value # 7.78
 
 plot(vv, fitSepModel)
 plot(vv, fitProdSumModel)
@@ -191,22 +194,7 @@ DE_kriged <- krige(PM10~1,locations=rr, newdata=DE_pred,
 	modelList=fitSumMetricModel)
 gridded(DE_kriged@sp) <- TRUE
 stplot(DE_kriged,col.regions=bpy.colors())
-stplot(as(rr, "STFDF"),col.regions=bpy.colors())
 
-# just a single day to compare with pure spatial kriging
-DE_pred_day <- STF(sp=as(DE_gridded,"SpatialPoints"), time=rr[,1,drop=F]@time, 
-		endTime=rr[,1,drop=F]@endTime)
-DE_kriged_day <- krige(PM10~1,locations=rr[,1,drop=F],
-		newdata=DE_pred_day, modelList=fitSumMetricModel)
-gridded(DE_kriged_day@sp) <- TRUE
-
-spplot(DE_kriged_day[,1], col.regions=bpy.colors)
-spplot(rr[,1], col.regions=bpy.colors(5))
-
-# may this be produced by the mixture of the following + temporal nugget?
-spplot(krige(PM10~1,rr[,1],DE_gridded,
-	model=fitSumMetricModel$StVgmFit$joint),"var1.pred",
-	col.regions=bpy.colors())
-spplot(krige(PM10~1,rr[,1],DE_gridded,
-	model=fitSumMetricModel$StVgmFit$space),"var1.pred",
-	col.regions=bpy.colors())
+# save(fitMetricModel, fitProdSumModel, fitSepModel, 
+#      fitSimpleSumMetricModel, fitSumMetricModel,
+#      file="../../shiny-apps/spatial//fittedSTvariogramModels.RData")
