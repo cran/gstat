@@ -13,7 +13,7 @@ function (formula, locations, data = sys.frame(sys.parent()),
     g = gstat(formula = formula, locations = locations, data = data, 
 		model = model, beta = beta, nmax = nmax, nmin = nmin, omax = omax,
 		maxdist = maxdist, ...)
-    predict.gstat(g, newdata = newdata, block = block, nsim = nsim,
+    predict(g, newdata = newdata, block = block, nsim = nsim,
 		indicators = indicators, na.action = na.action, debug.level = debug.level)
 }
 setMethod("krige", c("formula", "formula"), krige.locations)
@@ -28,7 +28,7 @@ krige.spatial <- function(formula, locations, newdata, model = NULL, ...,
 		data = locations, 
 		model = model, beta = beta, nmax = nmax, nmin = nmin, omax = omax,
 		maxdist = maxdist, ...)
-    predict.gstat(g, newdata = newdata, block = block, nsim = nsim,
+    predict(g, newdata = newdata, block = block, nsim = nsim,
 		indicators = indicators, na.action = na.action, debug.level = debug.level)
 }
 setMethod("krige", c("formula", "Spatial"), krige.spatial)
@@ -76,7 +76,7 @@ STx2SpatialPoints = function(x, multiplyTimeWith = 1.0) {
 	x = as(geometry(x), "STI")
 	t1 = as.numeric(as.POSIXct(index(x@time)))
 	t2 = as.numeric(x@endTime)
-	time = (t1+t2)/2
+	time = multiplyTimeWith * (t1 + t2) / 2
 	cc = cbind(coordinates(x), time)
 	SpatialPoints(cc, proj4string = CRS(proj4string(x))) 
 }

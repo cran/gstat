@@ -5,6 +5,10 @@ AC_CONFIG_HEADER(src/config.h:src/config.hin src/machine.h:src/machine.hin)
 
 DEBUG_FLAG="-g -Wall"
 
+CC=`"${R_HOME}/bin/R" CMD config CC`
+CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
+CPPFLAGS=`"${R_HOME}/bin/R" CMD config CPPFLAGS`
+
 dnl Checks for programs.
 dnl PROGS=""
 dnl AC_SUBST(PROGS)dnl

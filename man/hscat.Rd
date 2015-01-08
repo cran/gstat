@@ -10,7 +10,7 @@ are plotted. This function is a wrapper around xyplot.
 }
 \usage{
 hscat(formula, data, breaks, pch = 3, cex = .6, mirror = FALSE, 
-	variogram.alpha = 0,...)
+	variogram.alpha = 0, as.table = TRUE,...)
 }
 \arguments{
 \item{formula}{ specifies the dependent variable }
@@ -23,6 +23,7 @@ hscat(formula, data, breaks, pch = 3, cex = .6, mirror = FALSE,
 \item{variogram.alpha}{ parameter to be passed as alpha parameter to
 \link{variogram}; if alpha is specified it will only affect xyplot by
 being passed through ...}
+\item{as.table}{logical; if \code{TRUE}, panels plot top-to-bottom }
 \item{...}{ parameters, passed to variogram and xyplot }
 }
 \value{

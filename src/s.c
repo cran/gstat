@@ -191,7 +191,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	if (INTEGER(nmax)[0] > 0) /* leave default (large) if < 0 */
 		d[id]->sel_max = INTEGER(nmax)[0];
 	if (INTEGER(omax)[0] > 0) /* leave default (0) if <= 0 */
-		d[id]->oct_max = INTEGER(nmax)[0];
+		d[id]->oct_max = INTEGER(omax)[0];
 	if (INTEGER(nmin)[0] > 0) /* leave default (0) if <= 0 */
 		d[id]->sel_min = INTEGER(nmin)[0];
 	if (REAL(maxdist)[0] > 0.0)

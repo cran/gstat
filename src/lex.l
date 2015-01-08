@@ -35,6 +35,11 @@
 
 #include <stdio.h>
 #include <string.h>
+
+#ifdef USING_R
+#include <R.h>
+#endif
+
 #include "defs.h"
 #include "userio.h"
 #include "utils.h"
@@ -67,7 +72,11 @@ int MY_unput(int c);
 int yywrap(void);
 
 static char *unquote(const char *txt);
+
+#ifndef USING_R
 static char *bquote(char *command);
+#endif
+
 static void reset_lex(void);
 
 #ifdef FLEX_SCANNER /* copied this from the flex man pages: */
@@ -155,7 +164,9 @@ NL				"\n"
 				return(QSTR);
 			}
 {BQSTRING}  {	SCANNED("BQSTRING");
+#ifndef USING_R
 				yylval.sval = bquote(unquote((char *) yytext));
+#endif
 				return(QSTR);
 			}
 {IDENT}     {	/* SCANNED("IDENT"); */
@@ -336,6 +347,7 @@ static char *unquote(const char *txt) {
 	return cp;
 }
 
+#ifndef USING_R
 static char *bquote(char *command) {
 /*
  * substitute back-quoted string with result from shell command
@@ -379,3 +391,4 @@ static char *bquote(char *command) {
 	efree(command);
 	return cp;
 }
+#endif

@@ -547,6 +547,11 @@ char *gstat_yytext;
 
 #include <stdio.h>
 #include <string.h>
+
+#ifdef USING_R
+#include <R.h>
+#endif
+
 #include "defs.h"
 #include "userio.h"
 #include "utils.h"
@@ -579,7 +584,11 @@ int MY_unput(int c);
 int gstat_yywrap(void);
 
 static char *unquote(const char *txt);
+
+#ifndef USING_R
 static char *bquote(char *command);
+#endif
+
 static void reset_lex(void);
 
 #ifdef FLEX_SCANNER /* copied this from the flex man pages: */
@@ -614,7 +623,7 @@ static void reset_lex(void);
 /*
 * following is the RULES section:
 */
-#line 618 "<stdout>"
+#line 627 "<stdout>"
 
 #define INITIAL 0
 
@@ -805,9 +814,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 126 "lex.l"
+#line 135 "lex.l"
 
-#line 807 "<stdout>"
+#line 816 "<stdout>"
 
 	if ( !(yy_init) )
 		{
@@ -894,7 +903,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 127 "lex.l"
+#line 136 "lex.l"
 { 	SCANNED("INT");
 				if (read_int((char *) gstat_yytext, &(yylval.ival))) {
 					lex_error();
@@ -905,7 +914,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 134 "lex.l"
+#line 143 "lex.l"
 { 	SCANNED("UINT");
 				cp = strchr((char *) gstat_yytext, 'U');
 				*cp = '\0';
@@ -917,12 +926,12 @@ YY_RULE_SETUP
 			}
 	YY_BREAK
 case 3:
-#line 144 "lex.l"
+#line 153 "lex.l"
 case 4:
-#line 145 "lex.l"
+#line 154 "lex.l"
 case 5:
 YY_RULE_SETUP
-#line 145 "lex.l"
+#line 154 "lex.l"
 {	SCANNED("REAL");
 				if (read_double((char *) gstat_yytext, &(yylval.dval))) {
 					lex_error();
@@ -932,10 +941,10 @@ YY_RULE_SETUP
 			}
 	YY_BREAK
 case 6:
-#line 153 "lex.l"
+#line 162 "lex.l"
 case 7:
 YY_RULE_SETUP
-#line 153 "lex.l"
+#line 162 "lex.l"
 {	SCANNED("[S|D]QSTRING");
 				yylval.sval = unquote((char *) gstat_yytext);
 				return(QSTR);
@@ -943,15 +952,17 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 157 "lex.l"
+#line 166 "lex.l"
 {	SCANNED("BQSTRING");
+#ifndef USING_R
 				yylval.sval = bquote(unquote((char *) gstat_yytext));
+#endif
 				return(QSTR);
 			}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 161 "lex.l"
+#line 172 "lex.l"
 {	/* SCANNED("IDENT"); */
 #ifdef USING_R /* don't leak memory */
 				yylval.sval = (char *) gstat_yytext;
@@ -995,32 +1006,32 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 201 "lex.l"
+#line 212 "lex.l"
 {	SCANNED("WS"); return(gstat_yylex()); }
 	YY_BREAK
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 202 "lex.l"
+#line 213 "lex.l"
 {	SCANNED("NL"); My_yy_lineno++; return(gstat_yylex()); }
 	YY_BREAK
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 203 "lex.l"
+#line 214 "lex.l"
 {	SCANNED("COMMENT (#)"); My_yy_lineno++; return(gstat_yylex()); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 204 "lex.l"
+#line 215 "lex.l"
 {	SCANNED(""); return(*gstat_yytext); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 206 "lex.l"
+#line 217 "lex.l"
 ECHO;
 	YY_BREAK
-#line 1018 "<stdout>"
+#line 1029 "<stdout>"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1388,7 +1399,7 @@ static int yy_get_next_buffer (void)
 }
 #endif
 
-# ifndef USING_R
+#ifndef USING_R
 #ifndef YY_NO_INPUT
 #ifdef __cplusplus
     static int yyinput (void)
@@ -2029,7 +2040,7 @@ void gstat_yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 206 "lex.l"
+#line 217 "lex.l"
 
 
 /* User supplied subroutines: */
@@ -2164,6 +2175,7 @@ static char *unquote(const char *txt) {
 	return cp;
 }
 
+#ifndef USING_R
 static char *bquote(char *command) {
 /*
  * substitute back-quoted string with result from shell command
@@ -2207,4 +2219,5 @@ static char *bquote(char *command) {
 	efree(command);
 	return cp;
 }
+#endif
 

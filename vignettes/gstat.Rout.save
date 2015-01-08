@@ -106,7 +106,7 @@ attr(,"package")
 
 > library(gstat)
 
-> zinc.idw = krige(zinc ~ 1, meuse, meuse.grid)
+> zinc.idw = idw(zinc ~ 1, meuse, meuse.grid)
 [inverse distance weighted interpolation]
 
 > class(zinc.idw)

@@ -34,17 +34,21 @@ StVgmLag = function(formula, data, dt, pseudo, ...) {
 	.ValidObs = function(formula, data)
 		!is.na(data[[as.character(as.list(formula)[[2]])]])
 	d = dim(data)
+	if (formula[[3]] != 1) { # there is a regression model:
+		data$resid = residuals(lm(formula, data, na.action = na.exclude))
+		formula = resid ~ 1
+	}
 	ret = vector("list", d[2] - dt)
 	if (dt == 0) {
 		for (i in 1:d[2]) {
 			d0 = data[,i]
-      valid = .ValidObs(formula, d0)
-      if(sum(valid) <= 1)
-        ret[[i]] <- NULL
-      else {
-        d0 = d0[valid,]
-        ret[[i]] = variogram(formula, d0, ...)
-      }
+			valid = .ValidObs(formula, d0)
+			if(sum(valid) <= 1)
+				ret[[i]] <- NULL
+			else {
+				d0 = d0[valid,]
+				ret[[i]] = variogram(formula, d0, ...)
+			}
 		}
 	} else {
 		for (i in 1:(d[2] - dt)) {
@@ -72,15 +76,15 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
                        width = cutoff/15, boundaries=seq(0,cutoff,width),
                        progress = interactive(), pseudo = TRUE, 
                        assumeRegular=FALSE, na.omit=FALSE) {
-  if (missing(data))
-    data = locations
-  if(missing(cutoff)) {
-    ll = !is.na(is.projected(data@sp)) && !is.projected(data@sp)
-    cutoff <- spDists(t(data@sp@bbox), longlat = ll)[1,2]/3
-  }
+	if (missing(data))
+		data = locations
+	if(missing(cutoff)) {
+		ll = !is.na(is.projected(data@sp)) && !is.projected(data@sp)
+		cutoff <- spDists(t(data@sp@bbox), longlat = ll)[1,2]/3
+	}
   
-  if(is(data, "STIDF"))
-    return(variogramST.STIDF(formula, data, tlags, cutoff, width, 
+	if(is(data, "STIDF"))
+		return(variogramST.STIDF(formula, data, tlags, cutoff, width, 
                              boundaries, progress, ...))
   
 	stopifnot(is(data, "STFDF") || is(data, "STSDF"))
@@ -125,9 +129,9 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
     v <- na.omit(v)
 
   # setting attributes to allow krigeST to double check metrics
-  attr(v$timelag,"units") <- attr(twidth,"units")
-  if (isTRUE(!is.projected(data)))
-    attr(v$spacelag, "units") = "km"
+	attr(v$timelag,"units") <- attr(twidth,"units")
+	if (isTRUE(!is.projected(data)))
+		attr(v$spacelag, "units") = "km"
   
   return(v)
 }

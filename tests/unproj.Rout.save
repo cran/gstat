@@ -1,5 +1,5 @@
 
-R version 3.1.0 beta (2014-03-28 r65330) -- "Spring Dance"
+R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet"
 Copyright (C) 2014 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -19,7 +19,7 @@ Type 'q()' to quit R.
 + 	q()
 Loading required package: rgdal
 Loading required package: sp
-rgdal: version: 0.8-16, (SVN revision 498)
+rgdal: version: 0.9-1, (SVN revision 518)
 Geospatial Data Abstraction Library extensions to R successfully loaded
 Loaded GDAL runtime: GDAL 1.10.1, released 2013/08/26
 Path to GDAL shared files: /usr/local/share/gdal
@@ -63,7 +63,7 @@ Path to PROJ.4 shared files: (autodetected)
 > library(fields)
 Loading required package: spam
 Loading required package: grid
-Spam version 0.41-0 (2014-02-26) is loaded.
+Spam version 1.0-1 (2014-09-09) is loaded.
 Type 'help( Spam)' or 'demo( spam)' for a short introduction 
 and overview of this package.
 Help for individual functions is also obtained by adding the
@@ -157,4 +157,4 @@ spDistsN1 Distances:
 > 
 > proc.time()
    user  system elapsed 
-  2.264   0.076   2.345 
+  2.075   0.042   2.111 

@@ -46,10 +46,10 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 	if (is(model, "variogramModel")) {
 		require(gstat)
 		V = variogramLine(model, dist_vector = spDists(s, s, ll),
-			covariance=TRUE)
+			covariance = TRUE)
 		v0 = variogramLine(model, dist_vector = spDists(s, s0, ll),
-			covariance=TRUE)
-		c0 = variogramLine(model, dist_vector = c(0), covariance=TRUE)$gamma
+			covariance = TRUE)
+		c0 = variogramLine(model, dist_vector = c(0), covariance = TRUE)$gamma
 	} else {
 		V = model(data, data, ...)
 		v0 = model(data, newdata, ...)
@@ -65,11 +65,8 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 	}
 	if (!missing(beta)) { # sk:
 		skwts = CHsolve(V, v0)
-		if (computeVar) {
-		  var <- c0 - apply(v0*skwts, 2, sum)
-		}
-    
-    
+		if (computeVar)
+			var <- c0 - apply(v0*skwts, 2, sum)
 	} else { # ok/uk -- need to estimate beta:
 		skwts = CHsolve(V, cbind(v0, X))
 		ViX = skwts[,-(1:nrow(s0))]
@@ -77,19 +74,21 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 		beta = solve(t(X) %*% ViX, t(ViX) %*% y)
 		if (computeVar) { 
 			Q = t(x0) - t(ViX) %*% v0
-			var <- c0 - apply(v0*skwts, 2, sum) + apply(Q * CHsolve(t(X) %*% ViX, Q), 2, sum)
+			var <- c0 - apply(v0*skwts, 2, sum) + 
+				apply(Q * CHsolve(t(X) %*% ViX, Q), 2, sum)
 		}
 	}
 	pred = x0 %*% beta + t(skwts) %*% (y - X %*% beta)
 	if (computeVar) {
 		if (fullCovariance) {
-		  corMat <- cov2cor(variogramLine(model, dist_vector = spDists(s0, s0), covariance = TRUE))
-		  var <- corMat*matrix(sqrt(var) %x% sqrt(var), nrow(corMat), ncol(corMat))
+			corMat <- cov2cor(variogramLine(model, 
+				dist_vector = spDists(s0, s0), covariance = TRUE))
+			var <- corMat*matrix(sqrt(var) %x% sqrt(var), 
+				nrow(corMat), ncol(corMat))
 		}
 		list(pred = pred, var = var)
-	} else {
-    pred
-	}
+	} else
+		pred
 }
 
 krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
@@ -102,7 +101,12 @@ krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
   stopifnot(nmax > 0)
   
   if(nmax < Inf)
-    return(krigeST.local(formula, data, newdata, modelList, nmax, stAni, computeVar, fullCovariance))
+    return(krigeST.local(formula = formula, data = data, 
+		newdata = newdata, modelList = modelList, nmax = nmax, 
+		stAni = stAni, computeVar = computeVar, 
+		fullCovariance = fullCovariance, 
+		checkNeighbourhood = checkNeighbourhood, 
+		bufferNmax = bufferNmax))
     
 	if(is.null(attr(modelList,"temporal unit")))
 	  warning("The spatio-temporal variogram model does not carry a time unit attribute: krisgeST cannot check whether the temporal distance metrics coincide.")
@@ -161,29 +165,32 @@ krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
 }
 
 # local spatio-temporal kriging
-krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni,
+krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
                           computeVar=FALSE, fullCovariance=FALSE, 
                           checkNeighbourhood=TRUE, bufferNmax=4) {
-  if(is.null(stAni) & !is.null(modelList$stAni)) {
-      stAni <- modelList$stAni
-      
-      # scale stAni [spatial/temporal] to seconds
-      if(!is.null(attr(modelList,"temporal unit")))
-        stAni/switch(attr(modelList, "temporal unit"),
-                     secs=1,
-                     mins=60,
-                     hours=3600,
-                     days=86400,
-                     stop("Temporal unit",attr(modelList, "temporal unit"),"not implemented."))
-      
-      # check whether stAni meets the coordinates' unit
-      stopifnot( (is.projected(data) & (attr(modelList, "spatial unit") %in% c("km","m"))) | (!is.projected(data) & !(attr(modelList, "spatial unit") %in% c("km","m"))))
-  }
+  dimGeom <- ncol(coordinates(data))
   
+  if(is.null(stAni) & !is.null(modelList$stAni)) {
+    stAni <- modelList$stAni
+      
+    # scale stAni [spatial/temporal] to seconds
+    if(!is.null(attr(modelList,"temporal unit")))
+      stAni <- stAni/switch(attr(modelList, "temporal unit"),
+                            secs=1,
+                            mins=60,
+                            hours=3600,
+                            days=86400,
+                            stop("Temporal unit",attr(modelList, "temporal unit"),"not implemented."))
+  }
+   
   if(is.null(stAni))
     stop("The spatio-temporal model does not provide a spatio-temporal 
          anisotropy scaling nor is the parameter stAni provided. One of 
          these is necessary for local spatio-temporal kriging.")
+  
+  # check whether the model meets the coordinates' unit
+  if(!is.null(attr(modelList, "spatial unit")))
+    stopifnot((is.projected(data) & (attr(modelList, "spatial unit") %in% c("km","m"))) | (!is.projected(data) & !(attr(modelList, "spatial unit") %in% c("km","m"))))
   
   if(is(data, "STFDF") || is(data, "STIDF"))
     data <- as(data, "STSDF")
@@ -193,11 +200,19 @@ krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni,
   if(is(newdata, "STF"))
     newdata <- as(newdata, "STS")
   
+  if(dimGeom == 2) {
   df = as(data, "data.frame")[,c(1,2,4)]
   df$time = as.numeric(df$time)*stAni
   
   query = as(newdata, "data.frame")[,c(1,2,4)]
   query$time = as.numeric(query$time)*stAni
+  } else {
+    df = as(data, "data.frame")[,c(1,2,3,5)]
+    df$time = as.numeric(df$time)*stAni
+    
+    query = as(newdata, "data.frame")[,c(1,2,3,5)]
+    query$time = as.numeric(query$time)*stAni
+  }
   
   res <- numeric(nrow(query))
   pb = txtProgressBar(style = 3, max = nrow(query))
@@ -512,11 +527,13 @@ covSumMetric <- function(x, y, model) {
 
 ## simple sumMetric model
 covSimpleSumMetric <- function(x, y, model) {
-  covSumMetric(x, y, vgmST("sumMetric", space=model$space, time=model$time,
-                           joint=vgm(sum(model$joint$psill), 
-                                     model$joint$model[model$joint$model != "Nug"],
-                                     model$joint$range, model$nugget),
-                           stAni=model$stAni))
+  modelNew <- vgmST("sumMetric", space=model$space, time=model$time,
+	joint=vgm(sum(model$joint$psill),
+	model$joint$model[model$joint$model != "Nug"],
+	model$joint$range, model$nugget), stAni=model$stAni)
+  if (!is.null(attr(model,"temporal unit")))
+    attr(modelNew,"temporal unit") <- attr(model,"temporal unit")
+  covSumMetric(x, y, modelNew) 
 }
 
 ## metric model
@@ -585,4 +602,38 @@ covMetric <- function(x, y, model) {
   Mm = variogramLine(model$joint, covariance = TRUE, dist_vector = h)
   
   return(Mm)
+}
+
+# define variogram model FUNCTION that can deal with x and y
+# being of class SpatialPolygons OR SpatialPoints:
+vgmArea = function(x, y = x, vgm, ndiscr = 16, verbose = FALSE, covariance = TRUE) {
+	stopifnot(is(x, "SpatialPolygons") || is(x, "SpatialPoints"))
+	stopifnot(is(y, "SpatialPolygons") || is(y, "SpatialPoints"))
+	stopifnot(is(vgm, "variogramModel"))
+	nx = length(x)
+	ny = length(y)
+	V = matrix(NA, nx, ny)
+	if (verbose)
+		pb = txtProgressBar(style = 3, max = nx)
+	for (i in 1:nx) {
+		if (is(x, "SpatialPolygons"))
+			px = spsample(x[i,], ndiscr, "regular", offset = c(.5,.5))
+		else
+			px = x[i,]
+		for (j in 1:ny) {
+			if (is(y, "SpatialPolygons"))
+				py = spsample(y[j,], ndiscr, "regular", offset = c(.5,.5))
+			else
+				py = y[j,]
+			D = spDists(px, py)
+			D[D == 0] = 1e-10
+			V[i,j] = mean(variogramLine(vgm, dist_vector = D, 
+				covariance = covariance))
+		}
+		if (verbose)
+			setTxtProgressBar(pb, i)
+	}
+	if (verbose)
+		close(pb)
+	V
 }

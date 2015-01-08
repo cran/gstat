@@ -18,7 +18,8 @@ for each of the kriging methods.  }
   \link{krige}}
 \item{newdata}{ data frame with prediction/simulation locations; should 
   contain columns with the independent variables (if present) and the
-  coordinates with names as defined in \code{locations} }
+  coordinates with names as defined in \code{locations}; or: polygons, 
+  see below}
 \item{block}{ block size; a vector with 1, 2 or 3 values containing
   the size of a rectangular in x-, y- and z-dimension respectively
   (0 if not set), or a data frame with 1, 2 or 3 columns, containing
@@ -47,7 +48,7 @@ values in 'newdata'.  The default is to predict 'NA'.  Missing values
 in coordinates and predictors are both dealt with. }
 \item{sps.args}{ when newdata is of class \code{SpatialPolygons} 
 or \code{SpatialPolygonsDataFrame} this
-argument list gets passed to \code{spsample} in package \code{sp} to
+argument list gets passed to \link[sp]{spsample} to
 control the discretizing of polygons }
 \item{...}{ ignored (but necessary for the S3 generic/method consistency) }
 }
@@ -65,14 +66,16 @@ to the block argument. Although passing the uncentered block and (0,0)
 as newdata may work for global neighbourhoods, neighbourhood selection
 is always done relative to the centroid values in newdata.
 
-If newdata is of class \code{SpatialPolygons}  or
-\code{SpatialPolygonsDataFrame} (see package sp), then the block average
-for each of the polygons or polygon sets is calculated, using \code{spsample}
-to discretize the polygon(s). \code{sps.args} controls the parameters used
-for \code{spsample}. The "location" with respect to which neighbourhood
-selection is done is for each polygon the SpatialPolygons polygon label point; if you use
-local neighbourhoods you should check out where these points are---this
-may be well outside the ring itself.
+If newdata is of class \link[sp]{SpatialPolygons}  or
+\link[sp]{SpatialPolygonsDataFrame}, then the block
+average for each of the polygons or polygon sets is
+calculated, using \link[sp]{spsample} to discretize the
+polygon(s). Argument \code{sps.args} controls the parameters
+used for \link[sp]{spsample}. The "location" with respect to
+which neighbourhood selection is done is for each polygon the
+SpatialPolygons polygon label point; if you use local neighbourhoods
+you should check out where these points are---it may be well
+outside the polygon itself.
 
 The algorithm used by gstat for simulation random fields is the
 sequential simulation algorithm. This algorithm scales well to large or

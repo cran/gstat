@@ -91,7 +91,7 @@ library(rgl)
 
 # adapted from demo(lollipop3d), to be simplified
 lollipop3d <- function(data.x, data.y, data.z, surf.fun, surf.n=50,
-                       xlim=range(data.x), ylim=range(data.y), zlim=range(data.z), asp=c(y=1,z=1),
+                       xlim=range(data.x), ylim=range(data.y), zlim=range(data.z, na.rm=TRUE), asp=c(y=1,z=1),
                        xlab=deparse(substitute(x)), ylab=deparse(substitute(y)),
                        zlab=deparse(substitute(z)), main="", alpha.surf=0.4,
                        col.surf=fg,col.stem=c(fg,fg), col.pt="gray",type.surf="line",ptsize,
@@ -113,10 +113,10 @@ lollipop3d <- function(data.x, data.y, data.z, surf.fun, surf.n=50,
     surf.y <- seq(ylim[1],ylim[2],length=surf.n)
     surf.z <- outer(surf.x,surf.y,surf.fun)  ## requires surf.fun be vectorized
     z.interc <- surf.fun(data.x,data.y)
-    zdiff <- diff(range(c(surf.z,data.z)))
+    zdiff <- diff(range(c(surf.z,data.z), na.rm=TRUE))
   } else {
-    z.interc <- rep(min(data.z),length(data.x))
-    zdiff <- diff(range(data.z))
+    z.interc <- rep(min(data.z, na.rm=TRUE),length(data.x))
+    zdiff <- diff(range(data.z, na.rm=TRUE))
   }
   xdiff <- diff(xlim)
   ydiff <- diff(ylim)
@@ -163,7 +163,7 @@ lollipop3d <- function(data.x, data.y, data.z, surf.fun, surf.n=50,
   }
   decorate3d(xlab=xlab, ylab=ylab, zlab=zlab, box=FALSE, axes=FALSE, col=col.axlabs,main=main)
 }
-# run script plotStVariogram3D.R before
+
 lollipop3d(vv$spacelag, vv$timelag, vv$gamma,  main="separable model",
            function(x,y) variogramSurface(fitSepModel,data.frame(spacelag=x,timelag=y))[,3],
            col.stem=c("red","blue"), ptsize=sqrt(vv$np/1000))

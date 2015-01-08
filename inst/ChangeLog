@@ -1,3 +1,114 @@
+2014-12-26 12:49  edzer
+
+	* /pkg/man/predict.gstat.Rd: doc improvement
+
+2014-12-24 07:41  edzer
+
+	* /pkg/NAMESPACE, /pkg/R/krige0.R, /pkg/demo/00Index,
+	  /pkg/demo/a2p.R: move vgm_area from a2p demo to krige0
+
+2014-11-24 08:30  edzer
+
+	* /pkg/src/s.c: typo causing omax to break in C code
+
+2014-11-20 10:53  edzer
+
+	* /pkg/R/krige.R: tidy
+
+2014-11-19 17:37  edzer
+
+	* /makefile, /pkg/man/hscat.Rd, /pkg/src/lex.c, /pkg/src/lex.l,
+	  /pkg/vignettes/gstat.Rout.save: remove bquote; add as.table
+	  argument; update vignette
+
+2014-11-19 16:10  edzer
+
+	* /pkg/vignettes/gstat.Rnw: change krige() into idw() when doing
+	  idw
+
+2014-11-18 13:12  edzer
+
+	* /pkg/R/hscat.R: add as.table argument, default to TRUE
+
+2014-10-29 12:20  edzer
+
+	* /pkg/DESCRIPTION, /pkg/R/krige.R, /pkg/configure.in: add
+	  multiplyTimeWith, correct CC definitions in configure
+
+2014-10-10 10:20  ben_graeler
+
+	* /pkg/R/krige0.R: - adopt for 3D SpatialPoints as Spatial slot in
+	  local kriging
+
+2014-08-16 08:33  edzer
+
+	* /pkg/man/wind.Rd: tidy
+
+2014-08-16 08:30  edzer
+
+	* /pkg/data/jura.rda, /pkg/man/jura.Rd: add David Rossiter's
+	  extension (long/lat, Swiss grid, kml)
+
+2014-08-09 21:34  edzer
+
+	* /pkg/R/krige0.R: time units were omitted in covSimpleSumMetric,
+	  fix by Maogui Hu
+
+2014-08-02 22:00  edzer
+
+	* /pkg/demo/snow.R: typo
+
+2014-08-02 21:57  edzer
+
+	* /pkg/demo/snow.R: update using parallel
+
+2014-07-17 19:44  edzer
+
+	* /pkg/demo/snow.R: update, use parallel
+
+2014-07-11 10:47  ben_graeler
+
+	* /pkg/R/krige0.R: - removed bug in stAni scaling in the buffering
+	  for local spatio-temporal kriging
+
+2014-05-15 13:46  edzer
+
+	* /makefile, /pkg/R/krige0.R, /pkg/man/krigeST.Rd: pass on
+	  parameters, correct doc omission
+
+2014-04-14 14:46  edzer
+
+	* /pkg/R/variogramST.R: work with lm residuals when variogramST
+	  gets a regression model formula
+
+2014-04-09 19:56  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/demo/stkrige.R, /pkg/tests/Examples: -
+	  version 1.0-20 starts here
+	  - NA in precomputed variogram vv caused lollipop3d to fail in
+	  demo/stkrige.R
+
+2014-04-02 12:13  edzer
+
+	* /pkg/inst/ChangeLog: update changelog
+
+2014-04-01 12:59  edzer
+
+	* /pkg/DESCRIPTION, /pkg/tests/Examples/gstat-Ex.Rout.save,
+	  /pkg/tests/unproj.Rout.save, /pkg/vignettes/gstat.Rout.save,
+	  /pkg/vignettes/prs.Rout.save: clean check, update date
+
+2014-03-25 10:26  ben_graeler
+
+	* /pkg/R/krige0.R, /pkg/demo/localKrigeST.R: - updated demo
+	  localKrigeST.R
+
+2014-03-11 13:52  ben_graeler
+
+	* /pkg/R/variogramST.R, /pkg/man/variogramST.Rd: - added an
+	  explicit time unit handling in variogramST for STIDF as implicit
+	  assumptions failed in some cases
+
 2014-03-10 19:46  ben_graeler
 
 	* /pkg/R/krige0.R, /pkg/R/variogramST.R, /pkg/man/variogramST.Rd: -

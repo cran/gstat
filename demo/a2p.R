@@ -16,36 +16,11 @@ plot(nc, axes = TRUE)
 points(grd, pch = 3)
 
 library(gstat)
-# define variogram model FUNCTION that can deal with x and y
-# being of class SpatialPolygons OR SpatialPoints:
-vgm_model = function(x, y = x, vm = vgm(1, "Exp", 1e5, 0), n = 10) {
-	stopifnot(is(x, "SpatialPolygons") || is(x, "SpatialPoints"))
-	stopifnot(is(y, "SpatialPolygons") || is(y, "SpatialPoints"))
-	nx = length(x)
-	ny = length(y)
-	V = matrix(NA, nx, ny)
-	pb = txtProgressBar(style = 3, max = nx)
-	for (i in 1:nx) {
-		if (is(x, "SpatialPolygons"))
-			px = spsample(x[i,], n, "regular", offset = c(.5,.5))
-		else
-			px = x[i,]
-		for (j in 1:ny) {
-			if (is(y, "SpatialPolygons"))
-				py = spsample(y[j,], n, "regular", offset = c(.5,.5))
-			else
-				py = y[j,]
-			D = spDists(px, py)
-			D[D == 0] = 1e-10
-			V[i,j] = mean(variogramLine(vm, dist_vector = D, covariance = TRUE))
-		}
-		setTxtProgressBar(pb, i)
-	}
-	close(pb)
-	V
-}
 
-kr = krige0(SID74 ~ 1, nc, grd, vgm_model)
+# area-to-point kriging:
+kr = krige0(SID74 ~ 1, nc, grd, vgmArea, ndiscr = 9, 
+	vgm = vgm(1, "Exp", 1e5, 0), # point variogram,
+	verbose = TRUE)
 out = SpatialPixelsDataFrame(grd, data.frame(pred = kr))
 
 pl0 = spplot(nc["SID74"], main = "areas")

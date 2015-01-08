@@ -1,5 +1,5 @@
 hscat = function(formula, data, breaks, pch = 3, cex = .6, mirror = FALSE, 
-		variogram.alpha = 0, ...) {
+		variogram.alpha = 0, as.table = TRUE, ...) {
 	stopifnot(!missing(breaks))
 	x = variogram(formula, data, cloud = TRUE, cutoff = max(breaks), 
 		alpha = variogram.alpha, ...)
@@ -21,6 +21,7 @@ hscat = function(formula, data, breaks, pch = 3, cex = .6, mirror = FALSE,
 		ltext(min(x), max(y), paste("r =", signif(cor(x,y),3)), adj=c(0,0.5))
 	}
 	xyplot(xx~yy|class, x, panel = panel,
-		main = "lagged scatterplots", xlab = lab, ylab = lab, ...)
+		main = "lagged scatterplots", xlab = lab, ylab = lab, 
+		as.table = as.table, ...)
 }
 

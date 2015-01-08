@@ -116,7 +116,7 @@ class(meuse.grid)
 image(meuse.grid["dist"])
 title("distance to river (red = 0)")
 library(gstat)
-zinc.idw = krige(zinc~1, meuse, meuse.grid)
+zinc.idw = idw(zinc~1, meuse, meuse.grid)
 class(zinc.idw)
 spplot(zinc.idw["var1.pred"], main = "zinc inverse distance weighted interpolations")
 @

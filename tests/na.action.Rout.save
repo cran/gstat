@@ -1,6 +1,6 @@
 
-R version 3.0.1 (2013-05-16) -- "Good Sport"
-Copyright (C) 2013 The R Foundation for Statistical Computing
+R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet"
+Copyright (C) 2014 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -30,17 +30,17 @@ Type 'q()' to quit R.
 > library(gstat)
 > ## this is not allowed anymore:
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.pass))
-Error in dimnames(coords@coords)[[1]] = row.names(data) : 
-  length of 'dimnames' [1] not equal to array extent
+Error in na.fail.default(structure(list(x = c(180300, NA, 179380, 179180,  : 
+  missing values in object
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.omit))
-Error in dimnames(coords@coords)[[1]] = row.names(data) : 
-  length of 'dimnames' [1] not equal to array extent
+Error in na.fail.default(structure(list(x = c(180300, NA, 179380, 179180,  : 
+  missing values in object
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.exclude))
-Error in dimnames(coords@coords)[[1]] = row.names(data) : 
-  length of 'dimnames' [1] not equal to array extent
+Error in na.fail.default(structure(list(x = c(180300, NA, 179380, 179180,  : 
+  missing values in object
 > try(krige(log(zinc)~1,~x+y,meuse,m, na.action = na.fail))
-Error in dimnames(coords@coords)[[1]] = row.names(data) : 
-  length of 'dimnames' [1] not equal to array extent
+Error in na.fail.default(structure(list(x = c(180300, NA, 179380, 179180,  : 
+  missing values in object
 > 
 > # select 10 random rows;
 > # create two missing values in the regressor variable:
@@ -87,4 +87,4 @@ Error in na.fail.default(structure(list(dist = c(0.527108, 0.929323, NA,  :
 > 
 > proc.time()
    user  system elapsed 
-  1.176   0.064   1.244 
+  1.027   0.040   1.053 

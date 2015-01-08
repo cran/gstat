@@ -51,9 +51,9 @@ krigeST(formula, data, newdata, modelList, y, nmax = Inf, stAni = NULL,
  Function \code{krigeST} is a R implementation of the kriging function from 
  \link{gstat} using spatio-temporal covariance models following the 
  implementation of \code{\link{krige0}}. Function \code{krigeST} offers some 
- particular methods for ordinary spatio-temporal (ST) kriging. In particular, it does not
- support block kriging or kriging in a local neighbourhood, and does not
- provide simulation.
+ particular methods for ordinary spatio-temporal (ST) kriging. In particular,
+ it does not support block kriging or kriging in a distance-based
+ neighbourhood, and does not provide simulation.
 }
 
 \value{
