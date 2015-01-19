@@ -93,7 +93,7 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 
 krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
                     computeVar = FALSE, fullCovariance = FALSE,
-                    checkNeighbourhood=TRUE, bufferNmax=4) {
+                    checkNeighbourhood=TRUE, bufferNmax=4, progress=TRUE) {
 	stopifnot(inherits(modelList, "StVariogramModel"))
 	stopifnot(inherits(data, c("STF", "STS", "STI")) & inherits(newdata, c("STF", "STS", "STI"))) 
 	stopifnot(identical(proj4string(data@sp), proj4string(newdata@sp)))
@@ -106,7 +106,7 @@ krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
 		stAni = stAni, computeVar = computeVar, 
 		fullCovariance = fullCovariance, 
 		checkNeighbourhood = checkNeighbourhood, 
-		bufferNmax = bufferNmax))
+		bufferNmax = bufferNmax), progress)
     
 	if(is.null(attr(modelList,"temporal unit")))
 	  warning("The spatio-temporal variogram model does not carry a time unit attribute: krisgeST cannot check whether the temporal distance metrics coincide.")
@@ -167,7 +167,7 @@ krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
 # local spatio-temporal kriging
 krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
                           computeVar=FALSE, fullCovariance=FALSE, 
-                          checkNeighbourhood=TRUE, bufferNmax=4) {
+                          checkNeighbourhood=TRUE, bufferNmax=4, progress=TRUE) {
   dimGeom <- ncol(coordinates(data))
   
   if(is.null(stAni) & !is.null(modelList$stAni)) {
@@ -215,7 +215,8 @@ krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
   }
   
   res <- numeric(nrow(query))
-  pb = txtProgressBar(style = 3, max = nrow(query))
+  if(progress)
+    pb = txtProgressBar(style = 3, max = nrow(query))
   
   if (checkNeighbourhood) {
     nb = get.knnx(as.matrix(df), as.matrix(query), bufferNmax*nmax)[[1]]
@@ -229,7 +230,8 @@ krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
       res[i] <- krigeST(formula, redNghbrData, subsetThroughDfInd(newdata, i),
                         modelList, computeVar=computeVar, 
                         fullCovariance=fullCovariance)$var1.pred
-      setTxtProgressBar(pb, i)  
+      if(progress)
+        setTxtProgressBar(pb, i)  
     }
   } else {
     nb = get.knnx(as.matrix(df), as.matrix(query), nmax)[[1]]
@@ -242,7 +244,8 @@ krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
       setTxtProgressBar(pb, i)  
     }
   }
-  close(pb)
+  if(progress)
+    close(pb)
   
   addAttrToGeom(geometry(newdata), data.frame(var1.pred=res))
 }

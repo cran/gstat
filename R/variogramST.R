@@ -69,7 +69,14 @@ StVgmLag = function(formula, data, dt, pseudo, ...) {
 			}
 		}
 	}
-	VgmAverage(ret, dotLst$boundaries)
+  if(!is.null(dotLst$cloud)) {
+    if(dotLst$cloud)
+      ret <- do.call("rbind", ret)
+      ret$id <- "var1"
+      return(ret)
+  } else {
+	   return(VgmAverage(ret, dotLst$boundaries))
+  }
 }
 
 variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff, 
@@ -117,7 +124,7 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
 	if (is(t, "yearmon"))
 		class(v$timelag) = "yearmon"
     
-	b = attr(ret[[2]], "boundaries")
+	b = attr(ret[[min(length(tlags),2)]], "boundaries")
 	b = c(0, b[2]/1e6, b[-1])
 	# ix = findInterval(v$dist, b) will use all spacelags
 	b = b[-2]

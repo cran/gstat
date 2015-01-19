@@ -202,5 +202,14 @@ meuse.grid$zinc = x[,1]
 spplot(meuse.grid["zinc"], main = "zinc")
 meuse.grid$copper = x[,2]
 spplot(meuse.grid["copper"], main = "copper")
+
+# the following has NOTHING to do with kriging, but --
+# return the median of the nearest 11 observations:
+x = krige(zinc~1, meuse, meuse.grid, set = list(method = "med"), nmax = 11)
+# get 25%- and 75%-percentiles of nearest 11 obs, as prediction and variance:
+x = krige(zinc~1, meuse, meuse.grid, nmax = 11, 
+	set = list(method = "med", quantile = 0.25))
+# get diversity (# of different values) and mode from 11 nearest observations:
+x = krige(zinc~1, meuse, meuse.grid, nmax = 11, set = list(method = "div"))
 }
 \keyword{ models }

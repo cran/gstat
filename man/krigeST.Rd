@@ -12,7 +12,7 @@ Function for ordinary global spatio-temporal kriging on point support
 \usage{
 krigeST(formula, data, newdata, modelList, y, nmax = Inf, stAni = NULL,
         computeVar = FALSE,	fullCovariance = FALSE,
-        checkNeighbourhood=TRUE, bufferNmax=4)
+        checkNeighbourhood=TRUE, bufferNmax=4, progress=TRUE)
 }
 \arguments{
  \item{formula}{ formula that defines the dependent variable as a linear
@@ -46,6 +46,7 @@ krigeST(formula, data, newdata, modelList, y, nmax = Inf, stAni = NULL,
   all predictions will be returned}
   \item{checkNeighbourhood}{whether the fast neareat neighbour search shall be extended and being reduced based on the actual covariance}
   \item{bufferNmax}{factor with which nmax is multiplied for an extended search radius (default=4).}
+  \item{progress}{whether a progress bar shall be printed for local spatio-temporal kriging; default=TRUE}
 }
 \details{
  Function \code{krigeST} is a R implementation of the kriging function from 

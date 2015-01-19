@@ -1,5 +1,5 @@
 b930a1c993354b3d71cc449df073d4be *CHANGES
-cb0a2d4361e2422f226e36b48e00ca22 *DESCRIPTION
+73fa412010694186a17f6a8d8bb39887 *DESCRIPTION
 d637e46c08b0c76e8eb6a97b42cca2a7 *LICENCE
 e2711444c0d8c6af79b710998a0977ff *NAMESPACE
 02a9d4ea0f96e71d31a614d441396d5f *R/fit.lmc.R
@@ -17,7 +17,7 @@ c304219fc3b420e469d5a2eba2ac764e *R/gstat.formula.predict.R
 edc9791ebe437b1901380d74972db2cc *R/image.data.frame.R
 ffb68d2f3cebc0ee3bbbceee19b9e9fe *R/krige.R
 a332fc20de258992a2187ee4b8508585 *R/krige.cv.R
-1b046c5c4156e8cb1aa8af16c698ab7d *R/krige0.R
+74957845fa3297163678e1c5bed47ba6 *R/krige0.R
 4d12a98da5047471714771888c60106f *R/krigeTg.R
 c197a99a8514e3f23ce0283b6f77131e *R/load.variogram.model.R
 5e4ca298349e3841bcd67b74ec2b4b45 *R/map.to.lev.R
@@ -40,7 +40,7 @@ d4012e4a541f2fa576426821f4eb7b66 *R/variogram.default.R
 7cee4997003ea828f08351def9ce3bb2 *R/variogram.formula.R
 ed5e337220370c0b43254e282c34442b *R/variogram.gstat.R
 799c4915505f4cde6a8bd7270ac148e0 *R/variogramLine.R
-45bf35c2f514b00bf635e88284521464 *R/variogramST.R
+cd1e232c31ea3d652a9323483dee01d7 *R/variogramST.R
 57fe81e868288a26223e2c04861f0341 *R/vgm.R
 d07099f46a9c8618d8719bd422b96f9f *R/vgm.panel.R
 216b232871afa74f72e25e0ba1610fda *R/xyz2img.R
@@ -96,13 +96,13 @@ c6300dd54c579e8a10f185a8c628236e *demo/wind.R
 350eeaea4e8193350a4468663d603c6a *inst/ChangeLog0
 8375b3a03c0fbabf5e54d2ed27718c0f *inst/doc/gstat.R
 46e7d544f28b6a6e6a103ec880331e4a *inst/doc/gstat.Rnw
-38834a61d61543bd90ca6dc6e3f1dd2e *inst/doc/gstat.pdf
+a1bd4bd67a95f463ab5f6f0a785a2ec0 *inst/doc/gstat.pdf
 626f14d14182c6fb8b5d3dd6e855f387 *inst/doc/prs.R
 b9fb690e22be4c420821f8b56fde7825 *inst/doc/prs.Rnw
-bc9109707fdda1ff5a9e9ed3ba659f89 *inst/doc/prs.pdf
+bb5d404a33585d8de9c44ceb1fb53c4c *inst/doc/prs.pdf
 02b97b7b2843b93bf3d8f7e6a0bc4577 *inst/doc/st.R
 fdebd3ff489c10ffef23ba7cb32976af *inst/doc/st.Rnw
-ae9a37ba614519b3860c53aeb9a52106 *inst/doc/st.pdf
+2a3599356799b3fdddfd14786c40c3c4 *inst/doc/st.pdf
 af529f6f9ce9e52ed054e016fd386af5 *inst/external/cluster.txt
 bacec53ee233889d6419b0e394bde7a8 *inst/external/ncp.dbf
 3692904f850276a958eaa4024e4a8ec7 *inst/external/ncp.shp
@@ -121,9 +121,9 @@ ce3820b1e0de25d806c128fb8f2dcc41 *man/gstat.Rd
 fbf6173c37452d35b9e8117e680c5259 *man/hscat.Rd
 0a2da57e2e0b08028bfdf1af41b0f635 *man/image.Rd
 22fdbfb85766ae92bb35f189bbc140f0 *man/jura.Rd
-206d967b5a02227d03984d9f844c8ae2 *man/krige.Rd
+795a8ad4ba362a1f94085960c55469ea *man/krige.Rd
 67be51faebb0c3439b7021dde2f508a0 *man/krige.cv.Rd
-2fc67af91bd5d94c02b018c7cca4166b *man/krigeST.Rd
+c1c75f7941fc8423bd050b80cde0ee3c *man/krigeST.Rd
 bba3129590b8e7154333670ececd3d55 *man/krigeTg.Rd
 87e00e2e820b5c13fafd45dff6bbc4e0 *man/map.to.lev.Rd
 0b63b13b0e75ef9523aa4902ffe1b3c2 *man/meuse.all.Rd
