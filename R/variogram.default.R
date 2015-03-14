@@ -59,7 +59,7 @@ function(object, locations, X, cutoff, width = cutoff/15.0, alpha = 0,
             .Call(gstat_new_data, as.double(object[[i]]), 
 				as.double(locations[[i]]), as.double(Xloc), 
 				as.integer(1), as.double(t.beta), as.integer(-1),
-				as.integer(0), as.double(-1), as.integer(1), 
+				as.integer(0), as.double(-1), as.integer(0), as.integer(1),
 				double(0), grd, as.integer(0), as.integer(projected),
 				as.integer(0), as.double(lambda), as.integer(0))
 			if (!is.null(g) && !is.null(g$model[[id.names[i]]])) 

@@ -42,7 +42,7 @@ Benedikt Graeler
 }
 
 \seealso{
-\code{\link{fit.StVariogram}}, \code{\link{variogramSurface}}
+\code{\link{fit.StVariogram}} for fitting, \code{\link{variogramSurface}} to plot the variogram and \code{\link{extractParNames}} to better understand the parameter structure of spatio-temporal variogram models.
 }
 \examples{
 # separable model: spatial and temporal sill will be ignored

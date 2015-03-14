@@ -43,7 +43,7 @@
 #define GSTAT_NAME      "gstat"
 #define GSTAT_CR        "Copyright (C) 1992, 2010 Edzer Pebesma and others"
 #define GSTAT_EMAIL     "edzer.pebesma@uni-muenster.de"
-#define GSTAT_INFO      "geostatitics@52north.org (subscription required)"
+#define GSTAT_INFO      "geostatistics@52north.org (subscription required)"
 #define GSTAT_ANNOUNCE  "gstat-announce@geo.uu.nl"
 #define GSTAT_HOME      "http://www.gstat.org/"
 #define USAGE           "usage: gstat [options] [file [file ...]]"

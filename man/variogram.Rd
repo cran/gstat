@@ -4,7 +4,6 @@
 \alias{variogram.gstat}
 \alias{variogram.formula}
 \alias{variogram.default}
-\alias{variogram.line}
 \alias{print.gstatVariogram}
 \alias{print.variogramCloud}
 \alias{as.data.frame.variogramCloud}
@@ -27,7 +26,6 @@ is called with a different set of parameters.
 	cross = TRUE, grid, map = FALSE, g = NULL, ..., projected = TRUE, 
 	lambda = 1.0, verbose = FALSE, covariogram = FALSE, PR = FALSE, 
 	pseudo = -1)
-\method{variogram}{line}(..., deprecate = TRUE)
 \method{print}{gstatVariogram}(x, ...)
 \method{print}{variogramCloud}(x, ...)
 }
@@ -98,9 +96,6 @@ directly; this is filled automatically) }
 are given, a variogram map is returned. This requires package
 sp. Alternatively, a map can be passed, of class SpatialDataFrameGrid
 (see sp docs) }
-\item{deprecate}{logical; if TRUE, a message will be printed to say
-that this function is deprecated. Function \code{variogram.line} will
-be deprecated in favour of the identical \code{variogramLine}}
 \item{g}{ NULL or object of class gstat; may be used to pass settable
 parameters and/or variograms; see example }
 \item{projected}{logical; if FALSE, data are assumed to be unprojected,
@@ -201,7 +196,7 @@ variogram(g)
 
 if (require(rgdal)) {
   proj4string(meuse) = CRS("+init=epsg:28992")
-  meuse.ll = spTransform(meuse, CRS("+proj=longlat"))
+  meuse.ll = spTransform(meuse, CRS("+proj=longlat +datum=WGS84 +ellps=WGS84"))
 # variogram of unprojected data, using great-circle distances, returning km as units
   variogram(log(zinc) ~ 1, meuse.ll)
 }

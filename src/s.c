@@ -126,7 +126,7 @@ SEXP gstat_exit(SEXP x) {
 }
 
 SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept, 
-			SEXP beta, SEXP nmax, SEXP nmin, SEXP maxdist, 
+			SEXP beta, SEXP nmax, SEXP nmin, SEXP maxdist, SEXP force,
 			SEXP vfn, SEXP sw, SEXP grid, SEXP degree, SEXP is_projected,
 			SEXP vdist, SEXP lambda, SEXP omax) {
 	double *y, *locs, *X, *w = NULL;
@@ -196,6 +196,8 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 		d[id]->sel_min = INTEGER(nmin)[0];
 	if (REAL(maxdist)[0] > 0.0)
 		d[id]->sel_rad = REAL(maxdist)[0];
+	if (INTEGER(force)[0] > 0)
+		d[id]->force = INTEGER(force)[0];
 	switch(INTEGER(vfn)[0]) {
 		case 1: /* d[id]->variance_fn = v_identity; == leave NULL */ break;
 		case 2: d[id]->variance_fn = v_mu; break;
@@ -987,7 +989,8 @@ void s_gstat_warning(const char *mess) {
 
 	if (DEBUG_SILENT)
 		return;
-	Rprintf("%s\n", mess);
+	/* Rprintf("%s\n", mess); */
+	PROBLEM "%s", mess WARN
 	return;
 }
 

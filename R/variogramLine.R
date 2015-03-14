@@ -26,8 +26,9 @@ function(object, maxdist, n = 200, min=1.0e-6 * maxdist, dir = c(1,0,0),
 		data.frame(dist=ret[[1]], gamma=ret[[2]])
 }
 
-"variogram.line" <- function(..., deprecate = TRUE) {
-	if (deprecate)
-		cat("variogram.line is DEPRECATED, please use variogramLine instead\n")
-	variogramLine(...)
-}
+# Sat Mar 14 15:11:55 CET 2015: removed this:
+# "variogram.line" <- function(..., deprecate = TRUE) {
+# 	if (deprecate)
+# 		cat("variogram.line is DEPRECATED, please use variogramLine instead\n")
+# 	variogramLine(...)
+# }

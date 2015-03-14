@@ -58,9 +58,9 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 				w = d$weights
 			raw = gstat.formula(d$formula, d$data)
 			.Call(gstat_new_data, as.double(raw$y), 
-				as.double(raw$locations),
-				as.double(raw$X), as.integer(raw$has.intercept),
-				as.double(d$beta), nmax, nmin, maxdist, as.integer(d$vfn),
+				as.double(raw$locations), as.double(raw$X),
+				as.integer(raw$has.intercept), as.double(d$beta),
+				nmax, nmin, maxdist, as.integer(d$force), as.integer(d$vfn),
 				as.numeric(w), double(0.0), as.integer(d$degree),
 				as.integer(is.projected(d$data)), as.integer(d$vdist),
 				as.double(d$lambda), as.integer(d$omax))

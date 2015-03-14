@@ -6,7 +6,7 @@ data(wind)
 wind.loc$y = as.numeric(char2dms(as.character(wind.loc[["Latitude"]])))
 wind.loc$x = as.numeric(char2dms(as.character(wind.loc[["Longitude"]])))
 coordinates(wind.loc) = ~x+y
-proj4string(wind.loc) = "+proj=longlat +datum=WGS84"
+proj4string(wind.loc) = "+proj=longlat +datum=WGS84 +ellps=WGS84"
 
 wind$time = ISOdate(wind$year+1900, wind$month, wind$day)
 wind$jday = as.numeric(format(wind$time, '%j'))
@@ -23,8 +23,8 @@ velocities = apply(windsqrt, 2, function(x) { x - meanwind })
 pts = coordinates(wind.loc[match(names(wind[4:15]), wind.loc$Code),])
 pts = SpatialPoints(pts)
 if (require(rgdal)) {
-proj4string(pts) = "+proj=longlat +datum=WGS84"
-utm29 = CRS("+proj=utm +zone=29 +datum=WGS84")
+proj4string(pts) = "+proj=longlat +datum=WGS84 +ellps=WGS84"
+utm29 = CRS("+proj=utm +zone=29 +datum=WGS84 +ellps=WGS84")
 pts = spTransform(pts, utm29)
 # note the t() in:
 w = STFDF(pts, wind$time, data.frame(values = as.vector(t(velocities))))
@@ -33,7 +33,7 @@ library(mapdata)
 library(maptools)
 m = map2SpatialLines(
     map("worldHires", xlim = c(-11,-5.4), ylim = c(51,55.5), plot=F))
-proj4string(m) = "+proj=longlat +datum=WGS84"
+proj4string(m) = "+proj=longlat +datum=WGS84 +ellps=WGS84"
 m = spTransform(m, utm29)
 
 # setup grid

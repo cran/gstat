@@ -3,11 +3,12 @@ Rprof()
 library(sp)
 library(maptools)
 fname = system.file("shapes/sids.shp", package="maptools")[1]
-nc = readShapePoly(fname, proj4string=CRS("+proj=longlat +datum=NAD27"))
+nc = readShapePoly(fname, proj4string = 
+	CRS("+proj=longlat +datum=NAD27 +ellps=clrk66"))
 
 # reproject to UTM17, so we can use Euclidian distances:
 library(rgdal)
-nc = spTransform(nc, CRS("+proj=utm +zone=17 +datum=WGS84"))
+nc = spTransform(nc, CRS("+proj=utm +zone=17 +datum=WGS84 +ellps=WGS84"))
 
 # create a target (newdata) grid, and plot:
 grd = spsample(nc, "regular", n = 1000)

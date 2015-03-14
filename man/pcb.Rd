@@ -32,7 +32,7 @@ want to use these data for any other purpose, you should first contact
 that several normalisations were carried out that are not reported here,
 nor in the paper below. }
 
-\references{ \url{http:/www.gstat.org/}, \url{http://www.rikz.nl/} 
+\references{ \url{http://www.gstat.org/}, \url{http://www.rikz.nl/} 
 
 Pebesma, E. J., & Duin, R. N. M. (2005). Spatial patterns of temporal
 change in North Sea sediment quality on different spatial scales. In

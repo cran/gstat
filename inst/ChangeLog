@@ -1,3 +1,80 @@
+2015-02-18 15:01  ben_graeler
+
+	* /pkg/R/stVariogramModels.R, /pkg/R/variogramST.R,
+	  /pkg/man/estiStAni.Rd, /pkg/man/fit.StVariogram.Rd: - a fixed
+	  stAni is now preferred over fitted stAni values in
+	  fit.StVariogram
+
+2015-02-18 13:16  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/NAMESPACE, /pkg/R/stVariogramModels.R,
+	  /pkg/man/estiStAni.Rd, /pkg/man/extractPar.Rd,
+	  /pkg/man/fit.StVariogram.Rd: - new function estiStAni for simple
+	  estimation methods of the spatio-temporal anisotropy
+	  - some further typo corrections
+	  - added earlier writen file extractPar.Rd
+
+2015-02-17 15:49  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/stVariogramModels.R,
+	  /pkg/man/fit.StVariogram.Rd: - small corrections in
+	  fit.StVariogram for fit.method=0
+	  - typos
+
+2015-02-09 10:17  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/stVariogramModels.R,
+	  /pkg/R/variogramST.R, /pkg/man/fit.StVariogram.Rd,
+	  /pkg/man/plot.gstatVariogram.Rd, /pkg/man/variogramST.Rd: -
+	  calcualte the average spatial distance (avgDist) per spatial lag
+	  across each temporal lag (weighted by number of points)
+	  - use avgDist to plot spatio-temporal variograms via levelplot
+	  and wireframe
+	  - some textutal changes and additional explanations in man pages
+
+2015-01-30 15:29  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/NAMESPACE, /pkg/R/stVariogramModels.R,
+	  /pkg/demo/stkrige.R, /pkg/man/fit.StVariogram.Rd,
+	  /pkg/man/vgmST.Rd: - added different weighting schemes to
+	  fit.StVariogram
+
+2015-01-27 15:28  ben_graeler
+
+	* /pkg/R/krige0.R: - typo in call of krigeST with progress
+
+2015-01-26 07:19  edzer
+
+	* /pkg/DESCRIPTION, /pkg/src/s.c: make gstat warnings into R
+	  warnings
+
+2015-01-19 11:09  edzer
+
+	* /pkg/DESCRIPTION, /pkg/man/krige.Rd: version bump; add local
+	  median quantile as predictor examples.
+
+2015-01-15 12:09  edzer
+
+	* /pkg/DESCRIPTION: title case title
+
+2015-01-15 10:50  edzer
+
+	* /pkg/DESCRIPTION: version bump
+
+2015-01-09 11:07  ben_graeler
+
+	* /pkg/R/krige0.R, /pkg/R/variogramST.R, /pkg/man/krigeST.Rd: -
+	  added workaround for ST-cloud slices
+	  - added option "progress" for krigeST
+
+2015-01-08 12:05  edzer
+
+	* /pkg/NAMESPACE, /pkg/R/krige0.R, /pkg/demo/a2p.R,
+	  /pkg/inst/ChangeLog, /pkg/man/vgmArea.Rd,
+	  /pkg/tests/na.action.Rout.save, /pkg/tests/unproj.Rout.save,
+	  /pkg/tests/windst.Rout.save: export and document vgmArea; update
+	  tests
+
 2014-12-26 12:49  edzer
 
 	* /pkg/man/predict.gstat.Rd: doc improvement

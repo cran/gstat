@@ -58,19 +58,21 @@ than threshold will not be plotted}
 \item{\dots}{ any arguments that will be passed to the panel plotting functions
 (such as \code{auto.key} in examples below) }
 \item{col}{colors to use}
-\item{map}{logical; if TRUE, plot space-tim variogram map}
+\item{map}{logical; if TRUE, plot space-time variogram map}
 \item{convertMonths}{logical; if TRUE, \code{yearmon} time lags will
 be unit converted and plotted as (integer) months, and no longer match the
 numeric representation of \code{yearmon}, which has years as unit }
-\item{as.table}{controls the plotting order for multiple panles, see \code{\link{xyplot}} for details.}
+\item{as.table}{controls the plotting order for multiple panels, see \code{\link{xyplot}} for details.}
 \item{wireframe}{logical; if TRUE, produce a wireframe plot}
 \item{both}{logical; if TRUE, plot model and sample variogram in a single
-wireplot}
+wireframe plot}
 \item{all}{logical; if TRUE, plot sample and model variogram(s) in single wireframes.}
 }
 \value{
 returns (or plots) the variogram plot
 }
+\details{Please note that in the spatio-temporal case the levelplot and wireframe plots use the spatial distances averaged for each time lag \code{avgDist}. For strongly varying spatial locations over time, please check the distance columns \code{dist} and \code{avgDist} of the spatio-temporal sample variogram. The \code{lattice::cloud} function is one option to plot irregular 3D data.}
+
 \references{ \url{http://www.gstat.org}}
 \author{ Edzer Pebesma }
 \note{ currently, plotting models and/or point pair numbers is not

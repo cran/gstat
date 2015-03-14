@@ -7,10 +7,8 @@
 \alias{sic.test}
 \alias{sic.val}
 \title{ Spatial Interpolation Comparison 2004 data set: Natural Ambient Radioactivity }
-\description{
-The text below is copied from
-\url{http://www.ai-geostats.org/events/sic2004/index.htm}, subsection
-Data.
+\description{ The text below was copied from the original sic2004
+event, which is no longer online available.
 
 The variable used in the SIC 2004 exercise is natural ambient
 radioactivity measured in Germany. The data, provided kindly by the
@@ -97,9 +95,7 @@ Data: the German Federal Office for Radiation Protection (BfS),
 by Edzer Pebesma.  }
 
 \references{ 
-\url{http:/www.ai-geostats.org/},
-\url{http://www.ai-geostats.org/resources/sic2004_data.htm},
-\url{http://www.ai-geostats.org/events/sic2004/index.htm}
+\url{http://www.ai-geostats.org/},
 }
 
 \keyword{datasets}

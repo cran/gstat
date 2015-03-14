@@ -106,7 +106,7 @@ krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
 		stAni = stAni, computeVar = computeVar, 
 		fullCovariance = fullCovariance, 
 		checkNeighbourhood = checkNeighbourhood, 
-		bufferNmax = bufferNmax), progress)
+		bufferNmax = bufferNmax, progress))
     
 	if(is.null(attr(modelList,"temporal unit")))
 	  warning("The spatio-temporal variogram model does not carry a time unit attribute: krisgeST cannot check whether the temporal distance metrics coincide.")

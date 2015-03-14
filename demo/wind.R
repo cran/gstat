@@ -10,8 +10,8 @@ example(wind)
 
 m = map2SpatialLines(
 	map("worldHires", xlim = c(-11,-5.4), ylim = c(51,55.5), plot=F))
-proj4string(m) = "+proj=longlat +datum=WGS84"
-m = spTransform(m, CRS("+proj=utm +zone=29 +datum=WGS84"))
+proj4string(m) = "+proj=longlat +datum=WGS84 +ellps=WGS84"
+m = spTransform(m, CRS("+proj=utm +zone=29 +datum=WGS84 +ellps=WGS84"))
 
 # model temporal autocorrelation
 acf(wind[7])
@@ -36,8 +36,8 @@ sels$y = coordinates(wind.loc)[match(sels$ind, wind.loc$Code),2]
 summary(sels)
 
 coordinates(sels) = ~x+y
-proj4string(sels) = "+proj=longlat +datum=WGS84"
-sels = spTransform(sels, CRS("+proj=utm +zone=29 +datum=WGS84"))
+proj4string(sels) = "+proj=longlat +datum=WGS84 +ellps=WGS84"
+sels = spTransform(sels, CRS("+proj=utm +zone=29 +datum=WGS84 +ellps=WGS84"))
 grd = makegrid(m, n = 1000)
 grd$t = rep(1, nrow(grd))
 coordinates(grd) = ~x1+x2

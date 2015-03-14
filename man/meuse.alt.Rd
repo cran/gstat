@@ -18,7 +18,7 @@ This data set gives a point set with altitudes, digitized from the
 data(meuse.alt)
 }
 \references{ 
-\url{http:/www.gstat.org/} 
+\url{http://www.gstat.org/} 
 }
 \seealso{\link{meuse.all}}
 \keyword{datasets}

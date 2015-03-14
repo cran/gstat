@@ -39,13 +39,13 @@ are equal then yes, else no; 0: no; 1: yes. }
 
 \value{The spatio-temporal sample variogram contains besides the fields 
   \code{np}, \code{dist} and \code{gamma} the spatio-temporal fields, 
-  \code{timelag} and \code{spacelag}, the first of which indicates the time lag 
-  used, the second the space lag. \code{spacelag} is the midpoint in the spatial
-  lag intervals, whereas \code{dist} is the average distance between the point
-  pairs found in a distance interval. To compute variograms for space lag $h$ 
-  and time lag $t$, the pseudo cross variogram $(Z_i(s)-Z_{i+t}(s+h))^2$ is 
-  averaged over all time lagged observation sets $Z_i$ and $Z_{i+t}$ available
-  (weighted by the number of pairs involved).
+  \code{timelag}, \code{spacelag} and \code{avgDist}, the first of which indicates the time lag 
+  used, the second and third different spatial lags. \code{spacelag} is the midpoint in the spatial
+  lag intervals as passed by the parameter \code{boundaries}, whereas \code{avgDist} is the average 
+  distance between the point pairs found in a distance interval over all temporal lags (i.e. the 
+  averages of the values \code{dist} per temporal lag.) To compute variograms for space lag $h$ and
+  time lag $t$, the pseudo cross variogram $(Z_i(s)-Z_{i+t}(s+h))^2$ is averaged over all time 
+  lagged observation sets $Z_i$ and $Z_{i+t}$ available (weighted by the number of pairs involved).
 }
 
 \references{ 

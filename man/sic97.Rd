@@ -30,9 +30,7 @@ data(sic97) #
 Gregoire Dubois and others.
 }
 
-\references{ 
-\url{http:/www.ai-geostats.org/},
-}
+\references{ \url{http://www.ai-geostats.org/} }
 
 \keyword{datasets}
 \examples{

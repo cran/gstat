@@ -1,6 +1,6 @@
 
-R version 3.1.2 (2014-10-31) -- "Pumpkin Helmet"
-Copyright (C) 2014 The R Foundation for Statistical Computing
+R version 3.1.3 (2015-03-09) -- "Smooth Sidewalk"
+Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -34,7 +34,8 @@ Path to PROJ.4 shared files: (autodetected)
 > data(meuse)
 > coordinates(meuse) = ~x+y
 > proj4string(meuse) = CRS("+init=epsg:28992")
-> meuse.ll = spTransform(meuse, CRS("+proj=longlat"))
+> #meuse.ll = spTransform(meuse, CRS("+proj=longlat +datum=WGS84 +ellps=WGS84"))
+> meuse.ll = spTransform(meuse, CRS("+proj=longlat +ellps=WGS84"))
 > library(gstat)
 > variogram(log(zinc)~1, meuse.ll)
     np       dist     gamma dir.hor dir.ver   id
@@ -79,7 +80,7 @@ Loading required package: maps
 > data(ozone2)
 > oz = SpatialPointsDataFrame(ozone2$lon.lat, 
 + 		data.frame(t(ozone2$y)), 
-+ 		proj4string=CRS("+proj=longlat"))
++ 		proj4string=CRS("+proj=longlat +datum=WGS84 +ellps=WGS84"))
 > variogram(X870731~1,oz[!is.na(oz$X870731),])
     np      dist    gamma dir.hor dir.ver   id
 1  196  17.38114 144.0608       0       0 var1
@@ -97,7 +98,7 @@ Loading required package: maps
 13 470 342.88135 373.2437       0       0 var1
 14 572 370.79840 388.2819       0       0 var1
 15 795 397.66880 479.5384       0       0 var1
-> utm16 = CRS("+proj=utm +zone=16")
+> utm16 = CRS("+proj=utm +zone=16 +ellps=WGS84")
 > oz.utm = spTransform(oz, utm16)
 > variogram(X870731~1,oz.utm[!is.na(oz$X870731),])
     np      dist    gamma dir.hor dir.ver   id
@@ -132,7 +133,7 @@ Loading required package: maps
 > 
 > coordinates(foo) <- ~lon+lat
 > 
-> proj4string(foo) <- CRS('+proj=longlat')
+> proj4string(foo) <- CRS('+proj=longlat +datum=WGS84 +ellps=WGS84')
 > 
 > vg.foo <- variogram(z~1, foo, cloud=TRUE, cutoff=1e10)
 > 
@@ -157,4 +158,4 @@ spDistsN1 Distances:
 > 
 > proc.time()
    user  system elapsed 
-  2.075   0.042   2.111 
+  2.211   0.065   2.281 

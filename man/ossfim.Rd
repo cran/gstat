@@ -31,9 +31,6 @@ of soil science 32(4), 643-660.
 McBratney, A.B., R. Webster (1981) The design of optimal sampling schemes
 for local estimation and mapping of regionalized variables: 2 program
 and examples. Computers and Geosciences 7: 335-365.
-
-read more on a simplified, web-based version on
-\url{http://www.gstat.org/ossfim.html}
 }
 
 \author{ Edzer Pebesma }
