@@ -6,7 +6,7 @@
 calculate contrasts and their (co)variance }
 \usage{ get.contr(data, gstat.object, X, ids = names(gstat.object$data)) }
 \arguments{
-\item{data}{data frame, output of \link{predict.gstat} }
+\item{data}{data frame, output of \link[gstat]{predict} }
 \item{gstat.object}{object of class \code{gstat}, used to
 extract ids; may be missing if \code{ids} is used }
 \item{X}{ contrast vector or matrix; the number of variables in
@@ -34,7 +34,7 @@ variances (named var.beta.1, var.beta.2, ...) and covariances
 \url{http://www.gstat.org/}
 }
 \author{ Edzer Pebesma }
-\seealso{\link{predict.gstat}}
+\seealso{\link[gstat]{predict}}
 
 
 \keyword{ models }

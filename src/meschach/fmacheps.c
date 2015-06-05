@@ -33,7 +33,7 @@ double	fclean(double x)
     return y;	/* prevents optimisation */
 }
 
-main()
+int main()
 {
     static float	feps, feps1, ftmp;
 

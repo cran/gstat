@@ -24,3 +24,4 @@ wind		space-time kriging with the Irish wind data sets
 rep			10 x 10 matrix of fitted variograms from 100 simulated fields
 stkrige		space-time kriging
 localKrigeST  locally krige an irregular spatio-temporal data set to a regular spatio-temporal grid
+zonal		approximate zonal anisotropy with geometrically anistropic model

@@ -39,7 +39,7 @@ krigeTg(formula, locations, newdata, model = NULL, ...,
   values in 'newdata'.  The default is to predict 'NA'.  Missing values 
   in coordinates and predictors are both dealt with. }
  \item{lambda}{value for the Box-Cox transform}
- \item{debug.level}{debug level, passed to \link{predict.gstat}; use -1 
+ \item{debug.level}{debug level, passed to \link[gstat]{predict}; use -1 
  to see progress in percentage, and 0 to suppress all printed information }
  \item{\dots}{ other arguments that will be passed to \link{gstat}}
 }
@@ -53,7 +53,7 @@ step to find m from the difference between the OK and SK prediction
 variance, and a kriging/BLUE estimation step to obtain the estimate
 of \eqn{\mu}{mu}.
 
-For further details, see \link{krige} and \link{predict.gstat}.
+For further details, see \link{krige} and \link[gstat]{predict}.
 }
 
 \value{
@@ -79,7 +79,7 @@ Wiley.
 
 \author{ Edzer Pebesma }
 
-\seealso{ \link{gstat}, \link{predict.gstat} }
+\seealso{ \link{gstat}, \link[gstat]{predict} }
 
 \examples{
 library(sp)

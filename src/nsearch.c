@@ -792,9 +792,18 @@ int qtree_select(DPOINT *where, DATA *d) {
 			/*
 			 * d->sel_min was set: consider points beyond radius
 			 */
-			if (d->force) /* proceed beyond d->sel_max */
-				for ( ; d->n_sel < d->sel_min; d->n_sel++)
-					d->sel[d->n_sel] = get_nearest_point(q, where, d);
+			if (d->force) /* proceed beyond d->sel_rad */
+				while (d->n_sel < d->sel_min) {
+					if (p != NULL) {
+						d->sel[d->n_sel] = p;
+						p = get_nearest_point(q, where, d);
+						d->n_sel++;
+					} else {
+						/* a zero d->n_sel will result in a missing value */
+						d->n_sel = 0;
+						break;
+					}
+				}
 			else /* stop: a zero d->n_sel will result in a missing value */
 				d->n_sel = 0;
 		}

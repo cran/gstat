@@ -288,7 +288,9 @@ plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab,
     if (is(model,"StVariogramModel"))
       model <- list(model)
     for (mod in model) {
-      x[[mod$stModel]] <- variogramSurface(mod, data.frame(spacelag = x$avgDist,
+      slag <- x$avgDist
+      slag[slag == 0 & x$timelag == 0] <- sqrt(.Machine$double.eps)
+      x[[mod$stModel]] <- variogramSurface(mod, data.frame(spacelag = slag,
                                                            timelag = x$timelag))$model
     }
   }
@@ -361,7 +363,7 @@ print.StVariogramModel <- function(x, ...) {
     print(x[[comp]], ...)
   }
   
-  possAddPar <- c("sill", "nugget", "stAni")
+  possAddPar <- c("sill", "nugget", "stAni", "k")
   for(addPar in possAddPar[possAddPar %in% names(x)]) {
     cat(paste(addPar, ": ",x[[addPar]],"\n", sep=""))
   }

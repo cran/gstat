@@ -5,7 +5,7 @@
 Constructs a spatio-temporal variogram of a given type checking for a minimal set of parameters.
 }
 \usage{
-vgmST(stModel, ..., space, time, joint, sill, nugget, stAni)
+vgmST(stModel, ..., space, time, joint, sill, k, nugget, stAni)
 }
 \arguments{
   \item{stModel}{A string indentifying the spatio-temporal variogram model.}
@@ -14,6 +14,7 @@ vgmST(stModel, ..., space, time, joint, sill, nugget, stAni)
   \item{time}{A temporal variogram.}
   \item{joint}{A joint spatio-temporal variogram.}
   \item{sill}{A joint spatio-temporal sill.}
+  \item{k}{The weighting of the product in the product-sum model.}
   \item{nugget}{A joint spatio-temporal nugget.}
   \item{stAni}{A spatio-temporal anisotropy; the number of space units equivalent to one time unit.}
 }
@@ -23,8 +24,8 @@ The different implemented spatio-temporal variogram models have the follwoing re
 \describe{
 \item{separable:}{A variogram for \code{space} and \code{time} each and a joint spatio-temporal \code{sill} (variograms may have a separate nugget effect, but their joint sill will be 1) generating the call
   \preformatted{vgmST("separable", space, time, sill)}}
-\item{productSum:}{A variogram (without nugget effect) for \code{space} and \code{time} each, a joint spatio-temporal \code{sill} and \code{nugget} generating the call
-  \preformatted{vgmST("productSum", space, time, sill, nugget)}}
+\item{productSum:}{A variogram for \code{space} and \code{time} each, and the weighting of product \code{k} generating the call
+  \preformatted{vgmST("productSum", space, time, k)}}
 \item{sumMetric:}{A variogram (potentially including a nugget effect) for \code{space}, \code{time} and \code{joint} each and a spatio-temporal anisotropy ratio \code{stAni} generating the call
   \preformatted{vgmST("sumMetric", space, time, joint, stAni)}}
 \item{simpleSumMetric:}{A variogram (without nugget effect) for \code{space}, \code{time} and \code{joint} each, a joint spatio-temporal \code{nugget} effect and a spatio-temporal anisotropy ratio \code{stAni} generating the call
@@ -57,7 +58,7 @@ separableModel <- vgmST("separable",
 prodSumModel <- vgmST("productSum",
                       space=vgm(39, "Sph", 343, 0),
                       time= vgm(36, "Exp",   3, 0), 
-                      sill=41, nugget=17)
+                      k=15)
 
 # sum metric model: spatial, temporal and joint nugget will be estimated
 sumMetricModel <- vgmST("sumMetric",

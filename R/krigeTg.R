@@ -45,7 +45,7 @@ krigeTg <- function(formula, locations, newdata, model = NULL, ...,
     g = gstat(formula = value ~ 1, # locations = locations, 
 		data = locations, model = model, nmax = nmax, nmin = nmin, 
 		maxdist = maxdist, ...)
-    mu = predict.gstat(g, newdata = newdata, block = block, nsim = nsim,
+    mu = predict(g, newdata = newdata, block = block, nsim = nsim,
 		na.action = na.action, debug.level = debug.level, BLUE = TRUE)
 	OK$muhat = mu$var1.pred
 

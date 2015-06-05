@@ -33,7 +33,7 @@ double	dclean(double x)
     return y;	/* prevents optimisation */
 }
 
-main()
+int main()
 {
     static double	deps, deps1, dtmp;
 

@@ -32,7 +32,7 @@ krige.cv.spatial(formula, locations, model = NULL, ..., beta = NULL,
   \item{verbose}{ logical; if FALSE, progress bar is suppressed }
   \item{all.residuals}{ logical; if TRUE, residuals for all variables are
   returned instead of for the first variable only}
-  \item{\dots}{ other arguments that will be passed to \link{predict.gstat}
+  \item{\dots}{ other arguments that will be passed to \link[gstat]{predict}
   in case of \code{gstat.cv}, or to \link{gstat} in case of \code{krige.cv}}
   \item{formula}{ formula that defines the dependent variable as a linear
   model of independent variables; suppose the dependent variable has name
@@ -99,7 +99,7 @@ variables is returned, without coordinates. }
 (stand-alone) gstat, apparently quite a bit of the effort is spent moving 
 data around from R to gstat. }
 
-\seealso{ \link{krige}, \link{gstat}, \link{predict.gstat} }
+\seealso{ \link{krige}, \link{gstat}, \link[gstat]{predict} }
 
 \examples{
 library(sp)

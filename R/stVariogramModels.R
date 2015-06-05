@@ -1,9 +1,25 @@
 # constructiong spatio-temporal variogram models
-vgmST <- function(stModel, ..., space, time, joint, sill, nugget, stAni) {
+vgmST <- function(stModel, ..., space, time, joint, sill, k, nugget, stAni) {
 	stopifnot(is.character(stModel) && length(stModel)==1)
+  if (stModel == "productSum" & !missing(sill))
+    stop("The sill argument for the product-sum model has been removed 
+due a change in notation of the spatio-temporal models. This 
+affects as well how the spatial and temporal variograms are parameterised. 
+Re-fit your model or use \"productSumOld\" instead.")
+  
+	if(!missing(sill))
+	  if(sill <= 0) stop("\"sill\" must be positive.")
+  if(!missing(k))
+    if(k <= 0) stop("\"k\" must be positive.")
+  if(!missing(nugget))
+    if(nugget < 0) stop("\"nugget\" must be non-negative.")
+  if(!missing(stAni))
+    if(stAni <= 0) stop("\"stAni\" must be positive.")
+  
 	vgmModel <- switch(stModel,
 		separable = list(space = space, time = time, sill = sill),
-		productSum = list(space = space, time = time, sill = sill, nugget = nugget),
+		productSum = list(space = space, time = time, k = k),
+		productSumOld = list(space = space, time = time, sill = sill, nugget = nugget),
 		sumMetric = list(space = space, time = time, joint = joint, stAni = stAni),
 		simpleSumMetric = list(space = space, time = time, 
 			joint = joint, nugget = nugget, stAni = stAni),
@@ -22,6 +38,7 @@ variogramSurface <- function(model, dist_grid, ...) {
   switch(model$stModel,
          separable=vgmSeparable(model, dist_grid, ...),
          productSum=vgmProdSum(model, dist_grid, ...),
+         productSumOld=vgmProdSumOld(model, dist_grid, ...),
          sumMetric=vgmSumMetric(model, dist_grid, ...),
          simpleSumMetric=vgmSimpleSumMetric(model, dist_grid, ...),
          metric=vgmMetric(model, dist_grid, ...),
@@ -38,15 +55,33 @@ vgmSeparable <- function(model, dist_grid) {
 }
 
 # productSum model: C_s*C_t + C_s + C_t
-vgmProdSum <- function(model, dist_grid) {
+vgmProdSumOld <- function(model, dist_grid) {
+  warning("Please consider to re-fit your model for the new product-sum notation.")
   vs = variogramLine(model$space, dist_vector=dist_grid$spacelag)[,2]
   vt = variogramLine(model$time, dist_vector=dist_grid$timelag)[,2]
+  vn <- rep(model$nugget, length(vs))
+  vn[vs == 0 & vt == 0] <- 0
 
-  k <- (sum(model$space$psill)+sum(model$time$psill)-model$sill)/(sum(model$space$psill)*sum(model$time$psill))
+  k <- (sum(model$space$psill)+sum(model$time$psill)-(model$sill+model$nugget))/(sum(model$space$psill)*sum(model$time$psill))
   
   if (k <= 0 | k > 1/max(rev(model$space$psill)[1], rev(model$time$psill)[1])) 
     k <- 10^6*abs(k) # distorting the model to let optim "hopefully" find suitable parameters
-  data.frame(spacelag=dist_grid$spacelag, timelag=dist_grid$timelag, model=as.vector(vs+vt-k*vs*vt+model$nugget))
+  data.frame(spacelag=dist_grid$spacelag, timelag=dist_grid$timelag, 
+             model=as.vector(vs+vt-k*vs*vt+vn))
+}
+
+vgmProdSum <- function(model, dist_grid) {
+  if(!is.null(model$sill)) # backwards compatibility
+    vgmProdSumOld(model, dist_grid)
+  vs = variogramLine(model$space, dist_vector=dist_grid$spacelag)[,2]
+  vt = variogramLine(model$time, dist_vector=dist_grid$timelag)[,2]
+  
+  sill_s <- sum(model$space$psill)
+  sill_t <- sum(model$time$psill)
+  k <- model$k
+  
+  data.frame(spacelag=dist_grid$spacelag, timelag=dist_grid$timelag,
+             model=as.vector((k*sill_t+1)*vs + (k*sill_s+1)*vt-k*vs*vt))
 }
 
 # sumMetric model: C_s + C_t + C_st (Gerard Heuvelink)
@@ -54,7 +89,7 @@ vgmSumMetric <- function(model, dist_grid) {
   vs = variogramLine(model$space, dist_vector=dist_grid$spacelag)[,2]
   vt = variogramLine(model$time,  dist_vector=dist_grid$timelag)[,2]
   h = sqrt(dist_grid$spacelag^2 + (model$stAni * as.numeric(dist_grid$timelag))^2)
-  vst = variogramLine(model$joint,dist_vector=h)[,2]
+  vst = variogramLine(model$joint, dist_vector=h)[,2]
   data.frame(spacelag=dist_grid$spacelag, timelag=dist_grid$timelag, model=(vs + vt + vst))
 }
 
@@ -64,7 +99,8 @@ vgmSimpleSumMetric <- function(model, dist_grid) {
   vt = variogramLine(model$time,  dist_vector=dist_grid$timelag)[,2]
   h = sqrt(dist_grid$spacelag^2 + (model$stAni * as.numeric(dist_grid$timelag))^2)
   vm = variogramLine(model$joint, dist_vector=h)[,2]
-  data.frame(spacelag=dist_grid$spacelag, timelag=dist_grid$timelag, model=(vs + vt + vm + model$nugget))
+  vn <- variogramLine(vgm(model$nugget, "Nug", 0), dist_vector=h)[,2]
+  data.frame(spacelag=dist_grid$spacelag, timelag=dist_grid$timelag, model=(vs + vt + vm + vn))
 }
 
 vgmMetric <- function(model, dist_grid) {
@@ -74,15 +110,17 @@ vgmMetric <- function(model, dist_grid) {
 }
 
 fit.StVariogram <- function(object, model, ..., fit.method = 6, stAni=NA, wles) {
-  object <- na.omit(object)
   if (!inherits(object, "StVariogram"))
     stop("\"object\" must be of class \"StVariogram\"")
   if (!inherits(model, "StVariogramModel"))
     stop("\"model\" must be of class \"StVariogramModel\".")
-  
-  ret <- model
+
   sunit <- attr(object$spacelag, "units")
   tunit <- attr(object$timelag, "units")
+  
+  object <- na.omit(object)
+
+  ret <- model
   
   if(!missing(wles)) {
     if (wles)
@@ -151,7 +189,8 @@ fit.StVariogram <- function(object, model, ..., fit.method = 6, stAni=NA, wles) 
   
   fitFun = function(par, trace = FALSE, ...) {
     curModel <- insertPar(par, model)
-    gammaMod <- variogramSurface(curModel, data.frame(spacelag=object$dist, timelag=object$timelag))$model
+    gammaMod <- variogramSurface(curModel, data.frame(spacelag=object$dist,
+                                                      timelag=object$timelag))$model
     resSq <- (object$gamma - gammaMod)^2
     resSq <- resSq * weightingFun(object, gamma=gammaMod, curStAni=curModel$stAni)
     if (trace)
@@ -175,6 +214,7 @@ insertPar <- function(par, model) {
   switch(model$stModel,
          separable=insertParSeparable(par, model),
          productSum=insertParProdSum(par, model),
+         productSumOld=insertParProdSumOld(par, model),
          sumMetric=insertParSumMetric(par, model),
          simpleSumMetric=insertParSimpleSumMetric(par,model),
          metric=insertParMetric(par,model),
@@ -186,9 +226,12 @@ extractPar <- function(model) {
          separable=c(range.s=model$space$range[2], nugget.s=model$space$psill[1],
                      range.t=model$time$range[2],  nugget.t=model$time$psill[1],
                      sill= model$sill[[1]]),
-         productSum=c(sill.s = rev(model$space$psill)[1], range.s = rev(model$space$range)[1],
-                      sill.t = rev(model$time$psill)[1],  range.t = rev(model$time$range)[1], 
-                      sill=model$sill[[1]], nugget=model$nugget[[1]]),
+         productSumOld=c(sill.s = rev(model$space$psill)[1], range.s = rev(model$space$range)[1],
+                        sill.t = rev(model$time$psill)[1],  range.t = rev(model$time$range)[1], 
+                        sill=model$sill[[1]], nugget=model$nugget[[1]]),
+         productSum=c(sill.s = model$space$psill[2], range.s = model$space$range[2], nugget.s = model$space$psill[1],
+                      sill.t = model$time$psill[2],  range.t = model$time$range[2],  nugget.t = model$time$psill[1],
+                      k=model$k),
          sumMetric=c(sill.s = model$space$psill[2], range.s = model$space$range[2], nugget.s = model$space$psill[1], 
                      sill.t = model$time$psill[2], range.t = model$time$range[2], nugget.t = model$time$psill[1],
                      sill.st = model$joint$psill[2], range.st = model$joint$range[2], nugget.st = model$joint$psill[1],
@@ -216,13 +259,22 @@ insertParSeparable <- function(par, model) {
         sill=par[5])
 }
 
-insertParProdSum <- function(par, model) {
-  vgmST("productSum",
+insertParProdSumOld <- function(par, model) {
+  vgmST("productSumOld",
         space=vgm(par[1],as.character(rev(model$space$model)[1]),par[2],
                   kappa=rev(model$space$kappa)[1]),
         time= vgm(par[3],as.character(rev(model$time$model)[1]),par[4],
                   kappa=rev(model$time$kappa)[1]),
         sill=par[5], nugget=par[6])
+}
+
+insertParProdSum <- function(par, model) {
+  vgmST("productSum",
+        space=vgm(par[1],as.character(model$space$model[2]),par[2],par[3],
+                  kappa=model$space$kappa[2]),
+        time= vgm(par[4],as.character(model$time$model[2]),par[5], par[6],
+                  kappa=model$time$kappa[2]),
+        k=par[7])
 }
 
 insertParSumMetric <- function(par, model) {

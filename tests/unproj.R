@@ -11,6 +11,7 @@ coordinates(meuse) = ~x+y
 proj4string(meuse) = CRS("+init=epsg:28992")
 #meuse.ll = spTransform(meuse, CRS("+proj=longlat +datum=WGS84 +ellps=WGS84"))
 meuse.ll = spTransform(meuse, CRS("+proj=longlat +ellps=WGS84"))
+meuse.ll[1:10,]
 library(gstat)
 variogram(log(zinc)~1, meuse.ll)
 

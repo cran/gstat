@@ -108,4 +108,4 @@ AC_HAVE_FUNCS(bcopy bzero)
 LOCAL_HAVE_PROTOTYPES
 
 # process target files, apart from the config.h files:
-AC_OUTPUT(makefile)
+AC_OUTPUT()

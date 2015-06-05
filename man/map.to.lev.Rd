@@ -7,7 +7,7 @@
 map.to.lev(data, xcol = 1, ycol = 2, zcol = c(3, 4), ns = names(data)[zcol])
 }
 \arguments{
-\item{data}{ data frame, e.g. output from \link{krige} or \link{predict.gstat} }
+\item{data}{ data frame, e.g. output from \link{krige} or \link[gstat]{predict} }
 \item{xcol}{ x-coordinate column number }
 \item{ycol}{ y-coordinate column number }
 \item{zcol}{ z-coordinate column number range }
@@ -23,7 +23,7 @@ of \code{data} stacked }
 }
 \seealso{ 
 \link{image.data.frame}, \link{krige};
-for examples see \link{predict.gstat};
+for examples see \link[gstat]{predict};
 \code{levelplot} in package lattice.
 }
 \keyword{dplot}

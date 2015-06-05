@@ -1,5 +1,6 @@
 % $Id: predict.gstat.Rd,v 1.18 2007-11-16 12:59:47 edzer Exp $
-\name{predict.gstat}
+\name{predict}
+\alias{predict}
 \alias{predict.gstat}
 \title{ Multivariable Geostatistical Prediction and Simulation }
 \description{ The function provides the following prediction methods:
@@ -11,7 +12,6 @@ for each of the kriging methods.  }
 	indicators = FALSE, BLUE = FALSE, debug.level = 1, mask, 
 	na.action = na.pass, sps.args = list(n = 500, type = "regular",
 	offset = c(.5, .5)), ...)
-
 }
 \arguments{
 \item{object}{ object of class \code{gstat}, see \link{gstat} and
@@ -97,7 +97,7 @@ path would be followed. Following a single path through the locations,
 gstat reuses the expensive results (neighbourhood selection and solution
 to the kriging equations) for each of the subsequent simulations when
 multiple realisations are requested.  You may expect a considerable speed
-gain in simulating 1000 fields in a single call to \link{predict.gstat},
+gain in simulating 1000 fields in a single call to \link[gstat]{predict},
 compared to 1000 calls, each for simulating a single field.
 
 The random number generator used for generating simulations is the native
@@ -197,11 +197,11 @@ bubble(blue1, zcol = "blue.res",
 # unconditional simulation on a 100 x 100 grid
 xy <- expand.grid(1:100, 1:100)
 names(xy) <- c("x","y")
-g.dummy <- gstat(formula = z~1, locations = ~x+y, dummy = TRUE, beta = 0,
+gridded(xy) = ~x+y
+g.dummy <- gstat(formula = z~1, dummy = TRUE, beta = 0,
 	model = vgm(1,"Exp",15), nmax = 20)
-yy <- predict(g.dummy, newdata = xy, nsim = 4)
+yy <- predict(g.dummy, xy, nsim = 4)
 # show one realisation:
-gridded(yy) = ~x+y
 spplot(yy[1])
 # show all four:
 spplot(yy)

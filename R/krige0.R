@@ -92,24 +92,40 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 }
 
 krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
-                    computeVar = FALSE, fullCovariance = FALSE,
-                    checkNeighbourhood=TRUE, bufferNmax=4, progress=TRUE) {
-	stopifnot(inherits(modelList, "StVariogramModel"))
-	stopifnot(inherits(data, c("STF", "STS", "STI")) & inherits(newdata, c("STF", "STS", "STI"))) 
-	stopifnot(identical(proj4string(data@sp), proj4string(newdata@sp)))
+                       computeVar = FALSE, fullCovariance = FALSE,
+                       bufferNmax=2, progress=TRUE) {
+  stopifnot(inherits(modelList, "StVariogramModel"))
+  stopifnot(inherits(data, c("STF", "STS", "STI")) & inherits(newdata, c("STF", "STS", "STI"))) 
+  stopifnot(identical(proj4string(data@sp), proj4string(newdata@sp)))
   stopifnot(class(data@time) == class(newdata@time))
   stopifnot(nmax > 0)
   
   if(nmax < Inf)
     return(krigeST.local(formula = formula, data = data, 
-		newdata = newdata, modelList = modelList, nmax = nmax, 
-		stAni = stAni, computeVar = computeVar, 
-		fullCovariance = fullCovariance, 
-		checkNeighbourhood = checkNeighbourhood, 
-		bufferNmax = bufferNmax, progress))
-    
-	if(is.null(attr(modelList,"temporal unit")))
-	  warning("The spatio-temporal variogram model does not carry a time unit attribute: krisgeST cannot check whether the temporal distance metrics coincide.")
+                         newdata = newdata, modelList = modelList, nmax = nmax, 
+                         stAni = stAni, computeVar = computeVar, 
+                         fullCovariance = fullCovariance, 
+                         bufferNmax = bufferNmax, progress))
+  
+  if(is.null(attr(modelList,"temporal unit")))
+    warning("The spatio-temporal variogram model does not carry a time unit attribute: krisgeST cannot check whether the temporal distance metrics coincide.")
+  
+  df <- krigeST.df(formula=formula, data=data, newdata=newdata, 
+                   modelList=modelList, y=y, nmax=nmax, stAni=stAni,
+                   computeVar = computeVar, fullCovariance = fullCovariance,
+                   bufferNmax=bufferNmax, progress=progress)
+  
+  
+  # wrapping the predictions in ST*DF again
+  addAttrToGeom(geometry(newdata), df)
+  
+  
+}
+  
+  
+krigeST.df <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
+                    computeVar = FALSE, fullCovariance = FALSE,
+                    bufferNmax=2, progress=TRUE) {
 
   separate <- length(data) > 1 & length(newdata) > 1 & inherits(data, "STF") & inherits(newdata, "STF")
   
@@ -152,22 +168,16 @@ krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
 		  # var = c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q)
       return(list(pred=pred, var=var))
 		}
-		res <- data.frame(pred = pred, var = var)
-	} else
-		res <- data.frame(pred)
+		return(data.frame(var1.pred = pred, var1.var = var))
+	}
   
-  # wrapping the predictions in ST*DF again
-	if (ncol(res) == 1)
-	  names(res) = "var1.pred"
-	if (ncol(res) == 2)
-	  names(res) = c("var1.pred", "var1.var")
-	addAttrToGeom(geometry(newdata), res)
+	return(data.frame(var1.pred = pred))
 }
 
 # local spatio-temporal kriging
 krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
                           computeVar=FALSE, fullCovariance=FALSE, 
-                          checkNeighbourhood=TRUE, bufferNmax=4, progress=TRUE) {
+                          bufferNmax=2, progress=TRUE) {
   dimGeom <- ncol(coordinates(data))
   
   if(is.null(stAni) & !is.null(modelList$stAni)) {
@@ -192,13 +202,17 @@ krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
   if(!is.null(attr(modelList, "spatial unit")))
     stopifnot((is.projected(data) & (attr(modelList, "spatial unit") %in% c("km","m"))) | (!is.projected(data) & !(attr(modelList, "spatial unit") %in% c("km","m"))))
   
-  if(is(data, "STFDF") || is(data, "STIDF"))
-    data <- as(data, "STSDF")
+  if(is(data, "STFDF") || is(data, "STSDF"))
+    data <- as(data, "STIDF")
   
-  if(is(newdata, "STFDF"))
-    newdata <- as(newdata, "STSDF")
-  if(is(newdata, "STF"))
-    newdata <- as(newdata, "STS")
+  clnd <- class(newdata)
+  
+  if(is(newdata, "STFDF") || is(newdata, "STSDF"))
+    newdata <- as(newdata, "STIDF")
+  if(is(newdata, "STF") || is(newdata, "STS"))
+    newdata <- as(newdata, "STI")
+  
+  # from here on every data set is assumed to be STI*
   
   if(dimGeom == 2) {
   df = as(data, "data.frame")[,c(1,2,4)]
@@ -214,40 +228,50 @@ krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
     query$time = as.numeric(query$time)*stAni
   }
   
-  res <- numeric(nrow(query))
+  df <- as.matrix(df)
+  query <- as.matrix(query)
+  
+  if (computeVar) {
+    res <- data.frame(var1.pred = rep(NA, nrow(query)),
+                      var1.var = rep(NA, nrow(query)))
+  } else {
+    res <- data.frame(var1.pred = rep(NA, nrow(query)))
+  }
+  
   if(progress)
     pb = txtProgressBar(style = 3, max = nrow(query))
   
-  if (checkNeighbourhood) {
-    nb = get.knnx(as.matrix(df), as.matrix(query), bufferNmax*nmax)[[1]]
-    
-    for (i in 1:nrow(query)) {
-      nghbrData <- subsetThroughDfInd(data, nb[i, ])
-      nghbrCov <- covfn.ST(nghbrData, subsetThroughDfInd(newdata, i), modelList)
-      
-      redNghbrData <- nghbrData[nghbrData@index[order(nghbrCov,decreasing=T)[1:nmax],]]
-      
-      res[i] <- krigeST(formula, redNghbrData, subsetThroughDfInd(newdata, i),
-                        modelList, computeVar=computeVar, 
-                        fullCovariance=fullCovariance)$var1.pred
-      if(progress)
-        setTxtProgressBar(pb, i)  
+  nb = get.knnx(df, query, ceiling(bufferNmax*nmax))[[1]]
+  
+  for (i in 1:nrow(query)) {
+    nghbrData <- data[nb[i, ], , drop = FALSE]
+        
+    if(bufferNmax > 1) {
+      nghbrCov <- covfn.ST(nghbrData, newdata[i, , drop = FALSE], modelList)
+      nghbrData <- nghbrData[order(nghbrCov, decreasing=T)[1:nmax], , drop = FALSE]
     }
-  } else {
-    nb = get.knnx(as.matrix(df), as.matrix(query), nmax)[[1]]
-    
-    for(i in 1:nrow(query)) {
-      nghbrData <- subsetThroughDfInd(data, nb[i,])
-      res[i] <- krigeST(formula, nghbrData, subsetThroughDfInd(newdata, i),
-                        modelList, computeVar=computeVar, 
-                        fullCovariance=fullCovariance)$var1.pred
+      
+    res[i,] <- krigeST.df(formula, nghbrData, newdata[i, , drop = FALSE],
+                          modelList, computeVar=computeVar, 
+                          fullCovariance=fullCovariance)
+    if(progress)
       setTxtProgressBar(pb, i)  
-    }
   }
   if(progress)
     close(pb)
   
-  addAttrToGeom(geometry(newdata), data.frame(var1.pred=res))
+  if (clnd %in% c("STI", "STS", "STF")) {
+    newdata <- addAttrToGeom(newdata, as.data.frame(res))
+    newdata <- switch(clnd, 
+                      STI = as(newdata, "STIDF"),
+                      STS = as(newdata, "STSDF"),
+                      STF = as(newdata, "STFDF"))
+  } else {
+    newdata@data <- cbind(newdata@data, res)
+    newdata <- as(newdata, clnd)
+  }
+  
+  newdata
 }
 
 subsetThroughDfInd <- function(data, ind) {
@@ -294,6 +318,7 @@ STsolve = function(A, b, X) {
 covfn.ST = function(x, y = x, model, ...) {
   switch(model$stModel,
          separable=covSeparable(x, y, model, ...),
+         productSumOld=covProdSumOld(x, y, model),
          productSum=covProdSum(x, y, model),
          sumMetric=covSumMetric(x, y, model),
          simpleSumMetric=covSimpleSumMetric(x, y, model),
@@ -378,8 +403,8 @@ covSeparable <- function(x, y, model, separate) {
   return(Sm * Tm)  
 }
 
-## product-sum model, BG
-covProdSum <- function(x, y, model) {
+## old product-sum model, BG
+covProdSumOld <- function(x, y, model) {
   stopifnot(inherits(x, c("STF", "STS", "STI")) & inherits(y, c("STF", "STS", "STI")))
   
   # double check model for validity, i.e. k:
@@ -449,6 +474,76 @@ covProdSum <- function(x, y, model) {
   vt = variogramLine(model$time, dist_vector = tMat)
   
   return(model$sill-(vt + vs - k * vt * vs))
+}
+
+## new product-sum model
+
+covProdSum <- function(x, y, model) {
+  stopifnot(inherits(x, c("STF", "STS", "STI")) & inherits(y, c("STF", "STS", "STI")))
+  if(!is.null(model$sill)) # backwards compatibility
+    covProdSumOld(x, y, model)
+
+  # the STF case
+  if (inherits(x, "STF") & inherits(y, "STF")) {
+    # calculate all spatial and temporal distances
+    ds = spDists(x@sp, y@sp)
+    dt = abs(outer(index(x@time), index(y@time), "-"))
+    if(!is.null(attr(model,"temporal unit")))
+      units(dt) <- attr(model, "temporal unit") # ensure the same temporal metric as in the variogram definition
+    dt <- as(dt, "matrix")
+    
+    # compose the cov-matrix
+    vs = variogramLine(model$space, dist_vector = ds, covariance =TRUE)
+    vt = variogramLine(model$time, dist_vector = dt, covariance =TRUE)
+    
+    return(vt %x% matrix(1,nrow(vs),ncol(vs)) + matrix(1,nrow(vt),ncol(vt)) %x% vs + model$k * vt %x% vs)
+  } 
+  
+  # the STI case
+  if(inherits(x, "STI") | inherits(y, "STI")) {
+    # make sure that now both are of type STI
+    x <- as(x, "STI")
+    y <- as(y, "STI")
+    
+    # calculate all spatial and temporal distances
+    ds = spDists(x@sp, y@sp)
+    dt = abs(outer(index(x@time), index(y@time), "-"))
+    if(!is.null(attr(model,"temporal unit")))
+      units(dt) <- attr(model, "temporal unit") # ensure the same temporal metric as in the variogram definition
+    dt <- as(dt, "matrix")
+    
+    # compose the cov-matrix
+    vs = variogramLine(model$space, dist_vector = ds, covariance=TRUE)
+    vt = variogramLine(model$time, dist_vector = dt, covariance=TRUE)
+    
+    return(vt + vs + model$k * vt * vs)
+  }
+  
+  # the remaining cases, none of x and y is STI nor are both STF
+  # make sure both are of type STS
+  x <- as(x, "STS")
+  y <- as(y, "STS")
+  
+  # calculate all spatial and temporal distances
+  ds = spDists(x@sp, y@sp)
+  dt = abs(outer(index(x@time), index(y@time), "-"))
+  if(!is.null(attr(model,"temporal unit")))
+    units(dt) <- attr(model, "temporal unit") # ensure the same temporal metric as in the variogram definition
+  dt <- as(dt, "matrix")
+  
+  # re-arrange the spatial and temporal distances
+  sMat <- matrix(NA, nrow(x@index), nrow(y@index))
+  tMat <- matrix(NA, nrow(x@index), nrow(y@index))
+  for(r in 1:nrow(x@index)) {
+    sMat[r,] <- ds[x@index[r,1], y@index[,1]]
+    tMat[r,] <- dt[x@index[r,2], y@index[,2]]
+  }
+  
+  # compose the cov-matrix
+  vs = variogramLine(model$space, dist_vector = sMat, covariance = TRUE)
+  vt = variogramLine(model$time, dist_vector = tMat, covariance = TRUE)
+  
+  return(vt + vs + model$k * vt * vs)
 }
 
 ## sumMetric model
