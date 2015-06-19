@@ -171,15 +171,15 @@ extern  VEC     *bdLUsolve(BAND *A,PERM *pivot,VEC *b,VEC *x),
 
 
 
-extern	VEC	*hhvec(VEC *,u_int,Real *,VEC *,Real *);
-extern	VEC	*hhtrvec(VEC *,double,u_int,VEC *,VEC *);
-extern	MAT	*hhtrrows(MAT *,u_int,u_int,VEC *,double);
-extern	MAT	*hhtrcols(MAT *,u_int,u_int,VEC *,double);
+extern	VEC	*hhvec(VEC *,unsigned int,Real *,VEC *,Real *);
+extern	VEC	*hhtrvec(VEC *,double,unsigned int,VEC *,VEC *);
+extern	MAT	*hhtrrows(MAT *,unsigned int,unsigned int,VEC *,double);
+extern	MAT	*hhtrcols(MAT *,unsigned int,unsigned int,VEC *,double);
 
 extern	void	givens(double,double,Real *,Real *);
-extern	VEC	*rot_vec(VEC *,u_int,u_int,double,double,VEC *); /* in situ */
-extern	MAT	*rot_rows(MAT *,u_int,u_int,double,double,MAT *); /* in situ */
-extern	MAT	*rot_cols(MAT *,u_int,u_int,double,double,MAT *); /* in situ */
+extern	VEC	*rot_vec(VEC *,unsigned int,unsigned int,double,double,VEC *); /* in situ */
+extern	MAT	*rot_rows(MAT *,unsigned int,unsigned int,double,double,MAT *); /* in situ */
+extern	MAT	*rot_cols(MAT *,unsigned int,unsigned int,double,double,MAT *); /* in situ */
 
 
 /* eigenvalue routines */

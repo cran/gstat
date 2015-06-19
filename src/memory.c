@@ -108,10 +108,10 @@ int	size;
    }
    
    permute->size = permute->max_size = size;
-   if ((permute->pe = NEW_A(size,u_int)) == (u_int *)NULL )
+   if ((permute->pe = NEW_A(size,unsigned int)) == (unsigned int *)NULL )
      error(E_MEM,"px_get");
    else if (mem_info_is_on()) {
-      mem_bytes(TYPE_PERM,0,size*sizeof(u_int));
+      mem_bytes(TYPE_PERM,0,size*sizeof(unsigned int));
    }
    
    for ( i=0; i<size; i++ )
@@ -205,7 +205,7 @@ PERM	*px;
      /* don't trust it */
      return (-1);
    
-   if ( px->pe == (u_int *)NULL ) {
+   if ( px->pe == (unsigned int *)NULL ) {
       if (mem_info_is_on()) {
 	 mem_bytes(TYPE_PERM,sizeof(PERM),0);
 	 mem_numvar(TYPE_PERM,-1);
@@ -215,7 +215,7 @@ PERM	*px;
    else
    {
       if (mem_info_is_on()) {
-	 mem_bytes(TYPE_PERM,sizeof(PERM)+px->max_size*sizeof(u_int),0);
+	 mem_bytes(TYPE_PERM,sizeof(PERM)+px->max_size*sizeof(unsigned int),0);
 	 mem_numvar(TYPE_PERM,-1);
       }
       free((char *)px->pe);
@@ -415,10 +415,10 @@ int	new_size;
    if ( new_size > px->max_size )
    {
       if (mem_info_is_on()) {
-	 mem_bytes(TYPE_PERM,px->max_size*sizeof(u_int),
-		      new_size*sizeof(u_int));
+	 mem_bytes(TYPE_PERM,px->max_size*sizeof(unsigned int),
+		      new_size*sizeof(unsigned int));
       }
-      RENEW(px->pe,new_size,u_int);
+      RENEW(px->pe,new_size,unsigned int);
       if ( ! px->pe )
 	error(E_MEM,"px_resize");
       px->max_size = new_size;

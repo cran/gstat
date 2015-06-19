@@ -77,7 +77,7 @@ PERM	*px, *out;
 PERM	*px_mlt(px1,px2,out)
 PERM	*px1,*px2,*out;
 {
-    u_int	i,size;
+    unsigned int	i,size;
     
     if ( px1==(PERM *)NULL || px2==(PERM *)NULL )
 	error(E_NULL,"px_mlt");
@@ -103,7 +103,7 @@ VEC	*px_vec(px,vector,out)
 PERM	*px;
 VEC	*vector,*out;
 {
-    u_int	old_i, i, size, start;
+    unsigned int	old_i, i, size, start;
     Real	tmp;
     
     if ( px==(PERM *)NULL || vector==(VEC *)NULL )
@@ -170,7 +170,7 @@ VEC	*pxinv_vec(px,x,out)
 PERM	*px;
 VEC	*x, *out;
 {
-    u_int	i, size;
+    unsigned int	i, size;
     
     if ( ! px || ! x )
 	error(E_NULL,"pxinv_vec");
@@ -208,9 +208,9 @@ VEC	*x, *out;
 		-- Really multiplying a permutation by a transposition */
 PERM	*px_transp(px,i1,i2)
 PERM	*px;		/* permutation to transpose */
-u_int	i1,i2;		/* elements to transpose */
+unsigned int	i1,i2;		/* elements to transpose */
 {
-	u_int	temp;
+	unsigned int	temp;
 
 	if ( px==(PERM *)NULL )
 		error(E_NULL,"px_transp");

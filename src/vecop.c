@@ -35,9 +35,9 @@ static	char	rcsid[] = "$Id: vecop.c,v 1.1.1.1 2003-06-23 18:31:38 cees Exp $";
 /* _in_prod -- inner product of two vectors from i0 downwards */
 double	_in_prod(a,b,i0)
 VEC	*a,*b;
-u_int	i0;
+unsigned int	i0;
 {
-	u_int	limit;
+	unsigned int	limit;
 	/* Real	*a_v, *b_v; */
 	/* register Real	sum; */
 
@@ -63,7 +63,7 @@ VEC	*sv_mlt(scalar,vector,out)
 double	scalar;
 VEC	*vector,*out;
 {
-	/* u_int	dim, i; */
+	/* unsigned int	dim, i; */
 	/* Real	*out_ve, *vec_ve; */
 
 	if ( vector==(VEC *)NULL )
@@ -90,7 +90,7 @@ VEC	*vector,*out;
 VEC	*v_add(vec1,vec2,out)
 VEC	*vec1,*vec2,*out;
 {
-	u_int	dim;
+	unsigned int	dim;
 	/* Real	*out_ve, *vec1_ve, *vec2_ve; */
 
 	if ( vec1==(VEC *)NULL || vec2==(VEC *)NULL )
@@ -117,7 +117,7 @@ VEC	*v_mltadd(v1,v2,scale,out)
 VEC	*v1,*v2,*out;
 double	scale;
 {
-	/* register u_int	dim, i; */
+	/* register unsigned int	dim, i; */
 	/* Real	*out_ve, *v1_ve, *v2_ve; */
 
 	if ( v1==(VEC *)NULL || v2==(VEC *)NULL )
@@ -155,7 +155,7 @@ double	scale;
 VEC	*v_sub(vec1,vec2,out)
 VEC	*vec1,*vec2,*out;
 {
-	/* u_int	i, dim; */
+	/* unsigned int	i, dim; */
 	/* Real	*out_ve, *vec1_ve, *vec2_ve; */
 
 	if ( vec1==(VEC *)NULL || vec2==(VEC *)NULL )

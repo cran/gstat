@@ -47,7 +47,7 @@ MAT	*LUfactor(A,pivot)
 MAT	*A;
 PERM	*pivot;
 {
-	u_int	i, j, k, k_max, m, n;
+	unsigned int	i, j, k, k_max, m, n;
 	int	i_max;
 	Real	**A_v, *A_piv, *A_row;
 	Real	max1, temp, tiny;

@@ -40,20 +40,20 @@
 
 /* unsigned integer type */
 #ifndef U_INT_DEF
-typedef	unsigned int	u_int;
+typedef	unsigned int	unsigned int;
 #define U_INT_DEF
 #endif
 
 /* vector definition */
 typedef	struct	{
-		u_int	dim, max_dim;
+		unsigned int	dim, max_dim;
 		Real	*ve;
 		} VEC;
 
 /* matrix definition */
 typedef	struct	{
-		u_int	m, n;
-		u_int	max_m, max_n, max_size;
+		unsigned int	m, n;
+		unsigned int	max_m, max_n, max_size;
 		Real	**me,*base;	/* base is base of alloc'd mem */
 		} MAT;
 
@@ -66,12 +66,12 @@ typedef struct {
 
 /* permutation definition */
 typedef	struct	{
-		u_int	size, max_size, *pe;
+		unsigned int	size, max_size, *pe;
 		} PERM;
 
 /* integer vector definition */
 typedef struct	{
-		u_int	dim, max_dim;
+		unsigned int	dim, max_dim;
 		int	*ive;
 	        } IVEC;
 
@@ -363,11 +363,11 @@ extern  BAND    *bd_copy();
 #else
 
 /* copy in to out starting at out[i0][j0] */
-extern	MAT	*_m_copy(MAT *in,MAT *out,u_int i0,u_int j0),
+extern	MAT	*_m_copy(MAT *in,MAT *out,unsigned int i0,unsigned int j0),
 		* m_move(MAT *in, int, int, int, int, MAT *out, int, int),
 		*vm_move(VEC *in, int, MAT *out, int, int, int, int);
 /* copy in to out starting at out[i0] */
-extern	VEC	*_v_copy(VEC *in,VEC *out,u_int i0),
+extern	VEC	*_v_copy(VEC *in,VEC *out,unsigned int i0),
 		* v_move(VEC *in, int, int, VEC *out, int),
 		*mv_move(MAT *in, int, int, int, int, VEC *out, int);
 extern	PERM	*px_copy(PERM *in,PERM *out);
@@ -445,7 +445,7 @@ extern	VEC	*v_star(VEC *, VEC *, VEC *),
 		*v_sort(VEC *, PERM *);
 
 /* returns inner product starting at component i0 */
-extern	double	_in_prod(VEC *x,VEC *y,u_int i0), 
+extern	double	_in_prod(VEC *x,VEC *y,unsigned int i0), 
                 /* returns sum_{i=0}^{len-1} x[i].y[i] */
                 __ip__(Real *,Real *,int);
 
@@ -510,7 +510,7 @@ extern	MAT	*sm_mlt(double s,MAT *A,MAT *out), 	/* out <- s.A */
 		*mtrm_mlt(MAT *A,MAT *B,MAT *out),	/* out <- A^T.B */
 		*m_add(MAT *A,MAT *B,MAT *out),	/* out <- A + B */
 		*m_sub(MAT *A,MAT *B,MAT *out),	/* out <- A - B */
-		*sub_mat(MAT *A,u_int,u_int,u_int,u_int,MAT *out),
+		*sub_mat(MAT *A,unsigned int,unsigned int,unsigned int,unsigned int,MAT *out),
 		*m_transp(MAT *A,MAT *out),		/* out <- A^T */
                 /* out <- A + s.B */ 
 		*ms_mltadd(MAT *A,MAT *B,double s,MAT *out);   
@@ -522,12 +522,12 @@ extern	MAT	*px_rows(PERM *px,MAT *A,MAT *out),	/* out <- P.A */
 		*swap_rows(MAT *,int,int,int,int),
 		*swap_cols(MAT *,int,int,int,int),
                  /* A[i][j] <- out[j], j >= j0 */
-		*_set_col(MAT *A,u_int i,VEC *out,u_int j0),
+		*_set_col(MAT *A,unsigned int i,VEC *out,unsigned int j0),
                  /* A[i][j] <- out[i], i >= i0 */
-		*_set_row(MAT *A,u_int j,VEC *out,u_int i0);
+		*_set_row(MAT *A,unsigned int j,VEC *out,unsigned int i0);
 
-extern	VEC	*get_row(MAT *,u_int,VEC *),
-		*get_col(MAT *,u_int,VEC *),
+extern	VEC	*get_row(MAT *,unsigned int,VEC *),
+		*get_col(MAT *,unsigned int,VEC *),
 		*sub_vec(VEC *,int,int,VEC *),
                    /* out <- x + s.A.y */
 		*mv_mltadd(VEC *x,VEC *y,MAT *A,double s,VEC *out),
@@ -554,7 +554,7 @@ extern	int  px_sign();
 extern	PERM	*px_mlt(PERM *px1,PERM *px2,PERM *out),	/* out <- px1.px2 */
 		*px_inv(PERM *px,PERM *out),	/* out <- px^{-1} */
                  /* swap px[i] and px[j] */
-		*px_transp(PERM *px,u_int i,u_int j);
+		*px_transp(PERM *px,unsigned int i,unsigned int j);
 
      /* returns sign(px) = +1 if px product of even # transpositions
                            -1 if ps product of odd  # transpositions */

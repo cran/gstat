@@ -60,7 +60,7 @@ void	m_version()
 	/* printf("Purpose: %s\n",
 			"To update the version number"); */
 	printf("EJP: m_inverse() corrected memory leak\n");
-	printf("EJP: corrected ``configure'', include setjmp.h for u_int def\n");
+	printf("EJP: corrected ``configure'', include setjmp.h for unsigned int def\n");
 	printf("EJP: added with-sparse in makefile (otherwise z* is needed)\n");
 	printf("EJP: changed  all HUGE into HUGE_VAL\n");
 	printf("EJP: modernized configure.in and configure, to autoconf 2.12\n");

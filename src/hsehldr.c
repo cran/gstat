@@ -44,7 +44,7 @@ static	char	rcsid[] = "$Id: hsehldr.c,v 1.1.1.1 2003-06-23 18:31:46 cees Exp $";
 
 /* hhvec -- calulates Householder vector to eliminate all entries after the
 	i0 entry of the vector vec. It is returned as out. May be in-situ */
-VEC	*hhvec(VEC *vec,u_int i0,Real *beta,VEC *out,Real *newval)
+VEC	*hhvec(VEC *vec,unsigned int i0,Real *beta,VEC *out,Real *newval)
 {
 	Real	norm;
 
@@ -66,11 +66,11 @@ VEC	*hhvec(VEC *vec,u_int i0,Real *beta,VEC *out,Real *newval)
 }
 
 /* hhtrvec -- apply Householder transformation to vector -- may be in-situ */
-VEC	*hhtrvec(VEC *hh,double beta,u_int  i0,VEC *in,VEC *out)
+VEC	*hhtrvec(VEC *hh,double beta,unsigned int  i0,VEC *in,VEC *out)
 /* VEC	*hh,*in,*out;	 hh = Householder vector */
 {
 	Real	scale;
-	/* u_int	i; */
+	/* unsigned int	i; */
 
 	if ( hh==(VEC *)NULL || in==(VEC *)NULL )
 		error(E_NULL,"hhtrvec");
@@ -92,7 +92,7 @@ VEC	*hhtrvec(VEC *hh,double beta,u_int  i0,VEC *in,VEC *out)
 
 /* hhtrrows -- transform a matrix by a Householder vector by rows
 	starting at row i0 from column j0 -- in-situ */
-MAT	*hhtrrows(MAT *M,u_int i0,u_int j0,VEC *hh,double beta)
+MAT	*hhtrrows(MAT *M,unsigned int i0,unsigned int j0,VEC *hh,double beta)
 {
 	Real	ip, scale;
 	int	i /*, j */;
@@ -134,7 +134,7 @@ MAT	*hhtrrows(MAT *M,u_int i0,u_int j0,VEC *hh,double beta)
 
 /* hhtrcols -- transform a matrix by a Householder vector by columns
 	starting at row i0 from column j0 -- in-situ */
-MAT	*hhtrcols(MAT *M,u_int i0,u_int j0,VEC *hh,double beta)
+MAT	*hhtrcols(MAT *M,unsigned int i0,unsigned int j0,VEC *hh,double beta)
 {
 	/* Real	ip, scale; */
 	int	i /*, k */;

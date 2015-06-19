@@ -39,7 +39,7 @@ static	char	rcsid[] = "$Id: matop.c,v 1.1.1.1 2003-06-23 18:31:39 cees Exp $";
 MAT	*m_add(mat1,mat2,out)
 MAT	*mat1,*mat2,*out;
 {
-	u_int	m,n,i;
+	unsigned int	m,n,i;
 
 	if ( mat1==(MAT *)NULL || mat2==(MAT *)NULL )
 		error(E_NULL,"m_add");
@@ -64,7 +64,7 @@ MAT	*mat1,*mat2,*out;
 MAT	*m_sub(mat1,mat2,out)
 MAT	*mat1,*mat2,*out;
 {
-	u_int	m,n,i;
+	unsigned int	m,n,i;
 
 	if ( mat1==(MAT *)NULL || mat2==(MAT *)NULL )
 		error(E_NULL,"m_sub");
@@ -89,7 +89,7 @@ MAT	*mat1,*mat2,*out;
 MAT	*m_mlt(A,B,OUT)
 MAT	*A,*B,*OUT;
 {
-	u_int	i, /* j, */ k, m, n, p;
+	unsigned int	i, /* j, */ k, m, n, p;
 	Real	**A_v, **B_v /*, *B_row, *OUT_row, sum, tmp */;
 
 	if ( A==(MAT *)NULL || B==(MAT *)NULL )
@@ -207,7 +207,7 @@ VEC	*mv_mlt(A,b,out)
 MAT	*A;
 VEC	*b,*out;
 {
-	u_int	i, m, n;
+	unsigned int	i, m, n;
 	Real	**A_v, *b_v /*, *A_row */;
 	/* register Real	sum; */
 
@@ -243,7 +243,7 @@ MAT	*sm_mlt(scalar,matrix,out)
 double	scalar;
 MAT	*matrix,*out;
 {
-	u_int	m,n,i;
+	unsigned int	m,n,i;
 
 	if ( matrix==(MAT *)NULL )
 		error(E_NULL,"sm_mlt");
@@ -265,7 +265,7 @@ VEC	*vm_mlt(A,b,out)
 MAT	*A;
 VEC	*b,*out;
 {
-	u_int	j,m,n;
+	unsigned int	j,m,n;
 	/* Real	sum,**A_v,*b_v; */
 
 	if ( A==(MAT *)NULL || b==(VEC *)NULL )

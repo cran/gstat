@@ -103,7 +103,7 @@ MAT	*m_ident(MAT *A)
 PERM	*px_ident(PERM *px)
 {
 	int	i, px_size;
-	u_int	*px_pe;
+	unsigned int	*px_pe;
 
 	if ( px == PNULL )
 		error(E_NULL,"px_ident");

@@ -690,7 +690,7 @@ void check_variography(const VARIOGRAM **v, int n_vars)
 /* from meschach matrix library (c) , see matrix[2].h
  try CHfactor -- Cholesky L.L' factorisation of A in-situ */
 static int is_posdef(MAT *A) {
-	u_int	i, j, k;
+	unsigned int	i, j, k;
 	Real	sum, tmp;
 
 	for (k = 0; k < A->n; k++)

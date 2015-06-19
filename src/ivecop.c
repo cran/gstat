@@ -44,7 +44,7 @@ static char    line[MAXLINE];
 IVEC	*iv_get(int dim)
 {
    IVEC	*iv;
-   /* u_int	i; */
+   /* unsigned int	i; */
    
    if (dim < 0)
      error(E_NEG,"iv_get");
@@ -166,7 +166,7 @@ IVEC	*iv_move(IVEC *in,int i0,int dim0,IVEC *out,int i1)
 /* iv_add -- integer vector addition -- may be in-situ */
 IVEC	*iv_add(IVEC *iv1,IVEC *iv2,IVEC *out)
 {
-   u_int	i;
+   unsigned int	i;
    int	*out_ive, *iv1_ive, *iv2_ive;
    
    if ( iv1==IVNULL || iv2==IVNULL )
@@ -191,7 +191,7 @@ IVEC	*iv_add(IVEC *iv1,IVEC *iv2,IVEC *out)
 /* iv_sub -- integer vector addition -- may be in-situ */
 IVEC	*iv_sub(IVEC *iv1,IVEC *iv2,IVEC *out)
 {
-   u_int	i;
+   unsigned int	i;
    int	*out_ive, *iv1_ive, *iv2_ive;
    
    if ( iv1==IVNULL || iv2==IVNULL )
@@ -250,7 +250,7 @@ IVEC	*iv_finput(FILE *fp,IVEC *x)
 /* iiv_finput -- interactive input of IVEC iv */
 IVEC	*iiv_finput(FILE *fp,IVEC *iv)
 {
-   u_int	i,dim,dynamic;	/* dynamic set if memory allocated here */
+   unsigned int	i,dim,dynamic;	/* dynamic set if memory allocated here */
    
    /* get dimension */
    if ( iv != (IVEC *)NULL && iv->dim<MAXDIM )
@@ -289,7 +289,7 @@ IVEC	*iiv_finput(FILE *fp,IVEC *iv)
 /* biv_finput -- batch-file input of IVEC iv */
 IVEC	*biv_finput(FILE *fp,IVEC *iv)
 {
-   u_int	i,dim;
+   unsigned int	i,dim;
    int	io_code;
    
    /* get dimension */

@@ -637,7 +637,7 @@ double calc_mu(const DATA *d, const DPOINT *where) {
 static char    *format = "%14.9g ";
 void m_logoutput(MAT * a)
 {
-	u_int i, j, tmp;
+	unsigned int i, j, tmp;
 
 	if (a == (MAT *) NULL) {
 		printlog("Matrix: NULL\n");
@@ -663,7 +663,7 @@ void m_logoutput(MAT * a)
 
 void v_logoutput(VEC * x)
 {
-	u_int i, tmp;
+	unsigned int i, tmp;
 
 	if (x == (VEC *) NULL) {
 		printlog("Vector: NULL\n");

@@ -66,7 +66,7 @@ MAT	*QRfactor(A,diag)
 MAT	*A;
 VEC	*diag /* ,*beta */;
 {
-    u_int	k,limit;
+    unsigned int	k,limit;
     Real	beta;
     static	VEC	*tmp1=VNULL;
     
@@ -104,7 +104,7 @@ MAT	*A;
 VEC	*diag /* , *beta */;
 PERM	*px;
 {
-    u_int	i, i_max, j, k, limit;
+    unsigned int	i, i_max, j, k, limit;
     static	VEC	*gamma=VNULL, *tmp1=VNULL, *tmp2=VNULL;
     Real	beta, maxgamma, sum, tmp;
     
@@ -186,7 +186,7 @@ VEC	*_Qsolve(QR,diag,b,x,tmp)
 MAT	*QR;
 VEC	*diag /* ,*beta */ , *b, *x, *tmp;
 {
-    u_int	dynamic;
+    unsigned int	dynamic;
     int		k, limit;
     Real	beta, r_ii, tmp_val;
     
@@ -228,7 +228,7 @@ MAT	*QR,*Qout;
 VEC	*diag /* , *beta */;
 {
     static	VEC	*tmp1=VNULL,*tmp2=VNULL;
-    u_int	i, limit;
+    unsigned int	i, limit;
     Real	beta, r_ii, tmp_val;
     int	j;
     
@@ -276,7 +276,7 @@ VEC	*diag /* , *beta */;
 MAT	*makeR(QR,Rout)
 MAT	*QR,*Rout;
 {
-    u_int	i,j;
+    unsigned int	i,j;
     
     if ( QR==(MAT *)NULL )
 	error(E_NULL,"makeR");

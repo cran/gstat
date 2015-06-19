@@ -43,7 +43,7 @@ static	char	rcsid[] = "$Id: chfactor.c,v 1.1.1.1 2003-06-23 18:31:44 cees Exp $"
 /* CHfactor -- Cholesky L.L' factorisation of A in-situ */
 MAT	*CHfactor(MAT *A)
 {
-	u_int	i, j, k, n;
+	unsigned int	i, j, k, n;
 	Real	**A_ent, *A_piv, *A_row, sum, tmp;
 
 	if ( A==(MAT *)NULL )
@@ -104,7 +104,7 @@ VEC	*CHsolve(MAT *A, VEC *b, VEC *x)
 /* LDLfactor -- L.D.L' factorisation of A in-situ */
 MAT	*LDLfactor(MAT *A)
 {
-	u_int	i, k, n, p;
+	unsigned int	i, k, n, p;
 	Real	**A_ent;
 	Real d, sum;
 	static VEC	*r = VNULL;
@@ -164,7 +164,7 @@ VEC	*LDLsolve(MAT *LDL, VEC *b, VEC *x)
 /* MCHfactor -- Modified Cholesky L.L' factorisation of A in-situ */
 MAT	*MCHfactor(MAT *A, double tol)
 {
-	u_int	i, j, k, n;
+	unsigned int	i, j, k, n;
 	Real	**A_ent, *A_piv, *A_row, sum, tmp;
 
 	if ( A==(MAT *)NULL )

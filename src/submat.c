@@ -35,11 +35,11 @@ static	char	rcsid[] = "$Id: submat.c,v 1.1.1.1 2003-06-23 18:31:40 cees Exp $";
 
 /* get_col -- gets a specified column of a matrix and retruns it as a vector */
 VEC	*get_col(mat,col,vec)
-u_int	col;
+unsigned int	col;
 MAT	*mat;
 VEC	*vec;
 {
-   u_int	i;
+   unsigned int	i;
    
    if ( mat==(MAT *)NULL )
      error(E_NULL,"get_col");
@@ -56,11 +56,11 @@ VEC	*vec;
 
 /* get_row -- gets a specified row of a matrix and retruns it as a vector */
 VEC	*get_row(mat,row,vec)
-u_int	row;
+unsigned int	row;
 MAT	*mat;
 VEC	*vec;
 {
-   u_int	i;
+   unsigned int	i;
    
    if ( mat==(MAT *)NULL )
      error(E_NULL,"get_row");
@@ -79,9 +79,9 @@ VEC	*vec;
 MAT	*_set_col(mat,col,vec,i0)
 MAT	*mat;
 VEC	*vec;
-u_int	col,i0;
+unsigned int	col,i0;
 {
-   u_int	i,lim;
+   unsigned int	i,lim;
    
    if ( mat==(MAT *)NULL || vec==(VEC *)NULL )
      error(E_NULL,"_set_col");
@@ -98,9 +98,9 @@ u_int	col,i0;
 MAT	*_set_row(mat,row,vec,j0)
 MAT	*mat;
 VEC	*vec;
-u_int	row,j0;
+unsigned int	row,j0;
 {
-   u_int	j,lim;
+   unsigned int	j,lim;
    
    if ( mat==(MAT *)NULL || vec==(VEC *)NULL )
      error(E_NULL,"_set_row");
@@ -119,9 +119,9 @@ u_int	row,j0;
    matrix will alter the "old" matrix */
 MAT	*sub_mat(old,row1,col1,row2,col2,new)
 MAT	*old,*new;
-u_int	row1,col1,row2,col2;
+unsigned int	row1,col1,row2,col2;
 {
-   u_int	i;
+   unsigned int	i;
    
    if ( old==(MAT *)NULL )
      error(E_NULL,"sub_mat");

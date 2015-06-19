@@ -32,9 +32,9 @@ static	char	rcsid[] = "$Id: copy.c,v 1.1.1.1 2003-06-23 18:31:34 cees Exp $";
 
 
 /* _m_copy -- copies matrix into new area */
-MAT	*_m_copy(MAT *in,MAT *out,u_int i0,u_int j0)
+MAT	*_m_copy(MAT *in,MAT *out,unsigned int i0,unsigned int j0)
 {
-	u_int	i /* ,j */;
+	unsigned int	i /* ,j */;
 
 	if ( in==MNULL )
 		error(E_NULL,"_m_copy");
@@ -53,9 +53,9 @@ MAT	*_m_copy(MAT *in,MAT *out,u_int i0,u_int j0)
 }
 
 /* _v_copy -- copies vector into new area */
-VEC	*_v_copy(VEC *in,VEC *out,u_int i0)
+VEC	*_v_copy(VEC *in,VEC *out,unsigned int i0)
 {
-	/* u_int	i,j; */
+	/* unsigned int	i,j; */
 
 	if ( in==VNULL )
 		error(E_NULL,"_v_copy");
@@ -83,7 +83,7 @@ PERM	*px_copy(PERM *in,PERM *out)
 	if ( out == PNULL || out->size != in->size )
 		out = px_resize(out,in->size);
 
-	MEM_COPY(in->pe,out->pe,in->size*sizeof(u_int));
+	MEM_COPY(in->pe,out->pe,in->size*sizeof(unsigned int));
 	/* for ( i = 0; i < in->size; i++ )
 		out->pe[i] = in->pe[i]; */
 

@@ -42,14 +42,14 @@ typedef struct  {
 
 /* complex vector definition */
 typedef struct  {
-                u_int   dim, max_dim;
+                unsigned int   dim, max_dim;
                 complex  *ve;
                 } ZVEC;
 
 /* complex matrix definition */
 typedef struct  {
-                u_int   m, n;
-                u_int   max_m, max_n, max_size;
+                unsigned int   m, n;
+                unsigned int   max_m, max_n, max_size;
                 complex *base;          /* base is base of alloc'd mem */
                 complex **me;
                 } ZMAT;
@@ -85,10 +85,10 @@ int zm_free_vars();
 
 
 #ifdef ANSI_C
-extern ZMAT	*_zm_copy(ZMAT *in,ZMAT *out,u_int i0,u_int j0);
+extern ZMAT	*_zm_copy(ZMAT *in,ZMAT *out,unsigned int i0,unsigned int j0);
 extern ZMAT	* zm_move(ZMAT *, int, int, int, int, ZMAT *, int, int);
 extern ZMAT	*zvm_move(ZVEC *, int, ZMAT *, int, int, int, int);
-extern ZVEC	*_zv_copy(ZVEC *in,ZVEC *out,u_int i0);
+extern ZVEC	*_zv_copy(ZVEC *in,ZVEC *out,unsigned int i0);
 extern ZVEC	* zv_move(ZVEC *, int, int, ZVEC *, int);
 extern ZVEC	*zmv_move(ZMAT *, int, int, int, int, ZVEC *, int);
 extern complex	z_finput(FILE *fp);
@@ -113,7 +113,7 @@ extern ZMAT	*zm_zero(ZMAT *A);
 extern ZMAT	*zm_get(int m,int n);
 extern ZVEC	*zv_get(int dim);
 extern ZMAT	*zm_resize(ZMAT *A,int new_m,int new_n);
-extern complex	_zin_prod(ZVEC *x,ZVEC *y,u_int i0,u_int flag);
+extern complex	_zin_prod(ZVEC *x,ZVEC *y,unsigned int i0,unsigned int flag);
 extern ZVEC	*zv_resize(ZVEC *x,int new_dim);
 extern ZVEC	*zv_mlt(complex scalar,ZVEC *vector,ZVEC *out);
 extern ZVEC	*zv_add(ZVEC *vec1,ZVEC *vec2,ZVEC *out);

@@ -1,0 +1,6 @@
+for f in `ls *.[ch]`
+do
+ mv $f bla
+ sed 's/u_int/unsigned int/g' bla > $f
+done
+rm bla

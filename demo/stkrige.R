@@ -196,6 +196,8 @@ lollipop3d(vv$spacelag, vv$timelag, vv$gamma,  main="simplified sum-metric model
 ## kriging using the sum-metric model
 
 data(air)
+if (!exists("rural"))
+	rural = STFDF(stations, dates, data.frame(PM10 = as.vector(air)))
 rr <- rural[,"2005-06-01/2005-06-10"]
 rr <- as(rr, "STSDF")
 

@@ -85,6 +85,9 @@ sumMetricVgm <- vgmST("sumMetric",
 
 data(air)
 
+if (!exists("rural"))
+	rural = STFDF(stations, dates, data.frame(PM10 = as.vector(air)))
+
 rr <- rural[,"2005-06-01/2005-06-03"]
 rr <- as(rr,"STSDF")
 

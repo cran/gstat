@@ -101,6 +101,8 @@ ls()
 We will look into a subset of the data, ranging from 2005 to 2010, and
 remove stations that have only missing values in this period:
 <<>>=
+if (!exists("rural"))
+	rural = STFDF(stations, dates, data.frame(PM10 = as.vector(air)))
 rr = rural[,"2005::2010"]
 unsel = which(apply(as(rr, "xts"), 2, function(x) all(is.na(x))))
 r5to10 = rr[-unsel,]
