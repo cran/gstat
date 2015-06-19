@@ -39,10 +39,12 @@
 #include 	"meminfo.h"
 
 /* unsigned integer type */
+/* EJP--no longer needed, as 'u_int' has been replaced by 'unsigned int', Fri Jun 19 14:59:12 CEST 2015
 #ifndef U_INT_DEF
-typedef	unsigned int	unsigned int;
+typedef	unsigned int	u_int
 #define U_INT_DEF
 #endif
+*/
 
 /* vector definition */
 typedef	struct	{

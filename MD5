@@ -1,5 +1,5 @@
 b930a1c993354b3d71cc449df073d4be *CHANGES
-4cd6972559a91cb8034fe45b2c3c7091 *DESCRIPTION
+5b685f8b4d19b3afbb54cd1b8566e247 *DESCRIPTION
 d637e46c08b0c76e8eb6a97b42cca2a7 *LICENCE
 c7104820f50914ef7cb74fd634070cfd *NAMESPACE
 02a9d4ea0f96e71d31a614d441396d5f *R/fit.lmc.R
@@ -97,15 +97,15 @@ e8cc520e632cf37de0b517b047f45020 *demo/zonal.R
 350eeaea4e8193350a4468663d603c6a *inst/ChangeLog0
 8375b3a03c0fbabf5e54d2ed27718c0f *inst/doc/gstat.R
 46e7d544f28b6a6e6a103ec880331e4a *inst/doc/gstat.Rnw
-3c313697386f94e740c4c4e7b6087eb0 *inst/doc/gstat.pdf
+ef2876964622e51d7377f9cf2ac1f382 *inst/doc/gstat.pdf
 626f14d14182c6fb8b5d3dd6e855f387 *inst/doc/prs.R
 4961b8e9071476d87816c5d9052380f0 *inst/doc/prs.Rnw
-dd48f7a5139b5ee0a3176c236daa266e *inst/doc/prs.pdf
+bcc839d5c12f9dbebd53913aec97e15e *inst/doc/prs.pdf
 8fd1be3b2060b090952d09525fe284da *inst/doc/spatio-temporal-kriging.Rnw
-2bdfe6a47134672c07223cc92ffa72ba *inst/doc/spatio-temporal-kriging.pdf
+151118350c5bd39185a05ee4c0e29eb9 *inst/doc/spatio-temporal-kriging.pdf
 2047aa08042e70024098f2f098063bb7 *inst/doc/st.R
 4a6941a6bd0070cc676f0ba69fb88ff8 *inst/doc/st.Rnw
-409da524712b561dc8cedd93786cc315 *inst/doc/st.pdf
+30249441e29b40646423e5e7160b25ab *inst/doc/st.pdf
 af529f6f9ce9e52ed054e016fd386af5 *inst/external/cluster.txt
 bacec53ee233889d6419b0e394bde7a8 *inst/external/ncp.dbf
 3692904f850276a958eaa4024e4a8ec7 *inst/external/ncp.shp
@@ -199,7 +199,7 @@ c11969855956bae3e86b15820098780d *src/machine.w32
 2ff1b53382dc2dbed2b4259b709144ea *src/mapio.c
 4ff06b1d5c8068b68628495867110a5b *src/mapio.h
 45aaf0acdc6a933e6003d0f2f8a06152 *src/matop.c
-9b66b147d57b495b4da06130eb334668 *src/matrix.h
+70fe3e5cf9dac00578ab4ad625972828 *src/matrix.h
 dea1590e0f4f5899cefced6b143d595d *src/matrix2.h
 1e74e5ce344ee86a1df1577a10a65d1c *src/meminfo.c
 d3ae8a164445f7fc87ffd4cacf2c4431 *src/meminfo.h
@@ -259,7 +259,6 @@ e4c7015f19601d136e2f4bb26b9ba043 *src/vario_io.h
 0f79cf0346b6ae987638889550c68b0a *src/vecop.c
 9b876fdddcf9d0ec5c53df2952125e40 *src/version.c
 f4793df356afee6075c366bf2471eba6 *src/version.h
-c75ae274ed05c0e212ae93097ede2bb4 *src/xxx
 05ab87c30115703a96d6d2b782e9bef0 *src/zmatrix.h
 c30b82933f483fc156405bd4697dbc05 *src/zmatrix2.h
 8a119ec5be1b0b9d2ac4281b28e4d303 *tests/blockkr.R
