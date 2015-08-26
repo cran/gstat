@@ -1,5 +1,5 @@
 
-R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+R Under development (unstable) (2015-08-18 r69117) -- "Unsuffered Consequences"
 Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -19,13 +19,13 @@ Type 'q()' to quit R.
 + 	q()
 Loading required package: rgdal
 Loading required package: sp
-rgdal: version: 1.0-2, (SVN revision 463)
+rgdal: version: 1.0-4, (SVN revision 463)
  Geospatial Data Abstraction Library extensions to R successfully loaded
  Loaded GDAL runtime: GDAL 1.11.2, released 2015/02/10
  Path to GDAL shared files: /usr/local/share/gdal
  Loaded PROJ.4 runtime: Rel. 4.9.1, 04 March 2015, [PJ_VERSION: 491]
  Path to PROJ.4 shared files: (autodetected)
- Linking to sp version: 1.1-0 
+ Linking to sp version: 1.1-1 
 > 
 > # for validity of covariance functions on the sphere, see also:
 > # DOI 10.1007/s11004-011-9344-7
@@ -101,6 +101,13 @@ The following objects are masked from 'package:base':
     backsolve, forwardsolve
 
 Loading required package: maps
+
+Attaching package: 'fields'
+
+The following object is masked from 'package:maps':
+
+    ozone
+
 > data(ozone2)
 > oz = SpatialPointsDataFrame(ozone2$lon.lat, 
 + 		data.frame(t(ozone2$y)), 
@@ -182,4 +189,4 @@ spDistsN1 Distances:
 > 
 > proc.time()
    user  system elapsed 
-  1.322   0.346   1.342 
+  1.154   0.332   1.181 

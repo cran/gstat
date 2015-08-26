@@ -241,14 +241,14 @@ krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
   if(progress)
     pb = txtProgressBar(style = 3, max = nrow(query))
   
-  nb = get.knnx(df, query, ceiling(bufferNmax*nmax))[[1]]
+  nb <- t(apply(get.knnx(df, query, ceiling(bufferNmax*nmax))[[1]],1,sort))
   
   for (i in 1:nrow(query)) {
     nghbrData <- data[nb[i, ], , drop = FALSE]
         
     if(bufferNmax > 1) {
       nghbrCov <- covfn.ST(nghbrData, newdata[i, , drop = FALSE], modelList)
-      nghbrData <- nghbrData[order(nghbrCov, decreasing=T)[1:nmax], , drop = FALSE]
+      nghbrData <- nghbrData[sort(order(nghbrCov, decreasing=T)[1:nmax]), , drop = FALSE]
     }
       
     res[i,] <- krigeST.df(formula, nghbrData, newdata[i, , drop = FALSE],

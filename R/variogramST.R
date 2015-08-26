@@ -182,7 +182,7 @@ variogramST.STIDF <- function (formula, data, tlags, cutoff,
   diffTimeMat <- matrix(NA, nData, twindow)
   
   for (i in 1:nData) { # i <- 1
-    diffTimeMat[i,1:min(nData,twindow)] <- cumsum(diffTime[i+0:min(nData,(twindow-1))])
+    diffTimeMat[i,1:min(nData,twindow)] <- cumsum(diffTime[i+0:(min(nData,twindow)-1)])
   }
   
   nSp <- length(boundaries)

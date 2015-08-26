@@ -3,8 +3,6 @@
 %% back from the joint TIES/Accuracy 2004 symposium in Portland, ME.
 %% Continued, Oct 28, during the Apmosphere mid-term review. Oh, shame.
 
-% \VignetteIndexEntry{ Spatio-temporal geostatistics using gstat }
-
 \documentclass[a4paper]{article}
 \usepackage[colorlinks=true,urlcolor=blue]{hyperref}
 
@@ -12,7 +10,8 @@
 
 \SweaveOpts{echo=TRUE}
 
-\title{Spatio-temporal geostatistics using {\tt gstat}}
+\title{Introduction to Spatio-Temporal Variography }
+% \VignetteIndexEntry{ Introduction to Spatio-Temporal Variography }
 
 \author{ \includegraphics[width=.4\columnwidth]{ifgi-logo_int}\\
 \href{mailto:edzer.pebesma@uni-muenster.de}{Edzer Pebesma},
@@ -117,7 +116,7 @@ rn
 
 In the following, autocorrelation functions are computed and plotted.
 The resulting plot is shown in Figure~\ref{fig:acf}.
-<<fig=FALSE,eval=FALSE>>=cf(na.omit(as(r5to10[rn,], "xts")))
+<<fig=FALSE,eval=FALSE>>=
 par(mfrow=c(2,2))
 # select 4, 5, 6, 7
 for(i in rn) 

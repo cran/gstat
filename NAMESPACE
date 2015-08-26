@@ -14,6 +14,12 @@ useDynLib(gstat,
 	gstat_variogram_values
 )
 
+importFrom(utils, setTxtProgressBar, stack, txtProgressBar)
+importFrom(stats, as.formula, cor, cov2cor, delete.response, .getXlevels, 
+	lm, median, model.extract, model.frame, model.matrix, na.exclude, 
+	na.fail, na.omit, na.pass, optim, optimise, optimize, predict, 
+	residuals, terms)
+importFrom(graphics, image.default, lines, locator, text)
 import(methods)
 import(lattice)
 importFrom(zoo, zoo, is.regular)
