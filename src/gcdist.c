@@ -2,14 +2,10 @@
 
 # include <math.h>
 
-#ifdef USING_R
-# include <R.h>
-# include <Rmath.h>
-# include <Rinternals.h>
-# define POWDI(x,i) R_pow_di(x,i)
-#else
-# define POWDI(x,i) pow(x,i)
-#endif
+#include <R.h>
+#include <Rmath.h>
+#include <Rinternals.h>
+#define POWDI(x,i) R_pow_di(x,i)
 
 #include "gcdist.h"
 

@@ -64,9 +64,7 @@
 # include <grass/gisdefs.h>
 #endif 
 
-#ifdef USING_R
 # define NO_STD_IN_OUT
-#endif
 
 static void convert_null_to_space(char *cp, const char *name, const FILE *f);
 
@@ -89,9 +87,6 @@ static void record_open(const FILE *f, const char *name, const char *mode,
 	FILE_TYPE t);
 static void record_closed(const FILE *f);
 static void record_removed(const char *name);
-#ifndef USING_R
-static FILE_TYPE what_is_file(const FILE *f);
-#endif
 static const char *stream_name(const FILE *f);
 
 #ifdef MEMDEBUG
@@ -179,10 +174,6 @@ void *edmalloc(size_t size, char *file, int line) {
 	void *p = NULL;
 #ifdef RECORD_MALLOC
 	printlog("%s:%d: malloc(%u)\n", file, line, size);
-#endif
-#ifndef USING_R
-	if (n_mallocs == 0)
-		atexit(print_n);
 #endif
 	n_mallocs++;
 	p = (void *) malloc(size);
@@ -395,85 +386,6 @@ int file_exists(const char *name) {
 	} else
 		return 0;
 }
-
-#ifndef USING_R
-char *get_line(char **s, int *size, FILE *stream) {
-/* 
- * read line in *s, return number of chars read;
- * resize s and adjust *size if neccesary;
- * PRE: *s is a char *, pointing to NULL or dynamically allocated memory
- * return NULL on EOF and empty string;
- * after last line read.
- */
-#define INCR 64
-	int c;
-	char cr;
-	int n = 0;
-
-	if (s == NULL || size == NULL || stream == NULL)
-		ErrMsg(ER_NULL, "get_line()");
-	if (*size == 0 || *s == (char *) NULL) {
-		*s = (char *) emalloc(INCR * sizeof(char));
-		*size = INCR;
-	}
-	while ((c = fgetc(stream)) != EOF) {
-		cr = c;
-		convert_null_to_space(&cr, NULL, stream);
-		/* printf("char:[%c],int[%d]\n", c, c); */
-		(*s)[n] = c;
-		n++;
-		if (n == *size - 1) { /* resize: leave space for '\0' */
-			*size += INCR;
-			*s = erealloc(*s, *size);
-		}
-		if (c == '\n') { /* end-of-line */
-			(*s)[n] = '\0'; /* terminate string */
-			return *s;
-		}
-	}
-	/* at EOF: */
-	(*s)[n] = '\0';
-	if (n > 0) /* we've had character(s): */
-		return *s;
-	return NULL; /* EOF */
-}
-
-char *string_prompt(const char *prompt) {
-	char *buf = NULL, *line = NULL;
-	int buf_size = 4096, line_size = 0, i = 0;
-
-	buf = (char *) emalloc(buf_size);
-	buf[0] = '\0';
-	printf("Enter commands, end with `e' or EOF\n");
-	do {
-		if (line != NULL)
-			efree(line);
-#ifdef HAVE_LIBREADLINE
-		if ((line = readline(prompt)) != NULL && strlen(line))
-			add_history(line);
-#else
-		line = NULL;
-		line_size = 0;
-		fprintf(stdout, "%s", prompt);
-		line = get_line(&line, &line_size, stdin);
-#endif /* else HAVE_LIBREADLINE */
-		if (almost_equals(line, "e$\n") || almost_equals(line, "q$\n")) {
-			efree(line);
-			line = NULL;
-		}
-		if (line && strlen(line)) { /* non-empty string: add to buf */
-			i += strlen(line) + 1; /* + trailing \n, from readline() */
-			if (i >= buf_size - 1)
-				buf = (char *) erealloc(buf, buf_size *= 2);
-			strcat(buf, line);
-#ifdef HAVE_LIBREADLINE
-			strcat(buf, "\n");
-#endif
-		}
-	} while (line);
-	return buf;
-}
-#endif
 
 char *string_file(const char *fname) {
 /*
@@ -749,17 +661,6 @@ void print_file_record(void) {
 	}
 }
 
-#ifndef USING_R
-static FILE_TYPE what_is_file(const FILE *f) {
-	int i;
-	for (i = 0; i < file_record_size; i++)
-		if (file_record[i].f == f)
-			return file_record[i].type;
-	assert(0);
-	return IS_OPEN; /* never reached */
-}
-#endif
-
 static const char *stream_name(const FILE *f) {
 	int i;
 	for (i = 0; i < file_record_size; i++)
@@ -859,40 +760,3 @@ int CDECL double_index_cmp(const Double_index *a, const Double_index *b) {
 		return 1;
 	return 0;
 }
-
-#ifndef USING_R
-int grass(void) {
-	static int gisinit = 0;
-	int env, lock;
-	char *str, *home /* , *gisrc */ ;
-
-	if (gisinit == 1) /* been here before... */
-		return gisinit;
-
-	env = ((getenv("LOCATION") || getenv("LOCATION_NAME")) && getenv("GISDBASE") && getenv("MAPSET") ||
-		getenv("GISRC"));
-	if ((home = getenv("HOME")) == NULL)
-		home = "";
-	str = (char *) emalloc(strlen(home) + 20);
-	str[0] = '\0';
-	strcat(str, home);
-	strcat(str, "/.gislock5");
-	lock = file_exists(str);
-	if (env || lock) {
-#ifdef HAVE_LIBGIS
-		if (gisinit == 0) {
-			G_gisinit("gstat");
-			/*
-			gisrc = G__get_gisrc_file();
-			printf("gisrc: [%s]\n", gisrc ? gisrc : "NULL");
-			*/
-			gisinit = 1;
-		}
-#else
-		pr_warning("this version of gstat was not compiled with grass support");
-#endif
-	}
-	efree(str);
-	return gisinit;
-}
-#endif

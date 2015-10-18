@@ -41,7 +41,7 @@
 #include <stdio.h>
 #include <math.h> /* fabs() */
 
-#include "matrix2.h"
+#include "mtrx.h"
 
 #include "defs.h"
 #include "userio.h"
@@ -137,7 +137,7 @@ VARIOGRAM *reml_sills(DATA *data, VARIOGRAM *vp) {
 static int reml(VEC *Y, MAT *X, MAT **Vk, int n_k, int max_iter,
 	double fit_limit, VEC *teta) {
  	volatile int n_iter = 0;
- 	int i;
+ 	int i, info;
 	volatile double rel_step = DBL_MAX;
 	VEC *rhs = VNULL;
 	VEC *dteta = VNULL;
@@ -158,7 +158,11 @@ static int reml(VEC *Y, MAT *X, MAT **Vk, int n_k, int max_iter,
 		VinvIminAw = calc_VinvIminAw(Vw, X, VinvIminAw, n_iter == 1);
 		calc_rhs_Tr_m(n_k, Vk, VinvIminAw, Y, rhs, Tr_m);
 		/* Tr_m * teta = Rhs; symmetric, solve for teta: */
-		LDLfactor(Tr_m);
+		LDLfactor(Tr_m, &info);
+		if (info != 0) {
+			pr_warning("singular matrix in reml");
+			return(0);
+		}
 		LDLsolve(Tr_m, rhs, teta);
 		if (DEBUG_VGMFIT) {
 			printlog("teta_%d [", n_iter);
@@ -184,7 +188,7 @@ static int reml(VEC *Y, MAT *X, MAT **Vk, int n_k, int max_iter,
 			ms_mltadd(Vw, Vk[i], teta->ve[i], Vw); /* Vw = Sum_i teta[i]*V[i] */
 		VinvIminAw = calc_VinvIminAw(Vw, X, VinvIminAw, 0);
 		calc_rhs_Tr_m(n_k, Vk, VinvIminAw, Y, rhs, Tr_m);
-		m_inverse(Tr_m, Tr_m);
+		m_inverse(Tr_m, Tr_m, &info);
 		sm_mlt(2.0, Tr_m, Tr_m); /* Var(YAY)=2tr(AVAV) */
 		printlog("Lower bound of parameter covariance matrix:\n");
 		m_logoutput(Tr_m);
@@ -208,7 +212,7 @@ static MAT *calc_VinvIminAw(MAT *Vw, MAT *X, MAT *VinvIminAw, int calc_Aw) {
  */
  	MAT *tmp = MNULL, *V = MNULL;
  	VEC *b = VNULL, *rhs = VNULL;
- 	int i, j;
+ 	int i, j, info;
 
 	if (X->m != Vw->n || VinvIminAw->m != X->m)
 		ErrMsg(ER_IMPOSVAL, "calc_VinvIminAw: sizes don't match");
@@ -217,7 +221,9 @@ static MAT *calc_VinvIminAw(MAT *Vw, MAT *X, MAT *VinvIminAw, int calc_Aw) {
 		IminAw = m_resize(IminAw, X->m, X->m);
 		tmp = m_resize(tmp, X->n, X->n);
 		tmp = mtrm_mlt(X, X, tmp); /* X'X */
-		m_inverse(tmp, tmp); /* (X'X)-1 */
+		m_inverse(tmp, tmp, &info); /* (X'X)-1 */
+		if (info != 0)
+			pr_warning("singular matrix in calc_VinvIminAw");
 		/* X(X'X)-1 -> X(X'X)-1 X') */
 		IminAw = XVXt_mlt(X, tmp, IminAw);
 		for (i = 0; i < IminAw->m; i++) /* I - Aw */
@@ -229,7 +235,9 @@ static MAT *calc_VinvIminAw(MAT *Vw, MAT *X, MAT *VinvIminAw, int calc_Aw) {
 	}
 
 	V = m_copy(Vw, V);
-	LDLfactor(V);
+	LDLfactor(V, &info);
+	if (info != 0)
+		pr_warning("singular V matrix in calc_VinvIminAw");
 
 	rhs = v_resize(rhs, X->m);
 	b = v_resize(b, X->m);
@@ -286,14 +294,14 @@ static double calc_ll(MAT *Vw, MAT *X, VEC *y, int n) {
 	static VEC *res = VNULL, *tmp = VNULL;
 	double zQz;
 	volatile double ldet;
-	int i;
+	int i, info;
 
 	IminAw->m -= n;
 
 	/* |B'(I-A)Vw(I-A)'B|, pretty inefficiently, can 4 x as fast: */
 	/* M1 = m_mlt(IminAw, Vw, M1); M2 = mmtr_mlt(M1, IminAw, M2); */
 	M1 = XVXt_mlt(IminAw, Vw, M1);
-	LDLfactor(M1);
+	LDLfactor(M1, &info);
 	for (i = 0, ldet = 0.0; i < M1->m; i++) {
 		assert(M1->me[i][i] > 0.0);
 		ldet += log(M1->me[i][i]);
@@ -329,11 +337,11 @@ MAT *XtVX_mlt(MAT *X, MAT *V, MAT *out) {
 	int i, j, k;
 
 	if (X==(MAT *)NULL || V==(MAT *)NULL )
-		error(E_NULL, "XtVX_mlt");
+		ErrMsg(ER_IMPOSVAL, "XtVX_mlt");
 	if (X->m != V->m)
-		error(E_SIZES, "XtVX_mlt");
+		ErrMsg(ER_IMPOSVAL, "XtVX_mlt");
 	if (V->m != V->n)
-		error(E_SQUARE, "XtVX_mlt");
+		ErrMsg(ER_IMPOSVAL, "XtVX_mlt");
 
 	out = m_resize(out, X->n, X->n);
 	VX = m_resize(VX, V->m, X->n);
@@ -356,11 +364,11 @@ MAT *XVXt_mlt(MAT *X, MAT *V, MAT *out) {
 	int i, j, k;
 
 	if (X==(MAT *)NULL || V==(MAT *)NULL )
-		error(E_NULL, "XtVX_mlt");
+		ErrMsg(ER_IMPOSVAL, "XtVX_mlt");
 	if (X->n != V->m)
-		error(E_SIZES, "XtVX_mlt");
+		ErrMsg(ER_IMPOSVAL, "XtVX_mlt");
 	if (V->m != V->n)
-		error(E_SQUARE, "XtVX_mlt");
+		ErrMsg(ER_IMPOSVAL, "XtVX_mlt");
 
 	out = m_resize(out, X->m, X->m);
 	VXt = m_resize(VXt, V->m, X->n);
@@ -382,9 +390,9 @@ MAT *XdXt_mlt(MAT *X, VEC *d, MAT *out) {
 	int i, j, k;
 
 	if (X==(MAT *)NULL || d==(VEC *)NULL )
-		error(E_NULL, "XVXt_mlt");
+		ErrMsg(ER_IMPOSVAL, "XVXt_mlt");
 	if (X->n != d->dim)
-		error(E_SIZES, "XVXt_mlt");
+		ErrMsg(ER_IMPOSVAL, "XVXt_mlt");
 
 	out = m_resize(out, X->n, X->n);
 	m_zero(out);
@@ -404,9 +412,9 @@ MAT *XtdX_mlt(MAT *X, VEC *d, MAT *out) {
 	int i, j, k;
 
 	if (X==(MAT *)NULL || d==(VEC *)NULL )
-		error(E_NULL, "XtVX_mlt");
+		ErrMsg(ER_IMPOSVAL, "XtVX_mlt");
 	if (X->m != d->dim)
-		error(E_SIZES, "XtVX_mlt");
+		ErrMsg(ER_IMPOSVAL, "XtVX_mlt");
 
 	out = m_resize(out, X->n, X->n);
 	m_zero(out);

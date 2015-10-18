@@ -31,16 +31,14 @@
  * Tue Jun  1 11:25:26 METDST 1993
  * adapted Fri Mar 10 10:47:24 WET 1995
  * (c) E.J. Pebesma
- * time_seed() is called when seed is equal to 0;
  * 0: Marsaglia's congruential random number generator (rn.[ch])
- * 1: drand48() (in stdlib on unix systems)
  */
 
 #include <stdio.h>
-#include <stdlib.h> /* rand(), drand48() */
+#include <stdlib.h>
 #include <math.h> 	/* sqrt() */
 
-#include "defs.h" /* may define HAVE_DRAND48 */
+#include "defs.h" 
 #include "utils.h"
 
 #ifdef HAVE_LIBGSL
@@ -48,17 +46,6 @@
 # include <gsl/gsl_randist.h>
 static gsl_rng *rng = NULL;
 #endif /* HAVE_LIBGSL */
-
-#ifdef TIME_WITH_SYS_TIME
-# include <sys/time.h> /* gettimeofday */
-# include <time.h>     /* time() */
-#else
-# if HAVE_SYS_TIME
-#  include <sys/time.h>
-# else
-#  include <time.h>
-# endif
-#endif
 
 #include "debug.h" 
 
@@ -79,7 +66,6 @@ static char start_up[100];
 
 static unsigned long int seed = 0;
 static int init = 0;
-static unsigned long int time_seed(void);
 static void init_random(void);
 static void print_start_up(void);
 
@@ -121,25 +107,10 @@ unsigned long int get_seed(void) {
 
 void set_seed(unsigned long int i) {
 	if (i == 0)
-		seed = time_seed();
-	else
-		seed = i;
+		ErrMsg(ER_IMPOSVAL, "time seed not available");
+	seed = i;
 	init_random();
 	return;
-}
-
-static unsigned long int time_seed(void) {
-
-#ifdef HAVE_GETTIMEOFDAY
-	struct timeval tv;
-
-	if (gettimeofday(&tv, NULL) == 0)
-		return (unsigned long int) tv.tv_sec * 1000000 + tv.tv_usec;
-	else
-		return (unsigned long int) time(NULL);
-#else
-	return (unsigned long int) time(NULL);
-#endif
 }
 
 static void print_start_up(void) {
@@ -183,16 +154,6 @@ static void init_random(void) {
 	printlog("using Marsaglia's random number generator\n");
 	return; 
 
-#ifdef USE_DRAND48 /* effectively outcommented */
-	sprintf(start_up, 
-		"using drand48() as random number generator, seed %lu\n", seed);
-	srand48(seed);
-	printlog("using drand48() as random number generator\n");
-	my_rng.r_unif = drand48;
-	my_rng.r_normal = my_normal;
-	return;
-#endif
-
 }
 
 /*
@@ -224,34 +185,6 @@ double r_uniform(void) {
 	print_start_up();
 	return my_rng.r_unif();
 }
-
-#ifndef USING_R
-int e_random(int argc, char *argv[]) {
-
-	int un, n, i;
-
-	if (argc != 3) {
-		printf("%s [U|N] <n>\n", argv[0]);
-		printf("U: uniform, N: standard normal\n");
-		printf("<n>: number of values wanted\n");
-		exit(0);
-	}
-	set_seed(0);
-
-	un = *argv[1] == 'U';
-	n = atoi(argv[2]);
-
-	set_seed(0);
-
-	if (un)
-		for (i = 0; i < n; i++)
-			printf("%g\n", r_uniform());
-	else
-		for (i = 0; i < n; i++)
-			printf("%g\n", r_normal());
-	return 0;
-}
-#endif
 
 /*
  * [pqr]_normal: functions for Normal(mean=0,var=1) distribution

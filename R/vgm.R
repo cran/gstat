@@ -54,7 +54,7 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
 	} else {
 		if (range != 0.0) stop("Nugget should have zero range")
 		if (anis[4] != 1.0 || anis[5] != 1.0)
-			stop("Nugget anisotropy is nonsense")
+			stop("Nugget anisotropy is not meaningful")
 	}
 	if (!missing(nugget)) {
 		ret = data.frame(model=mf[mf==model], psill=psill, range=range,

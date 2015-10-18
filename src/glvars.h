@@ -14,7 +14,6 @@ typedef enum {
 	SEM, COV,  /* sample (cross) semivariance or covariance */
 	SPREAD, /* distance to nearest sample */
 	XYP,  /* x and y coordinate of location */
-	POLY, /* point-in-polygon */
 	DIV, /* diversity, range */
 	SKEW, /* skewness, kurtosis */
 	LSEM, /* locally fitted semivariogram parameters */
@@ -82,19 +81,6 @@ DPOINT *get_block_p(void);
 void setup_valdata_X(DATA *d);
 #endif
 
-void push_edges_name(const char *name);
-const char *get_edges_name(const int i);
-int get_n_edges(void);
-int *get_n_edges_polys(void);
-int *set_n_edges_polys(int *n);
-
-#ifdef DATA_H /* data.h was included before this point: */
-POLYGON **get_edges(void);
-POLYGON **set_edges(POLYGON **new_edges);
-DATA *setup_poly_method(void);
-#endif
-    
-        
 #if defined(__cplusplus)
 }
 #endif

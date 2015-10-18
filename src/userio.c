@@ -37,25 +37,14 @@
 
 #include "defs.h"
 
-#ifdef PCRCALC
-# define efclose fclose
-#else
-# include "err.h"
-#endif
-
 #include "debug.h"
 #include "utils.h"
 #include "version.h"
 #include "userio.h"
 
-#ifdef USING_R
 void Rprintf(const char *, ...);
 void Rf_error(const char *, ...);
-# define is_openf(f) (f != NULL)
-#else
-# define is_openf(f) (f != NULL && f != stdout && f != stderr)
-#endif
-
+#define is_openf(f) (f != NULL)
 
 static FILE *logfile = NULL;
 
@@ -103,11 +92,7 @@ const char *error_messages[MAX_ERRNO+1] = {
 
 void init_userio(int use_stdio) {
 	if (use_stdio) {
-#ifdef USING_R
 		set_gstat_log_file(NULL);
-#else
-		set_gstat_log_file(stdout);
-#endif
 		set_gstat_warning_handler(default_warning);
 		set_gstat_error_handler(default_error);
 		set_gstat_log_handler(default_printlog);
@@ -155,7 +140,7 @@ void gstat_error(char *fname, int line,
 
 	if (err_nr == ER_NULL) {
 		save_strcat(error_message, "\nVersion info: ");
-		save_strcat(error_message, GSTAT_OS);
+		/* save_strcat(error_message, GSTAT_OS); */
 		save_strcat(error_message, " ");
 		save_strcat(error_message, VERSION);
 		save_strcat(error_message,
@@ -276,22 +261,14 @@ const char *get_gstat_error_message(void) {
 void print_to_logfile_if_open(const char *mess) {
 
 	if (is_openf(logfile))
-#ifdef USING_R
 		Rprintf("%s", mess);
-#else
-		fprintf(logfile, "%s", mess);
-#endif 
 }
 
 void default_warning(const char *mess) {
 
 	print_to_logfile_if_open(mess);
 
-#ifdef USING_R
 	Rprintf("%s\n", mess);
-#else
-	fprintf(stderr, "%s\n", mess);
-#endif
 	return;
 }
 
@@ -299,12 +276,7 @@ void default_error(const char *mess, int level) {
 
 	print_to_logfile_if_open(mess);
 
-#ifdef USING_R
 	Rf_error("%s\n", mess);
-#else
-	fprintf(stderr, "%s\n", mess);
-	exit(level == 0 ? -1 : level);
-#endif
 }
 
 void printlog(const char *fmt, ...) {
@@ -333,11 +305,7 @@ void default_printlog(const char *mess) {
 	if (is_openf(logfile))
 		print_to_logfile_if_open(mess);
 	else
-#ifndef USING_R
 		Rprintf("%s", mess);
-#else
-		printf("%s", mess);
-#endif
 }
 
 int set_gstat_log_file(FILE *f) {
@@ -372,89 +340,18 @@ void default_progress(unsigned int current, unsigned int total) {
 	perc = floor(100.0 * current / total);
 	if (perc != perc_last) { /* another percentage -> calculate time: */
 		if (current == total) { /* 100% done, reset: */
-#ifdef USING_R
 			Rprintf("\r%3d%% done\n", 100);
-#else
-			fprintf(stderr, "\r%3d%% done\n", 100);
-#endif
 			perc_last = sec_last = -1;
 		} else {
 			sec = difftime(time(NULL), start);
 			if (sec != sec_last) { /* another second -- don't print too often */
-#ifdef USING_R
 				Rprintf("\r%3d%% done", perc);
-#else
-				fprintf(stderr, "\r%3d%% done", perc);
-#endif
 				perc_last = perc;
 				sec_last = sec;
 			}
 		}
 	}
 }
-
-#ifndef PCRCALC
-/**************************** meschach error functions ****************/
-
-#define SING_ERR \
-"Read the manual at http://www.gstat.org/ ;\n\
-look for: Trouble shooting -> Error messages -> From meschach"
-
-#define MEM_ERR \
-"In case you are trying to do global kriging (i.e., no neighbourhood\n\
-parameters like `radius' or `max' were specified) with a large data set,\n\
-reduce the neighbourhood size and use local kriging. In case you are\n\
-fitting a variogram model to a large data set with REML, try another\n\
-fitting method."
-
-#define FP_ERR \
-"This error may arise from using _very_ large or very small values for\n\
-data values, variograms or coordinates. Try to rescale them to a\n\
-reasonable range."
-
-void setup_meschach_error_handler(int using_R) {
- 	int code;
- 	char *err, *hint = "", buf[100];
-
-#ifndef PCRCALC
- 	/* set up meschach error handler: */
- 	if ((code = setjmp(restart)) == 0) {
-		set_err_flag(using_R ? EF_R_ERROR /* avoid longjmp */
-			: EF_JUMP /* make meschach jump on errors */  );
- 	} else {
- 		/* setjmp() returned non-zero, so we returned from a longjmp(): */
- 		switch (code) {
- 			case E_MEM:  /* run out of memory */
- 				err = "virtual memory exhausted";
- 				hint = MEM_ERR;
- 				break;
- 			case E_SING:  /* singular matrix occurred */
- 				err = "singular matrix";
- 				hint = SING_ERR;
- 				break;
- 			case E_POSDEF: /* non-positive definite matrix */
- 				err = "non-positive definite matrix";
- 				hint = "";
- 				break;
- 			case E_SIGNAL: /* floating point signal */
- 				err = "floating point exception";
- 				hint = FP_ERR;
- 				break;
- 			default:
- 				sprintf(buf, "unknown, error code %d", code);
- 				err = buf;
- 				hint = "";
- 				break;
- 		}
-		printlog("\ngstat caught an error that occurred in the matrix library,\n");
- 		printlog("the reason for it was: %s\n\n", err);
-		if (*hint)
-			printlog("HINT: %s\n\n", hint);
- 		ErrMsg(ER_MESCHACH, err);
- 	} 
-#endif /* PCRCALC */
-}
-#endif
 
 void no_progress(unsigned int current, unsigned int total) {
 	return;

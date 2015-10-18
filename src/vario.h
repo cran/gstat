@@ -64,10 +64,8 @@ typedef enum {
 	SPHERICAL, 
 	GAUSSIAN, 
 	EXCLASS,
-#ifdef USING_R
 	MATERN,
 	STEIN,
-#endif
 	CIRCULAR,
 	LINEAR, 
 	BESSEL, 

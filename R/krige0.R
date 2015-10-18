@@ -100,15 +100,15 @@ krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
   stopifnot(class(data@time) == class(newdata@time))
   stopifnot(nmax > 0)
   
-  if(nmax < Inf)
-    return(krigeST.local(formula = formula, data = data, 
+  if(is.null(attr(modelList,"temporal unit")))
+    warning("The spatio-temporal variogram model does not carry a time unit attribute: krisgeST cannot check whether the temporal distance metrics coincide.")
+  
+  if(nmax < Inf) # local neighbourhood ST kriging:
+	return(krigeST.local(formula = formula, data = data, 
                          newdata = newdata, modelList = modelList, nmax = nmax, 
                          stAni = stAni, computeVar = computeVar, 
                          fullCovariance = fullCovariance, 
                          bufferNmax = bufferNmax, progress))
-  
-  if(is.null(attr(modelList,"temporal unit")))
-    warning("The spatio-temporal variogram model does not carry a time unit attribute: krisgeST cannot check whether the temporal distance metrics coincide.")
   
   df <- krigeST.df(formula=formula, data=data, newdata=newdata, 
                    modelList=modelList, y=y, nmax=nmax, stAni=stAni,
@@ -117,9 +117,10 @@ krigeST <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
   
   
   # wrapping the predictions in ST*DF again
-  addAttrToGeom(geometry(newdata), df)
-  
-  
+  if (!fullCovariance)
+  	addAttrToGeom(geometry(newdata), df)
+  else
+  	df
 }
   
   
@@ -127,7 +128,8 @@ krigeST.df <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NUL
                     computeVar = FALSE, fullCovariance = FALSE,
                     bufferNmax=2, progress=TRUE) {
 
-  separate <- length(data) > 1 & length(newdata) > 1 & inherits(data, "STF") & inherits(newdata, "STF")
+	separate <- length(data) > 1 && length(newdata) > 1 && 
+		inherits(data, "STF") && inherits(newdata, "STF")
   
 	lst = extractFormula(formula, data, newdata)
 	X = lst$X
@@ -139,14 +141,14 @@ krigeST.df <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NUL
 	v0 = covfn.ST(data, newdata, modelList)
 
 	if (is(data,"STSDF"))
-		d0 <- data[data@index[1,1],data@index[1,2],drop=F]
+		d0 <- data[data@index[1,1], data@index[1,2], drop = FALSE]
 	else
     	d0 = data[1, 1, drop=FALSE]
 	c0 = as.numeric(covfn.ST(d0, d0, modelList, separate = FALSE))
-	if(modelList$stModel == "separable" & separate)
-    skwts <- STsolve(V, v0, X)
-  else 
-    skwts <- CHsolve(V, cbind(v0,X))
+	if (modelList$stModel == "separable" & separate)
+		skwts <- STsolve(V, v0, X) # use Kronecker trick
+	else 
+		skwts <- CHsolve(V, cbind(v0, X))
 	# ViX = skwts[,-(1:ncol(v0))]
 	# skwts = skwts[,1:ncol(v0)]
 	#npts = prod(dim(newdata)[1:2]) #-> does not work for STI
@@ -166,7 +168,7 @@ krigeST.df <- function(formula, data, newdata, modelList, y, nmax=Inf, stAni=NUL
 		  corMat <- cov2cor(covfn.ST(newdata, newdata, modelList))
 		  var <- corMat*matrix(sqrt(var) %x% sqrt(var), nrow(corMat), ncol(corMat))
 		  # var = c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q)
-      return(list(pred=pred, var=var))
+		  return(list(pred=pred, var=var))
 		}
 		return(data.frame(var1.pred = pred, var1.var = var))
 	}
@@ -179,6 +181,8 @@ krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
                           computeVar=FALSE, fullCovariance=FALSE, 
                           bufferNmax=2, progress=TRUE) {
   dimGeom <- ncol(coordinates(data))
+  if (fullCovariance)
+  	stop("fullCovariance cannot be returned for local ST kriging")
   
   if(is.null(stAni) & !is.null(modelList$stAni)) {
     stAni <- modelList$stAni
@@ -270,7 +274,6 @@ krigeST.local <- function(formula, data, newdata, modelList, nmax, stAni=NULL,
     newdata@data <- cbind(newdata@data, res)
     newdata <- as(newdata, clnd)
   }
-  
   newdata
 }
 
@@ -334,7 +337,7 @@ covSeparable <- function(x, y, model, separate) {
     separate <- inherits(x, "STF") & inherits(y, "STF") & length(x) > 1 & length(y) > 1
 
   # the STF case
-  if (inherits(x, "STF") & inherits(y, "STF")) {
+  if (inherits(x, "STF") && inherits(y, "STF")) {
     # calculate all spatial and temporal distances
     ds = spDists(x@sp, y@sp)
     dt = abs(outer(index(x@time), index(y@time), "-"))
@@ -353,11 +356,11 @@ covSeparable <- function(x, y, model, separate) {
   } 
   
   # separate makes only sense if both of x and y inherit STF
-  if(separate)
+  if (separate)
     stop("An efficient inversion by separating the covarinace model is only possible if both of \"x\" and \"y\" inherit \"STF\"")
   
   # the STI case
-  if(inherits(x, "STI") | inherits(y, "STI")) {
+  if (inherits(x, "STI") || inherits(y, "STI")) {
     # make sure that now both are of type STI
     x <- as(x, "STI")
     y <- as(y, "STI")

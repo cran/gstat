@@ -33,32 +33,18 @@
 
 #include <time.h> /* for s_gstat_progress function */
 
-#include "config.h" /* may define USING_R */
-# include <S.h> /* defines seed_in, also for R */
+#include "config.h"
+#include <S.h> /* defines seed_in, also for R */
 
-#ifdef USING_R
-# include <R.h>
-# include <Rinternals.h>
+#include <R.h>
+#include <Rinternals.h>
 /* # include <R_ext/Utils.h> */
 /* # include <Rinternals.h> */
-# define R_UNIFORM unif_rand()
-# define R_NORMAL  norm_rand()
-# define RANDIN seed_in((long *) NULL)
-# define RANDOUT seed_out((long *) NULL)
-# define S_EVALUATOR
-#else /* some S-Plus version; assuming >= 6 for now: */
-# if (!defined(SPLUS_VERSION) || SPLUS_VERSION < 6000)
-#  error("no SPLUS_VERSION >= 6.0")
-# endif
-# define SEXP s_object *
-# define PROTECT(x) x
-# define UNPROTECT(x)
-# define R_UNIFORM unif_rand(S_evaluator)
-# define R_NORMAL  norm_rand(S_evaluator)
-# define RANDIN seed_in((long *) NULL, S_evaluator)
-# define RANDOUT seed_out((long *) NULL, S_evaluator)
-# define Rprintf printf
-#endif
+#define R_UNIFORM unif_rand()
+#define R_NORMAL  norm_rand()
+#define RANDIN seed_in((long *) NULL)
+#define RANDOUT seed_out((long *) NULL)
+#define S_EVALUATOR
 
 #include "defs.h"
 #include "data.h"
@@ -75,7 +61,6 @@
 #include "msim.h"
 #include "random.h"
 #include "getest.h"
-#include "polygon.h"
 #include "s.h"
 
 void s_gstat_printlog(const char *mess);
@@ -99,7 +84,6 @@ SEXP gstat_init(SEXP s_debug_level) {
 	set_gstat_error_handler(s_gstat_error);
 	set_gstat_warning_handler(s_gstat_warning);
 	set_gstat_log_handler(s_gstat_printlog);
-	setup_meschach_error_handler(1);
 	init_global_variables();
 	init_data_minmax();
 	RANDIN; /* load R/S seed into rng */
@@ -501,11 +485,9 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 	check_global_variables(); /* it's there, better do it now */
 	if (debug_level)
 		Rprintf("[%s]\n", method_string(get_method()));
-#ifdef USING_R
-# ifdef WIN32
+#ifdef WIN32
 	R_FlushConsole();
 	R_ProcessEvents();
-# endif
 #endif
 	for (i = 0; i < n; i++) {
 		print_progress(i, n);
@@ -524,12 +506,10 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		for (j = 0; j < get_n_vars(); j++)
 			select_at(d[j], &current);
 		get_est(d, get_method(), &current, est_all[i]);
-#ifdef USING_R
-# ifdef WIN32
+#ifdef WIN32
 		R_ProcessEvents(); /* avoid terminal freeze in R/Win */
-# endif
-		R_CheckUserInterrupt();
 #endif
+		R_CheckUserInterrupt();
 	}
 	print_progress(100, 100);
 	PROTECT(ret = allocVector(VECSXP, 1));
@@ -548,12 +528,7 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 		for (j = pos = 0; j < nest; j++) {
 			for (i = 0; i < n; i++) {
 				if (is_mv_double(&(est_all[i][j])))
-#ifdef USING_R /* avoid NaN's to be returned */
 					REAL(retvector)[pos] = NA_REAL;
-#else
-					na_set(REAL(retvector) + pos, S_MODE_DOUBLE);
-					/* the documentation says it should be DOUBLE */
-#endif
 				else
 					REAL(retvector)[pos] = est_all[i][j];
 				pos++;
@@ -698,12 +673,7 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 				if (vgm->ev->nh[i] > 0)
 					REAL(gamma)[i] = vgm->ev->gamma[i];
 				else 
-#ifdef USING_R /* avoid NaN's to be returned */
 					REAL(gamma)[i] = NA_REAL;
-#else
-					na_set(REAL(gamma) + i, S_MODE_DOUBLE);
-					/* the documentation says it should be DOUBLE */
-#endif
 				i++;
 			}
 		}
@@ -748,7 +718,7 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 }
 
 SEXP gstat_load_variogram(SEXP s_ids, SEXP s_model, SEXP s_sills, SEXP s_ranges, 
-		SEXP s_kappas, SEXP s_anis_all, SEXP s_table) 
+		SEXP s_kappas, SEXP s_anis_all, SEXP s_table, SEXP s_max_val) 
 {
 	VARIOGRAM *vgm;
 	long i, n, id1, id2, max_id;
@@ -780,12 +750,8 @@ SEXP gstat_load_variogram(SEXP s_ids, SEXP s_model, SEXP s_sills, SEXP s_ranges,
 	vgm->n_models = vgm->n_fit = 0;
 
 	n = LENGTH(s_sills);
-	for (i = 0; i < n; i++) {
-#ifdef USING_R
+	for (i = 0; i < n; i++) { /* loop over sub models */
 		model = CHAR(STRING_ELT(s_model, i));
-#else
-		model = STRING_POINTER(s_model)[i];
-#endif
 		anis[0] = anis_all[0 * n + i];
 		anis[1] = anis_all[1 * n + i];
 		anis[2] = anis_all[2 * n + i];
@@ -802,6 +768,9 @@ SEXP gstat_load_variogram(SEXP s_ids, SEXP s_model, SEXP s_sills, SEXP s_ranges,
 				(anis[3] == 1.0 && anis[4] == 1.0) ? NULL : anis, 1, 1);
 	}
 	update_variogram(vgm);
+	if (REAL(s_max_val)[0] > 0.0 || REAL(s_max_val)[1] > 0.0 || REAL(s_max_val)[2] > 0.0)
+		vgm->max_val = get_semivariance(vgm, 
+				REAL(s_max_val)[0], REAL(s_max_val)[1], REAL(s_max_val)[2]);
 	if (DEBUG_DUMP)
 		logprint_variogram(vgm, 1); 
 	return(s_model);
@@ -908,13 +877,8 @@ SEXP gstat_get_variogram_models(SEXP dolong) {
 	do_long = INTEGER(dolong)[0];
 	PROTECT(ret = allocVector(STRSXP, n));
 	for (i = 1; v_models[i].model != NOT_SP; i++)
-#ifdef USING_R
 		SET_STRING_ELT(ret, i-1, 
 				mkChar(do_long ? v_models[i].name_long : v_models[i].name));
-#else
-		STRING_POINTER(ret)[i-1] = 
-					string_dup(do_long ? v_models[i].name_long : v_models[i].name);
-#endif
 	UNPROTECT(1);
 	return(ret);
 }
@@ -927,11 +891,7 @@ SEXP gstat_load_command(SEXP commands) {
 	PROTECT(error = allocVector(INTSXP, 1));
 	INTEGER(error)[0] = 0;
 	for (i = 0; i < LENGTH(commands); i++) {
-#ifdef USING_R
 		cmd = CHAR(STRING_ELT(commands, i));
-#else
-		cmd = CHARACTER_POINTER(commands)[i];
-#endif
 		if (parse_cmd(cmd, NULL)) {
 			Rprintf("internal gstat string parse error on [%s]", cmd);
 			INTEGER(error)[0] = i+1;
@@ -948,9 +908,7 @@ void s_gstat_progress(unsigned int current, unsigned int total) {
 	int perc, sec;
 	static time_t start;
 
-#ifdef USING_R
 	R_CheckUserInterrupt(); /* allow for user interrupt */
-#endif
 
 	if (total <= 0 || DEBUG_SILENT)
 		return;
@@ -1033,7 +991,7 @@ SEXP gstat_load_ev(SEXP np, SEXP dist, SEXP gamma) {
 	}
 	vgm->ev->cloud = cloud;
 	if (DEBUG_VGMFIT)
-		fprint_sample_vgm(NULL, vgm->ev);
+		fprint_sample_vgm(vgm->ev);
 	return(np);
 }
 
@@ -1091,15 +1049,8 @@ double s_r_uniform(void) {
 	double u;
 
 	S_EVALUATOR
-#ifdef USING_R
 	if (!seed_is_in) PROBLEM "s_r_uniform(): seed is not read" ERROR; 
-#else /* S-Plus needs RANDIN/RANDOUT to be inside the function calling a RNG */
-	RANDIN;
-#endif
 	u = R_UNIFORM;
-#ifndef USING_R
-	RANDOUT;
-#endif
 	return(u);
 }
 
@@ -1107,15 +1058,8 @@ double s_r_normal(void) {
 	double r;
 
 	S_EVALUATOR
-#ifdef USING_R
 	if (!seed_is_in) PROBLEM "s_r_normal(): seed is not read" ERROR; 
-#else
-	RANDIN;
-#endif
 	r = R_NORMAL;
-#ifndef USING_R
-	RANDOUT;
-#endif
 	return(r);
 }
 
@@ -1137,7 +1081,5 @@ static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams) {
 }
 
 static void S_no_progress(unsigned int current, unsigned int total) {
-#ifdef USING_R
 	R_CheckUserInterrupt();
-#endif
 }

@@ -35,9 +35,7 @@
 
 #include "defs.h"
 
-#ifdef USING_R
 void Rprintf(const char *,...);
-#endif
 
 #include "userio.h"
 #include "data.h"
@@ -48,16 +46,11 @@ void Rprintf(const char *,...);
 #include "glvars.h"
 #include "nsearch.h"
 #include "select.h"
-#include "polygon.h"
-#ifdef HAVE_EXT_DBASE
-# include "ext_dbase.h"
-#endif
 
 static int octant_select(DATA *d, DPOINT *where);
 static int which_octant(DPOINT *where, DPOINT *p, int mode);
 
 int CDECL dist_cmp(const DPOINT **ap, const DPOINT **bp);
-static void zero_sel_dist2(DATA *d);
 static void print_selection(DATA *d, DPOINT *where);
 
 #define store_radius(d)    keep_radius(d, 0)
@@ -75,12 +68,6 @@ static int select_qtree(DATA *d, DPOINT *where)
 	if (IS_GLOBAL(d) || where == NULL) {
 		d->sel = d->list;
 		d->n_sel = d->n_sel_max = d->n_list;
-        if (get_n_edges()) {
-            /* memcpy(d->sel, d->list, d->n_list * sizeof(DPOINT *)); */
-            zero_sel_dist2(d);
-            if (where != NULL)
-				check_edges(d, where);
-        }
         if (DEBUG_SEL) 
         	print_selection(d, where);
         
@@ -116,10 +103,6 @@ static int select_qtree(DATA *d, DPOINT *where)
  */
 	memcpy(d->sel, d->list, d->n_list * sizeof(DPOINT *));
 	if (d->sel_rad >= DBL_MAX && d->sel_max >= d->n_list && d->oct_max == 0) {
-		if (get_n_edges()) {
-			zero_sel_dist2(d);
-			check_edges(d, where);
-		} 
 		d->n_sel = d->n_list;
 		if (DEBUG_SEL) 
 			print_selection(d, where);
@@ -147,30 +130,13 @@ int select_at(DATA *d, DPOINT *where) {
  * changed search to normalizing to (0,0,0) first, aug 1993
  */
 
-	if (get_method() == POLY) 
-		return d->n_sel;
-
 	if (d->what_is_u == U_UNKNOWN)
 		d->what_is_u = U_ISDIST; /* we're going to fill this right now */
 	else if (d->what_is_u != U_ISDIST)
 		ErrMsg(ER_IMPOSVAL, "select_at() needs distances");
 
-	/* CW */
-	if (d->type.type==DATA_EXT_DBASE) {
-#ifdef HAVE_EXT_DBASE
-	  if (select_ext_dbase(d,where)!=-1) {
-        if (DEBUG_SEL) 
-           print_selection(d, where);
+    if (select_qtree(d,where) != -1)
 		return d->n_sel;
-      }
-#endif
-	} else {
-	  if (select_qtree(d,where)!=-1)
-		return d->n_sel;
-	}
-
-	if (get_n_edges()) 
-		check_edges(d, where);
 
 /*
  * so, now we're at the stage where one of the following conditions holds:
@@ -297,25 +263,12 @@ int CDECL dist_cmp(const DPOINT **pa, const DPOINT **pb) {
 	return 0;
 } 
 
-/* set u.idts2 of all selected points in DATA *d to 0 to be further
-   proceeded by edges selection */
-static void zero_sel_dist2(DATA *d) {
-	int i;
-    
-	for (i = 0; i< d->n_sel; i++)
-		d->sel[i]->u.dist2 = 0.0;
-    
-	return;        
-}
-
 static void print_selection(DATA *d, DPOINT *where) {
-
 /* Add this statement to filter out
  * empty selections
    if (!d->n_sel)
      return;
  */
-
 	if (where) {
 		printlog("selection at "); 
 		logprint_point(where, d);

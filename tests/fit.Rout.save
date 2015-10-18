@@ -1,6 +1,6 @@
 
-R version 3.0.1 (2013-05-16) -- "Good Sport"
-Copyright (C) 2013 The R Foundation for Statistical Computing
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
+Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
@@ -21,17 +21,17 @@ Type 'q()' to quit R.
 > v=variogram(log(zinc)~1,~x+y,meuse,cutoff=500,wi=100)
 > v$gamma=c(0.5,1,2,3,3)
 > fit.variogram(v, vgm(1, "Sph", 300, 0),warn.if.neg=TRUE)
-  model    psill    range
-1   Nug 0.000000    0.000
-2   Sph 7.878087 1567.749
+  model    psill   range
+1   Nug 0.000000    0.00
+2   Sph 7.878195 1567.77
 Warning message:
 In fit.variogram(v, vgm(1, "Sph", 300, 0), warn.if.neg = TRUE) :
   partial sill or nugget fixed at zero value
 > fit.variogram(v, vgm(1, "Sph", 300, 0),warn.if.neg=FALSE)
-  model    psill    range
-1   Nug 0.000000    0.000
-2   Sph 7.878087 1567.749
+  model    psill   range
+1   Nug 0.000000    0.00
+2   Sph 7.878195 1567.77
 > 
 > proc.time()
    user  system elapsed 
-  1.552   0.060   1.614 
+  0.708   0.244   0.718 

@@ -175,7 +175,7 @@ set.seed(131)
 data(meuse.grid)
 gridded(meuse.grid) = ~x+y
 sim <- krige(formula = log(zinc)~1, meuse, meuse.grid, model = m, 
-	nmax = 15, beta = 5.9, nsim = 5)
+	nmax = 10, beta = 5.9, nsim = 5) # for speed -- 10 is too small!!
 # show all 5 simulation
 spplot(sim)
 
@@ -199,7 +199,7 @@ xy <- expand.grid(1:100, 1:100)
 names(xy) <- c("x","y")
 gridded(xy) = ~x+y
 g.dummy <- gstat(formula = z~1, dummy = TRUE, beta = 0,
-	model = vgm(1,"Exp",15), nmax = 20)
+	model = vgm(1,"Exp",15), nmax = 10) # for speed -- 10 is too small!!
 yy <- predict(g.dummy, xy, nsim = 4)
 # show one realisation:
 spplot(yy[1])

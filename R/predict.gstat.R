@@ -16,6 +16,8 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 	} else
 		return.sp = TRUE
 	
+	max_dist = getMaxDist(object$data, newdata)
+	
 	.Call(gstat_init, as.integer(debug.level))
 	bl_weights = numeric(0)
 	if (!missing(mask)) {
@@ -66,7 +68,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 				as.double(d$lambda), as.integer(d$omax))
 		}
 		if (!is.null(object$model[[name]])) 
-			load.variogram.model(object$model[[name]], c(i - 1, i - 1))
+			load.variogram.model(object$model[[name]], c(i - 1, i - 1), max_dist = max_dist)
 		raw = gstat.formula.predict(d$formula, newdata, na.action = na.action,
 			(length(BLUE) == 2 && BLUE[2]), xlev = raw$xlevels)
 		if (is.null(new.X)) 
@@ -77,7 +79,7 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 				cross = cross.name(names(object$data)[j], name)
 				if (!is.null(object$model[[cross]])) 
 					load.variogram.model(object$model[[cross]], 
-						c(i - 1, j - 1))
+						c(i - 1, j - 1), max_dist = max_dist)
 			}
 		}
 	}
@@ -227,4 +229,17 @@ create.gstat.names <- function(ids, names.sep = ".") {
 		}
 	}
 	return(names.vars)
+}
+
+getMaxDist = function(dataLst, newdata) {
+	d = apply(bbox(newdata), 1, diff)
+	if (!is.null(dataLst[[1]]$data)) {
+		d2 = apply(bbox(dataLst[[1]]$data), 1, diff)
+		d = apply(rbind(d,d2), 2, max) 
+		# there are pathetic cases where this would not be sufficient 
+	}
+	if (length(d) == 2)
+		d = c(d, 0)
+	stopifnot(length(d) == 3)
+	d
 }

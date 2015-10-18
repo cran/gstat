@@ -26,10 +26,14 @@ krigeST(formula, data, newdata, modelList, y, nmax = Inf, stAni = NULL,
  \item{newdata}{ ST object with prediction/simulation locations in
  space and time; should contain attribute columns with the independent variables
  (if present).}
- \item{modelList}{ list with named elements: space, time and/or joint depending 
-  on the spatio-temporal covariance family and an entry stModel. Currently 
-  implemented families that may be used for stModel are \code{separable}, 
-  \code{productSum}, \code{metric}, \code{sumMetric} and \code{simpleSumMetric}. 
+ \item{modelList}{ object of class \code{StVariogramModel}, created by
+ \link{vgmST}; list with named elements: \code{space}, \code{time}
+ and/or \code{joint} depending 
+  on the spatio-temporal covariance family, and an entry \code{stModel}. 
+  Currently 
+  implemented families that may be used for \code{stModel} 
+  are \code{separable}, \code{productSum}, \code{metric}, 
+  \code{sumMetric} and \code{simpleSumMetric}. 
   See the examples section in \code{\link{fit.StVariogram}} or 
   \code{\link{variogramSurface}} for details on how to define spatio-temporal 
   covariance models. \code{krigeST} will look for a "temporal unit" attribute

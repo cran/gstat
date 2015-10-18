@@ -747,7 +747,7 @@ static int CDECL node_cmp(const QUEUE_NODE *a, const QUEUE_NODE *b) {
 }
 
 int qtree_select(DPOINT *where, DATA *d) {
-	DPOINT *p;
+	DPOINT *p = NULL;
 	static QUEUE *q = NULL;
 	static QUEUE_NODE root;
 	int sel_max;

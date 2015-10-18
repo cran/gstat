@@ -14,8 +14,8 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 		ret = data.frame(matrix(NA, nrow(data), nc))
 	} else {
 		cc = coordinates(data)
-		df = data.frame(matrix(as.numeric(NA), nrow(data), 2),
-			row.names = rownames(cc))
+		rownames(cc) = NULL
+		df = data.frame(matrix(as.numeric(NA), nrow(data), 2))
 		ret = SpatialPointsDataFrame(cc, df)
 	}
 	if (missing(nfold)) 
@@ -48,7 +48,9 @@ function (object, nfold = nrow(object$data[[1]]$data), remove.all = FALSE,
 				#at1 = gstat.formula(formula, data[sel, ])$locations
 				atv = coordinates(varv$data)
 				at1 = coordinates(data[sel,])
-				all = SpatialPoints(rbind(atv, at1))
+				cc = rbind(atv, at1)
+				rownames(cc) = NULL # as there will be duplicates
+				all = SpatialPoints(cc)
 				zd = zerodist(all)
 				skip = zd[, 1]
 				object$data[[v]]$data = varv$data[-skip, ]

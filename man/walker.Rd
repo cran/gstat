@@ -27,8 +27,9 @@ by Edward H. Isaaks, R. Mohan Srivastava;
 Oxford University Press.
 }
 \note{
-This data sets were obtained from the data sets on
-\url{http://www.ai-geostats.org/}
+This data sets was obtained from the data sets on
+ai-geostats,
+\url{https://wiki.52north.org/bin/view/AI_GEOSTATS/WebHome}
 }
 \keyword{datasets}
 \examples{

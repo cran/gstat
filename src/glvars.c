@@ -44,14 +44,9 @@
 #include "predict.h"
 #include "defaults.h" /* default values for gl_* variables */
 
-#ifndef USING_R
-# include "writecmd.h" /* printlog_glvars() */
-#endif
-
 #include "glvars.h"
 #include "gls.h"
 #include "block.h"
-#include "polygon.h"
 /* 
  * this module contains all global variables, along with some 
  * routines for initialisation (of structures), resizing during runtime,
@@ -149,7 +144,6 @@ const METHODS methods[] = { /* methods and codes */
 	{ COV,      0, "co$variogram" },  /* sample (cross) covariance */
 	{ SPREAD,   0, "di$stance" }, /* distance to nearest sample */
 	{ XYP,      0, "xy" },  /* x and y coordinate of location */
-	{ POLY,     0, "point-in-polygon" }, /* point-in-polygon */
 	{ DIV,      0, "div" }, /* diversity and modus */
 	{ SKEW,     0, "skew" }, /* skewness and kurtosis */
 	{ LSEM,     0, "lsem" }, /* locally estimated/fitted variogram parameters */
@@ -170,10 +164,6 @@ static METHOD method = NSP;
 static int n_vars = 0, n_masks = 0;
 static int n_last = 0, n_v_last = 0, n_o_last = 0;
 static MODE mode = MODE_NSP; /* MODE_NSP, SIMPLE, STRATIFY or MULTIVARIABLE */
-static int n_edges = 0; /*really n of edges files */
-static char **edges_names = NULL;  /* names of edges files, n_edges long */
-static int *n_edges_polys = NULL;  /* number of edges in every edge file */
-static POLYGON **edges = NULL;            /* per-file edges */
 
 int init_global_variables(void) {
 /*
@@ -494,9 +484,6 @@ const char *method_string(METHOD i) {
 			sprintf(mstr, "using %s%sconditional indicator %ssimulation",
 				str, un, co);
 			break;
-		case POLY:
-			sprintf(mstr, "point-in-polygon");
-			break;
 		case DIV:
 			sprintf(mstr, "within-neighbourhood diversity and modus");
 			break;
@@ -603,48 +590,6 @@ double max_block_dimension(int reset) {
 	} 
 	return dim;
 }
-
-#ifndef USING_R
-int dump_all(void) {
-	int i;
-	char *cp = NULL;
-
-	printlog("# global variables:\n");
-	printlog("%s", sprint_glvars(1));
-	if (n_masks > 0) {
-		printlog("masks: ");
-		for (i = 0; i < n_masks; i++)
-			printlog("'%s'%s", get_mask_name(i), i < n_masks-1 ? ", " : ";\n");
-	}
-	if (gl_marginal_names) {
-		printlog("marginals: ");
-		for (i = 0; i < gl_n_marginals; i++)
-			printlog("'%s'%s", gl_marginal_names[i],
-				i < gl_n_marginals - 1 ? ", " : ";\n");
-	}
-	for (i = 0; i < get_n_outfile(); i++)
-		if (outfile_names[i] != NULL)
-			printlog("outfile[%d]: '%s'; # %s\n", i, outfile_names[i],
-				what_is_outfile(i));
-	for (i = 0; i < get_n_vgms(); i++)
-		if (vgm[i] != NULL && vgm[i]->descr)
-			logprint_variogram(vgm[i], 1);
-	printlog("blocksize: dx = %g, dy = %g, dz = %g;\n", 
-		block.x, block.y, block.z);
-	for (i = 0; i < get_n_vars(); i++) {
-		print_data_line(data[i], &cp);
-		printlog("data(%s): %s\n", name_identifier(i), cp);
-	}
-	if (valdata->id > -1) {
-		print_data_line(valdata, &cp);
-		printlog("data(): %s\n", cp);
-	}
-	if (get_n_edges())
-		report_edges();
-	printlog("method: %s\n", method_string(get_method()));
-	return 0;
-}
-#endif
 
 void setup_valdata_X(DATA *d) {
 /* 
@@ -793,10 +738,6 @@ void set_mode(void) {
 		/* if STRATIFIED: first mask categories, then base functions */
 		check_failed = (1 + nm != n_masks);
 	}
-#ifndef USING_R
-	if (! check_failed)
-		check_failed = !is_valid_strata_map(get_mask_name(0), get_n_vars());
-#endif
 	if (check_failed) {
 		mode = SIMPLE;
 		return;
@@ -877,32 +818,6 @@ void check_global_variables(void) {
 			"number of masks does not equal number of (positive) X's");
 		}
 	}
-    if (method == POLY) {
-        if (valdata->id > -1) {
-            message("Do not use dummy data() with point-in-polygon method,\n");
-            message("Use the only data(...) command.\n");
-        }
-        
-        if (data_area) message("area: ... command is ignored with point-in-polygon method\n"); 
-        if ( get_n_vars()>2) {
-            message("More then one data(...) command cannot be used with point-in-polygon method,\n");
-            message("use the only data(...) command.\n");
-            message("Only first data(...) specification will be used.\n");
-        } else if ( get_n_vars() == 0) {
-            message("Specify the data you want to test with data(...) statement.\n");
-            ErrMsg(ER_SYNTAX, "data specification error");
-        }
-        if (get_n_edges() == 0) {
-            message("Point-in-polygon method required, but no edges data is given.\n");
-            ErrMsg(ER_SYNTAX, "data specification error");
-        }
-        if (!(data[0]->mode & X_BIT_SET))
-			ErrMsg(ER_VARNOTSET, "x coordinate not set");
-		if (!(data[0]->mode & Y_BIT_SET))
-			ErrMsg(ER_VARNOTSET, "y coordinate not set");
-		
-        /* return; */
-    }
     
 	if (method == SPREAD) {
 		for (i = 0; i < get_n_vars(); i++)
@@ -982,11 +897,6 @@ void check_global_variables(void) {
 		if (data[i]->sel_rad == DBL_MAX && data[i]->oct_max > 0)
 			ErrMsg(ER_IMPOSVAL, 
 				"define maximum search radius (rad) for octant search");
-#ifndef USING_R
-		if (data[i]->vdist && (vgm[LTI(i,i)] == NULL 
-				|| vgm[LTI(i,i)]->n_models <= 0))
-			ErrMsg(ER_IMPOSVAL, "define direct variogram models to use vdist");
-#endif
 		if (data[i]->vdist && data[i]->sel_rad == DBL_MAX)
 			ErrMsg(ER_IMPOSVAL, "when using vdist, radius should be set");
 		if (! data[i]->dummy && ! (data[i]->mode & V_BIT_SET)) {
@@ -1049,16 +959,6 @@ void check_global_variables(void) {
 			ErrMsg(ER_IMPOSVAL, "# marginals should be 2 x # of variables");
 	}
 	v_tmp = init_variogram(NULL);
-#ifndef USING_R
-	for (i = 0; i < get_n_vgms(); i++) {
-		if (vgm[i]) {
-			if (vgm[i]->fname && read_variogram(v_tmp, vgm[i]->fname) == 0)
-				pr_warning("NOTE that `%s' is a file name, variogram models never have quotes", vgm[i]->fname);
-			if (vgm[i]->fname2 && read_variogram(v_tmp, vgm[i]->fname2) == 0)
-				pr_warning("NOTE that `%s' is a file name, variogram models never have quotes", vgm[i]->fname2);
-		}
-	}
-#endif
 	free_variogram(v_tmp);
 } 
 
@@ -1223,56 +1123,4 @@ static void clean_up(void) {
 	n_v_last = 0;
 	n_o_last = 0;
 	mode = MODE_NSP;
-}
-
-void push_edges_name(const char *name) {
-	if (edges_names == NULL)
-		edges_names = (char **) emalloc((n_edges + 1) * sizeof(char *));
-	else
-		edges_names = (char **) erealloc(edges_names,
-				(n_edges + 1) * sizeof(char *));
-	edges_names[n_edges] = string_dup(name);
-	n_edges++;
-}
-
-const char *get_edges_name(const int i) {
-	if (i >= n_edges || i < 0)
-		return NULL;
-	return edges_names[i];
-}
-
-int *get_n_edges_polys(void) {
-
-	assert(n_edges_polys != NULL);
-	return n_edges_polys;
-}
-
-int *set_n_edges_polys(int *n) {
-	return n_edges_polys=n;
-}
-
-int get_n_edges(void) {
-	return n_edges;
-}
-
-POLYGON **get_edges(void) {
-	return edges;
-}
-
-POLYGON **set_edges(POLYGON **new_edges) {
-    return edges=new_edges;
-}
-
-DATA *setup_poly_method(void) {
-/* assuming data[0] exists! */
-	assert(data != NULL && data[0] != NULL);
-
-    
-	if (get_n_masks() == 0) {
-		if (valdata) 
-			free_data(valdata);
-		valdata = data[0];
-	}
-
-	return valdata; /* why? */
 }

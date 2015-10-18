@@ -147,11 +147,7 @@ static DPOINT *bp = NULL;
 static VARIOGRAM *v = NULL;
 static int id = -1, id1 = -1, id2 = -1, col1 = -1, col2 = -1,
 	fit_sill = 0, fit_range = 0, nrangepars = 1,
-	vector_only = 0
-#ifndef USING_R
-	, allow_vector_only = 0
-#endif
-	;
+	vector_only = 0;
 static double range[NRANGEPARS], anis[5];
 static char **ofn = NULL, *boundary_file = NULL;
 static VARIOGRAM *parse_variogram = NULL;
@@ -2535,20 +2531,6 @@ yyreduce:
     { push_mask_name((yyvsp[(3) - (3)].sval)); }
     break;
 
-  case 119:
-
-/* Line 1455 of yacc.c  */
-#line 543 "parse.y"
-    { push_edges_name((yyvsp[(1) - (1)].sval)); }
-    break;
-
-  case 120:
-
-/* Line 1455 of yacc.c  */
-#line 544 "parse.y"
-    { push_edges_name((yyvsp[(3) - (3)].sval)); }
-    break;
-
   case 121:
 
 /* Line 1455 of yacc.c  */
@@ -3176,93 +3158,6 @@ int parse_cmd(const char *cmd, const char *fname) {
 	reset_parser();
 	return yyparse();
 }
-
-#ifndef USING_R
-int parse_file(const char *fname) {
-/* 
- * parse commands in file fname
- */
-	int stdin_isatty = 1;
-	char *cp;
-
-	if (fname == NULL || strcmp(fname, "-") == 0) {
-#ifdef HAVE_UNISTD_H
-		stdin_isatty = isatty(fileno(stdin));
-#endif
-		if (stdin_isatty)
-			cp = string_prompt("gstat> ");
-		else
-			cp = string_file(NULL);
-	} else /* read from file */
-		cp = string_file(fname);
-
-	if (parse_cmd(cp, fname))
-		ErrMsg(ER_SYNTAX, fname);
-	efree(cp);
-
-	if (boundary_file != NULL) {
-		cp = string_file(boundary_file);
-		if (parse_cmd(cp, boundary_file))
-			ErrMsg(ER_SYNTAX, boundary_file);
-		efree(cp);
-	}
-
-	if (vector_only && !allow_vector_only)
-		ErrMsg(ER_SYNTAX, fname);
-
-	return 0;
-}
-
-void parse_gstatrc(void) {
-	char *fname = NULL, *cp;
-
-	if ((fname = getenv(GSTATRC)) != NULL) {
-		if (! file_exists(fname)) {
-			message("environment variable %s:\n", GSTATRC);
-			ErrMsg(ER_READ, fname);
-		}
-		parse_file(fname);
-	} else if ((cp = getenv("HOME")) != NULL) {
-		fname = (char *) emalloc(strlen(cp) + strlen(HOMERCFILE) + 2);
-		sprintf(fname, "%s/%s", cp, HOMERCFILE);
-		if (file_exists(fname))
-			parse_file(fname);
-		efree(fname);
-	}
-	return;
-}
-
-int read_variogram(VARIOGRAM *v, const char *source) {
-	char *cp;
-	int rval;
-
-	parse_variogram = v;
-	cp = (char *) emalloc((strlen(source) + 20) * sizeof(char));
-	sprintf(cp, "variogram(): %s;", source);
-	rval = parse_cmd(cp, NULL);
-	parse_variogram = NULL; /* for safety */
-	efree(cp);
-	return rval;
-}
-
-int read_vector(D_VECTOR *d, char *fname) {
-	int rval;
-
-	assert(d != NULL);
-	sd_vector = d;
-
-	allow_vector_only = 1;
-
-	rval = parse_file(fname);
-
-	if (! vector_only)  {
-		message("stat: only numeric input allowed -- \n");
-		ErrMsg(ER_IMPOSVAL, fname);
-	}
-
-	return rval;
-}
-#endif
 
 static void verify_data(DATA *d) { /* declaration : contents */
 

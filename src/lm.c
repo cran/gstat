@@ -33,7 +33,7 @@
 #include <float.h> /* DBL_MAX */
 #include <math.h> /* sqrt() */
 
-#include "matrix2.h"
+#include "mtrx.h"
 #include "defs.h"
 #include "userio.h"
 #include "data.h"
@@ -419,9 +419,9 @@ LM *calc_lm(LM *lm) {
  * calculate Chol,Xty,beta,SSErr,SSReg,MSErr^...
  * ASSUMES lm->X, lm->y and optionally lm->weights to be filled!
  */
-	double y_mean = 0, w, wt, cn;
-	int i, j, k;
-	static MAT *QR = MNULL;
+	double y_mean = 0, w, wt;
+	int i, j;
+	/* static MAT *QR = MNULL; */
 	static VEC *tmp = VNULL;
 
 	if (lm->X == MNULL || lm->y == VNULL)
@@ -466,10 +466,18 @@ LM *calc_lm(LM *lm) {
  * create Chol = X'X (or X'WX) and XtY = (y'X)' = X'y  (X'Wy)
  */
 	lm->Xty = vm_mlt(lm->X, lm->y, lm->Xty);
+	if (DEBUG_COV) {
+		printlog("#X'y is "); v_logoutput(lm->Xty);
+	}
+
 	/* but use X = QR; X'X = (QR)'QR = R'Q'QR = R'R (= L L', the Choleski)*/
+
+	/*
 	QR = m_copy(lm->X, m_resize(QR, lm->X->m, lm->X->n));
 	QRfactor(QR, tmp);
+	*/
 
+	/*
 	if (lm->cn_max > 0.0) {
 		lm->is_singular = ((cn = QRcondest(QR)) > lm->cn_max);
 		if (DEBUG_COV) {
@@ -486,26 +494,43 @@ LM *calc_lm(LM *lm) {
 		if (lm->is_singular)
 			return lm;
 	}
+	*/
 	/* not singular, solve for beta: */
+	/*
 	QRsolve(QR, tmp, lm->y, lm->beta);
-	if (DEBUG_COV) {
-		printlog("#beta is "); 
-		v_logoutput(lm->beta);
-	}
+	*/
 
 	/* after QRfactorizing X, R is in the upper triangle of QR */
 	/* form X'X, place it in Cov */
+	/*
 	lm->Cov = m_resize(lm->Cov, lm->X->n, lm->X->n);
 	m_zero(lm->Cov);
-	for (i = 0; i < lm->X->n; i++) /* row */
-		for (j = 0; j <= i; j++) { /* col */
-			for (k = 0; k <= j; k++) /* k = MIN(i,j): R is upper triang. */
-				lm->Cov->me[i][j] += QR->me[k][i] * QR->me[k][j]; /* R */
-			lm->Cov->me[j][i] = lm->Cov->me[i][j]; /* symmetric */
+	*/
+	/*
+	for (i = 0; i < lm->X->n; i++)
+		for (j = 0; j <= i; j++) { 
+			for (k = 0; k <= j; k++) / * k = MIN(i,j): R is upper triang. * /
+				lm->Cov->me[i][j] += QR->me[k][i] * QR->me[k][j]; / * R * /
+			lm->Cov->me[j][i] = lm->Cov->me[i][j]; / * symmetric * /
 		}
+	*/
+	lm->Chol = mtrm_mlt(lm->X, lm->X, lm->Chol);
 	if (DEBUG_COV) {
 		printlog("#X'X is ");
-		m_logoutput(lm->Cov);
+		m_logoutput(lm->Chol);
+	}
+	lm->Cov = m_copy(lm->Chol, lm->Cov); /* save copy of X'X */
+
+	int info;
+	lm->Chol = CHfactor(lm->Chol, &info);
+	if (info != 0) {
+		lm->is_singular = 1;
+		return lm;
+	}
+	lm->beta = CHsolve(lm->Chol, lm->Xty, lm->beta);
+	if (DEBUG_COV) {
+		printlog("#beta is "); 
+		v_logoutput(lm->beta);
 	}
 /*
  * estimate error variance:
@@ -549,18 +574,22 @@ LM *calc_lm(LM *lm) {
 		lm->MSErr = DBL_MAX;
 	else
 		lm->MSErr = lm->SSErr/lm->dfE;
-	lm->Cov = m_inverse(lm->Cov, lm->Cov); /* (X'X)-1 */
+	lm->Cov = m_inverse(lm->Cov, lm->Cov, &info); /* (X'X)-1 */
+	if (info != 0)
+		pr_warning("linear model covariance matrix singular");
 	/* next, multiply with sigma^2 */
 	sm_mlt(lm->MSErr, lm->Cov, lm->Cov); /* in situ mlt */
 /* 
  * fill lm->Chol now with the Choleski factorization of X'X, held in R
  */
+	/*
 	lm->Chol = m_resize(lm->Chol, lm->X->n, lm->X->n);
 	for (i = 0; i < lm->X->n; i++) {
 		lm->Chol->me[i][i] = QR->me[i][i];
 		for (j = i + 1; j < lm->X->n; j++)
 			lm->Chol->me[i][j] = lm->Chol->me[j][i] = QR->me[i][j];
 	}
+	*/
 	return lm;
 }
 
@@ -633,10 +662,8 @@ double calc_mu(const DATA *d, const DPOINT *where) {
 	return mu;
 }
 
-/* modified from the meschach code: */
 static char    *format = "%14.9g ";
-void m_logoutput(MAT * a)
-{
+void m_logoutput(MAT * a) {
 	unsigned int i, j, tmp;
 
 	if (a == (MAT *) NULL) {
@@ -644,7 +671,7 @@ void m_logoutput(MAT * a)
 		return;
 	}
 	printlog("Matrix: %d by %d\n", a->m, a->n);
-	if (a->me == (Real **) NULL) {
+	if (a->me == NULL) {
 		printlog("NULL\n");
 		return;
 	}
@@ -661,8 +688,7 @@ void m_logoutput(MAT * a)
 	}
 }
 
-void v_logoutput(VEC * x)
-{
+void v_logoutput(VEC * x) {
 	unsigned int i, tmp;
 
 	if (x == (VEC *) NULL) {
@@ -670,7 +696,7 @@ void v_logoutput(VEC * x)
 		return;
 	}
 	printlog("Vector: dim: %d\n", x->dim);
-	if (x->ve == (Real *) NULL) {
+	if (x->ve == NULL) {
 		printlog("NULL\n");
 		return;
 	}
@@ -679,5 +705,6 @@ void v_logoutput(VEC * x)
 		if (tmp % 5 == 4)
 			printlog("%s", "\n");
 	}
-
+	if (tmp % 5 != 4)
+		printlog("%s", "\n");
 }

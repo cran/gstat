@@ -94,8 +94,8 @@ Data: the German Federal Office for Radiation Protection (BfS),
 \url{http://www.bfs.de/}, data provided by Gregoire Dubois, R compilation
 by Edzer Pebesma.  }
 
-\references{ 
-\url{http://www.ai-geostats.org/},
+\references{
+\url{https://wiki.52north.org/bin/view/AI_GEOSTATS/WebHome}
 }
 
 \keyword{datasets}

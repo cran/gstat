@@ -37,7 +37,7 @@
 #include <string.h>
 
 #include "defs.h"
-#include "matrix2.h"
+#include "mtrx.h"
 
 #include "userio.h"
 #include "data.h"
@@ -82,7 +82,6 @@ const V_MODEL v_models[] = { /* the variogram model ``data base'': */
 		"# Exponential class model not supported by gnuplot",
 		"# Exponential class model not supported by gnuplot",
 		fn_exclass, NULL },
-#ifdef USING_R
 	{	MATERN, "Mat", "Mat (Matern)", 
 		"# Matern model not supported by gnuplot",
 		"# Matern model not supported by gnuplot",
@@ -91,7 +90,6 @@ const V_MODEL v_models[] = { /* the variogram model ``data base'': */
 		"# Matern model not supported by gnuplot",
 		"# Matern model not supported by gnuplot",
 		fn_matern2, NULL },
-#endif
 	{ 	CIRCULAR, "Cir", "Cir (circular)", 
 		"Cir(a,x) = (x < a ? ((2*x)/(pi*a))*sqrt(1-(x/a)**2)+(2/pi)*asin(x/a) : 1)",
 		"Cir(a,x) = (x < a ? (1-(((2*x)/(pi*a))*sqrt(1-(x/a)**2)+(2/pi)*asin(x/a))) : 0)",
@@ -275,12 +273,6 @@ void logprint_variogram(const VARIOGRAM *v, int verbose) {
 	printlog("%s", sprint_variogram(v, verbose));
 }
 
-#ifndef USING_R
-void fprint_variogram(FILE *f, const VARIOGRAM *v, int verbose) {
-	fprintf(f, "%s", sprint_variogram(v, verbose));
-}
-#endif
-
 const char *sprint_variogram(const VARIOGRAM *v, int verbose) {
 /* prints contents of VARIOGRAM v on string */
 	static char tmp[ERROR_BUFFER_SIZE], s[ERROR_BUFFER_SIZE];
@@ -371,10 +363,8 @@ void update_variogram(VARIOGRAM *vp) {
 				p->model == POWER || p->model == PERIODIC ||
 				p->model == EXCLASS || p->model == LEGENDRE ||
 				p->model == HOLE || p->model == WAVE || /* more??? */
-#ifdef USING_R
 				p->model == MATERN ||
 				p->model == STEIN ||
-#endif
 				(p->model == LINEAR && p->range[0] == 0)) 
 					/* sill is reached asymptotically or oscillates */
 			vp->max_range = DBL_MAX;
@@ -687,18 +677,14 @@ void check_variography(const VARIOGRAM **v, int n_vars)
 	return;
 }
 
-/* from meschach matrix library (c) , see matrix[2].h
- try CHfactor -- Cholesky L.L' factorisation of A in-situ */
 static int is_posdef(MAT *A) {
 	unsigned int	i, j, k;
-	Real	sum, tmp;
+	double	sum, tmp;
 
-	for (k = 0; k < A->n; k++)
-	{	
+	for (k = 0; k < A->n; k++) {	
 		/* do diagonal element */
 		sum = A->me[k][k];
-		for (j = 0; j < k; j++)
-		{
+		for (j = 0; j < k; j++) {
 			tmp = A->me[k][j];
 			sum -= tmp*tmp;
 		}
@@ -715,8 +701,7 @@ static int is_posdef(MAT *A) {
 			A->me[k][k] = sqrt(sum);
 
 		/* set values of column k */
-		for (i = k + 1; i < A->n; i++)
-		{
+		for (i = k + 1; i < A->n; i++) {
 			sum = A->me[i][k];
 			sum -= __ip__(A->me[i],A->me[k],(int)k);
 			A->me[j][i] = A->me[i][j] = sum/A->me[k][k];
@@ -775,9 +760,6 @@ int push_variogram_model(VARIOGRAM *v, VGM_MODEL part) {
 		for (i = v->max_n_models; i < v->max_n_models + INIT_N_VGMM; i++)
 			init_variogram_part(&(v->part[i]));
 		v->max_n_models += INIT_N_VGMM;
-#ifndef USING_R
-		printf("enlarging v->max_n_models\n");
-#endif
 	}
 	/*
 	 * check some things: 
@@ -863,49 +845,6 @@ double relative_nugget(VARIOGRAM *v) {
 	assert(nug + sill > 0.0);
 	return (nug/(nug+sill));
 }
-
-#ifndef USING_R
-int vario(int argc, char **argv) {
-/* model from to nsteps */
-	double dist, from, to;
-	int i, is_vgm, nsteps = 0;
-	VARIOGRAM vgm;
-
-	is_vgm = almost_equals(argv[0], "se$mivariance");
-	if (argc < 3) {
-		printlog("usage: %s variogram_model dist [to_dist [n_intervals]]\n", argv[0]);
-		exit(0);
-	}
-	init_variogram(&vgm);
-	vgm.id = 0;
-	if (read_variogram(&vgm, string_dup(argv[1])))
-		ErrMsg(ER_SYNTAX, argv[1]);
-	if (read_double(argv[2], &from))
-		ErrMsg(ER_RDFLT, argv[2]);
-	if (argc >= 4) {
-		if (read_double(argv[3], &to))
-			ErrMsg(ER_RDFLT, argv[3]);
-		nsteps = 1;
-	} else
-		to = from;
-	if (argc >= 5)
-		if (read_int(argv[4], &nsteps))
-			ErrMsg(ER_RDINT, argv[4]);
-	if (DEBUG_DUMP)
-		logprint_variogram(&vgm, 1);
-	if (nsteps < 0)
-		ErrMsg(ER_RANGE, "n_steps must be >= 0");
-	dist = from;
-	for (i = 0; i <= nsteps; i++) {
-		printlog("%g %g\n", dist, (is_vgm ? 
-			get_semivariance(&vgm, dist, 0, 0) : 
-			get_covariance(&vgm, dist, 0, 0)));
-		if (i < nsteps) /* nsteps > 0 */
-			dist += (to - from)/(1.0*nsteps);
-	}	
-	return 0;
-}
-#endif
 
 FIT_TYPE fit_int2enum(int fit) {
 	switch (fit) {
@@ -1027,13 +966,11 @@ void push_to_v(VARIOGRAM *v, const char *mod, double sill, double *range,
 	vm.fit_range = fit_range;
 	if (d != NULL && d[0] != -9999.0)
 		vm.tm_range = get_tm(d);
-#ifdef USING_R
 	if (vm.model == STEIN && range[1] > 100.0) {
 		vm.model = GAUSSIAN;
 		vm.range[1] = 0.0;
 		pr_warning("kappa values over 100 overflow gammafn: taking Gaussian approximation");
 	}
-#endif
 	push_variogram_model(v, vm);
 }
 

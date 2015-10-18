@@ -137,57 +137,6 @@ void calc_r(double *a, double *b, int n, double *corr) {
 	return;
 }
 
-#ifndef USING_R
-int stats(char *name, int silent, double q) {
-	static D_VECTOR *dv = NULL;
-	double mean = 0.0;
-
-	if (dv == NULL) {
-		dv = (D_VECTOR *) emalloc(sizeof(D_VECTOR));
-		dv->max_size = dv->size = 0;
-		dv->val = NULL;
-	}
-	dv->size = 0;
-
-	read_vector(dv, name);
-
-	assert(dv->size > 0);
-
-	qsort(dv->val, (size_t) dv->size, sizeof(double),
-		(int CDECL (*)(const void *, const void *)) d_cmp);
-
-	mean = sample_mean(dv->val, dv->size);
-
-	if (dv->size <= 1) {
-		pr_warning("calc_stats(): n <= 1");
-		return 0;
-	}
-
-	if (! silent) {
-		if (name)
-			printf("          ");
-		if (q == 0.25)
-			printf("     min    1st Q   median    3rd Q      max     mean      std      n\n");
-		else
-			printf("     min   Q(%.2f)  median   Q(%.2f)     max     mean      std      n\n",
-				q, 1.0-q);
-	}
-	/* printf("%8.3g %8.3g %8.3g %8.3g %8.3g %8.3g %8.3g %6d\n", */
-	if (name)
-		printf("%-10s", name);
-	printf("%8g %8g %8g %8g %8g %8g %8g %6d\n",
-		dv->val[0], 
-		est_quant(dv->val, q, dv->size), 
-		est_quant(dv->val, .5, dv->size), 
-		est_quant(dv->val, 1.0-q, dv->size), 
-		dv->val[dv->size-1], 
-		mean, 
-		sample_std(dv->val, mean, dv->size), 
-		dv->size);
-	return 0;
-}
-#endif
-
 int CDECL d_cmp(const double *a, const double *b) {
 	if (*a < *b)
 		return -1;

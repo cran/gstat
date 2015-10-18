@@ -1,5 +1,5 @@
 
-R version 3.2.0 (2015-04-16) -- "Full of Ingredients"
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
 Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -43,10 +43,17 @@ row 3:              1
 [using generalized covariances: max_val - semivariance()]
 # Covariances (x_i, x_j) matrix C (lower triangle only):
 Matrix: 4 by 4
-row 0:              1              0              0              0 
-row 1:    0.135335283              1              0              0 
-row 2:   0.0676676416   0.0295528733              1              0 
+row 0:              1    0.135335283   0.0676676416   0.0295528733 
+row 1:    0.135335283              1   0.0295528733   0.0676676416 
+row 2:   0.0676676416   0.0295528733              1    0.135335283 
 row 3:   0.0295528733   0.0676676416    0.135335283              1 
+
+# glm->C:
+Matrix: 4 by 4
+row 0:              1              0              0              0 
+row 1:    0.135335283    0.990799859              0              0 
+row 2:   0.0676676416   0.0205844335     0.99749555              0 
+row 3:   0.0295528733   0.0642592897    0.132344218    0.988677085 
 
 # X'C-1 X:
 Matrix: 1 by 1
@@ -55,6 +62,7 @@ row 0:     3.24528918
 # beta:
 Vector: dim: 1
            2.5 
+
 # Cov(beta), (X'C-1 X)-1:
 Matrix: 1 by 1
 row 0:     0.30813895 
@@ -70,6 +78,7 @@ row 0:              1              1
 # BLUE(mu), E(y(x0)) = X0'beta:
 Vector: dim: 2
            2.5            2.5 
+
 # Covariances (x_i, x_0), C0:
 Matrix: 4 by 2
 row 0:    0.243116734    0.121558367 
@@ -102,6 +111,7 @@ row 1:   0.0936621582    0.122129987
 # Best Linear Unbiased Predictor:
 Vector: dim: 2
     2.03161877     2.96838123 
+
 # MSPE ([a]-[b]+[c]):
 Matrix: 2 by 2
 row 0:    0.929229934    0.457697762 
@@ -139,10 +149,17 @@ row 3:              0              2              1
 [using generalized covariances: max_val - semivariance()]
 # Covariances (x_i, x_j) matrix C (lower triangle only):
 Matrix: 4 by 4
-row 0:              1              0              0              0 
-row 1:    0.135335283              1              0              0 
-row 2:   0.0676676416   0.0295528733              1              0 
+row 0:              1    0.135335283   0.0676676416   0.0295528733 
+row 1:    0.135335283              1   0.0295528733   0.0676676416 
+row 2:   0.0676676416   0.0295528733              1    0.135335283 
 row 3:   0.0295528733   0.0676676416    0.135335283              1 
+
+# glm->C:
+Matrix: 4 by 4
+row 0:              1              0              0              0 
+row 1:    0.135335283    0.990799859              0              0 
+row 2:   0.0676676416   0.0205844335     0.99749555              0 
+row 3:   0.0295528733   0.0642592897    0.132344218    0.988677085 
 
 # X'C-1 X:
 Matrix: 3 by 3
@@ -153,6 +170,7 @@ row 2:   -0.151962334     1.62264459     1.77460693
 # beta:
 Vector: dim: 3
              0            0.5              4 
+
 # Cov(beta), (X'C-1 X)-1:
 Matrix: 3 by 3
 row 0:    0.793362513   -0.225694871    0.274305129 
@@ -174,6 +192,7 @@ row 2:              0              1
 # BLUE(mu), E(y(x0)) = X0'beta:
 Vector: dim: 2
            0.5            4.5 
+
 # Covariances (x_i, x_0), C0:
 Matrix: 4 by 2
 row 0:    0.243116734    0.121558367 
@@ -206,6 +225,7 @@ row 1:   0.0936621582    0.122129987
 # Best Linear Unbiased Predictor:
 Vector: dim: 2
            0.5            4.5 
+
 # MSPE ([a]-[b]+[c]):
 Matrix: 2 by 2
 row 0:     1.08143417    0.305493523 
@@ -213,10 +233,10 @@ row 1:    0.305493523     1.08143417
 
 # kriging weights:
 Matrix: 4 by 2
-row 0:            0.5 -9.71445147e-17 
-row 1:            0.5 8.32667268e-17 
-row 2: 1.38777878e-17            0.5 
-row 3: -2.77555756e-17            0.5 
+row 0:            0.5              0 
+row 1:            0.5 -1.38777878e-17 
+row 2: 2.77555756e-17            0.5 
+row 3: 1.38777878e-17            0.5 
 
 
   x y d1.pred  d1.var d2.pred  d2.var cov.d1.d2
@@ -224,4 +244,4 @@ row 3: -2.77555756e-17            0.5
 > 
 > proc.time()
    user  system elapsed 
-  0.752   0.314   0.749 
+  0.676   0.312   0.661 

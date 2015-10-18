@@ -81,7 +81,7 @@ rs = sample(dim(r5to10)[2], 100)
 ###################################################
 ### code chunk number 11: st.Rnw:195-197
 ###################################################
-lst = lapply(rs, function(i) { x = r5to10[,i]; x$ti = i; x} )
+lst = lapply(rs, function(i) { x = r5to10[,i]; x$ti = i; rownames(x@coords) = NULL; x} )
 pts = do.call(rbind, lst)
 
 
@@ -96,7 +96,7 @@ v = variogram(PM10~ti, pts[!is.na(pts$PM10),], dX=0)
 ### code chunk number 13: st.Rnw:205-208 (eval = FALSE)
 ###################################################
 ## # plot(v, fit.variogram(v, vgm(1, "Exp", 200, 1)))
-## vmod = fit.variogram(v, vgm(1, "Exp", 200, 1))
+## vmod = fit.variogram(v, vgm(100, "Exp", 200))
 ## plot(v, vmod)
 
 
@@ -104,7 +104,7 @@ v = variogram(PM10~ti, pts[!is.na(pts$PM10),], dX=0)
 ### code chunk number 14: st.Rnw:212-215
 ###################################################
 # plot(v, fit.variogram(v, vgm(1, "Exp", 200, 1)))
-vmod = fit.variogram(v, vgm(1, "Exp", 200, 1))
+vmod = fit.variogram(v, vgm(100, "Exp", 200))
 print(plot(v, vmod))
 
 

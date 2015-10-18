@@ -31,7 +31,7 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "matrix2.h"
+#include "mtrx.h"
 #include "defs.h"
 #include "random.h"
 #include "debug.h"
@@ -88,7 +88,7 @@ static void simulate_mvn(const double *est, VEC *result, const int *is_datum) {
 	static MAT *M = MNULL;
 	static VEC *ind = VNULL, *sim = VNULL;
 	static PERM *p = PNULL;
-	int i, j;
+	int i, j, info;
 	volatile int dim;
 
 	p = px_resize(p, result->dim);
@@ -113,7 +113,9 @@ static void simulate_mvn(const double *est, VEC *result, const int *is_datum) {
 		m_logoutput(M);
 	}
 	/* decompose M: */
-	M = CHfactor(M);
+	M = CHfactor(M, &info);
+	if (info != 0)
+		pr_warning("singular simulation covariance matrix");
 	if (DEBUG_COV) {
 		printlog("# decomposed error covariance matrix:\n");
 		m_logoutput(M);
@@ -253,13 +255,8 @@ void correct_orv(double *est, int n_vars, int orc) {
  	}
 
 	if (n_total == 0) { /* first time */
-		if (DEBUG_ORDER) {
-			printlog(
-	"order relation violation:\n(before correction) --> (after correction)\n");
-#ifndef USING_R
- 			atexit(print_orvc);
-#endif
-		}
+		if (DEBUG_ORDER)
+			printlog("order relation violation:\n(before correction) --> (after correction)\n");
 	}
  	n_total++;
 

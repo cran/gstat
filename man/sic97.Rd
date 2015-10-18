@@ -5,8 +5,8 @@
 \alias{demstd}
 \title{ Spatial Interpolation Comparison 1997 data set: Swiss Rainfall}
 \description{
-The text below is copied from the data item at
-\url{http://www.ai-geostats.org/}
+The text below is copied from the data item at ai-geostats,
+\url{https://wiki.52north.org/bin/view/AI_GEOSTATS/WebHome}
 
 }
 
@@ -30,7 +30,7 @@ data(sic97) #
 Gregoire Dubois and others.
 }
 
-\references{ \url{http://www.ai-geostats.org/} }
+\references{ \url{https://wiki.52north.org/bin/view/AI_GEOSTATS/WebHome}}
 
 \keyword{datasets}
 \examples{

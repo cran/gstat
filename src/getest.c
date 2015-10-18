@@ -50,7 +50,6 @@
 #include "msim.h"
 #include "stat.h"
 #include "block.h"
-#include "polygon.h"
 #include "getest.h"
 
 static void est_quantile_div(DATA *data, double *est, int div);
@@ -59,8 +58,6 @@ static double inverse_dist(DATA *data, DPOINT *where, double idPow);
 static void save_variogram_parameters(VARIOGRAM *v);
 static void reset_variogram_parameters(VARIOGRAM *v);
 static double *vgm_pars = NULL;
-
-static void calc_poly(DPOINT *where, double *est);
 
 void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 /*
@@ -73,10 +70,6 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 	DPOINT *block = NULL;
 	VARIOGRAM *v;
 	int i, j, n_vars, n_sel, *is_pt;
-#ifndef USING_R
-	static GRIDMAP **m = NULL;
-	unsigned int row = 0, col = 0;
-#endif
 	double *X_ori = NULL, *local_sim;
 	enum GLS_WHAT gls_mode = GLS_BLUP;
 	const double *sim = NULL; /* return value of cond_sim() */
@@ -340,28 +333,6 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 				set_mv_double(&(est[i])); 
 			/* print_sim(); */
 			break;
-#ifndef USING_R
-		case MAPVALUE: 
-			if (get_n_masks() == 0)
-				ErrMsg(ER_VARNOTSET, "define at least one mask");
-			if (m == NULL) {
-				if (get_n_masks() > get_n_outfile())
-					pr_warning("define more (dummy) points(..) to get all masks");
-				m = (GRIDMAP **) emalloc(get_n_masks() * sizeof(GRIDMAP *));
-				for (i = 0; i < get_n_masks(); i++) {
-					m[i] = new_map(READ_ONLY);
-					m[i]->filename = string_dup(get_mask_name(i));
-					if (map_read(m[i]) == NULL)
-						ErrMsg(ER_READ, get_mask_name(i));
-				}
-			}
-			if (map_xy2rowcol(m[0], where->x, where->y, &row, &col) == 0)
-				for (i = 0; i < get_n_masks() && i < get_n_outfile(); i++) {
-					if (!map_cell_is_mv(m[i], row, col))
-						est[i] = map_get_cell(m[i], row, col);
-				}
-			break;
-#endif
 		case NRS: 
 			if (get_mode() != STRATIFY) {
 				for (i = 0; i < n_vars; i++) {
@@ -376,9 +347,6 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 		case XYP:
 			est[0] = where->x;
 			est[1] = where->y;
-			break;
-		case POLY:
-            calc_poly(where, est);
 			break;
 		case SPREAD: 
 			if (get_mode() == STRATIFY) {
@@ -535,29 +503,6 @@ static double inverse_dist(DATA *data, DPOINT *where, double idPow) {
 		value += blockd->list[i]->u.weight * sumvals/sumweights;
 	}
 	return value;
-}
-
-static void calc_poly(DPOINT *where, double *est) {
-	PLOT_POINT pt;
-	int j, k;
-	
-
-	int n = get_n_edges();
-    POLYGON **edges = get_edges();
-    int *n_edges_polys = get_n_edges_polys();
-
-    pt.x = where->x;
-    pt.y = where->y;
-
-    for (j = 0; j < n; j++) { /* over edge files */
-        for (k=0; k<n_edges_polys[j]; k++) { /* over edges *//*	for (j = 0; j < data->n_pol; j++) {*/
-			if (point_in_polygon(pt,  &(edges[j][k]))) {
-				est[0]=j;
-                est[1]=k;
-                return;
-			}
-		}
-	}
 }
 
 void save_variogram_parameters(VARIOGRAM *v) {

@@ -13,13 +13,9 @@
 
 #include "config.h"
 
-#ifdef USING_R
 /* # include <R.h> */
-# define exit(n) Rf_error("exiting with code %d", n)
-# define printf Rprintf
-#else
-# define Rprintf printf
-#endif
+#define exit(n) Rf_error("exiting with code %d", n)
+#define printf Rprintf
 
 #ifdef SPLUS6WIN32
 # define CDECL __cdecl
@@ -34,12 +30,6 @@
 #define erealloc realloc
 #endif
 
-#ifndef __sgi /* SGI cc works, even without STDC_HEADERS detected! */
-# ifndef STDC_HEADERS
-# error configure could not find an ansi-c compiler (required)
-# endif
-#endif
-
 #define GSTAT_NAME      "gstat"
 #define GSTAT_CR        "Copyright (C) 1992, 2010 Edzer Pebesma and others"
 #define GSTAT_EMAIL     "edzer.pebesma@uni-muenster.de"
@@ -47,51 +37,6 @@
 #define GSTAT_ANNOUNCE  "gstat-announce@geo.uu.nl"
 #define GSTAT_HOME      "http://www.gstat.org/"
 #define USAGE           "usage: gstat [options] [file [file ...]]"
-
-#ifndef GSTAT_OS /* try autodetection of the platform: */
-# if defined(__DJGPP) && (__DJGPP==2)
-#  define GSTAT_OS "dos/dpmi"
-# elif defined(__GO32) /* DJGPP 1.x */
-#  define GSTAT_OS "dos/go32"
-# elif defined(__CYGWIN__) || defined(CYGWIN)
-#  ifndef WIN32
-#   define WIN32
-#  endif
-#  define GSTAT_OS "Win32/Cygwin"
-# elif defined (_MSC_VER) /* some Microsoft C version, might work? */
-#  define GSTAT_OS "Win32/msc"
-#  define SEGMENTED
-# elif defined (__MINGW32__)
-#  define GSTAT_OS "Win32/MinGW"
-# elif defined (BORLANDC)
-#  define GSTAT_OS "Win32/bcc"
-# elif defined (WIN32) /* NT/98/9x/? */
-#  define GSTAT_OS "Win32/unknown"
-# elif defined (_AIX)
-#  define GSTAT_OS "AIX"
-# elif defined (__hpux) 
-#  define GSTAT_OS "HP-UX"
-# elif defined (__sgi) 
-#  define GSTAT_OS "SGI"
-# elif defined (__linux)
-#  define GSTAT_OS "Linux"
-# elif defined (sparc)
-#  define GSTAT_OS "Sparc"
-# elif defined (__alpha)
-#  define GSTAT_OS "DEC/Alpha"
-# elif defined (GSTAT_UNIX)
-#  define GSTAT_OS "unix"
-# else
-#  define GSTAT_OS "unknown" /* not important */
-# endif
-#endif /* ifndef GSTAT_OS */
-
-#if (__DJGPP==2) && !defined(HAVE_UNISTD_H)
-# define HAVE_UNISTD_H
-#endif
-
-#define GSTATRC    "GSTATRC" /* env. var. holding the initialisation file */
-#define HOMERCFILE ".gstatrc" /* rc file in home dir */
 
 /*
  * several buffer sizes 

@@ -1,3 +1,279 @@
+2015-10-15 17:54  edzer
+
+	* /pkg/cleanup, /pkg/src/predict.c, /pkg/src/select.c: add cleanup
+	  to remove lex.l; remove unused vars and function.
+
+2015-10-15 17:20  edzer
+
+	* /pkg/src/config.h: add (now mostly empty) config.h
+
+2015-10-15 16:55  edzer
+
+	* /pkg/DESCRIPTION, /pkg/LICENCE, /pkg/aclocal.m4, /pkg/cleanup,
+	  /pkg/configure, /pkg/configure.in, /pkg/configure.win,
+	  /pkg/man/predict.gstat.Rd, /pkg/src/config.hin,
+	  /pkg/src/config.w32, /pkg/src/data.c, /pkg/src/defs.h,
+	  /pkg/src/fit.c, /pkg/src/gcdist.c, /pkg/src/getest.c,
+	  /pkg/src/gls.c, /pkg/src/glvars.c, /pkg/src/glvars.h,
+	  /pkg/src/lex.c, /pkg/src/lex.l, /pkg/src/mapio.c,
+	  /pkg/src/msim.c, /pkg/src/parse.c, /pkg/src/polygon.c,
+	  /pkg/src/polygon.h, /pkg/src/predict.c, /pkg/src/random.c,
+	  /pkg/src/s.c, /pkg/src/select.c, /pkg/src/sem.c, /pkg/src/sem.h,
+	  /pkg/src/sim.c, /pkg/src/stat.c, /pkg/src/userio.c,
+	  /pkg/src/utils.c, /pkg/src/vario.c, /pkg/src/vario.h,
+	  /pkg/src/vario_fn.c, /pkg/tests/fit.Rout.save: more cleanup;
+	  remove ./configure stuff; remove polygon.[ch];
+	  reduce run time of example(predict.gstat)
+
+2015-10-15 03:35  edzer
+
+	* /pkg/src/lm.c, /pkg/src/mtrx.c, /pkg/src/nsearch.c,
+	  /pkg/src/userio.c: address r-forge build warnings
+
+2015-10-15 01:15  edzer
+
+	* /pkg/src/meschach: rm meschach remains
+
+2015-10-15 01:11  edzer
+
+	* /pkg/NAMESPACE, /pkg/R/zzz.R, /pkg/src/Makevars: add Makevars;
+	  tidy
+
+2015-10-15 00:59  edzer
+
+	* /pkg/DESCRIPTION, /pkg/LICENCE, /pkg/NAMESPACE, /pkg/R/zzz.R,
+	  /pkg/configure, /pkg/configure.in, /pkg/src/chfactor.c,
+	  /pkg/src/chol.c, /pkg/src/copy.c, /pkg/src/data.c,
+	  /pkg/src/data.h, /pkg/src/err.c, /pkg/src/err.h,
+	  /pkg/src/ext_dbase.h, /pkg/src/fit.c, /pkg/src/gls.c,
+	  /pkg/src/hsehldr.c, /pkg/src/init.c, /pkg/src/ivecop.c,
+	  /pkg/src/lm.c, /pkg/src/lufactor.c, /pkg/src/machine.c,
+	  /pkg/src/machine.hin, /pkg/src/machine.w32, /pkg/src/matop.c,
+	  /pkg/src/matrix.h, /pkg/src/matrix2.h, /pkg/src/meminfo.c,
+	  /pkg/src/meminfo.h, /pkg/src/memory.c, /pkg/src/mtrx.c,
+	  /pkg/src/mtrx.h, /pkg/src/norm.c, /pkg/src/pxop.c,
+	  /pkg/src/qrfactor.c, /pkg/src/reml.c, /pkg/src/s.c,
+	  /pkg/src/select.c, /pkg/src/sim.c, /pkg/src/solve.c,
+	  /pkg/src/submat.c, /pkg/src/userio.c, /pkg/src/vario.c,
+	  /pkg/src/vecop.c, /pkg/src/version.c, /pkg/src/zmatrix.h,
+	  /pkg/src/zmatrix2.h, /pkg/tests/fit.Rout.save,
+	  /pkg/tests/merge.Rout.save, /pkg/tests/unproj.Rout.save,
+	  /pkg/tests/windst.Rout.save, /pkg/vignettes/st.Rnw: move meschach
+	  out; add replacement functions and lapack support
+
+2015-10-13 15:04  edzer
+
+	* /pkg/src/gls.c, /pkg/src/meminfo.c, /pkg/src/sparse.c,
+	  /pkg/src/sparse.h, /pkg/src/sparse2.h, /pkg/src/sprow.c: removed
+	  all reference to SPARSE matrix methods
+
+2015-10-05 16:20  edzer
+
+	* /pkg/DESCRIPTION, /pkg/man/fit.StVariogram.Rd,
+	  /pkg/man/sic2004.Rd, /pkg/man/sic97.Rd, /pkg/man/walker.Rd:
+	  remove ai-geostats.org link; wrap fit.StVariogram example in
+	  \dontrun{}; version bump
+
+2015-10-04 21:10  edzer
+
+	* /pkg/R/gstat.cv.R, /pkg/R/krige0.R, /pkg/R/stVariogramModels.R,
+	  /pkg/R/vgm.R, /pkg/man/fit.StVariogram.Rd, /pkg/man/krigeST.Rd,
+	  /pkg/man/vgmST.Rd, /pkg/tests/unproj.Rout.save,
+	  /pkg/tests/windst.Rout.save: tidy; reformat; update to sp 1.2-1;
+	  add default fit.StVariogram method; update test
+	  results to new PROJ.4 release.
+
+2015-08-27 16:43  edzer
+
+	* /pkg/tests/unproj.Rout.save: update
+
+2015-08-25 20:37  edzer
+
+	* /pkg/vignettes/st.Rnw: tidy
+
+2015-08-03 09:38  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/variogramST.R,
+	  /pkg/vignettes/spatio-temporal-kriging.Rnw,
+	  /pkg/vignettes/spatio-temporal-kriging.pdf: - index fix in
+	  variogramST.STIDF
+
+2015-07-24 12:20  ben_graeler
+
+	* /pkg/R/krige0.R: - use ordered spatial index when selecting
+	  strongest correlated neighbours in local kriging to avoid warning
+	  of spacetime
+
+2015-07-24 09:31  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/krige0.R: - use ordered spatial index
+	  when selecting nearest enighbours in local kriging to avoid
+	  warning of spacetime
+
+2015-07-22 12:23  ben_graeler
+
+	* /pkg/.Rbuildignore, /pkg/vignettes/.install_extras,
+	  /pkg/vignettes/gstat.pdf, /pkg/vignettes/prs.pdf,
+	  /pkg/vignettes/spatio-temporal-kriging.Rnw,
+	  /pkg/vignettes/spatio-temporal-kriging.pdf,
+	  /pkg/vignettes/st.Rnw, /pkg/vignettes/st.pdf: - updated vignettes
+
+2015-07-22 12:16  edzer
+
+	* /pkg/DESCRIPTION: update date
+
+2015-07-22 11:33  ben_graeler
+
+	* /www/STpred.html: - add spatio-temporal PM10 interpolation movie
+	  wrapper (html)
+
+2015-07-22 11:05  ben_graeler
+
+	* /www/STpred.mp4: - add spatio-temporal PM10 interpolation movie
+	  (mp4)
+
+2015-07-22 10:17  edzer
+
+	* /pkg/vignettes/spatio-temporal-kriging.Rnw,
+	  /pkg/vignettes/st.Rnw: update titles
+
+2015-07-07 10:16  edzer
+
+	* /pkg/NAMESPACE: make check pass on r-devel
+
+2015-07-02 11:03  edzer
+
+	* /pkg/DESCRIPTION, /pkg/NAMESPACE, /pkg/tests/unproj.Rout.save,
+	  /pkg/tests/windst.Rout.save: add imports from base
+
+2015-06-19 13:35  edzer
+
+	* /pkg/DESCRIPTION, /pkg/src/matrix.h: bump version, fix matrix.h
+
+2015-06-19 10:16  edzer
+
+	* /pkg/src/chfactor.c, /pkg/src/copy.c, /pkg/src/hsehldr.c,
+	  /pkg/src/init.c, /pkg/src/ivecop.c, /pkg/src/lm.c,
+	  /pkg/src/lufactor.c, /pkg/src/matop.c, /pkg/src/matrix.h,
+	  /pkg/src/matrix2.h, /pkg/src/memory.c, /pkg/src/pxop.c,
+	  /pkg/src/qrfactor.c, /pkg/src/solve.c, /pkg/src/submat.c,
+	  /pkg/src/vario.c, /pkg/src/vecop.c, /pkg/src/version.c,
+	  /pkg/src/zmatrix.h: changed u_int into unsigned int, to meet
+	  configure issues on solaris
+
+2015-06-16 14:05  edzer
+
+	* /pkg/DESCRIPTION, /pkg/demo/stkrige.R, /pkg/man/krigeST.Rd,
+	  /pkg/man/vv.Rd, /pkg/tests/unproj.R, /pkg/tests/unproj.Rout.save,
+	  /pkg/tests/windst.Rout.save, /pkg/vignettes/st.Rnw: version;
+	  adapt to spacetime 1.1-5 new air data set
+
+2015-06-04 15:06  ben_graeler
+
+	* /pkg/R/krige0.R, /pkg/man/krigeST.Rd, /pkg/vignettes/figures,
+	  /pkg/vignettes/figures/allVgmsWireframe.png,
+	  /pkg/vignettes/figures/daily_means_PM10.png,
+	  /pkg/vignettes/figures/pred_daily_means_PM10.png,
+	  /pkg/vignettes/figures/singleStationTimeSeries.png,
+	  /pkg/vignettes/figures/vgmVsMetricDist.png,
+	  /pkg/vignettes/prs.Rnw, /pkg/vignettes/prs.pdf,
+	  /pkg/vignettes/spatio-temporal-kriging.Rnw,
+	  /pkg/vignettes/spatio-temporal-kriging.bib,
+	  /pkg/vignettes/spatio-temporal-kriging.pdf: - added
+	  spatio-temporal-kriging vignette as RNW wrapper to the tex file
+
+2015-05-30 20:16  edzer
+
+	* /pkg/NAMESPACE, /pkg/R/krigeTg.R, /pkg/man/get.contr.Rd,
+	  /pkg/man/gstat.Rd, /pkg/man/krige.Rd, /pkg/man/krige.cv.Rd,
+	  /pkg/man/krigeST.Rd, /pkg/man/krigeTg.Rd, /pkg/man/map.to.lev.Rd,
+	  /pkg/man/predict.gstat.Rd, /pkg/tests/merge.R,
+	  /pkg/tests/merge.Rout.save: abandon predict.gstat, use predict
+	  instead.
+
+2015-05-04 13:56  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/krige0.R, /pkg/R/stVariogramModels.R,
+	  /pkg/R/variogramST.R: - fixed a few nugget imprecisions and
+	  plotting
+	  - improved backwards compatibility with old product-sum
+	  definition
+
+2015-05-03 18:43  edzer
+
+	* /pkg/demo/00Index, /pkg/demo/zonal.R: add zonal anisotropy demo
+
+2015-04-30 13:43  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/krige0.R, /pkg/demo/localKrigeST.R,
+	  /pkg/demo/stkrige.R: - updated demo files localKrigeST.R and
+	  stkrige.R
+	  - enabled output of kriging variance for loacla kriging
+
+2015-04-29 14:29  ben_graeler
+
+	* /pkg/R/krige0.R, /pkg/R/stVariogramModels.R: - fixed temporal
+	  unit warning
+	  - completed switch to new product-sum model notation
+
+2015-04-20 11:14  ben_graeler
+
+	* /pkg/DESCRIPTION, /pkg/R/stVariogramModels.R,
+	  /pkg/R/variogramST.R, /pkg/data/vv.rda, /pkg/demo/stkrige.R,
+	  /pkg/man/vgmST.Rd, /pkg/man/vv.Rd: - new productsum model
+	  notation
+	  - new spatio-temporal variogram "vv" including the average
+	  distance as now provided by variogramST
+
+2015-03-28 16:21  edzer
+
+	* /pkg/.Rbuildignore, /pkg/configure, /pkg/configure.in,
+	  /pkg/makefile.in, /pkg/src/meschach/dmacheps.c,
+	  /pkg/src/meschach/fmacheps.c, /pkg/src/meschach/maxint.c,
+	  /pkg/tests/unproj.Rout.save, /pkg/tests/windst.Rout.save: tidy
+	  build process; update configure script
+
+2015-03-28 11:56  edzer
+
+	* /pkg/man/predict.gstat.Rd: tidy example
+
+2015-03-28 10:46  edzer
+
+	* /pkg/.Rbuildignore, /pkg/man/gstat.Rd, /pkg/src/nsearch.c:
+	  'force' patch by Tom Gottfried
+
+2015-03-14 17:53  edzer
+
+	* /pkg/.Rbuildignore: removed makefile.in
+
+2015-03-14 17:41  edzer
+
+	* /pkg/DESCRIPTION: version bump; tidy DESCRIPTION
+
+2015-03-14 17:14  edzer
+
+	* /pkg/DESCRIPTION, /pkg/NAMESPACE, /pkg/R/variogramLine.R,
+	  /pkg/inst/ChangeLog, /pkg/man/meuse.all.Rd,
+	  /pkg/man/meuse.alt.Rd, /pkg/man/ossfim.Rd, /pkg/man/pcb.Rd,
+	  /pkg/man/sic2004.Rd, /pkg/man/sic97.Rd, /pkg/man/variogram.Rd,
+	  /pkg/man/wind.Rd, /pkg/src/defs.h: updated wrong, and removed
+	  dead url's; tidy.
+
+2015-03-14 12:30  edzer
+
+	* /pkg/demo/a2p.R, /pkg/demo/wind.R, /pkg/man/variogram.Rd,
+	  /pkg/tests/unproj.R, /pkg/tests/unproj.Rout.save,
+	  /pkg/tests/windst.R, /pkg/tests/windst.Rout.save: update CRS to
+	  add +ellps= for PROJ 4.9.1
+
+2015-03-13 10:55  edzer
+
+	* /pkg/R/fit.variogram.reml.R, /pkg/R/gstat.R,
+	  /pkg/R/predict.gstat.R, /pkg/R/variogram.default.R,
+	  /pkg/demo/stkrige.R, /pkg/man/gstat.Rd, /pkg/src/s.c: add R
+	  interface to `force' neighbourhood option, patch provided by Tom
+	  Gottfried
+
 2015-02-18 15:01  ben_graeler
 
 	* /pkg/R/stVariogramModels.R, /pkg/R/variogramST.R,

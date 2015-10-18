@@ -16,5 +16,4 @@
 ## 	.Call(gstat_init, as.integer(1))
 ## }
  
- 
 variogram <- function(object, ...) UseMethod("variogram")

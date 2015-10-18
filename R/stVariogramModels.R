@@ -1,5 +1,6 @@
 # constructiong spatio-temporal variogram models
-vgmST <- function(stModel, ..., space, time, joint, sill, k, nugget, stAni) {
+vgmST <- function(stModel, ..., space, time, joint, sill, k, nugget, stAni, 
+		temporalUnits) {
 	stopifnot(is.character(stModel) && length(stModel)==1)
   if (stModel == "productSum" & !missing(sill))
     stop("The sill argument for the product-sum model has been removed 
@@ -8,13 +9,13 @@ affects as well how the spatial and temporal variograms are parameterised.
 Re-fit your model or use \"productSumOld\" instead.")
   
 	if(!missing(sill))
-	  if(sill <= 0) stop("\"sill\" must be positive.")
-  if(!missing(k))
-    if(k <= 0) stop("\"k\" must be positive.")
-  if(!missing(nugget))
-    if(nugget < 0) stop("\"nugget\" must be non-negative.")
-  if(!missing(stAni))
-    if(stAni <= 0) stop("\"stAni\" must be positive.")
+		if(sill <= 0) stop("\"sill\" must be positive.")
+	if(!missing(k))
+		if(k <= 0) stop("\"k\" must be positive.")
+	if(!missing(nugget))
+		if(nugget < 0) stop("\"nugget\" must be non-negative.")
+	if(!missing(stAni))
+		if(stAni <= 0) stop("\"stAni\" must be positive.")
   
 	vgmModel <- switch(stModel,
 		separable = list(space = space, time = time, sill = sill),
@@ -25,9 +26,11 @@ Re-fit your model or use \"productSumOld\" instead.")
 			joint = joint, nugget = nugget, stAni = stAni),
 		metric = list(joint = joint, stAni = stAni),
 		stop(paste("model", stModel, "unknown")))
-  vgmModel$stModel <- stModel
-  class(vgmModel) <- c("StVariogramModel","list")
-  vgmModel
+	vgmModel$stModel <- stModel
+	if (!missing(temporalUnits))
+		attr(vgmModel, "temporal units") = temporalUnits
+	class(vgmModel) <- c("StVariogramModel", "list")
+	vgmModel
 }
 
 # calculating spatio-temporal variogram surfaces
@@ -109,7 +112,8 @@ vgmMetric <- function(model, dist_grid) {
   data.frame(spacelag=dist_grid$spacelag, timelag=dist_grid$timelag, model=vm)
 }
 
-fit.StVariogram <- function(object, model, ..., fit.method = 6, stAni=NA, wles) {
+fit.StVariogram <- function(object, model, ..., method = "L-BFGS-B", fit.method = 6, 
+		stAni=NA, wles) {
   if (!inherits(object, "StVariogram"))
     stop("\"object\" must be of class \"StVariogram\"")
   if (!inherits(model, "StVariogramModel"))
@@ -117,6 +121,9 @@ fit.StVariogram <- function(object, model, ..., fit.method = 6, stAni=NA, wles) 
 
   sunit <- attr(object$spacelag, "units")
   tunit <- attr(object$timelag, "units")
+  tu.obj = attr(model, "temporal units")
+  if (!is.null(tu.obj))
+  	stopifnot(identical(tunit, tu.obj))
   
   object <- na.omit(object)
 
@@ -198,7 +205,7 @@ fit.StVariogram <- function(object, model, ..., fit.method = 6, stAni=NA, wles) 
     mean(resSq) # seems numerically more well behaved
   }
   
-  pars.fit <- optim(extractPar(model), fitFun, ...)
+  pars.fit <- optim(extractPar(model), fitFun, ..., method = method)
   
   ret <- insertPar(pars.fit$par, model)
   attr(ret,"optim.output") <- pars.fit

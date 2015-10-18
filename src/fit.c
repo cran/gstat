@@ -33,7 +33,7 @@
 #include <string.h> /* strstr() */
 #include <math.h> /* fabs(), sqrt() */
 
-#include "matrix2.h"
+#include "mtrx.h"
 #include "defs.h"
 #include "defaults.h"
 #include "userio.h"
@@ -49,21 +49,13 @@
 #include "lm.h"
 #include "fit.h"
 
-#ifdef USING_R
 void Rprintf(const char *, ...);
-#endif
 
 #define FIT_LOG     "fit.log"
 #define NEARLY_ZERO     1e-30
 
 static void wls_fit(VARIOGRAM *vp);
 static double getSSErr(const VARIOGRAM *vp, PERM *p, LM *lm);
-#ifndef USING_R
-static void write_fx(FILE *, VARIOGRAM *v);
-static void get_values(const char *fname, VARIOGRAM *v);
-static void gnu_fit(VARIOGRAM *v);
-static void correct_for_anisotropy(VARIOGRAM *v);
-#endif
 
 static int fill_weights(const VARIOGRAM *vp, PERM *p, LM *lm);
 static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, 
@@ -109,12 +101,6 @@ int fit_variogram(VARIOGRAM *v) {
 		case WLS_NHH:
 			wls_fit(v);
 			break;
-#ifndef USING_R
-		case WLS_GNUFIT: /* BREAKTHROUGH */
-		case WLS_GNUFIT_MOD:
-			gnu_fit(v);
-			break;
-#endif
 		case MIVQUE_FIT:
 			if (v->id1 != v->id2) 
 				return 1;
@@ -317,26 +303,13 @@ static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, int iter,
 		return 1;
 	}
 
-#ifndef USING_R
-	if (DEBUG_FIT) {
-		printf("data: ");
-		v_foutput(stdout, lm->y);
-		printf("weights: ");
-		v_foutput(stdout, lm->weights);
-		printf("X: ");
-		m_foutput(stdout, lm->X);
-	}
-#endif
-
 	lm->has_intercept = 1; /* does not affect the fit */
 	lm = calc_lm(lm); /* solve WLS eqs. for beta */
 
-#ifndef USING_R
 	if (DEBUG_FIT) {
-		printf("beta: ");
-		v_foutput(stdout, lm->beta);
+		Rprintf("beta: ");
+		v_logoutput(lm->beta);
 	}
-#endif
 
 	if (lm->is_singular) {
 		iv_free(fit);
@@ -413,168 +386,3 @@ static int fill_weights(const VARIOGRAM *vp, PERM *p, LM *lm) {
 	} /* for i */
 	return retval;
 }
-
-/* 
- * fit a variogram model to a sample variogram,
- * using the gnuplot fit command of gnuplot versions 3.6 and above
- */
-#ifndef USING_R
-static void gnu_fit(VARIOGRAM *v) {
-	int i;
-	FILE *f = NULL;
-	char *fit_log = NULL, *cmd;
-
-	cmd = NULL; /* to avoid compiler warning */
-	if ((fit_log = getenv("FIT_LOG")) == NULL)
-		fit_log = FIT_LOG;
-	if (file_exists(fit_log))
-		eremove(fit_log);
-#ifdef HAVE_POPEN
-	f = epopen(gl_gnuplot, "w");
-#else
-	f = efopen(GNUFIT_NAME, "w");
-#endif
-	if (is_variogram(v)) {
-		fprintf(f, "Nug(a,x) = (x == 0.0 ? 0.0 : 1.0) # irresp. a\n");
-		for (i = 2; v_models[i].name != NULL; i++)
-			fprintf(f, "%s\n", v_models[i].v_gnuplot);
-	} else {
-		fprintf(f, "Nug(a,x) = (x == 0.0 ? 1.0 : 0.0) # irresp. a\n");
-		for (i = 2; v_models[i].name != NULL; i++)
-			fprintf(f, "%s\n", v_models[i].c_gnuplot);
-	}
-	write_fx(f, v);
-	fprint_sample_vgm(f, v->ev);
-	fprintf(f, "e\n");
-#ifdef HAVE_POPEN
-	epclose(f);
-#else
-	fclose(f);
-	cmd = (char *) emalloc(strlen(gl_gnuplot) + strlen(GNUFIT_NAME) + 2);
-	sprintf(cmd, "%s %s", gl_gnuplot, GNUFIT_NAME);
-	esystem(cmd); /* let gnuplot do the fit */
-	efree(cmd);
-#endif
-	get_values(fit_log, v);
-	update_variogram(v);
-	return;
-}
-
-static void write_fx(FILE *f, VARIOGRAM *v) {
-/*
- * write:
- * c1 = ..; a1 = ..; ...
- * f(x) = c1 * Nug(0) + c2 * Sph(a2) + ...
- * fit f(x) '-' via c1, c2, ...
- */
- 	int i, first = 1;
-/*
- * set parateters, c0=..; a0=..;
- */
- 	for (i = 0; i < v->n_models; i++) {
- 		if (v->part[i].fit_sill)
- 			fprintf(f, "c%d = %g; ", i, v->part[i].sill);
- 		if (v->part[i].fit_range)
- 			fprintf(f, "a%d = %g; ", i, v->part[i].range[0]);
- 	}
-/*
- * f(x) = ...
- */
- 	fprintf(f, "\nf(x) = ");
-	fprint_gnuplot_model(f, v, 1);
-/*
- * fit f(x) 'file' using a:b:c # c are `uncertainties'
- * after a bit trial and error, they seem to be error standard deviations.
- */
-	if (v->ev->fit == WLS_GNUFIT_MOD)
-		fprintf(f, "\nfit f(x) '-' using %s via",
-			v->ev->cloud ? "3:4:(sqrt(f($3)**2))" : "4:5:(sqrt((f($4)**2)/$3))");
-	else
-		fprintf(f, "\nfit f(x) '-' using %s via",
-			v->ev->cloud ? "3:4" : "4:5:(sqrt(1.0/$3))" );
-/*
- * via
- */
- 	for (i = 0; i < v->n_models; i++) {
- 		if (v->part[i].fit_sill) {
- 			fprintf(f, "%sc%d", first ? " " : ", ", i);
- 			first = 0;
- 		}
- 		if (v->part[i].fit_range) {
- 			fprintf(f, "%sa%d", first ? " " : ", ", i);
- 			first = 0;
- 		}
- 	}
- 	fprintf(f, "\n");
-	return;
-}
-
-static void get_values(const char *fname, VARIOGRAM *v) {
-	FILE *f = NULL;
-	char *s = NULL, *cp;
-	int size = 0, nr = 0;
-
-	if (! file_exists(fname)) {
-		pr_warning("can't find %s -- get gnuplot 3.7 from www.gnuplot.info", 
-			fname);
-		return;
-	}
-	f = efopen(fname, "r");
-	do {
-		if (get_line(&s, &size, f) == NULL) {
-			pr_warning("error while reading %s", fname);
-			efclose(f);
-			return;
-		} 
-		if (strstr(s, "BREAK:          Singular matrix")) {
-			pr_warning("error during variogram fit (singular model)");
-			efree(s);
-			efclose(f);
-			return;
-		}
-
-	} while (strstr(s, "Final set of parameters") == NULL);
-	get_line(&s, &size, f); /* line with the many ==== */
-	get_line(&s, &size, f); /* empty line */
-	while (get_line(&s, &size, f) != NULL) { /* values */
-		if (s[0] == 'c' || s[0] == 'a') {
-			cp = s;
-			cp++;
-			cp = strtok(cp, " =");
-			if (read_int(cp, &nr) || nr < 0 || nr >= v->n_models)
-				ErrMsg(ER_IMPOSVAL, fname);
-			cp = strtok(NULL, " =");
-			if (cp == NULL)
-				ErrMsg(ER_IMPOSVAL, fname);
-			if (s[0] == 'c')
-				read_double(cp, &(v->part[nr].sill));
-			else
-				read_double(cp, &(v->part[nr].range[0]));
-		} else
-			break; /* while-loop */
-	}
-	efclose(f);
-	efree(s);
-	correct_for_anisotropy(v);
-	return;
-}
-
-static void correct_for_anisotropy(VARIOGRAM *v) {
-/*
- * Ok, so now let's get to the hard part. What happened?
- * in case of anisotropy, non-fitted values are correctly adjusted to
- * their directional value in fprint_gnuplot_model().
- * If however a value is fitted, the real fitted sill or range should
- * be the corresponding range/sill in the main direction. So, we have
- * to transfer those.
- */
- 	int i;
- 
- 	for (i = 0; i < v->n_models; i++) {
- 		if (v->part[i].fit_range && v->part[i].tm_range)
- 			v->part[i].range[0] /= relative_norm(v->part[i].tm_range,
- 				v->ev->direction.x, v->ev->direction.y, v->ev->direction.z);
- 	}
-	return;
-}
-#endif /* USING_R */

@@ -64,11 +64,9 @@ beta  parameter vector [p x 1]: E(y) = X beta
 
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h> /* free */
 #include "config.h"
-#include "matrix2.h"
-#ifdef HAVE_SPARSE
-# include "sparse2.h"
-#endif
+#include "mtrx.h"
 #include "defs.h"
 #include "data.h"
 #include "utils.h"
@@ -87,22 +85,12 @@ static void debug_result(VEC *blup, MAT *MSPE, enum GLS_WHAT pred);
 static VEC *get_mu(VEC *mu, const VEC *y, DATA **d, int nvars);
 static MAT *get_corr_mat(MAT *C, MAT *R);
 
-#ifndef USING_R
-static void plot_weights(DATA **d, int nvars, DPOINT *where, MAT *weights);
-#endif
-
 #define M_DEBUG(a,b) { if (DEBUG_COV){printlog("\n# %s:\n", b); \
 	m_logoutput(a);}}
 #define V_DEBUG(a,b) {if (DEBUG_COV){printlog("\n# %s:\n", b); \
 	v_logoutput(a);}}
 #define UPDATE_BLP (pred == UPDATE && last_pred == GLS_BLP)
 #define UPDATE_BLUP (pred == UPDATE && last_pred == GLS_BLUP)
-
-#ifdef HAVE_SPARSE
-void    sp_logoutput(SPMAT *A);
-#define SM_DEBUG(a,b) { if (DEBUG_COV){printlog("\n# %s:\n", b); \
-	sp_logoutput(a);}}
-#endif
 
 /*
 static MAT *convert_vmuC(MAT *C, DATA *d);
@@ -119,11 +107,6 @@ typedef struct {
 		*X,        /* design matrix, y = X beta + e */
 		*CinvX,    /* C-1 X */
 		*XCinvX;   /* X' C-1 X */
-#ifdef HAVE_SPARSE
-	SPMAT *spC;    /* sparse version of C */
-#else
-	void *spC;
-#endif
 	VEC *y,        /* measurement vector */
 		*mu,       /* mu vector, E(y) */
 		*mu0,      /* mu at loc x0 */
@@ -145,7 +128,7 @@ void gls(DATA **d /* pointer to DATA array */,
 {
 	GLM *glm = NULL; /* to be copied to/from d */
 	static MAT *X0 = MNULL, *C0 = MNULL, *MSPE = MNULL, *CinvC0 = MNULL,
-		*Tmp1 = MNULL, *Tmp2 = MNULL, *Tmp3, *R = MNULL;
+		*Tmp1 = MNULL, *Tmp2 = MNULL, *Tmp3 = MNULL, *R = MNULL;
 	static VEC *blup = VNULL, *tmpa = VNULL, *tmpb = VNULL;
 	volatile unsigned int i, rows_C;
 	unsigned int j, k, l = 0, row, col, start_i, start_j, start_X, global,
@@ -153,6 +136,7 @@ void gls(DATA **d /* pointer to DATA array */,
 	VARIOGRAM *v = NULL;
 	static enum GLS_WHAT last_pred = GLS_INIT; /* the initial value */
 	double c_value, *X_ori;
+	int info;
 
 	if (d == NULL) { /* clean up */
 		if (X0 != MNULL) M_FREE(X0); 
@@ -169,12 +153,6 @@ void gls(DATA **d /* pointer to DATA array */,
 		last_pred = GLS_INIT;
 		return;
 	}
-#ifndef HAVE_SPARSE
-	if (gl_sparse) {
-		pr_warning("sparse matrices not supported: compile with --with-sparse");
-		gl_sparse = 0;
-	}
-#endif
 
 	if (DEBUG_COV) {
 		printlog("we're at %s X: %g Y: %g Z: %g\n",
@@ -241,29 +219,15 @@ void gls(DATA **d /* pointer to DATA array */,
  * global things: enter whenever (a) first time, (b) local selections or
  * (c) the size of the problem grew since the last call (e.g. simulation)
  */
-	if ((glm->C == NULL && glm->spC == NULL) || !global || rows_C > glm->C->m) {
+	if (glm->C == NULL || !global || rows_C > glm->C->m) {
 /* 
  * fill y: 
  */
 		glm->y = get_y(d, glm->y, n_vars);
 
 		if (pred != UPDATE) {
-			if (! gl_sparse) {
-				glm->C = m_resize(glm->C, rows_C, rows_C);
-				m_zero(glm->C);
-			} 
-#ifdef HAVE_SPARSE
-			else {
-				if (glm->C == NULL) {
-					glm->spC = sp_get(rows_C, rows_C, gl_sparse);
-					/* d->spLLT = spLLT = sp_get(rows_C, rows_C, gl_sparse); */
-				} else {
-					glm->spC = sp_resize(glm->spC, rows_C, rows_C);
-					/* d->spLLT = spLLT = sp_resize(spLLT, rows_C, rows_C); */
-				}
-				sp_zero(glm->spC);
-			} 
-#endif
+			glm->C = m_resize(glm->C, rows_C, rows_C);
+			m_zero(glm->C);
 			glm->X = get_X(d, glm->X, n_vars);
 			M_DEBUG(glm->X, "X");
 			glm->CinvX = m_resize(glm->CinvX, rows_C, glm->X->n);
@@ -283,14 +247,9 @@ void gls(DATA **d /* pointer to DATA array */,
 							/* on the diagonal, if necessary, add measurement error variance */
 							if (d[i]->colnvariance && i == j && k == l)
 								c_value += d[i]->sel[k]->variance;
-							if (! gl_sparse)
-								glm->C->me[row][col] = c_value;
-#ifdef HAVE_SPARSE
-							else {
-								if (c_value != 0.0)
-									sp_set_val(glm->spC, row, col, c_value);
-							} 
-#endif
+							glm->C->me[row][col] = c_value;
+							if (row != col)
+								glm->C->me[col][row] = c_value;
 						} /* for l */
 					} /* for k */
 					start_j += d[j]->n_sel;
@@ -311,37 +270,18 @@ void gls(DATA **d /* pointer to DATA array */,
 
 			if (DEBUG_COV && pred == GLS_BLUP)
 				printlog("[using generalized covariances: max_val - semivariance()]");
-			if (! gl_sparse) {
-				M_DEBUG(glm->C, "Covariances (x_i, x_j) matrix C (lower triangle only)");
-			}
-#ifdef HAVE_SPARSE
-			else {
-				SM_DEBUG(glm->spC, "Covariances (x_i, x_j) sparse matrix C (lower triangle only)")
-			}
-#endif
-/* check for singular C: */
-			if (! gl_sparse && gl_cn_max > 0.0) {
-				for (i = 0; i < rows_C; i++) /* row */ 
-					for (j = i+1; j < rows_C; j++) /* col > row */
-						glm->C->me[i][j] = glm->C->me[j][i]; /* fill symmetric */
-				if (is_singular(glm->C, gl_cn_max)) {
-					pr_warning("Covariance matrix (nearly) singular at location [%g,%g,%g]: skipping...",
-						where->x, where->y, where->z);
-					m_free(glm->C); glm->C = MNULL; /* assure re-entrance if global */
-					return;
-				}
-			}
+			M_DEBUG(glm->C, "Covariances (x_i, x_j) matrix C (lower triangle only)");
 /* 
  * factorize C: 
  */
-			if (! gl_sparse)
-				LDLfactor(glm->C);
-#ifdef HAVE_SPARSE
-			else {
-				sp_compact(glm->spC, 0.0);
-				spCHfactor(glm->spC);
+			LDLfactor(glm->C, &info);
+			if (info != 0) { /* singular: */
+				pr_warning("Covariance matrix (nearly) singular at location [%g,%g,%g]: skipping...",
+					where->x, where->y, where->z);
+				m_free(glm->C); glm->C = MNULL; /* assure re-entrance if global */
+				return;
 			}
-#endif
+			M_DEBUG(glm->C, "glm->C");
 		} /* if (pred != UPDATE) */
 		if (pred != GLS_BLP && !UPDATE_BLP) { /* C-1 X and X'C-1 X, beta */
 /* 
@@ -350,14 +290,10 @@ void gls(DATA **d /* pointer to DATA array */,
     		tmpa = v_resize(tmpa, rows_C);
     		for (i = 0; i < glm->X->n; i++) {
 				tmpa = get_col(glm->X, i, tmpa);
-				if (! gl_sparse)
-					tmpb = LDLsolve(glm->C, tmpa, tmpb);
-#ifdef HAVE_SPARSE
-				else
-					tmpb = spCHsolve(glm->spC, tmpa, tmpb);
-#endif
+				tmpb = LDLsolve(glm->C, tmpa, tmpb);
 				set_col(glm->CinvX, i, tmpb);
 			}
+			/* M_DEBUG(glm->CinvX, "C-1 X"); */
 /* 
  * calculate X'C-1 X: 
  */
@@ -369,7 +305,13 @@ void gls(DATA **d /* pointer to DATA array */,
 				m_free(glm->C); glm->C = MNULL; /* assure re-entrance if global */
 				return;
 			}
-			m_inverse(glm->XCinvX, glm->XCinvX);
+			m_inverse(glm->XCinvX, glm->XCinvX, &info);
+			if (info != 0) { /* singular: */
+				pr_warning("X'C-1 X matrix singular at location [%g,%g,%g]: skipping...",
+					where->x, where->y, where->z);
+				m_free(glm->C); glm->C = MNULL; /* assure re-entrance if global */
+				return;
+			}
 /* 
  * calculate beta: 
  */
@@ -439,12 +381,7 @@ void gls(DATA **d /* pointer to DATA array */,
    	tmpa = v_resize(tmpa, rows_C);
    	for (i = 0; i < n_vars; i++) {
 		tmpa = get_col(C0, i, tmpa);
-		if (! gl_sparse)
-			tmpb = LDLsolve(glm->C, tmpa, tmpb);
-#ifdef HAVE_SPARSE
-		else
-			tmpb = spCHsolve(glm->spC, tmpa, tmpb);
-#endif
+		tmpb = LDLsolve(glm->C, tmpa, tmpb);
 		set_col(CinvC0, i, tmpb);
 	}
 	M_DEBUG(CinvC0, "C-1 C0");
@@ -539,10 +476,6 @@ void gls(DATA **d /* pointer to DATA array */,
 		Tmp1 = m_mlt(glm->CinvX, Tmp3, Tmp1);
 		Tmp2 = m_add(Tmp1, CinvC0, Tmp2);
 		M_DEBUG(Tmp2, "kriging weights");
-#ifndef USING_R
-		if (plotfile)
-			plot_weights(d, n_vars, where, Tmp2);
-#endif
 		if (DEBUG_COV)
 			printlog("\n\n");
 	}
@@ -624,15 +557,9 @@ double *make_gls(DATA *d, int calc_residuals) {
 		data = get_gstat_data();
 		glm = (GLM *) data[0]->glm;
 	}
-	if (glm && (glm->C || glm->spC)) { /* renew: variogram may have changed */
-		if (! gl_sparse)
-			m_free((MAT *) glm->C);
-#ifdef HAVE_SPARSE
-		else
-			sp_free((SPMAT *) glm->spC);
-#endif
+	if (glm && glm->C) { /* renew: variogram may have changed */
+		m_free((MAT *) glm->C);
 		glm->C = MNULL;
-		glm->spC = NULL;
 	} 
 	select_at(d, NULL); /* where == NULL --> global selection */
 	if (calc_residuals) {
@@ -704,7 +631,6 @@ static GLM *new_glm(void) {
 
 	glm = (GLM *) emalloc(sizeof(GLM));
 	glm->X = glm->C = glm->CinvX = glm->XCinvX = MNULL;
-	glm->spC = NULL;
 	glm->y = glm->mu = glm->mu0 = glm->beta = VNULL;
 	return glm;
 }
@@ -732,13 +658,7 @@ void free_glm(void *v_glm) {
 		v_free(glm->mu0);
 	if (glm->mu)
 		v_free(glm->mu);
-	/* EJPXX
-	if (glm->mu)
-		v_free(glm->mu);
-	if (glm->mu0)
-		v_free(glm->mu0);
-	*/
-	free(glm);
+	efree(glm);
 }
 
 static void convert_C(MAT *C, VEC *mu, double (*fn)(double)) {
@@ -825,140 +745,3 @@ static MAT *get_corr_mat(MAT *C, MAT *R) {
 		R->me[i][i] = 1.0;
 	return(R);
 }
-
-#ifndef USING_R
-static void plot_weights(DATA **d, int nvars, DPOINT *where, MAT *weights) {
-	int i, j, k, l, ps;
-	static int ps_min = 0, ps_max = 0, *index = NULL /*, gif = 0 */ ;
-
-	if (gl_plotweights == 0) /* only plotfile was specified: */
-		gl_plotweights = 1;
-	/* plot labels: weights */
-	fprintf(plotfile, "# at location (%g, %g):\n", where->x, where->y);
-	fprintf(plotfile, "reset; set size ratio -1; set key outside\n");
-	switch (gl_plotweights) {
-		case 1:
-			for (k = 0; k < nvars; k++) {
-				for (i = l = 0; i < nvars; i++) {
-					fprintf(plotfile, "# variable %d:\n", i);
-					for (j = 0; j < d[i]->n_sel; j++)
-						fprintf(plotfile, "set label \" %.3f\" at %g,%g left\n",
-							weights->me[l++][k], d[i]->sel[j]->x, 
-							d[i]->sel[j]->y);
-				}
-				/* plot command: */
-				fprintf(plotfile, "plot ");
-				for (i = 0; i < nvars; i++)
-					fprintf(plotfile, "'-' title '%s',", name_identifier(i));
-				/* plot where: */
-				fprintf(plotfile, "'-' title 's_0'\n");
-				/* inline data: */
-				for (i = 0; i < nvars; i++) {
-					for (j = 0; j < d[i]->n_sel; j++)
-						fprintf(plotfile, "%g %g\n", d[i]->sel[j]->x, 
-							d[i]->sel[j]->y);
-					fprintf(plotfile, "e\n");
-				}
-				/* end & data where: */
-				fprintf(plotfile, "%g %g\ne\n", where->x, where->y);
-				fprintf(plotfile, "pause -1\nreset\n");
-			} /* for k */
-			break;
-		default: /* for var 0 only: */
-			/* fprintf(plotfile, "set term gif; set out 'foo%05d.gif'\n", 
-				gif++); */
-			assert(weights->m >= d[0]->n_sel);
-			if (index == NULL) /* point sizes & sign -> pos/neg weights */
-				index = (int *) emalloc(sizeof(int) * d[0]->n_list);
-			for (i = 0; i < d[0]->n_list; i++)
-				index[i] = 0;
-			/* classify points in neighbourhood selection: */
-			for (i = 0; i < d[0]->n_sel; i++) {
-				ps = (int) floor(fabs(weights->me[i][0]) * gl_plotweights);
-				ps++;
-				if (weights->me[i][0] < 0)
-					ps = -ps;
-				if (ps < ps_min)
-					ps_min = ps;
-				if (ps > ps_max)
-					ps_max = ps;
-				index[GET_INDEX(d[0]->sel[i])] = ps;
-			}
-			fprintf(plotfile, "plot ");
-			for (i = ps_min; i < 0; i++) 
-				fprintf(plotfile, "'-' title '[%g - %g]' lt 2 pt 1 ps %d,", 
-					(i+1.0)/gl_plotweights, (1.0 * i)/gl_plotweights, -i);
-			for (i = 1; i <= ps_max; i++) 
-				fprintf(plotfile, "'-' title '[%g - %g]' lt 1 pt 1 ps %d,", 
-					(i-1.0)/gl_plotweights, (1.0 * i)/gl_plotweights, i);
-			fprintf(plotfile, "'-' title 'not considered' lt 0 pt 2 ps 1,");
-			fprintf(plotfile, "'-' title 's_0' lt 3 pt 3 ps 1\n");
-			for (i = ps_min; i < 0; i++) {
-				for (j = 0; j < d[0]->n_list; j++)
-					if (index[j] == i)
-						fprintf(plotfile, "%g %g\n", d[0]->list[j]->x, 
-							d[0]->list[j]->y);
-				fprintf(plotfile, "e\n");
-			}
-			for (i = 1; i <= ps_max; i++) {
-				for (j = 0; j < d[0]->n_list; j++)
-					if (index[j] == i)
-						fprintf(plotfile, "%g %g\n", d[0]->list[j]->x, 
-							d[0]->list[j]->y);
-				fprintf(plotfile, "e\n");
-			}
-			for (j = 0; j < d[0]->n_list; j++)
-				if (index[j] == 0)
-					fprintf(plotfile, "%g %g\n", d[0]->list[j]->x, 
-						d[0]->list[j]->y);
-			fprintf(plotfile, "e\n");
-			fprintf(plotfile, "%g %g\ne\n", where->x, where->y);
-			break;
-	}
-	fprintf(plotfile, "\n"); /* newline before next point location */
-	return;
-}
-#endif /* USING_R */
-
-#ifdef HAVE_SPARSE
-/* sp_foutput -- output sparse matrix A to file/stream fp */
-void    sp_logoutput(SPMAT *A)
-{
-	int     i, j_idx, m /* , n */;
-	SPROW  *rows;
-	row_elt *elts;
-
-	printlog("SparseMatrix: ");
-	if ( A == SMNULL )
-	{
-		printlog("*** NULL ***\n");
-		error(E_NULL,"sp_foutput");    return;
-	}
-	printlog("%d by %d\n",A->m,A->n);
-	m = A->m;       /* n = A->n; */
-	if ( ! (rows=A->row) )
-	{
-		printlog("*** NULL rows ***\n");
-		error(E_NULL,"sp_foutput");    return;
-	}
-
-	for ( i = 0; i < m; i++ )
-	{
-		printlog("row %d: ",i);
-		if ( ! (elts=rows[i].elt) )
-		{
-			printlog("*** NULL element list ***\n");
-			continue;
-		}
-		for ( j_idx = 0; j_idx < rows[i].len; j_idx++ )
-		{
-			printlog("%d:%-20.15g ",elts[j_idx].col,
-							elts[j_idx].val);
-			if ( j_idx % 3 == 2 && j_idx != rows[i].len-1 )
-				printlog("\n     ");
-		}
-		printlog("\n");
-	}
-	printlog("#\n");	/* to stop looking beyond for next entry */
-}
-#endif

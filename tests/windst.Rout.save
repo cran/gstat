@@ -1,5 +1,5 @@
 
-R version 3.2.1 (2015-06-18) -- "World-Famous Astronaut"
+R version 3.2.2 (2015-08-14) -- "Fire Safety"
 Copyright (C) 2015 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -88,14 +88,20 @@ Type 'q()' to quit R.
 + all.equal(wind.pr0, wind.ST)
 + }
 Loading required package: rgdal
-rgdal: version: 1.0-4, (SVN revision 463)
+rgdal: version: 1.0-7, (SVN revision 559)
  Geospatial Data Abstraction Library extensions to R successfully loaded
  Loaded GDAL runtime: GDAL 1.11.2, released 2015/02/10
  Path to GDAL shared files: /usr/local/share/gdal
- Loaded PROJ.4 runtime: Rel. 4.9.1, 04 March 2015, [PJ_VERSION: 491]
+ Loaded PROJ.4 runtime: Rel. 4.9.2, 08 September 2015, [PJ_VERSION: 492]
  Path to PROJ.4 shared files: (autodetected)
- Linking to sp version: 1.1-1 
+ Linking to sp version: 1.2-1 
 Loading required package: maps
+
+ # ATTENTION: maps v3.0 has an updated 'world' map.        #
+ # Many country borders and names have changed since 1990. #
+ # Type '?world' or 'news(package="maps")'. See README_v3. #
+
+
 Checking rgeos availability: TRUE
 [1] TRUE
 Warning message:
@@ -104,4 +110,4 @@ In krigeST(sqrt(values) ~ 1, w, STF(grd, tgrd), v) :
 > 
 > proc.time()
    user  system elapsed 
-  3.259   2.883   2.892 
+  2.968   2.228   2.472 

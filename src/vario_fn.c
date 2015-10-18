@@ -32,11 +32,9 @@
 #include <float.h>
 #include <math.h>
 
-#include "defs.h" /* config.h may define USING_R */
-#ifdef USING_R
+#include "defs.h"
 /* #define MATHLIB_STANDALONE */
 #include <Rmath.h>
-#endif
 
 #include "userio.h"
 #include "utils.h"
@@ -245,7 +243,6 @@ double da_is_zero(double h, double *r) {
 	return 0.0;
 }
 
-#ifdef USING_R
 double fn_matern(double h, double *p) {
 	double hr, ans, phi, kappa;
 
@@ -306,7 +303,6 @@ double fn_matern2(double h, double *p) {
 		return 1.0;
 	return 1.0 - bes * mult;
 }
-#endif
 
 static double bessi1(double x)
 /*

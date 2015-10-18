@@ -38,10 +38,8 @@
 
 #include "config.h"
 
-#ifdef USING_R
-# include <R.h>
-# include <Rinternals.h>
-#endif
+#include <R.h>
+#include <Rinternals.h>
 
 #include "defs.h"
 #include "read.h"
@@ -73,10 +71,6 @@ static SAMPLE_VGM *cross_variogram(DATA *a, DATA *b, SAMPLE_VGM *ev);
 static SAMPLE_VGM *covariogram(DATA *a, SAMPLE_VGM *ev);
 static SAMPLE_VGM *cross_covariogram(DATA *a, DATA *b, SAMPLE_VGM *ev);
 static int get_index(double dist, SAMPLE_VGM *ev);
-#ifndef USING_R
-static void ev2map(VARIOGRAM *v);
-static SAMPLE_VGM *load_ev(SAMPLE_VGM *ev, const char *fname);
-#endif
 static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev);
 static SAMPLE_VGM *semivariogram_grid(DATA *d, SAMPLE_VGM *ev);
 static void push_to_cloud(SAMPLE_VGM *ev, double gamma, double dist,
@@ -113,24 +107,12 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 		no output has to be written to file */ )
 {
 	DATA **d = NULL, *d1 = NULL, *d2 = NULL;
-#ifndef USING_R
-	FILE *f = NULL;
-#endif
 
 	assert(v);
 
 	d = get_gstat_data();
 	d1 = d[v->id1];
 	d2 = d[v->id2];
-#ifndef USING_R
-	if (v->fname && (d1->dummy || d2->dummy)) {
-		if ((v->ev = load_ev(v->ev, v->fname)) == NULL)
-			ErrMsg(ER_READ, "could not read sample variogram");
-		v->ev->cloud = 0;
-		v->ev->recalc = 0;
-		return 0;
-	}
-#endif
 	if (d1->sel == NULL) 
 		select_at(d1, NULL); /* global selection (sel = list) */
 	if (d2->sel == NULL)
@@ -199,17 +181,6 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 				break;
 		}
 	}
-#ifndef USING_R
-	if (v->ev->map && !v->ev->S_grid)
-		ev2map(v);
-	else if (fname != NULL) {
-		f = efopen(fname, "w");
-		fprint_header_vgm(f, d[v->id1], d[v->id2], v->ev);
-		fprint_sample_vgm(f, v->ev);
-	}
-	if (f && f != stdout)
-		return efclose(f);
-#endif
 	return 0;
 }
 
@@ -246,9 +217,7 @@ static SAMPLE_VGM *semivariogram_list(DATA *d, SAMPLE_VGM *ev) {
 
 	for (i = 0; i < d->n_sel; i++) {
 		print_progress((i / divide_by) * (i - 1) / 2, total_steps);
-#ifdef USING_R
 		R_CheckUserInterrupt();
-#endif
 		/*
 		printlog("step: %u of %u\n", (i /divide_by) * (i - 1) / 2, total_steps);
 		*/
@@ -399,9 +368,7 @@ static SAMPLE_VGM *semivariogram_grid(DATA *d, SAMPLE_VGM *ev) {
 			} /* if this grid cell is non-NULL */
 		} /* for all cols */
 		print_progress(row + 1, d->grid->rows);
-#ifdef USING_R
 		R_CheckUserInterrupt();
-#endif
 	} /* for all rows */
 	efree(grid_ev.gi);
 	return ev;
@@ -417,9 +384,7 @@ static SAMPLE_VGM *covariogram(DATA *d, SAMPLE_VGM *ev) {
 	ev = alloc_exp_variogram(d, NULL, ev);
 	for (i = 0; i < d->n_sel; i++) {
 		print_progress(i, d->n_sel);
-#ifdef USING_R
 		R_CheckUserInterrupt();
-#endif
 		for (j = 0; j <= (ev->map != NULL ? d->n_sel-1 : i); j++) {
 			ddist = valid_distance(d->sel[i], d->sel[j], ev->cutoff, 1,
 				d, d, (GRIDMAP *) ev->map);
@@ -465,9 +430,7 @@ static SAMPLE_VGM *cross_variogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {
 	ev = alloc_exp_variogram(a, b, ev);
 	for (i = 0; i < a->n_sel; i++) {
 		print_progress(i, a->n_sel);
-#ifdef USING_R
 		R_CheckUserInterrupt();
-#endif
 		for (j = 0; j < b->n_sel; j++) {
 			ddist = valid_distance(a->sel[i], b->sel[j], ev->cutoff,
 				gl_sym_ev || !ev->pseudo, a, b, (GRIDMAP *) ev->map); 
@@ -531,9 +494,7 @@ static SAMPLE_VGM *cross_covariogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {
 	ev->evt = CROSSCOVARIOGRAM;
 	ev = alloc_exp_variogram(a, b, ev);
 	for (i = 0; i < a->n_sel; i++) {      /* i -> a */
-#ifdef USING_R
 		R_CheckUserInterrupt();
-#endif
 		print_progress(i, a->n_sel);
 		for (j = 0; j < b->n_sel; j++) {  /* j -> b */
 			ddist = valid_distance(a->sel[i], b->sel[j], ev->cutoff,
@@ -665,12 +626,6 @@ void fill_cutoff_width(DATA *data /* pointer to DATA structure to derive
 			m->cellsizey = dg->cellsizey;
 			m->rows = dg->rows;
 			m->cols = dg->cols;
-		} else {
-#ifndef USING_R
-			m->filename = get_mask_name(0);
-			if ((m = map_read(m)) == NULL)
-				ErrMsg(ER_READ, "cannot open map");
-#endif
 		}
 		ev->iwidth = 1.0;
 		ev->cutoff = m->rows * m->cols; 
@@ -701,55 +656,6 @@ void fill_cutoff_width(DATA *data /* pointer to DATA structure to derive
 		}
 	}
 }
-
-#ifndef USING_R
-void fprint_header_vgm(FILE *f, const DATA *a, const DATA *b,
-			const SAMPLE_VGM *ev) {
-	time_t tp;
-	char *cp = NULL;
-	/* char *pwd; */
-
-	fprintf(f, "#gstat %s %s [%s]", GSTAT_OS, VERSION, command_line);
-	/* if (pwd = getenv("PWD")) fprintf(f, "(in %s)", pwd); */
-	fprintf(f, "\n");
-	fprintf(f, "#sample %s%s\n",
-		(ev->evt == CROSSVARIOGRAM && ev->pseudo ? "pseudo " : ""),
-		vgm_type_str[ev->evt]);
-	tp = time(&tp);
-	fprintf(f, "#%s", asctime(localtime(&tp))); /* includes \n */
-	cp = print_data_line(a, &cp);
-	fprintf(f, "#data(%s): %s", name_identifier(a->id), cp);
-	if (a != b) {
-		cp = print_data_line(b, &cp);
-		fprintf(f, " data(%s): %s", name_identifier(b->id), cp);
-	}
-	if (cp != NULL)
-		efree(cp);
-	fprintf(f, "\n");
-	fprintf(f, "#[1] mean: %g variance: %g", a->mean, a->std * a->std);
-	if (a != b)
-		fprintf(f, " [2] mean: %g variance: %g", b->mean, b->std * a->std);
-	fprintf(f, "\n");
-	fprintf(f, "#cutoff: %g ", ev->cutoff);
-	if (gl_bounds == NULL)
-		fprintf(f,"%s %g\n","interval width:", ev->iwidth);
-	else
-		fprintf(f, "(fixed boundaries)\n");
-	if (! ev->is_directional)
-		fprintf(f, "#direction: total ");
-	else
-		fprintf(f,"#alpha <x,y>: %gd +/- %g; beta <alpha,z>: %gd +/- %g%s", 
-			gl_alpha, gl_tol_hor, gl_beta, gl_tol_ver,
-			gl_sym_ev ? " (symmetric)" : "");
-	fprintf(f, "\n");
-	if (ev->cloud) 
-		fprintf(f, "# i  j distance %s cloud\n", vgm_type_str[ev->evt]);
-	else
-		fprintf(f, "#   from       to  n_pairs  av_dist %s\n",
-			vgm_type_str[ev->evt]);
-	return;
-}
-#endif
 
 static SAMPLE_VGM *alloc_exp_variogram(DATA *a, DATA *b, SAMPLE_VGM *ev) {
 	int i;
@@ -909,7 +815,7 @@ static void divide(SAMPLE_VGM *ev) {
 	}
 }
 
-void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev) {
+void fprint_sample_vgm(const SAMPLE_VGM *ev) {
 #define EVFMT "%8g %8g %8lu %8g %8g\n"
 	int i, n;
 	double from, to;
@@ -917,13 +823,8 @@ void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev) {
 	if (! ev->cloud) {
 		/* start writing: distance 0 */
 		if (ev->zero == ZERO_SPECIAL && ev->nh[ev->n_est-1])
-#ifndef USING_R
 			Rprintf(EVFMT, 0.0, 0.0, ev->nh[ev->n_est-1], 
 				ev->dist[ev->n_est-1], ev->gamma[ev->n_est-1]);
-#else 
-			fprintf(f, EVFMT, 0.0, 0.0, ev->nh[ev->n_est-1], 
-				ev->dist[ev->n_est-1], ev->gamma[ev->n_est-1]);
-#endif
 		/* continue writing: */
 		if (ev->zero == ZERO_SPECIAL || ev->zero == ZERO_AVOID)
 			n = ev->n_est - 1;
@@ -942,13 +843,8 @@ void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev) {
 					to = gl_bounds[i];
 				}
 				to = MIN(ev->cutoff, to);
-#ifndef USING_R
 				Rprintf(EVFMT, from, to, ev->nh[i],
 					ev->dist[i], ev->gamma[i]);
-#else
-				fprintf(f, EVFMT, from, to, ev->nh[i],
-					ev->dist[i], ev->gamma[i]);
-#endif
 				/*
 				for (j = 0; j < ev->nh[i]; j++)
 					fprintf(f, "[%d,%d] ",
@@ -960,114 +856,8 @@ void fprint_sample_vgm(FILE *f, const SAMPLE_VGM *ev) {
 		}
 	} else {
 		for (i = 0; i < ev->n_est; i++)
-#ifndef USING_R
 			Rprintf("%ld %ld %g %g\n", HIGH_NH(ev->nh[i]) + 1,
 				LOW_NH(ev->nh[i]) + 1, ev->dist[i], ev->gamma[i]);
-#else
-			fprintf(f, "%ld %ld %g %g\n", HIGH_NH(ev->nh[i]) + 1,
-				LOW_NH(ev->nh[i]) + 1, ev->dist[i], ev->gamma[i]);
-#endif
 	}
-#ifndef USING_R
-	fflush(f);
-#endif
 	return;
 } /* fprint_sample_vgm */
-
-#ifndef USING_R
-static void ev2map(VARIOGRAM *v) {
-	GRIDMAP *m1 = NULL, *m2 = NULL;
-	unsigned int row, col, i;
-	SAMPLE_VGM *ev;
-
-	if (v->fname == NULL)
-		return;
-	ev = v->ev;
-	m1 = map_dup(v->fname, ev->map);
-	if (v->fname2 != NULL)
-		m2 = map_dup(v->fname2, ev->map);
-	for (row = i = 0; row < m1->rows; row++) {
-		for (col = 0; col < m1->cols; col++) {
-			if (ev->nh[i] > 0)
-				map_put_cell(m1, row, col, ev->gamma[i]);
-			if (m2 != NULL)
-				map_put_cell(m2, row, col, 1.0 * ev->nh[i]);
-			i++;
-		}
-	}
-	m1->write(m1);
-	if (m2 != NULL)
-		m2->write(m2);
-	return;
-}
-
-static SAMPLE_VGM *load_ev(SAMPLE_VGM *ev, const char *fname) {
-	char *s = NULL, *tok;
-	int i, size = 0, incr = 100;
-	unsigned long l;
-	FILE *f;
-
-	f = efopen(fname, "r");
-	if (ev == NULL)
-		ev = init_ev();
-	ev->evt = SEMIVARIOGRAM;
-	for (i = 1; i <= 8; i++) {
-		get_line(&s, &size, f);
-		if (i == 6) {
-			tok = strtok(s, " "); /* word */
-			tok = strtok(NULL, " "); /* cutoff */
-			if (read_double(tok, &(ev->cutoff))) {
-				fclose(f); efree(s);
-				pr_warning("file: %s, line: %d, token: %s", fname, i, tok);
-				return NULL;
-			}
-			tok = strtok(NULL, " "); /* word */
-			tok = strtok(NULL, " "); /* word */
-			tok = strtok(NULL, " \n"); /* iwidth */
-			if (tok != NULL) {
-				if (read_double(tok, &(ev->iwidth))) {
-					fclose(f); efree(s);
-					pr_warning("file: %s, line: %d, token: %s", fname, i, tok);
-					return NULL;
-				}
-			} /* else part: what to do with ev->iwidth? */
-		}
-	}
-	while (get_line(&s, &size, f) != NULL) {
-		ev->n_est++;
-		if (ev->n_est >= ev->n_max) {
-			ev->n_max += incr;
-			ev->gamma = (double *) erealloc
-				(ev->gamma, sizeof(double) * ev->n_max);
-			ev->dist = (double *) erealloc
-				(ev->dist, sizeof(double) * ev->n_max);
-			ev->nh = (unsigned long *) erealloc
-				(ev->nh, sizeof(long) * ev->n_max);
-		}
-		tok = strtok(s, " "); /* from */
-		tok = strtok(NULL, " "); /* to */
-		tok = strtok(NULL, " "); /* nh */
-		if (read_ulong(tok, &l)) {
-			fclose(f); efree(s);
-			pr_warning("file: %s, line: %d, token: %s", fname, ev->n_est+8, tok);
-			return NULL;
-		}
-		ev->nh[ev->n_est-1] = l;
-		tok = strtok(NULL, " "); /* dist */
-		if (read_double(tok, &(ev->dist[ev->n_est-1]))) {
-			fclose(f); efree(s);
-			pr_warning("file: %s, line: %d, token: %s", fname, ev->n_est+8, tok);
-			return NULL;
-		}
-		tok = strtok(NULL, " \n"); /* semivariance or whatever */
-		if (read_double(tok, &(ev->gamma[ev->n_est-1]))) {
-			fclose(f); efree(s);
-			pr_warning("file: %s, line: %d, token: %s", fname, ev->n_est+8, tok);
-			return NULL;
-		}
-	}
-	efree(s);
-	efclose(f);
-	return ev;
-}
-#endif

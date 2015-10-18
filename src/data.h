@@ -224,11 +224,6 @@ typedef struct {		/* structure that holds data info and lists */
  */
 	DPOINT **list;		/* list of data points, of length n_list */
 	DPOINT *P_base;		/* base for pointer array, if allocated blockwise */
-#ifdef HAVE_EXT_DBASE
-/* CW members when data is held external (DATA_TYPE== DATA_EXT_DBASE) */
-	void   *ext_dbase;  /* ptr to EXTDBASE_LINK struct */
-/* CW end of edits */
-#endif
 
 	DPOINT **sel;			/* list of selection indices, of length n_sel */
 

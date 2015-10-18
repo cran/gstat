@@ -5,7 +5,7 @@
 Constructs a spatio-temporal variogram of a given type checking for a minimal set of parameters.
 }
 \usage{
-vgmST(stModel, ..., space, time, joint, sill, k, nugget, stAni)
+vgmST(stModel, ..., space, time, joint, sill, k, nugget, stAni, temporalUnits)
 }
 \arguments{
   \item{stModel}{A string indentifying the spatio-temporal variogram model.}
@@ -17,6 +17,7 @@ vgmST(stModel, ..., space, time, joint, sill, k, nugget, stAni)
   \item{k}{The weighting of the product in the product-sum model.}
   \item{nugget}{A joint spatio-temporal nugget.}
   \item{stAni}{A spatio-temporal anisotropy; the number of space units equivalent to one time unit.}
+  \item{temporalUnits}{length one character vector, indicating the temporal units (like secs)}
 }
 
 \details{
