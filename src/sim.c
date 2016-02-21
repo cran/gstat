@@ -1,31 +1,4 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
  * sim.c: functions, special to (un)conditional simulation
  */
 #include <stdio.h>
@@ -33,7 +6,6 @@
 
 #include "mtrx.h"
 #include "defs.h"
-#include "random.h"
 #include "debug.h"
 #include "glvars.h" /* gl_nsim */
 #include "userio.h"
@@ -41,10 +13,12 @@
 #include "gls.h"
 #include "utils.h"
 #include "lm.h"
+#include "s.h" /* r_uniform(), r_normal() */
 #include "sim.h"
 
 static void simulate_mvn(const double *est, VEC *result, const int *is_datum);
 static void simulate_uniform(double *est, VEC *result, int orc);
+
 static unsigned int n_orvc = 0, n_total = 0;
 
 const double *cond_sim(double *est, int dim, METHOD m, int *is_datum, int orc) {
@@ -101,40 +75,42 @@ static void simulate_mvn(const double *est, VEC *result, const int *is_datum) {
 	 * now dim is the number of pos. variances,
 	 * p points their position
 	 */
-	M = m_resize(M, dim, dim);
-	for (i = 0; i < dim; i++) {
-		M->me[i][i] = est[2 * p->pe[i] + 1]; /* variances on diagonal */
-		for (j = 0; j < i; j++) /* off-diagonal: covariances */
-			M->me[j][i] = M->me[i][j] =
-				est[2 * result->dim + LTI2(p->pe[j],p->pe[i])];
-	}
-	if (DEBUG_COV) {
-		printlog("# simulation covariance matrix:\n");
-		m_logoutput(M);
-	}
-	/* decompose M: */
-	M = CHfactor(M, &info);
-	if (info != 0)
-		pr_warning("singular simulation covariance matrix");
-	if (DEBUG_COV) {
-		printlog("# decomposed error covariance matrix:\n");
-		m_logoutput(M);
-	}
-	/* zero upper triangle: */
-	for (i = 0; i < M->m; i++) 
-		for (j = i + 1; j < M->m; j++)
-			M->me[i][j] = 0.0;
-	/* make ind a iid N(0,1) vector */
-	ind = v_resize(ind, dim);
-	for (i = 0; i < dim; i++)
-		ind->ve[i] = r_normal(); /* generate N(0,1) independent samples */
-	/* make MVN */
-	sim = v_resize(sim, dim);
-	sim = mv_mlt(M, ind, sim); /* create zero mean correlated noise */
-	if (DEBUG_COV) {
-		printlog("# correlated noise vector:\n");
-		v_logoutput(sim);
-	}
+	if (dim > 0) { /* there is something to be simulated */
+		M = m_resize(M, dim, dim);
+		for (i = 0; i < dim; i++) {
+			ME(M, i, i) = est[2 * p->pe[i] + 1]; /* variances on diagonal */
+			for (j = 0; j < i; j++) /* off-diagonal: covariances */
+				ME(M, j, i) = ME(M, i, j) =
+					est[2 * result->dim + LTI2(p->pe[j],p->pe[i])];
+		}
+		if (DEBUG_COV) {
+			printlog("# simulation covariance matrix:\n");
+			m_logoutput(M);
+		}
+		/* decompose M: */
+		M = CHfactor(M, PNULL, &info);
+		if (info != 0)
+			pr_warning("singular simulation covariance matrix");
+		if (DEBUG_COV) {
+			printlog("# decomposed error covariance matrix:\n");
+			m_logoutput(M);
+		}
+		/* zero upper triangle: */
+		for (i = 0; i < M->m; i++) 
+			for (j = i + 1; j < M->m; j++)
+				ME(M, i, j) = 0.0;
+		/* make ind a iid N(0,1) vector */
+		ind = v_resize(ind, dim);
+		for (i = 0; i < dim; i++)
+			ind->ve[i] = r_normal(); /* generate N(0,1) independent samples */
+		/* make MVN */
+		sim = v_resize(sim, dim);
+		sim = mv_mlt(M, ind, sim); /* create zero mean correlated noise */
+		if (DEBUG_COV) {
+			printlog("# correlated noise vector:\n");
+			v_logoutput(sim);
+		}
+	} 
 	/* fill result vector: */
 	for (i = j = 0; i < result->dim; i++) {
 		if (j < dim && i == p->pe[j]) { /* simulated */

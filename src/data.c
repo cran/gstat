@@ -1,39 +1,8 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
  *  data.c: basic i/o routines on DATA structure 
  */
-#include <stdio.h>
-#include <stdlib.h> /* qsort() */
-#include <math.h>
-#include <string.h>
-#include <limits.h>
-#include <float.h>
+#include <math.h> /* sqrt */
+#include <string.h> /* memcpy */
 
 #include "defs.h"
 #include "data.h"
@@ -42,9 +11,7 @@
 #include "utils.h"
 #include "block.h"
 #include "debug.h"
-#include "read.h"
 #include "glvars.h"
-#include "random.h"
 #include "defaults.h"
 #include "mtrx.h"
 #include "lm.h" /* free_lm() */
@@ -92,12 +59,6 @@ static double pb_norm_gc2(const DPOINT *where, BBOX bbox);
 
 static void free_data_gridmap(DATA_GRIDMAP *t);
 static void logprint_data_header(const DATA *d);
-
-#ifdef HAVE_LIBGIS
-#include "gis.h"
-#include "site.h"
-static DATA *read_grass_data(DATA * d);
-#endif
 
 static DPOINT min, max;
 static int fix_minmax = 0;
@@ -257,104 +218,6 @@ void centre_area(DATA *area) {
 	area->maxY -= p.y;
 	area->minZ -= p.z;
 	area->maxZ -= p.z;
-}
-
-void report_data(const DATA *d) {
-	int i, j;
-	char tmp[11];
-/*
- * OUTPUT information on data read: 
- */
-
- 	tmp[10] = '\0';
-
- 	if (d->dummy) {
- 		printlog("[dummy variable]\n");
- 		return;
- 	}
-/*
-gstat 2.0a (December 1997) for Linux
-Copyright (C) 1992, 1997 Edzer J. Pebesma
-data(a):                  xx     (GeoEAS file)
-attribute:         zinc, ppm     [x:] xcoord, m  : [    178605,    181390]
-n:                       155     [y:] ycoord, m  : [    329714,    333611]
-sample mean:         469.716     [z:] zinc, ppm  : [       113,      1839]
-sample std.:         367.074     [V:] zinc, ppm  : [       113,      1839]
-data():                  xx     (GeoEAS file)
-attribute:            col. 0     [x:] xcoord, m  : [    178605,    181390]
-n:                       155     [y:] ycoord, m  : [    329714,    333611]
-                                 [z:] zinc, ppm  : [       113,      1839]
-                                 [V:] zinc, ppm  : [       113,      1839]
-                                 [s:] zinc, ppm  [       113,      1839]
-*/
-	i = (d->id == ID_OF_VALDATA ? 0 : strlen(name_identifier(d->id)));
-	j = 21 - strlen(d->fname);
-	for ( ; i < j; i++)
-		printlog(" ");
-	printlog("%s     (%s)\n", d->fname, d->type.name);
-	printlog("attribute: %18s     ", NULS(d->variable));
-
-	if (d->mode & X_BIT_SET)
-		printlog("[x:] %-10s : [%10g,%10g]", 
-			strncpy(tmp, NULS(d->x_coord), 10), d->minX, d->maxX);
-
-	printlog("\n");
-
-	printlog("n: ");
-	if (d->n_averaged > 0)
-		printlog(" [avgd. %4d] %12d     ", d->n_averaged, d->n_list); 
-	else
-		printlog("%26d     ", d->n_list);
-
-	if (d->mode & Y_BIT_SET)
-		printlog("[y:] %-10s : [%10g,%10g]",
-			strncpy(tmp, NULS(d->y_coord), 10), d->minY, d->maxY);
-	printlog("\n");
-
-	if (d->mode & V_BIT_SET) {
-		printlog("sample mean: %16g     ", d->mean);
-		if (d->mode & Z_BIT_SET) {
-			printlog("[z:] %-10s : [%10g,%10g]\n",
-				strncpy(tmp, NULS(d->z_coord), 10), d->minZ, d->maxZ);
-		} 
-		printlog("sample std.: %16g     ", d->std);
-		if (!d->colnvariance || !(d->mode & Z_BIT_SET))
-			printlog("\n");
-	}
-
-	if ((d->mode & Z_BIT_SET) && !(d->mode & V_BIT_SET)) {
-		printlog("%-33s", " ");
-		printlog("[z:] %-10s : [%10g,%10g]\n",
-			strncpy(tmp, NULS(d->z_coord), 10), d->minZ, d->maxZ);
-	}
-
-	if (d->colnvariance) {
-		if (!(d->mode & V_BIT_SET))
-			printlog("%-33s", " ");
-			printlog("[V:] %-10s : [%10g,%10g]\n",
-			strncpy(tmp, NULS(d->V_coord), 10), d->minvariance, d->maxvariance);
-	}
-
-	if (d->colns)
-		printlog("%-33s[s:] %-10s : [%10d,%10d]\n", " ",
-		strncpy(tmp, NULS(d->s_coord), 10), d->minstratum, d->maxstratum);
-
-	if (d->n_X > 1 || (d->n_X == 1 && d->colX[0] != 0)) {
-		printlog("base functions:"); 
-		for (i = 0; i < d->n_X; i++) {
-			printlog("%s", i ? ", " : " ");
-			if (d->colX[i] <= 0) {
-				if (d->colX[i] == 0)
-					printlog("intercept");
-				else
-					printlog("%s", POLY_NAME(d->colX[i]));
-			} else
-				printlog("column %d", d->colX[i]);
-		}
-		printlog("\n"); 
-	}
-	/* fflush(dest); */
-	return;
 }
 
 static void calc_data_mean_std(DATA *d) {
@@ -580,8 +443,8 @@ DATA *init_one_data(DATA *data) {
 	data->average = 0;
 	data->every = 1;
 	data->offset = 0;
-	data->skip = 0;
 	data->prob = 1.0;
+	data->skip = 0;
 	data->lambda = 1.0;
 	data->calc_residuals = 1;
 	data->is_residual = 0;
@@ -670,12 +533,6 @@ void print_data(const DATA *d, int list) {
 		printlog("current list:\n");
 		logprint_data_header(d);
 		if (d->n_list) {
-#ifdef HAVE_EXT_DBASE
-         if (d->type.type == DATA_EXT_DBASE)
-			printlog("<extdbase>\n");
-		 else
-#endif
-
 			for (i = 0; i < d->n_list; i++)
 				logprint_point(d->list[i], d);
 		} else
@@ -692,10 +549,10 @@ void print_data(const DATA *d, int list) {
 }
 
 static void logprint_data_header(const DATA *d) {
-	printlog("\nidx x:%s;", save_string(d->x_coord));
-	printlog("y:%s;", save_string(d->y_coord));
-	printlog("z:%s;", save_string(d->z_coord));
-	printlog("v:%s;\n", save_string(d->variable));
+	printlog("\nidx x:%s;", d->x_coord);
+	printlog("y:%s;", d->y_coord);
+	printlog("z:%s;", d->z_coord);
+	printlog("v:%s;\n", d->variable);
 }
 
 void logprint_point(const DPOINT *p, const DATA *d) {
@@ -718,7 +575,7 @@ void logprint_point(const DPOINT *p, const DATA *d) {
 	for (j = 0; j < d->n_X; j++)
 		printlog("X[%d]: %6g ", j, p->X[j]);
     if (d->point_ids)
-        printlog("ID: %s ", save_string(d->point_ids[GET_INDEX(p)]));
+        printlog("ID: %s ", d->point_ids[GET_INDEX(p)]);
 	printlog("\n");
 }
 
@@ -730,8 +587,7 @@ void push_point(DATA *d, const DPOINT *p) {
  */
 
  	if (d->prob < 1.0) {
-		if (r_uniform() > d->prob)
-			return;
+		ErrMsg(ER_IMPOSVAL, "sample in R, not in gstat");
 	} else if (d->every > 1) {
 		/* EJP: WAS  if ((d->n_list + d->offset) % d->every != 0) */
 		if ((d->n_list + d->skip + 1 - d->offset) % d->every != 0) {

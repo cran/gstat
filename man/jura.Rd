@@ -62,8 +62,9 @@ metals in the soil in the Swiss Jura: European Journal of Soil Science
 }
 \note{
 The points data sets were obtained from
-\url{http://home.comcast.net/~pgoovaerts/book.html}, the grid data
-were kindly provided by Pierre Goovaerts.
+http://home.comcast.net/~pgoovaerts/book.html, which seems to be
+no longer available; the grid data were kindly provided by Pierre
+Goovaerts.
 
 The following codes were used to convert \code{prediction.dat}
 and \code{validation.dat} to \code{jura.pred} and \code{jura.val}

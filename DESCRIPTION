@@ -1,6 +1,5 @@
 Package: gstat
-Version: 1.1-0
-Date: 2015-10-14
+Version: 1.1-1
 Title: Spatial and Spatio-Temporal Geostatistical Modelling, Prediction
         and Simulation
 Authors@R: c(person("Edzer", "Pebesma", role = c("aut", "cre"), email = "edzer.pebesma@uni-muenster.de"),
@@ -9,13 +8,14 @@ Description: Variogram modelling; simple, ordinary and universal point or block 
 Depends: R (>= 2.10)
 Imports: utils, stats, graphics, methods, lattice, sp (>= 0.9-72), zoo,
         spacetime (>= 1.0-0), FNN
-Suggests: rgdal (>= 0.5.2), rgeos, fields, mapdata, maptools, xts
+Suggests: rgdal (>= 0.5.2), rgeos, fields, maps, mapdata, maptools, xts
 License: GPL (>= 2.0)
-URL: https://r-forge.r-project.org/projects/gstat/
+URL: https://github.com/edzer/gstat/
+BugReports: https://github.com/edzer/gstat/issues/
 NeedsCompilation: yes
-Packaged: 2015-10-17 19:09:22 UTC; edzer
+Packaged: 2016-02-21 16:32:54 UTC; edzer
 Author: Edzer Pebesma [aut, cre],
   Benedikt Graeler [aut]
 Maintainer: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
 Repository: CRAN
-Date/Publication: 2015-10-18 10:32:54
+Date/Publication: 2016-02-21 19:51:52

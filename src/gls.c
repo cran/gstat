@@ -1,31 +1,4 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
 gls.c: module for multivariable generalized least squares prediction
 given a linear model Y = X Beta + e, gls() calculates from
 the selection d[0]->sel,...,d[n_vars-1]->sel, the multivariable
@@ -62,21 +35,19 @@ beta  parameter vector [p x 1]: E(y) = X beta
       (Note: Christensen's x0 is Ver Hoefs X0'; I use x0: e.g. x0'beta).
 */
 
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h> /* free */
-#include "config.h"
-#include "mtrx.h"
+#include <stdio.h> /* size_t */
+#include <math.h>  /* sqrt() */
+
 #include "defs.h"
 #include "data.h"
 #include "utils.h"
 #include "select.h"
+#include "mtrx.h"
 #include "lm.h"
 #include "vario.h"
 #include "vario_io.h"
 #include "glvars.h"
 #include "userio.h"
-#include "plot.h"
 #include "debug.h"
 #include "gls.h"
 
@@ -130,6 +101,7 @@ void gls(DATA **d /* pointer to DATA array */,
 	static MAT *X0 = MNULL, *C0 = MNULL, *MSPE = MNULL, *CinvC0 = MNULL,
 		*Tmp1 = MNULL, *Tmp2 = MNULL, *Tmp3 = MNULL, *R = MNULL;
 	static VEC *blup = VNULL, *tmpa = VNULL, *tmpb = VNULL;
+	PERM *piv = PNULL;
 	volatile unsigned int i, rows_C;
 	unsigned int j, k, l = 0, row, col, start_i, start_j, start_X, global,
 		one_nbh_empty;
@@ -184,7 +156,7 @@ void gls(DATA **d /* pointer to DATA array */,
 		for (i = 0; i < n_vars; i++) { /* Cij(0,0): */
 			for (j = 0; j <= i; j++) {
 				v = get_vgm(LTI(d[i]->id,d[j]->id));
-				MSPE->me[i][j] = MSPE->me[j][i] = COVARIANCE0(v, where, where, d[j]->pp_norm2);
+				ME(MSPE, i, j) = ME(MSPE, j, i) = COVARIANCE0(v, where, where, d[j]->pp_norm2);
 			}
 		}
 		fill_est(NULL, blup, MSPE, n_vars, est); /* in case of empty neighbourhood */
@@ -227,6 +199,8 @@ void gls(DATA **d /* pointer to DATA array */,
 
 		if (pred != UPDATE) {
 			glm->C = m_resize(glm->C, rows_C, rows_C);
+			if (gl_choleski == 0) /* use LDL' decomposition, allocate piv: */
+				piv = px_resize(piv, rows_C);
 			m_zero(glm->C);
 			glm->X = get_X(d, glm->X, n_vars);
 			M_DEBUG(glm->X, "X");
@@ -247,9 +221,9 @@ void gls(DATA **d /* pointer to DATA array */,
 							/* on the diagonal, if necessary, add measurement error variance */
 							if (d[i]->colnvariance && i == j && k == l)
 								c_value += d[i]->sel[k]->variance;
-							glm->C->me[row][col] = c_value;
-							if (row != col)
-								glm->C->me[col][row] = c_value;
+							ME(glm->C, col, row) = c_value; /* fill upper */
+							if (col != row)
+								ME(glm->C, row, col) = c_value; /* fill all */
 						} /* for l */
 					} /* for k */
 					start_j += d[j]->n_sel;
@@ -270,51 +244,46 @@ void gls(DATA **d /* pointer to DATA array */,
 
 			if (DEBUG_COV && pred == GLS_BLUP)
 				printlog("[using generalized covariances: max_val - semivariance()]");
-			M_DEBUG(glm->C, "Covariances (x_i, x_j) matrix C (lower triangle only)");
+			M_DEBUG(glm->C, "Covariances (x_i, x_j) matrix C (upper triangle)");
 /* 
  * factorize C: 
  */
-			LDLfactor(glm->C, &info);
+			CHfactor(glm->C, piv, &info);
 			if (info != 0) { /* singular: */
-				pr_warning("Covariance matrix (nearly) singular at location [%g,%g,%g]: skipping...",
+				pr_warning("Covariance matrix singular at location [%g,%g,%g]: skipping...",
 					where->x, where->y, where->z);
 				m_free(glm->C); glm->C = MNULL; /* assure re-entrance if global */
+				P_FREE(piv);
 				return;
 			}
-			M_DEBUG(glm->C, "glm->C");
+			if (piv == NULL)
+				M_DEBUG(glm->C, "glm->C, Choleski decomposed:")
+			else
+				M_DEBUG(glm->C, "glm->C, LDL' decomposed:")
 		} /* if (pred != UPDATE) */
 		if (pred != GLS_BLP && !UPDATE_BLP) { /* C-1 X and X'C-1 X, beta */
 /* 
  * calculate CinvX: 
  */
-    		tmpa = v_resize(tmpa, rows_C);
-    		for (i = 0; i < glm->X->n; i++) {
-				tmpa = get_col(glm->X, i, tmpa);
-				tmpb = LDLsolve(glm->C, tmpa, tmpb);
-				set_col(glm->CinvX, i, tmpb);
-			}
+			glm->CinvX = CHsolve(glm->C, glm->X, glm->CinvX, piv);
 			/* M_DEBUG(glm->CinvX, "C-1 X"); */
 /* 
  * calculate X'C-1 X: 
  */
 			glm->XCinvX = mtrm_mlt(glm->X, glm->CinvX, glm->XCinvX); /* X'C-1 X */
 			M_DEBUG(glm->XCinvX, "X'C-1 X");
-			if (gl_cn_max > 0.0 && is_singular(glm->XCinvX, gl_cn_max)) {
-				pr_warning("X'C-1 X matrix (nearly) singular at location [%g,%g,%g]: skipping...",
-					where->x, where->y, where->z);
-				m_free(glm->C); glm->C = MNULL; /* assure re-entrance if global */
-				return;
-			}
-			m_inverse(glm->XCinvX, glm->XCinvX, &info);
+			m_inverse(glm->XCinvX, &info);
 			if (info != 0) { /* singular: */
 				pr_warning("X'C-1 X matrix singular at location [%g,%g,%g]: skipping...",
 					where->x, where->y, where->z);
 				m_free(glm->C); glm->C = MNULL; /* assure re-entrance if global */
+				P_FREE(piv);
 				return;
 			}
 /* 
  * calculate beta: 
  */
+    		tmpa = v_resize(tmpa, rows_C);
 			tmpa = vm_mlt(glm->CinvX, glm->y, tmpa); /* X'C-1 y */
 			glm->beta = vm_mlt(glm->XCinvX, tmpa, glm->beta); /* (X'C-1 X)-1 X'C-1 y */
 			V_DEBUG(glm->beta, "beta");
@@ -339,6 +308,7 @@ void gls(DATA **d /* pointer to DATA array */,
 		m_mlt(Tmp1, X0, MSPE); /* X0'(X'C-1X)-1 X0 */
 		fill_est(d, blup, MSPE, n_vars, est);
 		debug_result(blup, MSPE, pred);
+		P_FREE(piv);
 		return; /* Quit function */
 	}
 
@@ -356,9 +326,9 @@ void gls(DATA **d /* pointer to DATA array */,
 			v = get_vgm(LTI(d[i]->id, d[j]->id));
 			for (k = 0; k < d[j]->n_sel; k++) {
 				if (pred == GLS_BLUP)
-					C0->me[start_j+k][i] = GCV0(v, d[j]->sel[k], where, d[j]->pp_norm2);
+					ME(C0, start_j+k, i) = GCV0(v, d[j]->sel[k], where, d[j]->pp_norm2);
 				else
-					C0->me[start_j+k][i] = COVARIANCE0(v, d[j]->sel[k], where, d[j]->pp_norm2);
+					ME(C0, start_j+k, i) = COVARIANCE0(v, d[j]->sel[k], where, d[j]->pp_norm2);
 			}
 			start_j += d[j]->n_sel;
 		}
@@ -378,12 +348,7 @@ void gls(DATA **d /* pointer to DATA array */,
 /* 
  * calculate CinvC0: 
  */
-   	tmpa = v_resize(tmpa, rows_C);
-   	for (i = 0; i < n_vars; i++) {
-		tmpa = get_col(C0, i, tmpa);
-		tmpb = LDLsolve(glm->C, tmpa, tmpb);
-		set_col(CinvC0, i, tmpb);
-	}
+	CinvC0 = CHsolve(glm->C, C0, CinvC0, piv);
 	M_DEBUG(CinvC0, "C-1 C0");
 
 	if (pred == GLS_BLP || UPDATE_BLP) {
@@ -404,6 +369,7 @@ void gls(DATA **d /* pointer to DATA array */,
 		V_DEBUG(glm->mu, "mean values (mu_i)");
 
 		/* y - mu_i: */
+   		tmpa = v_resize(tmpa, rows_C);
 		v_sub(glm->y, glm->mu, tmpa);
 		V_DEBUG(tmpa, "Residual vector (y - mu_i)");
 
@@ -425,6 +391,7 @@ void gls(DATA **d /* pointer to DATA array */,
 		m_sub(MSPE, Tmp2, MSPE); /* C(0,0) - C0'C-1 C0 */
 		fill_est(d, blup, MSPE, n_vars, est);
 		debug_result(blup, MSPE, pred);
+		P_FREE(piv);
 		return; /* Quit function */
 	}
 
@@ -442,7 +409,7 @@ void gls(DATA **d /* pointer to DATA array */,
 	for (i = 0; i < n_vars; i++) {
 		for (j = 0; j <= i; j++) {
 			v = get_vgm(LTI(d[i]->id, d[j]->id));
-			MSPE->me[i][j] = MSPE->me[j][i] = GCV0(v, where, where, d[j]->pp_norm2);
+			ME(MSPE, i, j) = ME(MSPE, j, i) = GCV0(v, where, where, d[j]->pp_norm2);
 		}
 	}
 	M_DEBUG(MSPE, "[a] Cov_ij(B,B) or Cov_ij(0,0)");
@@ -471,7 +438,7 @@ void gls(DATA **d /* pointer to DATA array */,
  */
 	fill_est(d, blup, MSPE, n_vars, est);
 	debug_result(blup, MSPE, pred);
-	if (DEBUG_COV || plotfile) { /* calculate kriging weights explicitly: */
+	if (DEBUG_COV) { /* calculate kriging weights explicitly: */
 		/* Tmp3' * glm->CinvX' + CinvC0 */
 		Tmp1 = m_mlt(glm->CinvX, Tmp3, Tmp1);
 		Tmp2 = m_add(Tmp1, CinvC0, Tmp2);
@@ -479,6 +446,7 @@ void gls(DATA **d /* pointer to DATA array */,
 		if (DEBUG_COV)
 			printlog("\n\n");
 	}
+	P_FREE(piv);
 	return;
 }
 
@@ -489,7 +457,7 @@ static void fill_est(DATA **d, VEC *blup, MAT *MSPE, int n_vars, double *est)
 
 	if (n_vars == 1) {
 		est[0] = blup->ve[0];
-		est[1] = MSPE->me[0][0];
+		est[1] = ME(MSPE, 0, 0);
 		return;
 	}
 	v = iv_resize(v, n_vars);
@@ -508,10 +476,10 @@ static void fill_est(DATA **d, VEC *blup, MAT *MSPE, int n_vars, double *est)
 	}
 	for (i = 0; i < n_filled; i++) { /* only adress non-empty variables */
 		est[2 * v->ive[i]] = blup->ve[v->ive[i]];
-		est[2 * v->ive[i] + 1] = MSPE->me[v->ive[i]][v->ive[i]];
+		est[2 * v->ive[i] + 1] = ME(MSPE, v->ive[i], v->ive[i]);
 		for (j = 0; j < i; j++)
 			est[2 * n_vars + LTI2(v->ive[i], v->ive[j])] =
-				MSPE->me[v->ive[i]][v->ive[j]];
+				ME(MSPE, v->ive[i], v->ive[j]);
 	}
 	return;
 }
@@ -563,7 +531,7 @@ double *make_gls(DATA *d, int calc_residuals) {
 	} 
 	select_at(d, NULL); /* where == NULL --> global selection */
 	if (calc_residuals) {
-		est = (double *) emalloc(get_n_outfile() * sizeof(double));
+		est = (double *) emalloc(get_n_outputs() * sizeof(double));
 		for (i = 0; i < d->n_list; i++) {
 			gls(&d, 1, GLS_BLUE, d->list[i], est);
 			glm = (GLM *) d->glm;
@@ -579,9 +547,9 @@ double *make_gls(DATA *d, int calc_residuals) {
 		glm = (GLM *) d->glm;
 		for (i = 0; i < glm->beta->dim; i++) {
 			est[2 * i] = glm->beta->ve[i];
-			est[2 * i + 1] = glm->XCinvX->me[i][i];
+			est[2 * i + 1] = ME(glm->XCinvX, i, i);
 			for (j = 0; j < i; j++)
-				est[2 * glm->beta->dim + LTI2(i,j)] = glm->XCinvX->me[i][j];
+				est[2 * glm->beta->dim + LTI2(i,j)] = ME(glm->XCinvX, i, j);
 		}
 	}
 	gls(NULL, 0, GLS_INIT, NULL, NULL);
@@ -614,11 +582,11 @@ double *make_gls_mv(DATA **d, int n_vars) {
 	for (i = 0; i < glm->beta->dim; i++) {
 		assert((2 * i + 1) < size);
 		est[2 * i] = glm->beta->ve[i];
-		est[2 * i + 1] = glm->XCinvX->me[i][i];
+		est[2 * i + 1] = ME(glm->XCinvX, i, i);
 		for (j = 0; j < i; j++) {
 			index = 2 * glm->beta->dim + LTI2(i,j);
 			assert(index < size);
-			est[index] = glm->XCinvX->me[i][j];
+			est[index] = ME(glm->XCinvX, i, j);
 		}
 	}
 	gls(NULL, 0, GLS_INIT, NULL, NULL);
@@ -673,10 +641,10 @@ static void convert_C(MAT *C, VEC *mu, double (*fn)(double)) {
 		/* be more friendly: */
 		if (mu->ve[i] < 0.0)
 			ErrMsg(ER_IMPOSVAL, "can not take square root of negative mean values!");
-		C->me[i][i] *= fn(mu->ve[i]);
+		ME(C, i, i) *= fn(mu->ve[i]);
 		sqrtfni = sqrt(fn(mu->ve[i]));
 		for (j = 0; j < i; j++)
-			C->me[i][j] *= sqrtfni * sqrt(fn(mu->ve[j]));
+			ME(C, i, j) *= sqrtfni * sqrt(fn(mu->ve[j]));
 	}
 }
 
@@ -692,7 +660,7 @@ static void convert_C0(MAT *C0, VEC *mu, VEC *mu0, double (*fn)(double)) {
 		assert(mu->ve[i] >= 0.0);
 		sqrtfni = sqrt(fn(mu->ve[i]));
 		for (j = 0; j < mu0->dim; j++)
-			C0->me[i][j] *= sqrtfni * sqrt(fn(mu0->ve[j]));
+			ME(C0, i, j) *= sqrtfni * sqrt(fn(mu0->ve[j]));
 	}
 }
 
@@ -705,11 +673,11 @@ static void convert_MSPE(MAT *MSPE, VEC *mu0, double (*fn)(double)) {
 
 	for (i = 0; i < mu0->dim; i++) {
 		assert(mu0->ve[i] >= 0.0);
-		MSPE->me[i][i] *= fn(mu0->ve[i]);
+		ME(MSPE, i, i) *= fn(mu0->ve[i]);
 		sqrtfni = sqrt(fn(mu0->ve[i]));
 		for (j = 0; j < i; j++) {
-			MSPE->me[i][j] *= sqrtfni * sqrt(fn(mu0->ve[j]));
-			MSPE->me[j][i] = MSPE->me[i][j];
+			ME(MSPE, i, j) *= sqrtfni * sqrt(fn(mu0->ve[j]));
+			ME(MSPE, j, i) = ME(MSPE, i, j);
 		}
 	}
 }
@@ -734,14 +702,14 @@ static MAT *get_corr_mat(MAT *C, MAT *R) {
 
 	R = m_copy(C, m_resize(R, C->m, C->n));
 	for (i = R->m - 1; i >= 0; i--) {
-		assert(R->me[i][i] > 0.0);
+		assert(ME(R, i, i) > 0.0);
 		for (j = 0; j < i; j++)
-			R->me[i][j] /= sqrt(R->me[i][i] * R->me[j][j]);
+			ME(R, i, j) /= sqrt(ME(R, i, i) * ME(R, j, j));
 		for (j = i + 1; j < R->m; j++)
-			R->me[i][j] = R->me[j][i];
+			ME(R, i, j) = ME(R, j, i);
 	}
 
 	for (i = 0; i < R->m; i++)
-		R->me[i][i] = 1.0;
+		ME(R, i, i) = 1.0;
 	return(R);
 }

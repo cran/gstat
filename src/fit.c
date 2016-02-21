@@ -1,31 +1,4 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
  * fit.c: fit variogram model to experimental variograms; gnuplot fit driver
  */
 #include <stdio.h>
@@ -33,26 +6,23 @@
 #include <string.h> /* strstr() */
 #include <math.h> /* fabs(), sqrt() */
 
+#include <R.h> /* Rprintf() */
+
 #include "mtrx.h"
 #include "defs.h"
 #include "defaults.h"
 #include "userio.h"
 #include "data.h"
 #include "utils.h"
-#include "read.h"
 #include "debug.h"
 #include "vario.h"
 #include "sem.h"
-#include "plot.h"
 #include "glvars.h"
 #include "reml.h"
 #include "lm.h"
 #include "fit.h"
 
-void Rprintf(const char *, ...);
-
-#define FIT_LOG     "fit.log"
-#define NEARLY_ZERO     1e-30
+#define NEARLY_ZERO     1.0e-30
 
 static void wls_fit(VARIOGRAM *vp);
 static double getSSErr(const VARIOGRAM *vp, PERM *p, LM *lm);
@@ -85,8 +55,7 @@ int fit_variogram(VARIOGRAM *v) {
 				v->part[i].sill = 1.0; /* avoid lot'o trouble */
 	}
 
-	if ((v->ev->fit == WLS_FIT_MOD || v->ev->fit == WLS_GNUFIT_MOD) &&
-			!is_variogram(v))
+	if (v->ev->fit == WLS_FIT_MOD && !is_variogram(v))
 		pr_warning("this fit method is not recommended for covariograms");
 	v->ev->direction.x = sin(gl_alpha * PI / 180.0) * cos(gl_beta * PI / 180.0);
 	v->ev->direction.y = cos(gl_alpha * PI / 180.0) * cos(gl_beta * PI / 180.0);
@@ -108,12 +77,8 @@ int fit_variogram(VARIOGRAM *v) {
 			reml_sills(d[v->id1], v);
 			break;
 		default:
-			ErrMsg(ER_IMPOSVAL, "fit_vgm(): value for fit not recognized");
-		/*
-		case LMC:
-			d = get_gstat_data();
-			fit_lmc(d, v, ...
-		*/
+			Rprintf("%d\n", v->ev->fit);
+			ErrMsg(ER_IMPOSVAL, "fit_vgm(): value for fit not recognized or not implemented");
 		/* no default: force compile warning on missing option! */
 	}
 	return 0;
@@ -144,16 +109,11 @@ static void wls_fit(VARIOGRAM *vp) {
 	} 
 	lm = init_lm(NULL);
 
-	if (gl_cn_max < 0.0)
-		lm->cn_max = 1.0/sqrt(MACHEPS);
-	else
-	 	lm->cn_max = gl_cn_max;
-
 	/* oldSSErr = getSSErr(vp, p, lm); */
 	do {
 		print_progress(n_iter, gl_iter);
-		if (DEBUG_VGMFIT) 
-			printlog("%s: ", vp->descr);
+		/* if (DEBUG_VGMFIT) 
+			printlog("%s: ", vp->descr); */
 		if ((vp->fit_is_singular = fit_GaussNewton(vp, p, lm, n_iter, &bounded))) {
 			pr_warning("singular model in variogram fit");
 			print_progress(gl_iter, gl_iter);
@@ -178,20 +138,13 @@ static void wls_fit(VARIOGRAM *vp) {
 					bounded ? "; bounded" : "");
 
 		oldSSErr = SSErr;
-
-		if (step < gl_fit_limit && step >= 0.0 && bounded == 0) 
-			timetostop = 1;
-		else if (n_iter > gl_iter)
-			timetostop = 1;
-		else 
-			timetostop = 0;
-
+		timetostop = (step < gl_fit_limit && step >= 0.0 && bounded == 0) || n_iter == gl_iter;
 	} while (! timetostop);
 
 	print_progress(gl_iter, gl_iter);
 
 	if (n_iter == gl_iter)
-		pr_warning("No convergence after %d iterations", n_iter);
+		pr_warning("No convergence after %d iterations: try different initial values?", n_iter);
 
 	if (DEBUG_VGMFIT) {
 		printlog("# iterations: %d, SSErr %g, last step %g", n_iter, SSErr, step);
@@ -231,8 +184,7 @@ static double getSSErr(const VARIOGRAM *vp, PERM *p, LM *lm) {
 	return SSErr;
 }
 
-static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, int iter,
-		int *bounded) {
+static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, int iter, int *bounded) {
 	double s = 0.0, x, y, z;
 	int i, j, n_fit, model, fit_ranges = 0;
 	IVEC *fit = NULL;
@@ -285,12 +237,12 @@ static int fit_GaussNewton(VARIOGRAM *vp, PERM *p, LM *lm, int iter,
 		for (j = 0; j < n_fit; j++) { /* cols */
 			if (fit->ive[j] < vp->n_models) {
 				model = fit->ive[j];
-				lm->X->me[i][j] = (is_variogram(vp) ?
+				ME(lm->X, i, j) = (is_variogram(vp) ?
 					UnitSemivariance(vp->part[model],x,y,z) :
 					UnitCovariance(vp->part[model],x,y,z));
 			} else {
 				model = fit->ive[j] - vp->n_models;
-				lm->X->me[i][j] = (is_variogram(vp) ?
+				ME(lm->X, i, j) = (is_variogram(vp) ?
 					da_Semivariance(vp->part[model],x,y,z) :
 					-da_Semivariance(vp->part[model],x,y,z));
 			}

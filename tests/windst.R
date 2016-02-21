@@ -22,7 +22,7 @@ velocities = apply(windsqrt, 2, function(x) { x - meanwind })
 # proper Euclidian (projected) space:
 pts = coordinates(wind.loc[match(names(wind[4:15]), wind.loc$Code),])
 pts = SpatialPoints(pts)
-if (require(rgdal)) {
+if (require(rgdal) && require(maps)) {
 proj4string(pts) = "+proj=longlat +datum=WGS84 +ellps=WGS84"
 utm29 = CRS("+proj=utm +zone=29 +datum=WGS84 +ellps=WGS84")
 pts = spTransform(pts, utm29)

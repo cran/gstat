@@ -8,7 +8,7 @@ Constructs a spatio-temporal variogram of a given type checking for a minimal se
 vgmST(stModel, ..., space, time, joint, sill, k, nugget, stAni, temporalUnits)
 }
 \arguments{
-  \item{stModel}{A string indentifying the spatio-temporal variogram model.}
+  \item{stModel}{A string identifying the spatio-temporal variogram model (see details below). Only the string before an optional "_" is used to identify the model. This mechanism can be used to identify different fits of the same model (\code{separable_A} and \code{separable_B} will be interpreted as separable models, but carry different names).}
   \item{\dots}{unused, but ensure an exact match of the following parameters.}
   \item{space}{A spatial variogram.}
   \item{time}{A temporal variogram.}
@@ -21,7 +21,7 @@ vgmST(stModel, ..., space, time, joint, sill, k, nugget, stAni, temporalUnits)
 }
 
 \details{
-The different implemented spatio-temporal variogram models have the follwoing required parameters (see as well the example section)
+The different implemented spatio-temporal variogram models have the following required parameters (see as well the example section)
 \describe{
 \item{separable:}{A variogram for \code{space} and \code{time} each and a joint spatio-temporal \code{sill} (variograms may have a separate nugget effect, but their joint sill will be 1) generating the call
   \preformatted{vgmST("separable", space, time, sill)}}
@@ -31,7 +31,7 @@ The different implemented spatio-temporal variogram models have the follwoing re
   \preformatted{vgmST("sumMetric", space, time, joint, stAni)}}
 \item{simpleSumMetric:}{A variogram (without nugget effect) for \code{space}, \code{time} and \code{joint} each, a joint spatio-temporal \code{nugget} effect and a spatio-temporal anisotropy ratio \code{stAni} generating the call
   \preformatted{vgmST("simpleSumMetric", space, time, joint, nugget, stAni)}}
-\item{metric:}{A spatio-temporal \code{joint} variogram (potentially inclduding a nugget effect) and \code{stAni} generating the call
+\item{metric:}{A spatio-temporal \code{joint} variogram (potentially including a nugget effect) and \code{stAni} generating the call
   \preformatted{vgmST("metric", joint, stAni)}}}
 }
 

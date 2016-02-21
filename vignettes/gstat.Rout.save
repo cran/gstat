@@ -63,7 +63,8 @@ Data attributes:
 > bubble(meuse, "zinc", col = c("#00ff0088", "#00ff0088"), 
 +     main = "zinc concentrations (ppm)")
 
-> print(bubble(meuse, "zinc", main = "zinc concentrations (ppm)"))
+> print(bubble(meuse, "zinc", col = c("#00ff0088", "#00ff0088"), 
++     main = "zinc concentrations (ppm)"))
 
 > data(meuse.grid)
 
@@ -181,18 +182,18 @@ attr(,"package")
 drawing 4 GLS realisations of beta...
 [using conditional Gaussian simulation]
 
-> spplot(lzn.condsim, main = "three conditional simulations")
+> spplot(lzn.condsim, main = "four conditional simulations")
 
-> print(spplot(lzn.condsim, main = "three conditional simulations"))
+> print(spplot(lzn.condsim, main = "four conditional simulations"))
 
 > lzn.condsim2 = krige(log(zinc) ~ sqrt(dist), meuse, 
 +     meuse.grid, model = lznr.fit, nmax = 30, nsim = 4)
 drawing 4 GLS realisations of beta...
 [using conditional Gaussian simulation]
 
-> spplot(lzn.condsim2, main = "three UK conditional simulations")
+> spplot(lzn.condsim2, main = "four UK conditional simulations")
 
-> print(spplot(lzn.condsim2, main = "three UK conditional simulations"))
+> print(spplot(lzn.condsim2, main = "four UK conditional simulations"))
 
 > lzn.dir = variogram(log(zinc) ~ 1, meuse, alpha = c(0, 
 +     45, 90, 135))

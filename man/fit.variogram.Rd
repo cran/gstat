@@ -7,11 +7,12 @@ Fit ranges and/or sills from a simple or nested variogram model
 to a sample variogram }
 \usage{
 fit.variogram(object, model, fit.sills = TRUE, fit.ranges = TRUE,
-	fit.method = 7, debug.level = 1, warn.if.neg = FALSE )
+	fit.method = 7, debug.level = 1, warn.if.neg = FALSE, fit.kappa = FALSE)
 }
 \arguments{
 \item{object}{ sample variogram, output of \link{variogram} }
-\item{model}{ variogram model, output of \link{vgm} }
+\item{model}{ variogram model, output of \link{vgm}; see Details below
+for details on how \code{NA} values in \code{model} are initialised. }
 \item{fit.sills}{ logical; determines whether the partial sill
 coefficients (including nugget variance) should be fitted; or logical
 vector: determines for each partial sill parameter whether it should be
@@ -23,36 +24,36 @@ or fixed.  }
 \item{fit.method}{ fitting method, used by gstat. The default method uses
 weights $N_h/h^2$ with $N_h$ the number of point pairs and $h$ the
 distance. This criterion is not supported by theory, but by practice. 
-For other values of \code{fit.method}, see table 4.2 in the gstat
-manual. }
+For other values of \code{fit.method}, see details. }
 \item{debug.level}{ integer; set gstat internal debug level }
 \item{warn.if.neg}{ logical; if TRUE a warning is issued whenever
 a sill value of a direct variogram becomes negative }
+\item{fit.kappa}{ logical; if \code{TRUE}, a sequence of 0.3, 0.4,...,5 will
+be searched for optimal fit; alternatively another sequence can be given to
+this argument }
 }
 \value{
 returns a fitted variogram model (of class \code{variogramModel}).
 
-This is a data.frame has two attributes: (i) \code{singular} a logical
-attribute that indicates whether the non-linear fit converged, or ended
-in a singularity, and (ii) \code{SSErr} a numerical attribute with the
-(weighted) sum of squared errors of the fitted model. See Notes below.
+This is a \code{data.frame} with two attributes: (i) \code{singular}
+a logical attribute that indicates whether the non-linear fit
+converged (FALSE), or ended in a singularity (TRUE), and (ii)
+\code{SSErr} a numerical attribute with the (weighted) sum of
+squared errors of the fitted model. See Notes below.
 
 }
 
 \note{ If fitting the range(s) is part of the job of this function,
-the results may well depend on the starting values, given in argument
-\code{model}.  This is nothing new, but generally true for non-linear
-regression problems. This function uses the internal gstat (C) code,
-which iterates over (a) a direct (ordinary or weighted least squares)
-fit of the partial sills and (b) an iterated search, using gradients,
-for the optimal range value(s), until convergence of after a combined
-step ((a) and (b)) is reached.
+the results may well depend on the starting values, given in
+argument \code{model}, which is generally the case for non-linear
+regression problems. This function uses internal C code, which
+uses Levenberg-Marquardt.
 
-If for a direct (i.e. not a cross) variogram a sill parameter (partial
-sill or nugget) becomes negative, fit.variogram is called again with
-this parameter set to zero, and with a FALSE flag to further fit this
-sill. This implies that once at the search space boundary, a sill value 
-does not never away from it. 
+If for a direct (i.e. not a cross) variogram a sill parameter
+(partial sill or nugget) becomes negative, fit.variogram is called
+again with this parameter set to zero, and with a FALSE flag to
+further fit this sill. This implies that the search does not move
+away from search space boundaries.
 
 On singular model fits: If your variogram turns out to be a flat,
 horizontal or sloping line, then fitting a three parameter model such
@@ -68,7 +69,20 @@ sample variogram estimate. In this case, again, an infinite number of
 possibilities occur essentially for fitting a line through a single
 (first sample variogram) point. In both cases, fixing one or more of
 the variogram model parameters may help you out.
+}
 
+\details{
+If any of the initial parameters of \code{model} are \code{NA},
+they are given default values as follows. The range parameter
+is given one third of the maximum value of \code{object$dist}.
+The nugget value is given the mean value of the first three values
+of \code{object$gamma}.  The partial sill is given the mean of the
+last five values of \code{object$gamma}.
+
+Values for \code{fit.method} are 1: weights equal to
+$N_j$; 2: weights equal to $N_j/((gamma(h_j))^2)$; 5 (ignore, use
+\link{fit.variogram.reml}); 6: unweighted (OLS); 7: $N_j/(h_j^2)$. 
+(from: \url{http://www.gstat.org/gstat.pdf}, table 4.2).
 }
 
 \references{ \url{http://www.gstat.org/} 
@@ -86,8 +100,18 @@ Computers \& Geosciences, 30: 683-691.
 \examples{
 library(sp)
 data(meuse)
-vgm1 <- variogram(log(zinc)~1, ~x+y, meuse)
-fit.variogram(vgm1, vgm(1,"Sph",300,1))
+coordinates(meuse) = ~x+y
+vgm1 <- variogram(log(zinc)~1, meuse)
+fit.variogram(vgm1, vgm(1, "Sph", 300, 1))
+fit.variogram(vgm1, vgm("Sph"))
+
+# optimize the value of kappa in a Matern model, using ugly <<- side effect:
+f = function(x) attr(m.fit <<- fit.variogram(vgm1, vgm(,"Mat",nugget=NA,kappa=x)),"SSErr")
+optimize(f, c(0.1, 5))
+plot(vgm1, m.fit)
+# best fit from the (0.3, 0.4, 0.5. ... , 5) sequence:
+(m <- fit.variogram(vgm1, vgm("Mat"), fit.kappa = TRUE))
+attr(m, "SSErr")
 }
 
 \keyword{models}

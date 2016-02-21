@@ -6,13 +6,15 @@ Fits a spatio-temporal variogram of a given type to spatio-temporal sample vario
 }
 \usage{
 fit.StVariogram(object, model, ...,  method = "L-BFGS-B",
-	fit.method = 6, stAni=NA, wles)
+	lower, upper, fit.method = 6, stAni=NA, wles)
 }
 \arguments{
   \item{object}{The spatio-temporal sample variogram. Typically output from \code{\link{variogramST}}}
   \item{model}{The desired spatio-temporal model defined through \code{\link{vgmST}}.}
+  \item{\dots}{further arguments passed to \code{\link{optim}}. \code{\link{extractParNames}} provides the parameter structure of spatio-temporal variogram models that help to provide sensible \code{upper} and \code{lower} limits.}
+  \item{lower}{Lower limits used by optim. If missing, the smallest well defined values are used (mostly near 0).}
+  \item{upper}{Upper limits used by optim. If missing, the largest well defined values are used (mostly \code{Inf}).}
   \item{method}{fit method, pass to \code{\link{optim}}}
-  \item{\dots}{further arguments passed to \code{\link{optim}}. \code{\link{extractParNames}} provides the parameter structure of spatio-temporal variogram models that must for example be followed by the optim parameters \code{upper} and \code{lower}.}
   \item{fit.method}{an integer between 0 and 13 determine the fitting routine (i.e. weighting of the squared residuals in the LSE). Values 0 to 6 correspond with the pure spatial version (see \code{\link{fit.variogram}}). See the details section for the meaning of the other values (partly experimental).}
   \item{stAni}{The spatio-temporal anisotropy that is used in the weighting. Might be missing if the desired spatio-temporal variogram model does contain a spatio-temporal anisotropy parameter (this might cause bad convergence behaviour). The default is \code{NA} and will be understood as identity (1 temporal unit = 1 spatial unit). As this only in very few cases a valid assumption, a warning is issued.}
   \item{wles}{Should be missing; only for backwards compatibility, \code{wles = TRUE} corresponds to \code{fit.method = 1} and \code{wles = FALSE} corresponds to \code{fit.method = 6}.}

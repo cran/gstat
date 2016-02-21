@@ -1,31 +1,4 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
  * glvars.c: has global variables, choose defaults, check setting integrity
  */
 #include <stdio.h>
@@ -39,9 +12,6 @@
 #include "data.h"
 #include "utils.h"
 #include "vario.h"
-#include "lex.h" /* read_variogram() */
-#include "random.h"
-#include "predict.h"
 #include "defaults.h" /* default values for gl_* variables */
 
 #include "glvars.h"
@@ -63,9 +33,10 @@ static void clean_up(void);
  * global variables (glvars.h, defautls.h):
  */
 int debug_level; /* debug level */
+int gl_blas;
+int gl_choleski; /* do choleski instead of LDL? */
 int gl_coincide; /* do the variable locations coincide? */
 int gl_cressie; /* use cressie's estimator ? */
-int gl_dots; /* treshold nr for points -> dots, gnuplot */
 int gl_fit; /* do not fit a variogram */
 int gl_gauss; /* gaussian quadr. block covariances ? */
 int gl_iter; /* max. n. iter for mivque estimates */
@@ -84,7 +55,6 @@ int gl_plotweights; /* plot kriging weights? */
 int gl_register_pairs; /* register sample variogram pairs? */
 int gl_rowwise; /* deal with raster maps row-wise, or as complete blocks? */
 int gl_rp; /* follow random path for gs/is? */
-int gl_secure; /* disallow system() and popen()? */
 int gl_seed; /* seed is set? */
 int gl_sim_beta; /* simulation mode for beta: 0 multiv GLS, 1 univ GLS, 2 OLS */
 int gl_spiral; /* do spiral search if possible? */
@@ -95,37 +65,18 @@ int gl_sparse; /* use sparse covariance matrices? */
 int gl_xvalid; /* do cross validation on first variable */
 int gl_zero_est; /* est. variogram at h 0 seperately? */
 double *gl_bounds; /* boundaries semivariogram intervals */
-double *gl_marginal_values;
 double gl_cutoff; /* variogram cutoff */
 double gl_fit_limit; /* convergence criterion on fit */
 double gl_fraction; /* fraction of max dist for cutoff */
-double gl_gcv; /* generalized covariance constant */
 double gl_idp; /* default inverse distance power */
 double gl_iwidth; /* variogram class width */
 double gl_quantile; /* sample quantile */
 double gl_zmap; /* height of the map */
-double gl_cn_max; /* check maximum condition number. Default: don't */
 double gl_alpha; /* alpha, beta, tol_[hor|ver]: anisotropy parameters */
 double gl_beta;
 double gl_tol_hor;
 double gl_tol_ver;
 double gl_zero; /* zero tolerance; 2-squared */
-
-char **gl_marginal_names;
-char *gl_display;
-char *gl_mv_string;
-char *gl_plotfile;  /* gnuplot file name */
-char *gl_gnuplot;
-char *gl_pager;
-char *gl_format;
-char *gl_gnuplot35;
-char *gl_gpterm;
-char *command_line;
-char *command_file_name;
-char *logfile_name;
-char *o_filename;
-char *argv0;
-FILE *plotfile;
 
 const METHODS methods[] = { /* methods and codes */
 	{ NSP,      0, "nsp" }, /* do nothing */
@@ -133,17 +84,15 @@ const METHODS methods[] = { /* methods and codes */
 	{ OKR,      0, "ok" },   /* ordinary kriging */
 	{ UKR,      0, "uk" },   /* universal kriging */
 	{ SKR,      0, "sk" },  /* simple kriging */
-	{ IDW,      0,  "id" }, /* inverse distance interpolation */
+	{ IDW,      0, "id" }, /* inverse distance interpolation */
 	{ MED,      0, "med" }, /* (local) sample median or quantiles */
 	{ NRS,      0, "n$r" }, /* neighbourhood size */
 	{ LSLM,     0, "tr$end" },  /* uncorrelated (or weighted) linear model */
-	{ GSI,      1,  "gs" }, /* gaussian (conditional) simulation */
-	{ ISI,      1,  "is" }, /* indicator (conditional) simulation */
-	{ MAPVALUE, 0, "map" },  /* mask map value at data location */
+	{ GSI,      1, "gs" }, /* gaussian (conditional) simulation */
+	{ ISI,      1, "is" }, /* indicator (conditional) simulation */
 	{ SEM,      0, "se$mivariogram" }, /* sample (cross) semivariance */
 	{ COV,      0, "co$variogram" },  /* sample (cross) covariance */
 	{ SPREAD,   0, "di$stance" }, /* distance to nearest sample */
-	{ XYP,      0, "xy" },  /* x and y coordinate of location */
 	{ DIV,      0, "div" }, /* diversity and modus */
 	{ SKEW,     0, "skew" }, /* skewness and kurtosis */
 	{ LSEM,     0, "lsem" }, /* locally estimated/fitted variogram parameters */
@@ -156,12 +105,12 @@ const METHODS methods[] = { /* methods and codes */
  */
 static VARIOGRAM **vgm = NULL;
 static DATA **data = NULL;
-static char **outfile_names = NULL, **ids = NULL, **mask_names = NULL;
+static char **outfile_names = NULL, **ids = NULL;
 static DATA *valdata = NULL;
 static DATA *data_area = NULL; /* area that discretises block */
 static DPOINT block;
 static METHOD method = NSP;
-static int n_vars = 0, n_masks = 0;
+static int n_vars = 0;
 static int n_last = 0, n_v_last = 0, n_o_last = 0;
 static MODE mode = MODE_NSP; /* MODE_NSP, SIMPLE, STRATIFY or MULTIVARIABLE */
 
@@ -172,9 +121,10 @@ int init_global_variables(void) {
  	method             = NSP;
 	mode               = MODE_NSP;
 	debug_level        = DB_NORMAL;
+	gl_blas            = DEF_blas;
+	gl_choleski        = DEF_choleski;
 	gl_coincide        = DEF_coincide;
 	gl_cressie         = DEF_cressie;
-	gl_dots            = DEF_dots;
 	gl_fit             = DEF_fit;
 	gl_gauss           = DEF_gauss;
 	gl_iter            = DEF_iter;
@@ -189,11 +139,9 @@ int init_global_variables(void) {
 	gl_numbers         = DEF_numbers;
 	gl_nocheck         = DEF_nocheck;
 	gl_order           = DEF_order;
-	gl_plotweights     = DEF_plotweights;
 	gl_register_pairs  = DEF_pairs;
 	gl_rowwise         = DEF_rowwise;
 	gl_rp              = DEF_rp;
-	gl_secure          = DEF_secure;
 	gl_seed            = DEF_seed;
 	gl_sim_beta        = DEF_sim_beta;
 	gl_spiral          = DEF_spiral;
@@ -204,37 +152,18 @@ int init_global_variables(void) {
 	gl_xvalid          = DEF_xvalid;
 	gl_zero_est        = DEF_zero_est;
 	gl_bounds          = DEF_bounds;
-	gl_marginal_values = DEF_marginal_values;
 	gl_cutoff       = DEF_cutoff;
 	gl_fit_limit    = DEF_fit_limit;
 	gl_fraction     = DEF_fraction;
-	gl_gcv          = DEF_gcv;
 	gl_idp          = DEF_idp;
 	gl_iwidth       = DEF_iwidth;
 	gl_quantile     = DEF_quantile;
 	gl_zmap         = DEF_zmap;
-	gl_cn_max       = DEF_cn_max;
 	gl_alpha        = DEF_alpha;
 	gl_beta         = DEF_beta;
 	gl_tol_hor      = DEF_tol_hor;
 	gl_tol_ver      = DEF_tol_ver;
 	gl_zero         = DEF_zero;
-	
-	gl_marginal_names = DEF_marginal_names;
-	gl_display       = DEF_display;
-	gl_mv_string     = DEF_mv_string;
-	gl_plotfile       = DEF_plotfile; 
-	gl_gnuplot       = DEF_gnuplot;
-	gl_pager         = DEF_pager;
-	gl_format        = DEF_format;
-	gl_gnuplot35     = NULL;
-	gl_gpterm        = DEF_gpterm;
-	command_line     = NULL;
-	command_file_name = NULL;
-	logfile_name     = NULL;
-	o_filename       = NULL;
-	argv0            = NULL;
-	plotfile         = NULL;
 	
 	init_gstat_data(0);
 	/* EJPXX 
@@ -245,16 +174,6 @@ int init_global_variables(void) {
 	set_mv_double(&gl_zmap);
 	get_covariance(NULL, 0, 0, 0);
 	return 0;
-}
-
-void push_mask_name(const char *name) {
-	if (mask_names == NULL)
-		mask_names = (char **) emalloc((n_masks + 1) * sizeof(char *));
-	else
-		mask_names = (char **) erealloc(mask_names,
-				(n_masks + 1) * sizeof(char *));
-	mask_names[n_masks] = string_dup(name);
-	n_masks++;
 }
 
 void push_bound(double value) {
@@ -270,16 +189,6 @@ void push_bound(double value) {
 	if (n_bound > 0 && gl_bounds[n_bound] <= gl_bounds[n_bound-1])
 		ErrMsg(ER_IMPOSVAL, "bounds must be strictly increasing");
 	n_bound++;
-}
-
-const char *get_mask_name(int i) {
-	if (i >= n_masks || i < 0)
-		return NULL;
-	return mask_names[i];
-}
-
-int get_n_masks(void) {
-	return n_masks;
 }
 
 int n_variograms_set(void) {
@@ -314,27 +223,20 @@ static void init_gstat_data(int n) {
 }
 
 int which_identifier(const char *id) {
-	int i; 
-
 	assert(id);
 
-	for (i = 0; i < n_vars; i++) {
-		if (ids[i] == NULL) {
-			ids[i] = string_dup(id);
+	for (int i = 0; i < n_vars; i++) {
+		if (ids[i] == NULL)
+			ErrMsg(ER_IMPOSVAL, "which_identifier(): ids[i] == NULL");
+		if (strcmp(ids[i], id) == 0)
 			return i;
-		} else /* ids[i] == NULL: */ {
-			if (strcmp(ids[i], id) == 0)
-				return i;
-		}
 	}
 	/* else: extend data space */
-	if (strlen(id) > MAX_ID_LENGTH) {
-		pr_warning("maximum length for an identifier is %d", MAX_ID_LENGTH);
-		ErrMsg(ER_IMPOSVAL, "which_identifier()");
-	}
 	n_vars++;
 	ids = (char **) erealloc(ids, n_vars * sizeof(char *));
-	ids[n_vars - 1] = string_dup(id);
+	int Length = strlen(id) + 1;
+	ids[n_vars - 1] = (char *) emalloc(Length * sizeof(char));
+	snprintf(ids[n_vars - 1], Length, "%s", id);
 	init_gstat_data(n_vars);
 	return n_vars - 1;
 }
@@ -355,65 +257,9 @@ const char *name_identifier(int i) {
 	}
 }
 
-const char *what_is_outfile(int i) {
-	static char **what = NULL;
-	static int sizeof_what = 0;
-	int j, k;
-
-	if (i < 0) {
-		if (what != NULL) {
-			for (j = 0; j < sizeof_what; j++)
-				efree(what[j]);
-			efree(what);
-			what = NULL;
-			sizeof_what = 0;
-		}
-		return NULL;
-	}
-	if (i > get_n_outfile())
-		ErrMsg(ER_RANGE, "what_is_outfile(i): i outside range");
-	if (what == NULL) {
-		sizeof_what = get_n_outfile();
-		what = (char **) emalloc(get_n_outfile() * sizeof(char *));
-		for (j = 0; j < get_n_outfile(); j++) {
-			what[j] = (char *) emalloc (100 * sizeof(char)); 
-			what[j][0] = '\0';
-		}
-		if (get_mode() == STRATIFY) {
-			sprintf(what[0], "[predicted value, per stratum]");
-			sprintf(what[1], "[prediction variance, per stratum]");
-		} else if (get_method() == MAPVALUE) {
-			for (j = 0; j < get_n_outfile(); j++) {
-				if (j < get_n_masks()) {
-					strncpy(what[j], get_mask_name(j), 39);
-					what[j][39] = '\0'; /* Konstantin Malakhanov, 30/3/99 */
-				} else
-					sprintf(what[j], "%s", "[ignore]");
-			}
-		} else {
-			for (j = 0; j < 2 * n_vars; j++) {
-				if (j % 2 == 0)
-					sprintf(what[j], "pred(%s)", name_identifier(j / 2));
-						else
-					sprintf(what[j], "var(%s)", name_identifier(j / 2));
-			}
-			for (j = 0; j < get_n_vars(); j++) {
-				for (k = 0; k < j; k++) {
-					what[2 * get_n_vars() + LTI2(j,k)] =
-						(char *) emalloc((40 + strlen(name_identifier(j)) +
-							strlen(name_identifier(k))) *sizeof(char));
-					sprintf(what[2 * get_n_vars() + LTI2(j,k)],
-						"cov(%s,%s)", name_identifier(j),
-						name_identifier(k));
-				}
-			}
-		}
-	}
-	return what[i];
-}
-
 const char *method_string(METHOD i) {
-	static char mstr[100];
+#define MSTR_SIZE 100
+	static char mstr[MSTR_SIZE];
 	char *str, *co, *un, *gsum = "";
 
 	if ((i == ISI || i == GSI) && gl_n_uk == DEF_n_uk &&
@@ -426,72 +272,66 @@ const char *method_string(METHOD i) {
 
 	switch (i) {
 		case NSP:
-			sprintf(mstr, "exit");
+			snprintf(mstr, MSTR_SIZE, "exit");
 			break;
 		case TEST:
-			sprintf(mstr, "Test Option");
+			snprintf(mstr, MSTR_SIZE, "Test Option");
 			break;
 		case UIF:
-			sprintf(mstr, "starting interactive mode");
-			break;
-		case MAPVALUE:
-			sprintf(mstr, "mask map values on data() locations");
+			snprintf(mstr, MSTR_SIZE, "starting interactive mode");
 			break;
 		case SEM:
-			sprintf(mstr, "calculating sample variogram");
+			snprintf(mstr, MSTR_SIZE, "calculating sample variogram");
 			break;
 		case COV:
-			sprintf(mstr, "calculating sample covariogram");
+			snprintf(mstr, MSTR_SIZE, "calculating sample covariogram");
 			break;
 		case SPREAD:
-			sprintf(mstr, "spread value (distance to nearest observation) on output");
-			break;
-		case XYP:
-			sprintf(mstr, "mask map coordinates (x,y) on first and second output vars");
+			snprintf(mstr, MSTR_SIZE, "spread value (distance to nearest observation) on output");
 			break;
 		case IDW:
-			sprintf(mstr, "%sinverse distance weighted interpolation", str);
+			snprintf(mstr, MSTR_SIZE, "%sinverse distance weighted interpolation", str);
 			break;
 		case MED:
 			if (gl_quantile == 0.5)
-				sprintf(mstr, "%smedian estimation", str);
+				snprintf(mstr, MSTR_SIZE, "%smedian estimation", str);
 			else
-				sprintf(mstr, "%s%g-quantile estimation", str, gl_quantile);
+				snprintf(mstr, MSTR_SIZE, "%s%g-quantile estimation", str, gl_quantile);
 			break;
 		case NRS:
-			sprintf(mstr, "(%s:) neighbourhood size on first output variable", str);
+			snprintf(mstr, MSTR_SIZE, "(%s:) neighbourhood size on first output variable", str);
 			break;
 		case LSLM:
 			if (n_variograms_set())
-				sprintf(mstr, "%sgeneralized least squares trend estimation", str);
+				snprintf(mstr, MSTR_SIZE, "%sgeneralized least squares trend estimation", str);
 			else
-				sprintf(mstr, "%sordinary or weighted least squares prediction", str);
+				snprintf(mstr, MSTR_SIZE, "%sordinary or weighted least squares prediction", str);
 			break;
 		case OKR:
-			sprintf(mstr, "using %sordinary %skriging", str, co);
+			snprintf(mstr, MSTR_SIZE, "using %sordinary %skriging", str, co);
 			break;
 		case SKR:
-			sprintf(mstr, "using %ssimple %skriging", str, co);
+			snprintf(mstr, MSTR_SIZE, "using %ssimple %skriging", str, co);
 			break;
 		case UKR:
-			sprintf(mstr, "using %suniversal %skriging", str, co);
+			snprintf(mstr, MSTR_SIZE, "using %suniversal %skriging", str, co);
 			break;
 		case GSI:
-			sprintf(mstr, "using %s%sconditional Gaussian %ssimulation%s",
+			snprintf(mstr, MSTR_SIZE, "using %s%sconditional Gaussian %ssimulation%s",
 				str, un, co, gsum);
 			break;
 		case ISI:
-			sprintf(mstr, "using %s%sconditional indicator %ssimulation",
+			snprintf(mstr, MSTR_SIZE, "using %s%sconditional indicator %ssimulation",
 				str, un, co);
 			break;
 		case DIV:
-			sprintf(mstr, "within-neighbourhood diversity and modus");
+			snprintf(mstr, MSTR_SIZE, "within-neighbourhood diversity and modus");
 			break;
 		case SKEW:
-			sprintf(mstr, "skewness and kurtosis");
+			snprintf(mstr, MSTR_SIZE, "skewness and kurtosis");
 			break;
 		case LSEM:
-			sprintf(mstr, "local semivariance or locally fitted semivariogram parameters");
+			snprintf(mstr, MSTR_SIZE, "local semivariance or locally fitted semivariogram parameters");
 			break;
 	}
 	return mstr;
@@ -520,7 +360,7 @@ int get_n_vgms(void) {
 	return (n * (n + 1))/2;
 }
 
-int get_n_outfile(void) {
+int get_n_outputs(void) {
 	return get_n_vars() + get_n_vgms();
 }
 
@@ -555,12 +395,6 @@ DATA *create_data_area(void) {
 
 DPOINT *get_block_p(void) {
 	return &block;
-}
-
-const char *get_outfile_namei(int i) {
-	if (i >= get_n_outfile() || i < 0)
-		ErrMsg(ER_RANGE, "get_outfile_namei(i) i outside range");
-	return outfile_names[i];
 }
 
 METHOD get_method(void) {
@@ -652,11 +486,9 @@ METHOD get_default_method(void) {
  */
  	if (get_n_vars() == 0)
  		return NSP;
-	if (get_n_masks() <= 0 && valdata->id < 0 &&
-			gl_xvalid == 0 && data_area == NULL) {
+	if (valdata->id < 0 && gl_xvalid == 0 && data_area == NULL) {
 		return UIF;
 	}
-
 /*
  * check on X variables
  */
@@ -684,7 +516,7 @@ METHOD get_default_method(void) {
 }
 
 void set_mode(void) {
-	int i, j, nm, check_failed = 0;
+	int i, j, check_failed = 0;
 
 	if (method == NSP)
 		return;
@@ -722,29 +554,8 @@ void set_mode(void) {
  * 2. No masks and valdata->what_is_u == U_ISSTRATUM
  * 3. mask is a valid strata map, n categories > 1
  */
-	if (n_masks == 0) {
-		mode = (valdata->what_is_u == U_ISSTRATUM) ? STRATIFY : SIMPLE;
-		return;
-	} 
-	for (i = 2, check_failed = 0; i < get_n_outfile(); i++)
-		if (get_outfile_namei(i) != NULL)
-			check_failed = 1;
-	if (! check_failed) {
-		for (i = nm = 0; i < get_n_vars(); i++)
-			for (j = 0; j < data[i]->n_X; j++)
-				/* check for user-defined base function values in mask map */
-				if (data[i]->colX[j] > 0)
-					nm++; /* UK or lm */
-		/* if STRATIFIED: first mask categories, then base functions */
-		check_failed = (1 + nm != n_masks);
-	}
-	if (check_failed) {
-		mode = SIMPLE;
-		return;
-	} else {
-		mode = STRATIFY;
-		return;
-	}
+	mode = (valdata->what_is_u == U_ISSTRATUM) ? STRATIFY : SIMPLE;
+	return;
 }
 
 int decide_on_coincide(void) {
@@ -797,8 +608,6 @@ void check_global_variables(void) {
 	METHOD m;
 	VARIOGRAM *v_tmp;
 
-	if (!almost_equals(gl_plotfile, DEF_plotfile))
-		plotfile = efopen(gl_plotfile, "w");
 	/* UK: check if n_masks equals total nr of unbiasedness cond. */
 	if (gl_nblockdiscr < 2)
 		ErrMsg(ER_RANGE, "nblockdiscr must be >= 2");
@@ -809,14 +618,6 @@ void check_global_variables(void) {
 				if (data[i]->colX[j] > 0)
 					nposX++;
 			}
-		if (n_masks > 0 && nposX > 0 &&
-				nposX + (get_mode() == STRATIFY ? 1 : 0) != n_masks) {
-			message("nposX %d n_masks %d stratify %d\n", nposX, n_masks,
-				(get_mode() == STRATIFY ? 1 : 0));
-
-			ErrMsg(ER_IMPOSVAL,
-			"number of masks does not equal number of (positive) X's");
-		}
 	}
     
 	if (method == SPREAD) {
@@ -869,25 +670,15 @@ void check_global_variables(void) {
 			}
 		}
 	}
-	if (get_n_masks()) {
-		if (! get_n_vars() > 0)
-			ErrMsg(ER_VARNOTSET, "no data");
-		if (!(data[0]->mode & X_BIT_SET))
-			ErrMsg(ER_VARNOTSET, "x coordinate not set");
-		if (!(data[0]->mode & Y_BIT_SET))
-			ErrMsg(ER_VARNOTSET, "y coordinate not set");
-		if ((data[0]->mode & Z_BIT_SET) && is_mv_double(&gl_zmap))
-			ErrMsg(ER_VARNOTSET, "parameter zmap must be set with 3D data");
-	}
 
 	for (i = 0; i < get_n_vars(); i++) {
 		if (data[i]->fname == NULL && !data[i]->dummy) {
 			message("file name for data(%s) not set\n", name_identifier(i));
-			ErrMsg(ER_VARNOTSET, (const char *) command_file_name);
+			ErrMsg(ER_NULL, " ");
 		}
 		if (data[i]->id < 0) {
 			message("data(%s) not set\n", name_identifier(i));
-			ErrMsg(ER_VARNOTSET, (const char *) command_file_name);
+			ErrMsg(ER_NULL, " ");
 		}
 		if (data[i]->beta && data[i]->beta->size != data[i]->n_X) {
 			pr_warning("beta dimension (%d) should equal n_X (%d)", 
@@ -902,16 +693,16 @@ void check_global_variables(void) {
 		if (! data[i]->dummy && ! (data[i]->mode & V_BIT_SET)) {
 			message("no v attribute set for data(%s)\n", 
 				name_identifier(data[i]->id));
-			ErrMsg(ER_VARNOTSET, (const char *) command_file_name);
+			ErrMsg(ER_NULL, " ");
 		}
-		if (method != SEM && method != COV && method != MAPVALUE) {
+		if (method != SEM && method != COV) {
 			/* check neighbourhood settings */
 			if (data[i]->sel_rad < 0.0 || data[i]->sel_min < 0 || 
 				data[i]->sel_max < 0 || (data[i]->sel_min > data[i]->sel_max)) {
 				message(
 				"invalid neighbourhood selection: radius %g max %d min %d\n", 
 				data[i]->sel_rad, data[i]->sel_max, data[i]->sel_min);
-				ErrMsg(ER_IMPOSVAL, (const char *) command_file_name);
+				ErrMsg(ER_IMPOSVAL, " ");
 			}
 		}
 		if (data[i]->id > -1 && (method == OKR || method == SKR || 
@@ -949,15 +740,6 @@ void check_global_variables(void) {
 	if (mode == MULTIVARIABLE && get_method() != UIF && get_method() != SEM
 			&& get_method() != COV && n_variograms_set() > 0)
 		check_variography((const VARIOGRAM **) vgm, get_n_vars());
-	if (gl_n_marginals > 0) {
-		if (gl_marginal_names) {
-			if (get_mode() == STRATIFY && gl_n_marginals != 2)
-				ErrMsg(ER_IMPOSVAL, "# marginal maps should be 2 (stratify)");
-			if (get_mode() != STRATIFY && gl_n_marginals != 2 * get_n_vars())
-				ErrMsg(ER_IMPOSVAL, "# marginals should be 2 x # of variables");
-		} else if (gl_n_marginals != 2 * get_n_vars())
-			ErrMsg(ER_IMPOSVAL, "# marginals should be 2 x # of variables");
-	}
 	v_tmp = init_variogram(NULL);
 	free_variogram(v_tmp);
 } 
@@ -972,7 +754,6 @@ void remove_all(void) {
 	/* remove_id(n_vars - 1);  */
 	/* the hard way; remove_id(n_vars-1) would be the ``easy'' alternative */
 	gls(NULL, 0, GLS_INIT, NULL, NULL); /* cleans up static arrays */
-	what_is_outfile(-1); /* cleans up static array */
 	reset_block_discr(); /* resets block settings */
 	max_block_dimension(1); /* reset */
 	if (gl_bounds != NULL) {
@@ -1070,7 +851,6 @@ int remove_id(const int id) {
 }
 
 static void clean_up(void) {
-	int i;
 
 	/* free variograms */
 	if (vgm) {
@@ -1108,17 +888,7 @@ static void clean_up(void) {
 		ids = NULL;
 	}
 
-	/* free mask names */
-	if (mask_names) {
-		for (i = 0; i < n_masks; i++) {
-			if (mask_names[i])
-				efree(mask_names[i]);
-		}
-		efree(mask_names);
-		mask_names = NULL;
-	}
 	n_vars = 0;
-	n_masks = 0;
 	n_last = 0;
 	n_v_last = 0;
 	n_o_last = 0;

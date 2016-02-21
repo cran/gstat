@@ -1,50 +1,9 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
- * TODOs:
- * - deal with dummy data (unc.sim); set up quadtree blocks properly
- * - catch errors if no response is present in prediction
+ * all functions exposed to R
  */
-
-#include <time.h> /* for s_gstat_progress function */
-
-#include "config.h"
-#include <S.h> /* defines seed_in, also for R */
-
 #include <R.h>
 #include <Rinternals.h>
-/* # include <R_ext/Utils.h> */
-/* # include <Rinternals.h> */
-#define R_UNIFORM unif_rand()
-#define R_NORMAL  norm_rand()
-#define RANDIN seed_in((long *) NULL)
-#define RANDOUT seed_out((long *) NULL)
-#define S_EVALUATOR
+#include <Rdefines.h>
 
 #include "defs.h"
 #include "data.h"
@@ -53,59 +12,41 @@
 #include "userio.h"
 #include "vario.h"
 #include "fit.h"
-#include "lex.h"
 #include "sem.h"
 #include "glvars.h"
 #include "debug.h"
 #include "mapio.h"
 #include "msim.h"
-#include "random.h"
 #include "getest.h"
 #include "s.h"
 
-void s_gstat_printlog(const char *mess);
-void s_gstat_progress(unsigned int current, unsigned int total);
-double s_r_uniform(void);
-double s_r_normal(void);
-static int seed_is_in = 0;
 static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams);
 static void gstat_set_block(long i, SEXP block, SEXP block_cols, DPOINT *current);
-static void S_no_progress(unsigned int current, unsigned int total);
 static const char VarName[] = "(R Data)";
+int do_print_progress = 0;
+#define NAME_SIZE 20 /* buffer size for name */
+
+extern unsigned int n_pred_locs; /* msim.c */
 
 SEXP gstat_init(SEXP s_debug_level) {
 
-	S_EVALUATOR
-
+	do_print_progress = 0;
 	remove_all();
-	init_userio(1);  
-	/* 1: set up for stdio */
-	set_gstat_progress_handler(S_no_progress);
-	set_gstat_error_handler(s_gstat_error);
-	set_gstat_warning_handler(s_gstat_warning);
-	set_gstat_log_handler(s_gstat_printlog);
 	init_global_variables();
 	init_data_minmax();
-	RANDIN; /* load R/S seed into rng */
-	seed_is_in = 1;
-	set_rng_functions(s_r_uniform, s_r_normal, "S/R random number generator");
+	GetRNGstate();
 	debug_level = INTEGER(s_debug_level)[0];
 	if (debug_level < 0) {
 		debug_level = -debug_level;
-		set_gstat_progress_handler(s_gstat_progress);
+		do_print_progress = 1;
 	}
-	gl_secure = 1;
 	return(s_debug_level);
 }
 
 SEXP gstat_exit(SEXP x) {
 
-	S_EVALUATOR
-
-	RANDOUT; /* write seed back to R/S engine */
-	seed_is_in = 0;
+	PutRNGstate(); /* write seed back to R/S engine */
 	remove_all();
-	/* init_global_variables(); */
 	return(x);
 }
 
@@ -117,12 +58,9 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	long i, j, id, n, dim, n_X, has_int;
 	DPOINT current;
 	DATA **d;
-	char name[20];
+	char name[NAME_SIZE];
 
-	S_EVALUATOR
-
-	/* sy = AS_NUMERIC(sy); */
-	sy = coerceVector(sy,REALSXP);
+	sy = coerceVector(sy, REALSXP);
 	n = LENGTH(sy);
 	y = REAL(sy);
 	if (n == 0)
@@ -152,7 +90,7 @@ SEXP gstat_new_data(SEXP sy, SEXP slocs, SEXP sX, SEXP has_intercept,
 	current.bitfield = 0;
 
 	id = get_n_vars();
-	sprintf(name, "var%ld", id);
+	snprintf(name, NAME_SIZE, "var%ld", id);
 	which_identifier(name);
 	d = get_gstat_data();
 	d[id]->id = id;
@@ -262,10 +200,9 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 		SEXP nmax, SEXP nmin, SEXP maxdist, SEXP vfn, SEXP is_projected,
 		SEXP vdist) {
 	int i, id, dim, has_int;
-	char name[20];
+	char name[NAME_SIZE];
 	DATA **d = NULL;
 
-	S_EVALUATOR
 	dim = INTEGER(loc_dim)[0];
 	if (dim <= 0)
 		PROBLEM "dimension value impossible: %d", dim ERROR;
@@ -274,7 +211,7 @@ SEXP gstat_new_dummy_data(SEXP loc_dim, SEXP has_intercept, SEXP beta,
 	assert(LENGTH(beta) > 0);
 
 	id = get_n_vars();
-	sprintf(name, "var%d", id);
+	snprintf(name, NAME_SIZE, "var%d", id);
 	which_identifier(name);
 	d = get_gstat_data();
 	d[id]->id = id;
@@ -335,8 +272,6 @@ SEXP gstat_predict(SEXP sn, SEXP slocs, SEXP sX, SEXP block_cols, SEXP block,
 	SEXP retvector_dim;
 	extern unsigned int n_pred_locs; /* predict.c, used in msim.c */
 	float ***msim = NULL;
-
-	S_EVALUATOR
 
 	nvars = get_n_vars();
 	nest = nvars + (nvars * (nvars + 1))/2;
@@ -603,8 +538,6 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 	GRIDMAP *m;
 	unsigned int row, col, n;
 
-	S_EVALUATOR
-
 	id1 = INTEGER(s_ids)[0];
 	if (LENGTH(s_ids) > 1)
 		id2 = INTEGER(s_ids)[1];
@@ -628,7 +561,6 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 	/* vgm->ev->is_asym = INTEGER(asym)[0]; */
 	vgm->ev->pseudo = INTEGER(pseudo)[0];
 	vgm->ev->recalc = 1;
-	vgm->fname = NULL;
 	if (LENGTH(cutoff) > 0)
 		gl_cutoff = REAL(cutoff)[0];
 	if (LENGTH(width) > 0)
@@ -642,8 +574,6 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 		d = get_gstat_data();
 		d[id1]->dX = REAL(dX)[0];
 		d[id2]->dX = REAL(dX)[0];
-		/* printf("dX1: %g ", d[id1]->dX);
-		printf("dX2: %g\n", d[id2]->dX); */
 	} 
 	for (i = 0; i < LENGTH(boundaries); i++) /* does nothing if LENGTH is 0 */
 		push_bound(REAL(boundaries)[i]);
@@ -686,7 +616,6 @@ SEXP gstat_variogram(SEXP s_ids, SEXP cutoff, SEXP width, SEXP direction,
 		if (vgm->ev->cloud)
 			nest = vgm->ev->n_est;
 		else {
-			/* Rprintf("[zero: %d]\n", vgm->ev->zero); */
 			if (vgm->ev->zero == ZERO_SPECIAL)
 				nest = vgm->ev->n_est;
 			else 
@@ -784,8 +713,6 @@ SEXP gstat_variogram_values(SEXP ids, SEXP pars, SEXP covariance, SEXP dist_valu
 	SEXP gamma;
 	SEXP ret;
 
-	S_EVALUATOR
-
 	if (LENGTH(pars) != 3 && LENGTH(pars) != 6)
 		PROBLEM "supply three or six distance parameters" ERROR;
 	from = REAL(pars)[0];
@@ -843,8 +770,6 @@ SEXP get_covariance_list(SEXP ids, SEXP covariance, SEXP dist_list) {
 	SEXP ret;
 	int length_list = LENGTH(dist_list);
 
-	S_EVALUATOR
-
 	cov = INTEGER(covariance)[0];
 
 	id1 = INTEGER(ids)[0];
@@ -883,91 +808,10 @@ SEXP gstat_get_variogram_models(SEXP dolong) {
 	return(ret);
 }
 
-SEXP gstat_load_command(SEXP commands) {
-	int i;
-	const char *cmd;
-	SEXP error;
-
-	PROTECT(error = allocVector(INTSXP, 1));
-	INTEGER(error)[0] = 0;
-	for (i = 0; i < LENGTH(commands); i++) {
-		cmd = CHAR(STRING_ELT(commands, i));
-		if (parse_cmd(cmd, NULL)) {
-			Rprintf("internal gstat string parse error on [%s]", cmd);
-			INTEGER(error)[0] = i+1;
-			UNPROTECT(1);
-			return(error); 
-		}
-	}
-	UNPROTECT(1);
-	return(error);
-}
-
-void s_gstat_progress(unsigned int current, unsigned int total) {
-	static int perc_last = -1, sec_last = -1;
-	int perc, sec;
-	static time_t start;
-
-	R_CheckUserInterrupt(); /* allow for user interrupt */
-
-	if (total <= 0 || DEBUG_SILENT)
-		return;
-
-	if (sec_last == -1) {
-		start = time(NULL);
-		sec_last = 0;
-	}
-	perc = floor(100.0 * current / total);
-	if (perc != perc_last) { /* another percentage -> calculate time: */
-		if (current == total) { /* 100% done, reset: */
-			Rprintf("\r%3d%% done\n", 100);
-			perc_last = sec_last = -1;
-		} else {
-			sec = difftime(time(NULL), start);
-			if (sec != sec_last) { /* another second -- don't print too often */
-				Rprintf("\r%3d%% done", perc);
-				perc_last = perc;
-				sec_last = sec;
-			}
-		}
-	}
-}
-
-void s_gstat_error(const char *mess, int level) {
-	/*	PROBLEM error_messages[level], mess ERROR; */
-	if (mess == NULL)
-		PROBLEM "<NULL> message" ERROR
-	else
-		PROBLEM "%s", mess ERROR
-}
-
-void s_gstat_warning(const char *mess) {
-
-	print_to_logfile_if_open(mess);
-
-	if (DEBUG_SILENT)
-		return;
-	/* Rprintf("%s\n", mess); */
-	PROBLEM "%s", mess WARN
-	return;
-}
-
-void s_gstat_printlog(const char *mess) {
-
-	if (DEBUG_SILENT)
-		return;
-
-	print_to_logfile_if_open(mess);
-	Rprintf("%s", mess);
-}
-
-
 SEXP gstat_load_ev(SEXP np, SEXP dist, SEXP gamma) {
 
 	int i, cloud = 1;
 	VARIOGRAM *vgm;
-
-	S_EVALUATOR
 
 	which_identifier("xx");
 	/*
@@ -1045,22 +889,131 @@ SEXP gstat_debug_level(SEXP level) {
 	return(level);
 }
 
-double s_r_uniform(void) {
-	double u;
+SEXP gstat_set_method(SEXP to) {
+	const char *what;
 
-	S_EVALUATOR
-	if (!seed_is_in) PROBLEM "s_r_uniform(): seed is not read" ERROR; 
-	u = R_UNIFORM;
-	return(u);
+	what = CHAR(STRING_ELT(to, 0));
+	for (int id = 1; methods[id].name != NULL; id++) {
+		if (almost_equals(what, methods[id].name)) {
+			set_method(methods[id].m);
+			break; /* id-loop */
+		}
+	}
+	return(to);
 }
 
-double s_r_normal(void) {
-	double r;
+SEXP gstat_set_set(SEXP arg, SEXP val) {
+	const char *name;
+	int i;
+	typedef struct {
+		const char *name;
+		void *ptr;
+		enum { UNKNOWN, IS_INT, IS_UINT, IS_REAL, IS_STRING, IS_D_VECTOR, NO_ARG } what;
+		enum { NOLIMIT, GEZERO, GTZERO } limit;
+	} GSTAT_EXPR;
+	const GSTAT_EXPR set_options[] = {
+	{ "alpha",          &gl_alpha,        IS_REAL, GEZERO  },
+	{ "beta",           &gl_beta,         IS_REAL, GEZERO  },
+	{ "blas",           &gl_blas,         IS_INT,  GEZERO  },
+	{ "choleski",       &gl_choleski,     IS_INT,  GEZERO  },
+	{ "co$incide",      &gl_coincide,     IS_INT,  GEZERO  },
+	{ "Cr$essie",       &gl_cressie,      IS_INT,  GEZERO  },
+	{ "cutoff",         &gl_cutoff,       IS_REAL, GTZERO  },
+	{ "de$bug",         &debug_level,     IS_INT,  GEZERO  },
+	{ "fit",            &gl_fit,          IS_INT,  GEZERO  },
+	{ "fit_l$imit",     &gl_fit_limit,    IS_REAL, GTZERO  },
+	{ "fr$action",      &gl_fraction,     IS_REAL, GTZERO  },
+	/* { "display",        &gl_display,      IS_STRING, NOLIMIT }, */
+	{ "gls$_residuals", &gl_gls_residuals, IS_INT, GEZERO  },
+	{ "id$p",           &gl_idp,          IS_REAL, GEZERO  },
+	{ "in$tervals",     &gl_n_intervals,  IS_INT,  GTZERO  },
+	{ "it$er",          &gl_iter,         IS_INT,  GEZERO  },
+	{ "lhs",            &gl_lhs,          IS_INT,  GEZERO  },
+	{ "longlat",        &gl_longlat,      IS_INT, GEZERO },
+	{ "sim_beta",  		&gl_sim_beta,     IS_INT, GEZERO },
+	{ "n_uk",           &gl_n_uk,         IS_INT,  GEZERO  },
+	{ "numbers",        &gl_numbers,      IS_INT,  GEZERO  },
+	{ "nb$lockdiscr",   &gl_nblockdiscr,  IS_INT,  GTZERO  },
+	{ "no$check",       &gl_nocheck,      IS_INT,  GEZERO  },
+	{ "ns$im",          &gl_nsim,         IS_INT,  GTZERO  },
+	{ "or$der",         &gl_order,        IS_INT,  GEZERO },
+	{ "q$uantile",      &gl_quantile,     IS_REAL, GEZERO  },
+	{ "rowwise",        &gl_rowwise,      IS_INT,  GEZERO  },
+	{ "rp",             &gl_rp,           IS_INT,  GEZERO  },
+	{ "see$d",          &gl_seed,         IS_INT,  GTZERO  },
+	{ "useed",          &gl_seed,         IS_UINT,  GEZERO  },
+	{ "spa$rse",        &gl_sparse,       IS_INT,  GEZERO  },
+	{ "spi$ral",        &gl_spiral,       IS_INT,  GEZERO  },
+	{ "spl$it",         &gl_split,        IS_INT,  GTZERO  },
+	{ "sy$mmetric",     &gl_sym_ev,       IS_INT,  GEZERO  },
+	{ "tol_h$or",       &gl_tol_hor,      IS_REAL, GEZERO  },
+	{ "tol_v$er",       &gl_tol_ver,      IS_REAL, GEZERO  },
+	{ "v$erbose",       &debug_level,     IS_INT,  GEZERO  },
+	{ "w$idth",         &gl_iwidth,       IS_REAL, GEZERO  },
+	{ "x$valid",        &gl_xvalid,       IS_INT,  GEZERO  },
+	{ "zero_di$st",     &gl_zero_est,     IS_INT,  GEZERO  },
+	{ "zero",           &gl_zero,         IS_REAL, GEZERO  },
+	{ "zm$ap",          &gl_zmap,         IS_REAL, NOLIMIT },
+	{ NULL, NULL, 0, 0 }
+	};
+	name = CHAR(STRING_ELT(arg, 0));
+	for (i = 0; set_options[i].name; i++)
+		if (almost_equals(name, set_options[i].name))
+			break; /* break out i-loop */
+	if (set_options[i].name == NULL)
+		ErrMsg(ER_SYNTAX, name);
 
-	S_EVALUATOR
-	if (!seed_is_in) PROBLEM "s_r_normal(): seed is not read" ERROR; 
-	r = R_NORMAL;
-	return(r);
+	if (almost_equals((const char *)name, "nb$lockdiscr"))
+		gl_gauss = 0; /* side effect */
+
+	switch (set_options[i].what) {
+		case IS_INT: 
+			*((int *) set_options[i].ptr) = asInteger(val);
+			/* Rprintf("int arg: %s val %d\n", name, asInteger(val)); */
+			break;
+		case IS_UINT: 
+			*((unsigned int *) set_options[i].ptr) = (unsigned int) asInteger(val);
+			/* Rprintf("uint arg: %s val %d\n", name, asInteger(val)); */
+			break;
+		case IS_REAL: 
+			*((double *) set_options[i].ptr) = asReal(val);
+			/* Rprintf("real arg: %s val %d\n", name, asReal(val)); */
+			break; 
+		case IS_STRING: 
+			*((const char **) set_options[i].ptr) = CHAR(STRING_ELT(val, 0));
+			break;
+		default:
+			ErrMsg(ER_SYNTAX, name);
+			break;
+	}
+	return val;
+}
+
+SEXP gstat_set_merge(SEXP a, SEXP b, SEXP c, SEXP d) { /* merge a(b) with c(d); */
+	DATA **dpp;
+	int id, id1, id2, col1, col2;
+	id1 = asInteger(a);
+	id2 = asInteger(c);
+	if (id1 >= get_n_vars() || id2 >= get_n_vars() || id1 < 0 || id2 < 0)
+		ErrMsg(ER_IMPOSVAL, "id values out of range");
+	col1 = asInteger(b);
+	col2 = asInteger(d);
+	if (id1 < id2) { /* swap id and col */
+		id = id1; id1 = id2; id2 = id;
+		id = col1; col1 = col2; col2 = id;
+	}
+	dpp = get_gstat_data();
+	if (push_to_merge_table(dpp[id1], id2, col1, col2)) 
+		ErrMsg(ER_IMPOSVAL, "attempt to merge failed");
+	return(a);
+}
+
+double r_uniform(void) {
+	return(unif_rand());
+}
+
+double r_normal(void) {
+	return(norm_rand());
 }
 
 static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams) {
@@ -1073,13 +1026,5 @@ static DATA_GRIDMAP *gstat_S_fillgrid(SEXP gridparams) {
 	cols = (unsigned int) REAL(gridparams)[4];
 	x_ul = REAL(gridparams)[0] - 0.5 * cellsizex;
 	y_ul = REAL(gridparams)[1] + (rows - 0.5) * cellsizey;
-	/*
-	printf("%g %g %g %g %u %u\n", x_ul, y_ul, cellsizex, cellsizey, rows, cols);
-	fflush(stdout);
-	*/
 	return gsetup_gridmap(x_ul, y_ul, cellsizex, cellsizey, rows, cols);
-}
-
-static void S_no_progress(unsigned int current, unsigned int total) {
-	R_CheckUserInterrupt();
 }

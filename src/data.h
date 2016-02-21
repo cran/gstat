@@ -283,7 +283,6 @@ void centre_area(DATA *area);
 void push_point(DATA *d, const DPOINT *p);
 void pop_point(DATA *d, int list_nr);
 void free_data(DATA *tmp);
-void report_data(const DATA *d);
 #define print_data_list(d) print_data(d, 1)
 #define print_data_selection(d) print_data(d, 0)
 void print_data(const DATA *d, int list);

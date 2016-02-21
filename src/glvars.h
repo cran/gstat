@@ -10,10 +10,8 @@ typedef enum {
 	NRS,  /* neighbourhood size */
 	LSLM,  /* uncorrelated (or weighted) linear model */
 	GSI, ISI, /* Gaussian/indicator (conditional) simulation */
-	MAPVALUE,  /* mask map value at data location */
 	SEM, COV,  /* sample (cross) semivariance or covariance */
 	SPREAD, /* distance to nearest sample */
-	XYP,  /* x and y coordinate of location */
 	DIV, /* diversity, range */
 	SKEW, /* skewness, kurtosis */
 	LSEM, /* locally fitted semivariogram parameters */
@@ -47,15 +45,11 @@ void check_global_variables(void);
 const char *method_string(METHOD i);
 int get_n_vars(void);
 int get_n_vgms(void);
-int get_n_outfile(void);
+int get_n_outputs(void);
 int get_n_beta_set(void);
 int which_identifier(const char *id);
 const char *name_identifier(int i);
-const char *what_is_outfile(int i);
-void push_mask_name(const char *name);
 void push_bound(double value);
-const char *get_mask_name(int i);
-int get_n_masks(void);
 void set_method(METHOD);
 int is_simulation(METHOD m);
 METHOD get_default_method(void);
@@ -85,21 +79,17 @@ void setup_valdata_X(DATA *d);
 }
 #endif
 
-extern int gl_nblockdiscr, gl_seed, gl_n_uk, gl_dots, gl_cressie, gl_zero_est,
-	gl_fit, gl_iter, gl_xvalid, gl_gauss, gl_sym_ev, gl_jgraph,
+extern int gl_nblockdiscr, gl_seed, gl_n_uk, gl_cressie, gl_zero_est,
+	gl_fit, gl_iter, gl_xvalid, gl_gauss, gl_sym_ev, gl_jgraph, gl_blas,
 	gl_order, gl_n_intervals, gl_gls_residuals, gl_asym_vgm,
 	gl_numbers, gl_nsim, gl_lhs, gl_longlat, gl_n_marginals, gl_sparse, gl_rp,
 	gl_coincide, gl_nocheck, gl_spiral, gl_secure, gl_split,
-	gl_register_pairs, gl_plotweights, gl_sim_beta, gl_rowwise;
-extern double gl_rho, gl_idp, gl_cutoff, gl_iwidth, gl_zmap, gl_gcv,
-	gl_quantile, gl_fit_limit, gl_fraction, gl_cn_max, gl_alpha,
+	gl_register_pairs, gl_sim_beta, gl_rowwise, gl_choleski;
+extern double gl_rho, gl_idp, gl_cutoff, gl_iwidth, gl_zmap,
+	gl_quantile, gl_fit_limit, gl_fraction, gl_alpha,
 	gl_beta, gl_tol_hor, gl_tol_ver, *gl_bounds,
 	*gl_marginal_values, gl_zero, gl_zero2;
-extern char *gl_delimiters, *gl_plotfile, *gl_format, *gl_gnuplot, 
-	*gl_gnuplot35, *gl_mv_string, *gl_pager, *gl_lhsmean, *gl_lhsvar, 
-	*gl_gpterm, *logfile_name, *command_file_name, *command_line, *o_filename, 
-	*gl_display, *argv0;
-extern char **gl_marginal_names; extern const char *method_code[];
-extern FILE *plotfile;
+
+extern const char *method_code[];
 
 #endif /* GLVARS_H */

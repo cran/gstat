@@ -1,29 +1,3 @@
-/*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
 /* 
  * priority queue, Jan-Apr 1998
  *
@@ -35,28 +9,17 @@
  * unordered array of elements, elements are sorted with qsort(), before
  * they are merged into the ordered queue. Only pointers to the next
  * element are stored (so it's basically an ordered single linked list).
- *
- * A test program called `queue' is obtained by invoking `make queue'.
- * (see the QUEUE_MAIN conditional part)
  */
 
 #include <stdio.h>
-#include <stdlib.h> /* exit() */
+#include <stdlib.h>
 #include <string.h>
 
-# include "defs.h"
-
-#ifndef QUEUE_MAIN
-# include "userio.h"
-# include "data.h"
-# include "utils.h"
-# include "nsearch.h"
-#else
-# define emalloc malloc
-# define erealloc realloc
-# define efree free
-#endif
-
+#include "defs.h"
+#include "userio.h"
+#include "data.h"
+#include "utils.h"
+#include "nsearch.h"
 #include "pqueue.h"
 
 static void enlarge_queue(QUEUE *q);
@@ -86,8 +49,8 @@ static void enlarge_queue(QUEUE *q) {
 	q->block[q->blocks - 1] = block;
 }
 
-QUEUE *init_queue(QUEUE *q, int (CDECL *cmp)(const Q_ELEMENT_WHAT *a, 
-		const Q_ELEMENT_WHAT *b)) {
+QUEUE *init_queue(QUEUE *q, int (CDECL *cmp)(const QUEUE_NODE *a, 
+		const QUEUE_NODE *b)) {
 	int i, j;
 
 	if (q == NULL) {
@@ -133,21 +96,19 @@ static Q_ELEMENT *get_free(QUEUE *q) {
 	return e;
 }
 
-void enqueue(QUEUE *q, Q_ELEMENT_WHAT *el, int n) {
+void enqueue(QUEUE *q, QUEUE_NODE *el, int n) {
 /*
  * insert n elements in array el into the priority queue q
  */
 	Q_ELEMENT *e, *where, *next;
 	int i = 0, p;
 
-#ifndef QUEUE_MAIN
 	if (q == NULL || el == NULL || n <= 0)
 		ErrMsg(ER_NULL, "enqueue");
-#endif
 	/* 
 	 * first sort array el
 	 */
-	qsort(el, (size_t) n, sizeof(Q_ELEMENT_WHAT), 
+	qsort(el, (size_t) n, sizeof(QUEUE_NODE), 
 			(int CDECL (*)(const void *,const void *)) q->cmp);
 
 	/*
@@ -209,7 +170,7 @@ void enqueue(QUEUE *q, Q_ELEMENT_WHAT *el, int n) {
    	return;
 }
 
-Q_ELEMENT_WHAT dequeue(QUEUE *q) {
+QUEUE_NODE dequeue(QUEUE *q) {
 	Q_ELEMENT *e;
 
 	if (q->length == 0)
@@ -221,81 +182,3 @@ Q_ELEMENT_WHAT dequeue(QUEUE *q) {
 	q->length--;
 	return e->el;
 }
-
-#ifdef QUEUE_MAIN
-
-static void print_queue(QUEUE *q) {
-	Q_ELEMENT *e;
-
-	printf("Queue: ");
-	e = q->head;	
-	while (e != NULL) {
-		printf("%g ", e->el);
-		e = e->next;
-	}
-	printf("NULL\n");
-}
-
-int what_cmp(const Q_ELEMENT_WHAT *a, const Q_ELEMENT_WHAT *b) {
-	if (*a < *b)
-		return -1;
-	if (*a > *b)
-		return 1;
-	return 0;
-}
-
-/* queue.[ch] compile into a small test program, named queue.
- * it reads commands from stdin like: */
-#define Q_HELP "commands:\n\
-e 10          enqueue value 10\n\
-n 4 2 1 3 5   enqueue 4 values: 2 1 3 and 5\n\
-d             dequeue, print dequeued value\n\
-p             print queue, and\n\
-q             free queue and exit.\n"
-
-int main(int argc, char *argv[]) {
-	char s[100];
-	QUEUE *q = NULL;
-	Q_ELEMENT_WHAT *qpt;
-	int i, n;
-
-	q = init_queue(q, what_cmp);
-	qpt = (Q_ELEMENT_WHAT *) malloc(sizeof(double));
-	while (fgets(s, 99, stdin) != NULL) {
-		switch (s[0]) {
-			case 'n':
-				n = atoi(strtok(s+1, " "));
-				printf("n: %d\n", n);
-				if (n < 1)
-					break;
-				qpt = (Q_ELEMENT_WHAT *) malloc(n * sizeof(Q_ELEMENT_WHAT));
-				printf("enqueued ");
-				for (i = 0; i < n; i++) {
-					qpt[i] = atof(strtok(NULL, " \n"));
-					printf("%g ", qpt[i]);
-				}
-				printf("\n");
-				enqueue(q, qpt, n);
-				break;
-			case 'e':
-				*qpt = atof(s+1);
-				enqueue(q, qpt, 1);
-				break;
-			case 'd':
-				printf("d %g\n", dequeue(q));
-				break;
-			case 'p':
-				print_queue(q);
-				break;
-			case 'q':
-				free_queue(q);
-				exit(0);
-				break;
-			default:
-				printf("%s", Q_HELP);
-				break;
-		}
-	}
-	return 0;
-}
-#endif

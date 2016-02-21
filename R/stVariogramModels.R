@@ -2,6 +2,10 @@
 vgmST <- function(stModel, ..., space, time, joint, sill, k, nugget, stAni, 
 		temporalUnits) {
 	stopifnot(is.character(stModel) && length(stModel)==1)
+  
+  old.stModel <- stModel
+  stModel <- strsplit(stModel, "_")[[1]][1]
+  
   if (stModel == "productSum" & !missing(sill))
     stop("The sill argument for the product-sum model has been removed 
 due a change in notation of the spatio-temporal models. This 
@@ -26,7 +30,7 @@ Re-fit your model or use \"productSumOld\" instead.")
 			joint = joint, nugget = nugget, stAni = stAni),
 		metric = list(joint = joint, stAni = stAni),
 		stop(paste("model", stModel, "unknown")))
-	vgmModel$stModel <- stModel
+	vgmModel$stModel <- old.stModel
 	if (!missing(temporalUnits))
 		attr(vgmModel, "temporal units") = temporalUnits
 	class(vgmModel) <- c("StVariogramModel", "list")
@@ -38,7 +42,7 @@ variogramSurface <- function(model, dist_grid, ...) {
   if (!inherits(model, "StVariogramModel"))
     warning("\"model\" should be of class \"StVariogramModel\"; no further checks for a proper model will made.")
   
-  switch(model$stModel,
+  switch(strsplit(model$stModel, "_")[[1]][1],
          separable=vgmSeparable(model, dist_grid, ...),
          productSum=vgmProdSum(model, dist_grid, ...),
          productSumOld=vgmProdSumOld(model, dist_grid, ...),
@@ -112,7 +116,7 @@ vgmMetric <- function(model, dist_grid) {
   data.frame(spacelag=dist_grid$spacelag, timelag=dist_grid$timelag, model=vm)
 }
 
-fit.StVariogram <- function(object, model, ..., method = "L-BFGS-B", fit.method = 6, 
+fit.StVariogram <- function(object, model, ..., method = "L-BFGS-B", lower, upper, fit.method = 6, 
 		stAni=NA, wles) {
   if (!inherits(object, "StVariogram"))
     stop("\"object\" must be of class \"StVariogram\"")
@@ -165,12 +169,12 @@ fit.StVariogram <- function(object, model, ..., method = "L-BFGS-B", fit.method 
                              obj$np/(obj$dist^2+(stAni*obj$timelag)^2), # 7
                          function(obj, ...) {
                            dist <- obj$dist
-                           dist[dist == 0] <- min(dist[dist != 0], na.rm = T)
+                           dist[dist == 0] <- min(dist[dist != 0], na.rm = TRUE)
                            obj$np/dist^2 # 8, pure space, 0 dist = min (dist > 0)
                          },
                          function(obj, ...) {
                            dist <- obj$timelag
-                           dist[dist == 0] <- min(dist[dist != 0], na.rm = T)
+                           dist[dist == 0] <- min(dist[dist != 0], na.rm = TRUE)
                            obj$np/dist^2
                          }, # 9, pure time
                          function(obj, gamma, ...) 1/gamma^2, # 10
@@ -182,12 +186,12 @@ fit.StVariogram <- function(object, model, ..., method = "L-BFGS-B", fit.method 
                            }, # 11
                          function(obj, ...) {
                            dist <- obj$dist
-                           dist[dist == 0] <- min(dist[dist != 0], na.rm = T)
+                           dist[dist == 0] <- min(dist[dist != 0], na.rm = TRUE)
                            1/(obj$dist^2) # 12, pure space
                          },
                          function(obj, ...) {
                            dist <- obj$timelag
-                           dist[dist == 0] <- min(dist[dist != 0], na.rm = T)
+                           dist[dist == 0] <- min(dist[dist != 0], na.rm = TRUE)
                            1/(obj$timelag^2)
                          }) # 13, pure time
                          
@@ -205,7 +209,39 @@ fit.StVariogram <- function(object, model, ..., method = "L-BFGS-B", fit.method 
     mean(resSq) # seems numerically more well behaved
   }
   
-  pars.fit <- optim(extractPar(model), fitFun, ..., method = method)
+  if(missing(lower)) {
+    min.s <- min(object$dist[object$dist>0])*0.05 # 5 % of the minimum distance larger 0
+    min.t <- min(object$dist[object$timelag>0])*0.05 # 5 % of the minimum time lag 0),
+    pos <- sqrt(.Machine$double.eps) # at least positive
+    lower <- switch(strsplit(model$stModel, "_")[[1]][1],
+                    separable=c(min.s, 0, min.t, 0, 0),
+                    productSum=c(0, min.s, 0, 
+                                 0, min.t, 0,
+                                 pos),
+                    productSumOld=c(0, min.s, 0, 
+                                    0, min.t, 0, 0),
+                    sumMetric=c(0, min.s, 0, 
+                                0, min.t, 0,
+                                0, pos, 0, pos),
+                    simpleSumMetric=c(0, min.s,
+                                      0, min.t,
+                                      0, pos, 0, 0, pos),
+                    metric=c(0, pos, 0, pos),
+                    stop("Only \"separable\", \"productSum\", \"sumMetric\", \"simpleSumMetric\" and \"metric\" are implemented."))
+  }
+  if(missing(upper))
+    upper <- switch(strsplit(model$stModel, "_")[[1]][1],
+                    separable=c(Inf, 1, Inf, 1, Inf),
+                    productSum=Inf,
+                    productSumOld=Inf,
+                    sumMetric=Inf,
+                    simpleSumMetric=Inf,
+                    metric=Inf,
+                    stop("Only \"separable\", \"productSum\", \"sumMetric\", \"simpleSumMetric\" and \"metric\" are implemented."))
+  
+  
+  
+  pars.fit <- optim(extractPar(model), fitFun, ..., method = method, lower = lower, upper = upper)
   
   ret <- insertPar(pars.fit$par, model)
   attr(ret,"optim.output") <- pars.fit
@@ -218,7 +254,7 @@ fit.StVariogram <- function(object, model, ..., method = "L-BFGS-B", fit.method 
 }
 
 insertPar <- function(par, model) {
-  switch(model$stModel,
+  switch(strsplit(model$stModel, "_")[[1]][1],
          separable=insertParSeparable(par, model),
          productSum=insertParProdSum(par, model),
          productSumOld=insertParProdSumOld(par, model),
@@ -229,7 +265,7 @@ insertPar <- function(par, model) {
 }
 
 extractPar <- function(model) {
-  switch(model$stModel,
+  switch(strsplit(model$stModel, "_")[[1]][1],
          separable=c(range.s=model$space$range[2], nugget.s=model$space$psill[1],
                      range.t=model$time$range[2],  nugget.t=model$time$psill[1],
                      sill= model$sill[[1]]),
@@ -334,7 +370,7 @@ estiStAni.lin <- function(empVgm, interval) {
   lmSp <- lm(gamma~dist, empVgm[empVgm$timelag == 0,])
   
   optFun <- function(stAni) {
-    sqrt(mean((predict(lmSp, newdata = data.frame(dist=empVgm[empVgm$spacelag == 0,]$timelag*stAni)) - empVgm[empVgm$spacelag == 0,]$gamma)^2, na.rm=T))
+    sqrt(mean((predict(lmSp, newdata = data.frame(dist=empVgm[empVgm$spacelag == 0,]$timelag*stAni)) - empVgm[empVgm$spacelag == 0,]$gamma)^2, na.rm=TRUE))
   }
   
   optimise(optFun, interval)$minimum  
@@ -372,7 +408,7 @@ estiAni.vgm <- function(empVgm, spatialVgm, interval) {
   spatialVgm <- fit.variogram(spEmpVgm, spatialVgm)
   
   optFun <- function(stAni) {
-    sqrt(mean((variogramLine(spatialVgm, dist_vector = empVgm[empVgm$spacelag == 0,]$timelag*stAni)$gamma - empVgm[empVgm$spacelag == 0,]$gamma)^2, na.rm=T))
+    sqrt(mean((variogramLine(spatialVgm, dist_vector = empVgm[empVgm$spacelag == 0,]$timelag*stAni)$gamma - empVgm[empVgm$spacelag == 0,]$gamma)^2, na.rm=TRUE))
   }
   
   optimise(optFun, interval)$minimum

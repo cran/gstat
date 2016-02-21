@@ -3,12 +3,23 @@
 warn.angle3 = TRUE
 
 "vgm" <-
-function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
+function(psill = NA, model, range = NA, nugget, add.to, anis, kappa = 0.5,
 		..., covtable, Err = 0) {
 	add.to.df = function(x, y) {
 		x = rbind(x, y)
 		row.names(x) = 1:nrow(x)
 		return(x)
+	}
+	if (is.character(psill)) { # as of ``vgm("Sph")''
+		if (length(psill) > 1) {
+			ret = lapply(psill, function(x) vgm(x))
+			class(ret) = c("variogramModelList", "list")
+			return(ret)
+		} # else:
+		if (psill == "Nug")
+			return(vgm(NA, "Nug", NA))
+		else
+			return(vgm(NA, psill, NA, NA))
 	}
 	stopifnot(length(psill) == 1)
 	stopifnot(length(range) == 1)
@@ -22,7 +33,11 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
 		mlf = factor(ml, levels = ml)
 		return(data.frame(short = mf, long = mlf))
 	}
-	stopifnot(length(model) == 1)
+	if (length(model) > 1) {
+		ret = lapply(model, function(x) vgm(,x))
+		class(ret) = c("variogramModelList", "list")
+		return(ret)
+	} 
 	table = NULL
 	if (model == "Tab" && !missing(covtable)) {
 		table = as.matrix(covtable)
@@ -47,14 +62,16 @@ function(psill = 0, model, range = 0, nugget, add.to, anis, kappa = 0.5,
 		warn.angle3 = FALSE
 		warning("you are using the third rotation angle; this code is based on the GSLIB2 code\nand must contain the bug described at the end of http://pangea.stanford.edu/ERE/research/scrf/software/gslib/bug/")
 	}
-	if (model != "Nug") {
-		if (model != "Lin" && model != "Err" && model != "Int")
-			if (range <= 0.0) stop("range should be positive")
-		else if(range < 0.0) stop("range should be non-negative")
-	} else {
-		if (range != 0.0) stop("Nugget should have zero range")
-		if (anis[4] != 1.0 || anis[5] != 1.0)
-			stop("Nugget anisotropy is not meaningful")
+	if (!is.na(range)) {
+		if (model != "Nug") {
+			if (model != "Lin" && model != "Err" && model != "Int")
+				if (range <= 0.0) stop("range should be positive")
+			else if(range < 0.0) stop("range should be non-negative")
+			} else {
+			if (range != 0.0) stop("Nugget should have zero range")
+			if (anis[4] != 1.0 || anis[5] != 1.0)
+				stop("Nugget anisotropy is not meaningful")
+		}
 	}
 	if (!missing(nugget)) {
 		ret = data.frame(model=mf[mf==model], psill=psill, range=range,

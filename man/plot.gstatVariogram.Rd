@@ -15,9 +15,9 @@ Creates a variogram plot
 	plot.numbers = FALSE, scales, ids = x$id, group.id = TRUE, skip, 
 	layout, ...)
 \method{plot}{variogramMap}(x, np = FALSE, skip, threshold, ...)
-\method{plot}{StVariogram}(x, model = NULL, ..., col = bpy.colors(), xlab, ylab, map = TRUE,
-convertMonths = FALSE, as.table=T, wireframe = FALSE, 
-both = FALSE, all = FALSE)
+\method{plot}{StVariogram}(x, model = NULL, ..., col = bpy.colors(), xlab, ylab, 
+	map = TRUE, convertMonths = FALSE, as.table = TRUE, wireframe = FALSE, 
+	diff = FALSE, all = FALSE)
 }
 \arguments{
 \item{x}{ object obtained from the method 
@@ -64,8 +64,7 @@ be unit converted and plotted as (integer) months, and no longer match the
 numeric representation of \code{yearmon}, which has years as unit }
 \item{as.table}{controls the plotting order for multiple panels, see \code{\link{xyplot}} for details.}
 \item{wireframe}{logical; if TRUE, produce a wireframe plot}
-\item{both}{logical; if TRUE, plot model and sample variogram in a single
-wireframe plot}
+\item{diff}{logical; if TRUE, plot difference between model and sample variogram; ignores \code{all}.}
 \item{all}{logical; if TRUE, plot sample and model variogram(s) in single wireframes.}
 }
 \value{

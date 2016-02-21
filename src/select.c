@@ -1,31 +1,4 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
  * select.c: neighborhood selection for local prediction
  */
 #include <stdio.h>
@@ -53,8 +26,6 @@ static int which_octant(DPOINT *where, DPOINT *p, int mode);
 int CDECL dist_cmp(const DPOINT **ap, const DPOINT **bp);
 static void print_selection(DATA *d, DPOINT *where);
 
-#define store_radius(d)    keep_radius(d, 0)
-#define set_back_radius(d) keep_radius(d, 1)
 /* beware-of-side-effect macro: don't call with ++/--'s */
 #define DPSWAP(a,b) { if (a != b) { tmp = a; a = b; b = tmp; }}
 

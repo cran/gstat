@@ -1,5 +1,5 @@
 \documentclass[a4paper]{article}
-\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue]{hyperref}
 \usepackage{alltt}
 \usepackage{amsfonts}
 \usepackage{enumerate}

@@ -1,48 +1,12 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
  * sem.c: calculate sample (cross, co-) variogram from data
- * K.M. refers to changes by Konstantin Malakhanov, see mapio.c
+ * K.M. refers to changes by Konstantin Malakhanov, see also mapio.c
  */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <time.h>
-#include <limits.h>
-
-#include "config.h"
 
 #include <R.h>
 #include <Rinternals.h>
 
 #include "defs.h"
-#include "read.h"
 #include "mapio.h"
 #include "userio.h"
 #include "data.h"
@@ -52,10 +16,10 @@
 #include "glvars.h"
 #include "select.h"
 #include "gls.h"
+#include "mtrx.h"
 #include "lm.h"
 #include "defaults.h"
 #include "direct.h"
-#include "version.h"
 #include "sem.h"
 
 #define SEM_INCREMENT 1000
@@ -94,7 +58,7 @@ static void *register_pairs(void *p, unsigned long nh, DPOINT *a, DPOINT *b);
  * v->id1 and v->id2 -- a direct (co) variogram when id1 == id2, a cross
  * (co) variogram when id1 != id2. 
  * 
- * if v->fname is set and (one of) id1 or id2 is a dummy data, the
+ * if [[v->fname is set and]] (one of) id1 or id2 is a dummy data, the
  * actual sample variogram is not calculated but rather read from the
  * file v->fname. This is done to enable separate sample variogram
  * calculation (in batch or on a fast remote computer) and model fitting
@@ -149,7 +113,7 @@ int calc_variogram(VARIOGRAM *v /* pointer to VARIOGRAM structure */,
 
 	fill_cutoff_width(d1, v);
 
-	if (v->ev->map && v->fname == NULL && v->ev->S_grid == NULL)
+	if (v->ev->map && v->ev->S_grid == NULL)
 		return -1;
 
 	v->ev->cloud = (v->ev->iwidth <= 0.0);
@@ -297,7 +261,7 @@ static SAMPLE_VGM *semivariogram_grid(DATA *d, SAMPLE_VGM *ev) {
 	for (row = 0; row <= max_index; row++) {
 		for (col = (row == 0 ? 1 : -max_index); col <= max_index; col++) {
 			b.x = col * SQUARECELLSIZE(d->grid);
-			b.y = row * SQUARECELLSIZE(d->grid);
+			b.y = - row * SQUARECELLSIZE(d->grid);
 			ddist = valid_distance(&a, &b, ev->cutoff, 1,
 				d, d, (GRIDMAP *) ev->map);
 			if (ddist > 0.0) {
@@ -570,10 +534,6 @@ static double valid_distance(DPOINT *a, DPOINT *b, double max,
 			ddist = -1.0;
 		/* printf("dX2: %g, inprod: %g ddist: %g\n", dX2, inprod, ddist); */
 	}
-	/*
-	if (d1->coln_id > 0 && d2->coln_id > 0 && strcmp())
-		return -1.0;
-	*/
 	return ddist;
 }
 
@@ -615,18 +575,16 @@ void fill_cutoff_width(DATA *data /* pointer to DATA structure to derive
 	assert(v);
 
 	ev = v->ev;
-	if ((get_n_masks() > 0 && get_method() != LSEM) || ev->S_grid != NULL) {
+	if (ev->S_grid != NULL) {
 		m = new_map(READ_ONLY);
-		if (ev->S_grid) {
-			/* process S_grid to m */
-			dg = (DATA_GRIDMAP *) ev->S_grid;
-			m->x_ul = dg->x_ul;
-			m->y_ul = dg->y_ul;
-			m->cellsizex = dg->cellsizex;
-			m->cellsizey = dg->cellsizey;
-			m->rows = dg->rows;
-			m->cols = dg->cols;
-		}
+		/* process S_grid to m */
+		dg = (DATA_GRIDMAP *) ev->S_grid;
+		m->x_ul = dg->x_ul;
+		m->y_ul = dg->y_ul;
+		m->cellsizex = dg->cellsizex;
+		m->cellsizey = dg->cellsizey;
+		m->rows = dg->rows;
+		m->cols = dg->cols;
 		ev->iwidth = 1.0;
 		ev->cutoff = m->rows * m->cols; 
 			/* not a real cutoff, but rather the size of the container array */
@@ -845,13 +803,6 @@ void fprint_sample_vgm(const SAMPLE_VGM *ev) {
 				to = MIN(ev->cutoff, to);
 				Rprintf(EVFMT, from, to, ev->nh[i],
 					ev->dist[i], ev->gamma[i]);
-				/*
-				for (j = 0; j < ev->nh[i]; j++)
-					fprintf(f, "[%d,%d] ",
-						GET_INDEX(((DPOINT ***)ev->pairs)[i][2*j]),
-						GET_INDEX(((DPOINT ***)ev->pairs)[i][2*j+1]));
-				fprintf(f, "\n");
-				*/
 			}
 		}
 	} else {

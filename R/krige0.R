@@ -1,6 +1,6 @@
 extractFormula = function(formula, data, newdata) {
 	# extract y and X from data:
-    m = model.frame(terms(formula), as(data, "data.frame"))
+    m = model.frame(terms(formula), as(data, "data.frame"), na.action = na.fail)
     y = model.extract(m, "response")
     if (length(y) == 0)
         stop("no response variable present in formula")
@@ -55,7 +55,7 @@ krige0 <- function(formula, data, newdata, model, beta, y, ...,
 		v0 = model(data, newdata, ...)
 		if (computeVar) {
 			if (is(newdata, "SpatialLines") || is(newdata, "SpatialPolygons"))
-				stop("varying target support has not been implemented")
+				stop("varying target support (SpatialLines, SpatialPolygons) is not implemented")
 			c0 = as.numeric(model(newdata[1, drop=FALSE],
 				newdata[1, drop=FALSE]))
 			# ?check this: provide TWO arguments, so model(x,y) can target
@@ -319,7 +319,7 @@ STsolve = function(A, b, X) {
 }
 
 covfn.ST = function(x, y = x, model, ...) {
-  switch(model$stModel,
+  switch(strsplit(model$stModel, "_")[[1]][1],
          separable=covSeparable(x, y, model, ...),
          productSumOld=covProdSumOld(x, y, model),
          productSum=covProdSum(x, y, model),
@@ -706,8 +706,12 @@ covMetric <- function(x, y, model) {
 }
 
 # define variogram model FUNCTION that can deal with x and y
-# being of class SpatialPolygons OR SpatialPoints:
+# being of class SpatialPolygons OR SpatialPoints; SpatialGrid/Pixels are coerced to SpatialPolygons
 vgmArea = function(x, y = x, vgm, ndiscr = 16, verbose = FALSE, covariance = TRUE) {
+	if (gridded(x))
+		x = as(x, "SpatialPolygons")
+	if (gridded(y))
+		y = as(y, "SpatialPolygons")
 	stopifnot(is(x, "SpatialPolygons") || is(x, "SpatialPoints"))
 	stopifnot(is(y, "SpatialPolygons") || is(y, "SpatialPoints"))
 	stopifnot(is(vgm, "variogramModel"))

@@ -134,7 +134,7 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
 	v$avgDist <- v$dist * v$np
 	for (lagId in unique(v$spacelag)) {
 	  bool <- v$spacelag == lagId
-	  v$avgDist[bool] <- sum(v$avgDist[bool], na.rm = T) / sum(v$np[bool], na.rm = T)
+	  v$avgDist[bool] <- sum(v$avgDist[bool], na.rm = TRUE) / sum(v$np[bool], na.rm = TRUE)
 	}
 	
 
@@ -217,7 +217,7 @@ variogramST.STIDF <- function (formula, data, tlags, cutoff,
       indSp <- cbind(ind[indSp] %% nData, (ind[indSp] %/% nData)+1)
       np[j,i] <- length(indSp)
       gamma[j,i] <- 0.5*mean((data[indSp[,1],,colnames(m)[1]]@data[[1]] - data[indSp[,1]+indSp[,2],,colnames(m)[1]]@data[[1]])^2,
-                             na.rm=T)
+                             na.rm=TRUE)
     }
     if(progress)
       setTxtProgressBar(pb, value=i)
@@ -235,7 +235,7 @@ variogramST.STIDF <- function (formula, data, tlags, cutoff,
   res$avgDist <- res$dist * res$np
   for (lagId in unique(res$spacelag)) {
     bool <- res$spacelag == lagId
-    res$avgDist[bool] <- sum(res$avgDist[bool], na.rm = T) / sum(res$np[bool], na.rm = T)
+    res$avgDist[bool] <- sum(res$avgDist[bool], na.rm = TRUE) / sum(res$np[bool], na.rm = TRUE)
   }
   
   attr(res$timelag, "units") <- timeScale
@@ -249,8 +249,8 @@ variogramST.STIDF <- function (formula, data, tlags, cutoff,
 
 ## plotting
 plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab,
-                            map = TRUE, convertMonths = FALSE, as.table=T,
-                            wireframe = FALSE, both = FALSE, all=FALSE) {
+                            map = TRUE, convertMonths = FALSE, as.table = TRUE,
+                            wireframe = FALSE, diff = FALSE, all=FALSE) {
 	lst = list(...)
 	if (!is.null(lst$col.regions))
 		col = lst$col.regions
@@ -279,7 +279,7 @@ plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab,
     x$avgDist <- x$dist * x$np
     for (lagId in unique(x$spacelag)) {
       bool <- x$spacelag == lagId
-      x$avgDist[bool] <- sum(x$avgDist[bool] / sum(x$np[bool], na.rm = T), na.rm = T)
+      x$avgDist[bool] <- sum(x$avgDist[bool] / sum(x$np[bool], na.rm = TRUE), na.rm = TRUE)
     }
     
   }
@@ -292,46 +292,47 @@ plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab,
       slag[slag == 0 & x$timelag == 0] <- sqrt(.Machine$double.eps)
       x[[mod$stModel]] <- variogramSurface(mod, data.frame(spacelag = slag,
                                                            timelag = x$timelag))$model
+      if (diff)
+        x[[mod$stModel]] <- x[[mod$stModel]] - x$gamma
     }
   }
 	x0 = x # needed by wireframe()
+	
 	if (!is.null(model)) {
     modelNames  <- sapply(model, function(x) x$stModel)
-    v0 <- x[,c("dist","id","avgDist","timelag")]
-    for (i in modelNames) {
-      v0 <- rbind(v0, x[,c("dist","id","avgDist","timelag")])
+    
+    if(all &! diff)
+      v0 <- x[,c("dist", "id", "avgDist", "timelag")]
+    else
+      v0 <- NULL
+    
+    for (i in modelNames)
+      v0 <- rbind(v0, x[,c("dist", "id", "avgDist", "timelag")])
+
+    if(all & !diff) {# we also need the sample
+      v0$what = factor(c(rep("sample", nrow(x)), rep(modelNames, each=nrow(x))),
+                       levels=c("sample", modelNames), ordered = TRUE)
+      v0$gamma = c(x$gamma, unlist(x[,modelNames]))
+    } else {
+      v0$what = factor(rep(modelNames, each=nrow(x)),
+                       levels=modelNames, ordered=TRUE)
+      v0$gamma = c(unlist(x[,modelNames]))
     }
-		v0$what = factor(c(rep("sample", nrow(x)), rep(modelNames, each=nrow(x))),
-                     levels=c("sample", modelNames),ordered=T)
-		v0$gamma = c(x$gamma, unlist(x[,modelNames]))
+		
 		x = v0
 	}
 	if (wireframe) { 
 		if (!is.null(model)) {
-			if (both) { # plot sample and first model in one wireframe plot
-			  if (length(model) > 1)
-			    warning("Only the first of the provided variogram models will be used.")
-			  wireframe(as.formula(paste(model[[1]]$stModel,"+gamma ~ avgDist*timelag")),
+      if (length(model) > 1)
+        wireframe(gamma ~ avgDist*timelag | what, 
+                  x, drape = TRUE, col.regions = col, 
+                  xlab = xlab, ylab = ylab, as.table=as.table, ...)
+      else 
+        wireframe(as.formula(paste(model[[1]]$stModel,"~ avgDist*timelag")), 
                   x0, drape = TRUE, col.regions = col, 
-                  xlab = xlab, ylab = ylab, ...)
-			} else {
-        if (all) { # plot sample and all models in separate wireframes
-          wireframe(gamma ~ avgDist*timelag | what, 
-                    x, drape = TRUE, col.regions = col, 
-                    xlab = xlab, ylab = ylab, as.table=as.table, ...)
-        } else { # plot all theoretical models in separate wireframes, the default
-          if (length(model) > 1)
-            wireframe(gamma ~ avgDist*timelag | what, 
-                      x[-(1:nrow(x0)),], drape = TRUE, col.regions = col, 
-                      xlab = xlab, ylab = ylab, as.table=as.table, ...)
-          else 
-            wireframe(as.formula(paste(model[[1]]$stModel,"~ avgDist*timelag")), 
-                      x0, drape = TRUE, col.regions = col, 
-                      xlab = xlab, ylab = ylab, as.table=as.table, ...)
-        }
-			}
+                  xlab = xlab, ylab = ylab, as.table=as.table, ...)
 		} else # without a model, plot only the sample variogram as a wireframe
-			wireframe(gamma ~ avgDist * timelag, x0, drape = TRUE, col = col,
+			wireframe(gamma ~ avgDist * timelag, x0, drape = TRUE, col.regions = col,
 				xlab = xlab, ylab = ylab, ...)
 	} else if (map) {
 		if (!is.null(model))
@@ -347,11 +348,17 @@ plot.StVariogram = function(x, model=NULL, ..., col = bpy.colors(), xlab, ylab,
 		x$id = factor(x$id, levels=unique(x$id))
 		bp = bpy.colors(length(levels(x$id)))
 		ps = list(superpose.line=list(col=bp), superpose.symbol=list(col=bp))
-		ylim = c(0, max(x$gamma) * 1.04)
 		xlim = c(0, max(x$dist) * 1.04)
-		xyplot(f, x, groups = x$id, type='b', ylim = ylim, xlim = xlim,
-				auto.key = list(space = "right"), xlab = xlab, 
-				par.settings = ps, ...)
+		if (diff) {
+		  xyplot(f, x, groups = x$id, type='b', xlim = xlim,
+		         auto.key = list(space = "right"), xlab = xlab, 
+		         par.settings = ps, as.table=as.table, ...)
+		} else {
+  		ylim = c(0, max(x$gamma) * 1.04)
+  		xyplot(f, x, groups = x$id, type='b', ylim = ylim, xlim = xlim,
+  		       auto.key = list(space = "right"), xlab = xlab, 
+  		       par.settings = ps, as.table=as.table, ...)
+    }
 	}
 }
 

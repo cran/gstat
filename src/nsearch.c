@@ -67,7 +67,6 @@
 #include "utils.h"
 #include "glvars.h" /* get_method(), name_identifier() */
 #include "mapio.h"
-#include "predict.h" /* get_mask0() */
 #include "nsearch.h"
 #include "pqueue.h" /* include _after_ search.h! */
 
@@ -127,7 +126,7 @@ static void init_qtree(DATA *d) {
 		 * sequential simulation: the simulation path (through DATA or GRIDMAP)
 		 * will make up for (most of) the search locations:
 		 */
-		gt = (const GRIDMAP *) get_mask0();
+		gt = (const GRIDMAP *) NULL;
 		simlocs = get_dataval();
 		/* in case of simulation one of them will be non-NULL */
 	} 

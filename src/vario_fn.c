@@ -1,31 +1,4 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
  * vario_fn.c: contains elementary variogram model functions
  */
 #include <stdio.h> /* req'd by userio.h */
@@ -39,8 +12,6 @@
 #include "userio.h"
 #include "utils.h"
 #include "vario_fn.h"
-static double bessi1(double x);
-static double bessk1(double x);
 
 /*
  * Copyright (C) 1994, Edzer J. Pebesma
@@ -111,7 +82,8 @@ double fn_bessel(double h, double *r) {
 	hr = h/(*r);
 	if (hr < MIN_BESS) 
 		return 0.0;
-	return 1.0 - hr * bessk1(hr);
+	/* return 1.0 - hr * bessk1(hr); */
+	return 1.0 - hr * bessel_k(hr, 1.0, 1.0);
 }
 
 double fn_gaussian(double h, double *r) {
@@ -302,49 +274,4 @@ double fn_matern2(double h, double *p) {
 	if (!isfinite(mult))
 		return 1.0;
 	return 1.0 - bes * mult;
-}
-
-static double bessi1(double x)
-/*
- * bessi1 from numerical recipes 
- */
-{
-	double ax,ans;
-	double y;
-
-	if ((ax=fabs(x)) < 3.75) {
-		y=x/3.75;
-		y*=y;
-		ans=ax*(0.5+y*(0.87890594+y*(0.51498869+y*(0.15084934
-			+y*(0.2658733e-1+y*(0.301532e-2+y*0.32411e-3))))));
-	} else {
-		y=3.75/ax;
-		ans=0.2282967e-1+y*(-0.2895312e-1+y*(0.1787654e-1
-			-y*0.420059e-2));
-		ans=0.39894228+y*(-0.3988024e-1+y*(-0.362018e-2
-			+y*(0.163801e-2+y*(-0.1031555e-1+y*ans))));
-		ans *= (exp(ax)/sqrt(ax));
-	}
-	return (double) x < 0.0 ? -ans : ans;
-}
-
-static double bessk1(double x)
-/*
- * bessk1 from numerical recipes 
- */
-{
-	double y,ans;
-
-	if (x <= 2.0) {
-		y=x*x/4.0;
-		ans=(log(x/2.0)*bessi1(x))+(1.0/x)*(1.0+y*(0.15443144
-			+y*(-0.67278579+y*(-0.18156897+y*(-0.1919402e-1
-			+y*(-0.110404e-2+y*(-0.4686e-4)))))));
-	} else {
-		y=2.0/x;
-		ans=(exp(-x)/sqrt(x))*(1.25331414+y*(0.23498619
-			+y*(-0.3655620e-1+y*(0.1504268e-1+y*(-0.780353e-2
-			+y*(0.325614e-2+y*(-0.68245e-3)))))));
-	}
-	return (double) ans;
 }

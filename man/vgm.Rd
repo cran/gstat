@@ -11,20 +11,20 @@ Generates a variogram model, or adds to an existing model.
 \code{print.variogramModel} prints the essence of a variogram  model.
 }
 \usage{
-vgm(psill, model, range, nugget, add.to, anis, kappa = 0.5, ..., covtable,
+vgm(psill = NA, model, range = NA, nugget, add.to, anis, kappa = 0.5, ..., covtable,
 	Err = 0)
 \method{print}{variogramModel}(x, ...)
 as.vgm.variomodel(m)
 }
 \arguments{
-\item{psill}{ (partial) sill of the variogram model component }
+\item{psill}{ (partial) sill of the variogram model component, or model: see Details }
 \item{model}{ model type, e.g. "Exp", "Sph", "Gau", "Mat". Calling vgm() without
 a model argument returns a data.frame with available models. }
-\item{range}{ range of the variogram model component; in case of anisotropy: major range }
+\item{range}{ range parameter of the variogram model component; in case of anisotropy: major range }
 \item{kappa}{ smoothness parameter for the Matern class of variogram 
 models }
 \item{nugget}{ nugget component of the variogram (this basically adds a nugget
-compontent to the model) }
+compontent to the model); if missing, nugget component is omitted }
 \item{add.to}{ the variogram model to which we want to add a component (structure) }
 \item{anis}{ anisotropy parameters: see notes below }
 \item{x}{ a variogram model to print }
@@ -39,7 +39,12 @@ where Z=Y+e, and Err is the variance of e}
 \item{m}{ object of class \code{variomodel}, see \pkg{geoR}}
 }
 \value{
-an object of class \code{variogramModel}, which extends data.frame.
+If a single model is passed, an object of class \code{variogramModel}
+extending \code{data.frame}.
+
+In case a vector ofmodels is passed, an object of class
+\code{variogramModelList} which is a list of \code{variogramModel}
+objects.
 
 When called without a model argument, a data.frame with available models
 is returned, having two columns: short (abbreviated names, to be used
@@ -49,6 +54,15 @@ as.vgm.variomodel tries to convert an object of class variomodel (geoR)
 to vgm.
 }
 \author{ Edzer Pebesma }
+\details{ If only the first argument (\code{psill}) is given a
+\code{character} value indicating a model, as in \code{vgm("Sph")},
+then this taken as a shorthand form of \code{vgm(NA,"Sph",NA,NA)},
+i.e. a spherical variogram with nugget and unknown parameter values;
+see examples below. Read \link{fit.variogram} to find out how
+\code{NA} variogram parameters are given initial values for a fitting
+a model, based on the sample variogram. Package \code{automap}
+gives further options for automated variogram modelling. }
+
 \note{ 
 Geometric anisotropy can be modelled for each individual simple model
 by giving two or five anisotropy parameters, two for two-dimensional
@@ -99,6 +113,12 @@ Computers \& Geosciences, 30: 683-691.
 
 Deutsch, C.V. and Journel, A.G., 1998.  GSLIB: Geostatistical software
 library and user's guide, second edition, Oxford University Press.
+
+For the validity of variogram models on the sphere, see Huang,
+Chunfeng, Haimeng Zhang, and Scott M. Robeson. On the validity
+of commonly used covariance and variogram functions on the
+sphere. Mathematical Geosciences 43.6 (2011): 721-733.
+
 }
 \seealso{
 \link{show.vgms} to view the available models,
@@ -108,6 +128,9 @@ library and user's guide, second edition, Oxford University Press.
 }
 \examples{
 vgm()
+vgm("Sph")
+vgm(NA, "Sph", NA, NA)
+vgm(, "Sph") # "Sph" is second argument: NO nugget in this case
 vgm(10, "Exp", 300)
 x <- vgm(10, "Exp", 300)
 vgm(10, "Nug", 0)
@@ -125,5 +148,7 @@ print(x, digits = 3);
 print.data.frame(x)
 vv=vgm(model = "Tab",  covtable = 
 	variogramLine(vgm(1, "Sph", 1), 1, n=1e4, min = 0, covariance = TRUE))
+vgm(c("Mat", "Sph"))
+vgm(, c("Mat", "Sph")) # no nugget
 } 
 \keyword{models}

@@ -4,17 +4,19 @@ useDynLib(gstat,
 	gstat_fit_variogram,
 	gstat_get_variogram_models,
 	gstat_init,
-	gstat_load_command,
 	gstat_load_ev,
 	gstat_load_variogram,
 	gstat_new_data,
 	gstat_new_dummy_data,
 	gstat_predict,
+	gstat_set_merge,
+	gstat_set_method,
+	gstat_set_set,
 	gstat_variogram,
 	gstat_variogram_values
 )
 
-importFrom(utils, setTxtProgressBar, stack, txtProgressBar)
+importFrom(utils, setTxtProgressBar, stack, txtProgressBar, head, tail)
 importFrom(stats, as.formula, cor, cov2cor, delete.response, .getXlevels, 
 	lm, median, model.extract, model.frame, model.matrix, na.exclude, 
 	na.fail, na.omit, na.pass, optim, optimise, optimize, predict, 

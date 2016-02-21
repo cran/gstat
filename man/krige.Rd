@@ -101,7 +101,8 @@ idw0(formula, data, newdata, y, idp = 2.0)
   in coordinates and predictors are both dealt with. }
  \item{debug.level}{debug level, passed to \link[gstat]{predict}; use -1 
  to see progress in percentage, and 0 to suppress all printed information }
- \item{\dots}{ further arguments will be passed to \link{gstat}}
+ \item{\dots}{ for krige: arguments that will be passed to \link{gstat};
+ for \code{krige0}: arguments that will be passe to \code{model}}
  \item{idp}{numeric; specify the inverse distance weighting power}
  \item{y}{matrix; to krige multiple fields in a single step, pass data 
  as columns of matrix \code{y}. This will ignore the value of the 

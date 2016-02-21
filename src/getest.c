@@ -1,31 +1,4 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
  * getest.c: choose the predicion function at one prediction location
  */
 #include <stdio.h>
@@ -44,11 +17,11 @@
 #include "sem.h"
 #include "fit.h"
 #include "glvars.h"
+#include "mtrx.h"
 #include "lm.h"
 #include "gls.h"
 #include "sim.h"
 #include "msim.h"
-#include "stat.h"
 #include "block.h"
 #include "getest.h"
 
@@ -57,6 +30,11 @@ static void est_skew_kurt(DATA *data, double *est);
 static double inverse_dist(DATA *data, DPOINT *where, double idPow);
 static void save_variogram_parameters(VARIOGRAM *v);
 static void reset_variogram_parameters(VARIOGRAM *v);
+static double sample_mean(double *list, int n);
+static double sample_var(double *list, double mean, int n);
+static double sample_std(double *list, double mean, int n);
+static double est_quant(double *list, double p, int n);
+static int CDECL d_cmp(const double *a, const double *b);
 static double *vgm_pars = NULL;
 
 void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
@@ -74,7 +52,7 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 	enum GLS_WHAT gls_mode = GLS_BLUP;
 	const double *sim = NULL; /* return value of cond_sim() */
 
-	for (i = 0; i < get_n_outfile(); i++)
+	for (i = 0; i < get_n_outputs(); i++)
 		set_mv_double(&est[i]);
 	block = get_block_p();
 	if (get_mode() == MODE_NSP)
@@ -329,7 +307,7 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 			} /* switch (get_mode()) */
 			for (i = 0; i < n_vars; i++)
 				set_mv_double(&(est[2 * i + 1])); 
-			for (i = 2 * n_vars; i < get_n_outfile(); i++)
+			for (i = 2 * n_vars; i < get_n_outputs(); i++)
 				set_mv_double(&(est[i])); 
 			/* print_sim(); */
 			break;
@@ -343,10 +321,6 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 				est[0] = (double) data[where->u.stratum]->n_sel;
 				est[1] = (double) data[where->u.stratum]->oct_filled;
 			}
-			break;
-		case XYP:
-			est[0] = where->x;
-			est[1] = where->y;
 			break;
 		case SPREAD: 
 			if (get_mode() == STRATIFY) {
@@ -370,7 +344,6 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 			}
 			break;
 		case LSEM:
-			push_gstat_progress_handler(no_progress);
 			v = get_vgm(LTI(0,0));
 			assert(v);
 			v->id1 = v->id2 = v->id = 0;
@@ -401,7 +374,6 @@ void get_est(DATA **data, METHOD method, DPOINT *where, double *est) {
 					est[2 * i + 1] = 1.0 * v->ev->nh[i];
 				}
 			}
-			pop_gstat_progress_handler();
 			break;
 		case NSP:  /* FALLTRHOUGH: */
 		default: 
@@ -525,4 +497,69 @@ void reset_variogram_parameters(VARIOGRAM *v) {
 		v->part[i].range[1] = vgm_pars[3 * i + 2];
 	}
 	v->fit_is_singular = 0;
+}
+
+static double sample_mean(double *list, int n) {
+	int i;
+	double mn = 0.0;
+
+	if (list == NULL)
+		ErrMsg(ER_NULL, "sample_mean()");
+	if (n == 0) 
+		ErrMsg(ER_RANGE, "sample_mean(): no values");
+	for (i = 0; i < n; i++)
+		mn += list[i];
+	return mn/(1.0 * n);
+}
+
+static double sample_var(double *list, double mean, int n) {
+	int i;
+	double var = 0.0;
+
+	if (list == NULL)
+		ErrMsg(ER_NULL, "sample_var()");
+	if (n <= 1 || list == NULL) 
+		ErrMsg(ER_RANGE, "sample_var(): <= 1 values");
+	for (i = 0; i < n; i++)
+		var += SQR(list[i] - mean);
+	return (var / (n - 1.0));
+}
+
+static double sample_std(double *list, double mean, int n) {
+	return sqrt(sample_var(list, mean, n));
+}
+
+static double est_quant(double *list, double p, int n) {
+/*
+* function returns the value of the p-th quantile
+* of the ordered list *list, row exists from list[0]..list[length-1],
+* p is in [0..1];
+* a missing value is generated when the quantile lies not within
+* the valid data range, and is undetermined therefore
+*/
+	double order, where;
+	int below, above;
+
+	if (n < 2)
+		ErrMsg(ER_RANGE, "est_quant(): < 2 obs.");
+	if (p < 0.0 || p > 1.0)
+		ErrMsg(ER_RANGE, "can't calculate quantile outside [0,1]");
+	order = p * (n - 1);
+	/* order = n * (p * n)/(n + 1); */
+	below = (int) floor(order); /* the index below order */
+	if (below < 0) 
+		return list[0];
+	above = below + 1;			/* the index above order */
+	if (above >= n) 
+		return list[n - 1];
+	where = order - below;
+	return (1 - where) * list[below] + where * list[above]; 
+}
+
+int CDECL d_cmp(const double *a, const double *b) {
+	if (*a < *b)
+		return -1;
+	if (*a > *b)
+		return 1;
+	return 0;
 }

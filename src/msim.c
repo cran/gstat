@@ -1,31 +1,4 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
  * msim.c: multiple simulation database + output
  * Written during my Post Doc at UvA, end of 1996.
  * Rewrite started on Sat Apr 10 20:54:05 WET DST 1999
@@ -40,20 +13,23 @@
 #include <R.h>
 
 #include "debug.h"
-#include "random.h"
 #include "data.h"
 #include "utils.h"
 #include "vario.h"
 #include "glvars.h" /* gl_nsim, gl_format */
-#include "predict.h" /* n_pred_locs */
 #include "userio.h"
 #include "mapio.h"
+#include "mtrx.h"
 #include "lm.h"
 #include "gls.h"
 #include "sim.h"
 #include "msim.h"
 
 static DPOINT *which_point(DATA *d, DPOINT *where);
+static unsigned int *get_n_sim_locs_table(unsigned int *size);
+
+/* global variables formerly in predict.c; set in s.c */
+unsigned int n_pred_locs = 0;
 
 #ifdef SIM_DOUBLE
 typedef double Float; /* doubles the memory requirement -> may be pretty much */
@@ -120,7 +96,7 @@ void init_simulations(DATA **d) {
 		printlog("n_sim_locs_table: ");
 		for (i = 0; i < table_size; i++)
 			printlog("[%d] ", n_sim_locs[i]);
-		printf("\n");
+		printlog("\n");
 	}
 
 	msim = (Float ***) emalloc(get_n_vars() * sizeof(Float **));
@@ -366,8 +342,16 @@ void set_beta(DATA **d, int sim, int n_vars, METHOD method) {
  	return;
 }
 
-#ifndef SIM_DOUBLE
 float ***get_msim(void) {
 	return msim;
 }
-#endif
+
+static unsigned int *get_n_sim_locs_table(unsigned int *size) {
+	unsigned int i, *table;
+
+	*size = (int) get_n_vars();
+	table = (unsigned int *) emalloc(*size * sizeof(int));
+	for (i = 0; i < *size; i++)
+		table[i] = n_pred_locs;
+	return table;
+}

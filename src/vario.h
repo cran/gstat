@@ -29,13 +29,11 @@ typedef struct {
 
 typedef enum { 
 	NO_FIT = 0, 
-	WLS_FIT, 
-	WLS_FIT_MOD, 
-	WLS_GNUFIT,
-	WLS_GNUFIT_MOD, 
-	MIVQUE_FIT,
-	OLS_FIT,
-	WLS_NHH
+	WLS_FIT = 1, 
+	WLS_FIT_MOD = 2,  /* 3, 4: gnuplot fits not supported */
+	MIVQUE_FIT = 5,
+	OLS_FIT = 6,
+	WLS_NHH = 7
 } FIT_TYPE;
 
 typedef struct {
@@ -83,13 +81,13 @@ typedef enum {
 
 typedef struct {
 	VGM_MODEL_TYPE model;
-	const char *name, *name_long, *v_gnuplot, *c_gnuplot;
+	const char *name, *name_long;
 	double (*fn)(double h, double *r), /* variogram value at h of basic model */
 		(*da_fn)(double h, double *r); /* it's derivative to the range parm. */
 } V_MODEL;
 extern const V_MODEL v_models[];
 
-#define NRANGEPARS 2 /* number of range parameters in variogram models */
+#define NRANGEPARS 2 /* max number of range parameters in variogram models */
 typedef struct {
 	VGM_MODEL_TYPE model;
 	int fit_sill, fit_range, id;
@@ -106,12 +104,11 @@ typedef struct {
 } COV_TABLE;
 #define COV_TABLE_VALUE(tablep, dist) \
 	(dist >= tablep->maxdist ? tablep->values[tablep->n - 1] : \
-	tablep->values[(int) floor(tablep->n * (dist / tablep->maxdist))])
+	tablep->values[(int) (tablep->n * (dist / tablep->maxdist))])
 #define SEM_TABLE_VALUE(tablep, dist) \
 	(tablep->values[0] - COV_TABLE_VALUE(tablep, dist))
 
 typedef struct {
-	char 	*descr, *fname, *fname2; /* descript. and sample variogram (maps) */
 	int 	n_models, max_n_models, n_fit, id, id1, id2,
 			block_semivariance_set, block_covariance_set, isotropic,
 			is_valid_covariance, fit_is_singular;
@@ -190,17 +187,11 @@ void check_variography(const VARIOGRAM **v, int n);
 void update_variogram(VARIOGRAM *vp);
 double get_max_sills(int n);
 double da_general(VGM_MODEL *p, double h);
-double effective_range(const VARIOGRAM *v);
 int push_variogram_model(VARIOGRAM *v, VGM_MODEL part);
 VGM_MODEL_TYPE which_variogram_model(const char *m);
 double relative_nugget(VARIOGRAM *v);
 int vario(int argc, char **argv);
-FIT_TYPE fit_int2enum(int fit);
 DO_AT_ZERO zero_int2enum(int zero);
-DO_AT_ZERO zero_shift(DO_AT_ZERO now, int next);
-FIT_TYPE fit_shift(FIT_TYPE now, int next);
-VGM_MODEL_TYPE model_shift(VGM_MODEL_TYPE now, int next);
-int get_n_variogram_models(void);
 void push_to_v(VARIOGRAM *v, const char *mod, double sill, double *range, 
 		int nrangepars, double *d, int fit_sill, int fit_range);
 void push_to_v_table(VARIOGRAM *v, double maxdist, int length, double *values,

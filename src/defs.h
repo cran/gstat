@@ -1,94 +1,23 @@
-/* defs.h.  Generated automatically by configure.  */
 /*
- * defs.h, (c) Edzer J. Pebesma.
- * provides all platform/namespace specific definitions.
+ * provides some definitions
  */
 
 #ifndef DEFS_H
 #define DEFS_H /* avoid multiple inclusion */
 
-#ifndef NDEBUG
-# define NDEBUG /* turns off assert()ions */
-#endif 
+#include <assert.h> /* but assertions are off, by default */
 
-#include "config.h"
-
-/* # include <R.h> */
-#define exit(n) Rf_error("exiting with code %d", n)
-#define printf Rprintf
-
-#ifdef SPLUS6WIN32
-# define CDECL __cdecl
-#else
-# define CDECL /* empty */
-#endif
-
-#ifdef DMALLOC
-#define efree free
-#define emalloc malloc
-#define ecalloc calloc
-#define erealloc realloc
-#endif
-
-#define GSTAT_NAME      "gstat"
-#define GSTAT_CR        "Copyright (C) 1992, 2010 Edzer Pebesma and others"
-#define GSTAT_EMAIL     "edzer.pebesma@uni-muenster.de"
-#define GSTAT_INFO      "geostatistics@52north.org (subscription required)"
-#define GSTAT_ANNOUNCE  "gstat-announce@geo.uu.nl"
-#define GSTAT_HOME      "http://www.gstat.org/"
-#define USAGE           "usage: gstat [options] [file [file ...]]"
+#define CDECL /* empty */
 
 /*
  * several buffer sizes 
  */
-#ifdef SEGMENTED /* segmented memory: use small buffers */
-# define MAX_DATA 64 /* not a maximum, but an increment step size */
-#else
-# define MAX_DATA 1250 /* not a maximum, but an increment step size */
-#endif
-#define MAX_ID_LENGTH 40
+#define MAX_DATA 1250 /* not a maximum, but an increment step size */
 #define INIT_N_VGMM 2
 /* 
  * (for glvars.c:) something, not bigger than 127 
  * because of user interface (crazy though)
  */
 #define ERROR_BUFFER_SIZE 1280
-
-#define NOWARRANTY \
-"  Because the program is licensed free of charge, there is no warranty\n\
-for the program, to the extent permitted by applicable law.  Except when\n\
-otherwise stated in writing the copyright holders and/or other parties\n\
-provide the program \"as is\" without warranty of any kind, either expressed\n\
-or implied, including, but not limited to, the implied warranties of\n\
-merchantability and fitness for a particular purpose.  The entire risk as\n\
-to the quality and performance of the program is with you.  Should the\n\
-program prove defective, you assume the cost of all necessary servicing,\n\
-repair or correction.\n\
-\n\
-  In no event unless required by applicable law or agreed to in writing\n\
-will any copyright holder, or any other party who may modify and/or\n\
-redistribute the program as permitted above, be liable to you for damages,\n\
-including any general, special, incidental or consequential damages arising\n\
-out of the use or inability to use the program (including but not limited\n\
-to loss of data or data being rendered inaccurate or losses sustained by\n\
-you or third parties or a failure of the program to operate with any other\n\
-programs), even if such holder or other party has been advised of the\n\
-possibility of such damages.\n"
-
-#define COPYRIGHT "Copyright 1992-2006 (C) Edzer J. Pebesma\n\
-\n\
-This program is free software; you can redistribute it and/or modify\n\
-it under the terms of the GNU General Public License as published by\n\
-the Free Software Foundation; either version 2 of the License, or\n\
-(at your option) any later version.\n\
-\n\
-This program is distributed in the hope that it will be useful,\n\
-but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
-GNU General Public License for more details.\n\
-\n\
-You should have received a copy of the GNU General Public License\n\
-along with this program; if not, write to the Free Software\n\
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n"
 
 #endif /* DEFS_H */

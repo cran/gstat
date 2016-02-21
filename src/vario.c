@@ -1,31 +1,4 @@
 /*
-    Gstat, a program for geostatistical modelling, prediction and simulation
-    Copyright 1992, 2011 (C) Edzer Pebesma
-
-    Edzer Pebesma, edzer.pebesma@uni-muenster.de
-	Institute for Geoinformatics (ifgi), University of Münster 
-	Weseler Straße 253, 48151 Münster, Germany. Phone: +49 251 
-	8333081, Fax: +49 251 8339763  http://ifgi.uni-muenster.de 
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version. As a special exception, linking 
-    this program with the Qt library is permitted.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    (read also the files COPYING and Copyright)
-*/
-
-/*
  * vario.c: basic variogram model functions (init, print, update, etc.)
  */
 
@@ -35,6 +8,8 @@
 #include <float.h> /* DBL_MIN */
 #include <math.h>
 #include <string.h>
+
+#include "R.h" /* Rprintf() */
 
 #include "defs.h"
 #include "mtrx.h"
@@ -46,107 +21,41 @@
 #include "vario.h"
 #include "vario_fn.h"
 #include "glvars.h"
-#include "lex.h" /* read_variogram() */
-#include "read.h" /* for vario() only */
 #include "lm.h"
 
 static int is_valid_cs(const VARIOGRAM *aa, const VARIOGRAM *bb,
 	const VARIOGRAM *ab);
 static int is_posdef(MAT *m);
-static void strcat_tm(char *cp, ANIS_TM *tm);
 static ANIS_TM *get_tm(double anis[5]);
 static void init_variogram_part(VGM_MODEL *v);
 
-const V_MODEL v_models[] = { /* the variogram model ``data base'': */
-	{	 NOT_SP, "Nsp", "Nsp (not specified)",  /* DON'T CHANGE THIS ONE!! */
-		"# NSP: should never occur",
-		"# NSP: should never occur",
-		NULL, NULL },
-	{	NUGGET, "Nug", "Nug (nugget)", 
-		"Nug(a,x) = 1 # I don't let gnuplot draw what happens at x=0",
-		"Nug(a,x) = 0 # I don't let gnuplot draw what happens at x=0",
-		fn_nugget, da_is_zero },
-	{	EXPONENTIAL, "Exp", "Exp (exponential)", 
-		"Exp(a,x) = 1 - exp(-x/a)",
-		"Exp(a,x) = exp(-x/a)",
-		fn_exponential, da_fn_exponential },
-	{ 	SPHERICAL, "Sph", "Sph (spherical)", 
-		"Sph(a,x) = (x < a ? (1.5 * x/a) - 0.5*((x/a)**3) : 1)",
-		"Sph(a,x) = (x < a ? (1 - ((1.5 * x/a) - 0.5*((x/a)**3))) : 0)",
-		fn_spherical, da_fn_spherical },
-	{	GAUSSIAN, "Gau", "Gau (gaussian)", 
-		"Gau(a,x) = 1 - exp(-((x/a)**2))",
-		"Gau(a,x) = exp(-((x/a)**2))",
-		fn_gaussian, da_fn_gaussian },
-	{	EXCLASS, "Exc", "Exclass (Exponential class)", 
-		"# Exponential class model not supported by gnuplot",
-		"# Exponential class model not supported by gnuplot",
-		fn_exclass, NULL },
-	{	MATERN, "Mat", "Mat (Matern)", 
-		"# Matern model not supported by gnuplot",
-		"# Matern model not supported by gnuplot",
-		fn_matern, NULL },
-	{	STEIN, "Ste", "Mat (Matern, M. Stein's parameterization)", 
-		"# Matern model not supported by gnuplot",
-		"# Matern model not supported by gnuplot",
-		fn_matern2, NULL },
-	{ 	CIRCULAR, "Cir", "Cir (circular)", 
-		"Cir(a,x) = (x < a ? ((2*x)/(pi*a))*sqrt(1-(x/a)**2)+(2/pi)*asin(x/a) : 1)",
-		"Cir(a,x) = (x < a ? (1-(((2*x)/(pi*a))*sqrt(1-(x/a)**2)+(2/pi)*asin(x/a))) : 0)",
-		fn_circular, NULL },
-	{	LINEAR, "Lin", "Lin (linear)",  /* one-parameter (a = 0), or two-parameter with sill */
-		"Lin(a,x) = (a > 0 ? (x < a ? x/a : 1) : x)",
-		"Lin(a,x) = (a > 0 ? (x < a ? (1 - x/a) : 0) : 1 - x)",
-		fn_linear, da_fn_linear },
-	{	BESSEL, "Bes", "Bes (bessel)", 
-		"# Bessel model not suppurted by gnuplot",
-		"# Bessel model not suppurted by gnuplot",
-		fn_bessel, NULL },
-	{	PENTASPHERICAL, "Pen", "Pen (pentaspherical)", 
-		"Pen(a,x) = (x < a ? ((15.0/8.0)*(x/a)+(-5.0/4.0)*((x/a)**3)+\
-(3.0/8.0)*((x/a)**5)) : 1)",
-		"Pen(a,x) = (x < a ? (1 - ((15.0/8.0)*(x/a)+(-5.0/4.0)*((x/a)**3)+\
-(3.0/8.0)*((x/a)**5))) : 0)",
-		fn_pentaspherical, da_fn_pentaspherical },
-	{	PERIODIC, "Per", "Per (periodic)", 
-		"Per(a,x) = 1 - cos(2*pi*x/a)",
-		"Per(a,x) = cos(2*pi*x/a)",
-		fn_periodic, da_fn_periodic },
-	{	WAVE, "Wav", "Wav (wave)", 
-		"Wav(a,x) = 1 - (a*sin(pi*x/a)/pi*x)",
-		"Wav(a,x) = a*sin(pi*x/a)/pi*x",
-		fn_wave, da_fn_wave },
-	{ 	HOLE, "Hol", "Hol (hole)",
-		"Hol(a,x) = 1 - sin(x/a)/(x/a)",
-		"Hol(a,x) = sin(x/a)/(x/a)",
-		fn_hole, da_fn_hole },
-	{	LOGARITHMIC, "Log", "Log (logarithmic)", 
-		"Log(a,x) = log(x + a)",
-		"Log(a,x) = 1 - log(x + a)",
-		fn_logarithmic, da_fn_logarithmic },
-	{	POWER, "Pow", "Pow (power)",
-		"Pow(a,x) = x ** a",
-		"Pow(a,x) = 1 - x ** a",
-		fn_power, da_fn_power },
-	{	SPLINE, "Spl", "Spl (spline)", 
+const V_MODEL v_models[] = { /* the variogram model catalogue: */
+	/* first one needs to be NOT_SP: */
+	{	NOT_SP,         "Nsp", "Nsp (not specified)",  NULL, NULL },
+	{	NUGGET,         "Nug", "Nug (nugget)", fn_nugget, da_is_zero },
+	{	EXPONENTIAL,    "Exp", "Exp (exponential)", fn_exponential, da_fn_exponential },
+	{ 	SPHERICAL,      "Sph", "Sph (spherical)", fn_spherical, da_fn_spherical },
+	{	GAUSSIAN,       "Gau", "Gau (gaussian)", fn_gaussian, da_fn_gaussian },
+	{	EXCLASS,        "Exc", "Exclass (Exponential class/stable)", fn_exclass, NULL },
+	{	MATERN,         "Mat", "Mat (Matern)", fn_matern, NULL },
+	{	STEIN,          "Ste", "Mat (Matern, M. Stein's parameterization)", fn_matern2, NULL },
+	{ 	CIRCULAR,       "Cir", "Cir (circular)", fn_circular, NULL },
+	{	LINEAR,         "Lin", "Lin (linear)",  fn_linear, da_fn_linear },
+		/* one-parameter (a = 0), or two-parameter with sill */
+	{	BESSEL,         "Bes", "Bes (bessel)", fn_bessel, NULL },
+	{	PENTASPHERICAL, "Pen", "Pen (pentaspherical)", fn_pentaspherical, da_fn_pentaspherical },
+	{	PERIODIC,       "Per", "Per (periodic)", fn_periodic, da_fn_periodic },
+	{	WAVE,           "Wav", "Wav (wave)", fn_wave, da_fn_wave },
+	{ 	HOLE,           "Hol", "Hol (hole)", fn_hole, da_fn_hole },
+	{	LOGARITHMIC,    "Log", "Log (logarithmic)", fn_logarithmic, da_fn_logarithmic },
+	{	POWER,          "Pow", "Pow (power)", fn_power, da_fn_power },
 		/* Wackernagel 2nd ed., p. 225 -- not working yet */
-		"Spl(a,x) = x == 0 ? 0 : x * x * log(x)",
-		"Spl(a,x) = x == 0 ? 1 : 1 - x * x * log(x)",
-		fn_spline, NULL },
-	{	LEGENDRE, "Leg", "Leg (Legendre)", 
-		"",
-		"",
-		fn_legendre, NULL },
-	{	MERROR, "Err", "Err (Measurement error)", 
-		"Err(a,x) = 1 # I don't let gnuplot draw what happens at x=0",
-		"Err(a,x) = 0 # I don't let gnuplot draw what happens at x=0",
-		fn_nugget, da_is_zero },
+	{	SPLINE,         "Spl", "Spl (spline)", fn_spline, NULL },
+	{	LEGENDRE,       "Leg", "Leg (Legendre)", fn_legendre, NULL },
+	{	MERROR,         "Err", "Err (Measurement error)", fn_nugget, da_is_zero },
 	/* the folowing two should always be the last ``valid'' one: */
-	{	INTERCEPT, "Int", "Int (Intercept)",
-		"Int(a,x)   = 1",
-		"Int(a,x)   = 1",
-		fn_intercept, da_is_zero },
-	{	NOT_SP, NULL, NULL, NULL, NULL, NULL, NULL } /* THIS SHOULD BE LAST */
+	{	INTERCEPT,       "Int", "Int (Intercept)", fn_intercept, da_is_zero },
+	{	NOT_SP,          NULL, NULL, NULL, NULL } /* THIS SHOULD BE LAST */
 };
 
 const char *vgm_type_str[] = { 
@@ -173,7 +82,6 @@ VARIOGRAM *init_variogram(VARIOGRAM *v) {
 	v->isotropic = 1;
 	v->n_fit = 0;
 	v->fit_is_singular = 0;
-	v->descr = v->fname = v->fname2 = (char *) NULL;
 	v->max_range = (double) DBL_MIN;
 	v->sum_sills = 0.0;
 	v->measurement_error = 0.0;
@@ -258,9 +166,6 @@ void free_variogram(VARIOGRAM *v) {
 		if (v->part[i].tm_range != NULL)
 			efree(v->part[i].tm_range);
 		
-	if (v->descr != NULL)
-		efree(v->descr);
-
 	efree(v->part);
 	if (v->table) {
 		efree(v->table->values);
@@ -270,65 +175,30 @@ void free_variogram(VARIOGRAM *v) {
 }
 
 void logprint_variogram(const VARIOGRAM *v, int verbose) {
-	printlog("%s", sprint_variogram(v, verbose));
-}
-
-const char *sprint_variogram(const VARIOGRAM *v, int verbose) {
-/* prints contents of VARIOGRAM v on string */
-	static char tmp[ERROR_BUFFER_SIZE], s[ERROR_BUFFER_SIZE];
-	int i, j, k;
-
-	tmp[0] = s[0] = '\0';
-
+/* prints contents of VARIOGRAM v to R console */
 	if (v->id1 < 0 && v->id2 < 0)
-		return s; /* never set */
-
-	if ((v->descr == NULL || v->n_models == 0) && (v->fname == NULL))
-		return s; /* nothing to print */
+		return; /* never set */
 
 	if (v->id1 == v->id2)
-		sprintf(s, "variogram(%s)", name_identifier(v->id1)); 
+		Rprintf("variogram(%s):\n", name_identifier(v->id1)); 
 	else
-		sprintf(s, "variogram(%s,%s)", name_identifier(v->id1),
-			name_identifier(v->id2)); 
+		Rprintf("variogram(%s,%s):\n", name_identifier(v->id1), name_identifier(v->id2)); 
 
-	if (v->fname) {
-		sprintf(tmp, ": '%s'", v->fname);
-		strcat(s, tmp);
-	}
-
-	if (v->descr && v->n_models > 0) {
-		sprintf(tmp, ": %s", v->descr);
-		strcat(s, tmp);
-	}
-
-	strcat(s, ";\n");
-
-	if (verbose == 0)
-		return s;
-
-	for (i = 0; i < v->n_models; i++) {
-		sprintf(tmp, "# model: %d type: %s sill: %g range: %g\n", 
-			i, v_models[v->part[i].model].name_long, 
-			v->part[i].sill, v->part[i].range[0]);
-		strcat(s, tmp);
+	for (int i = 0; i < v->n_models; i++) {
+		Rprintf("# model: %d type: %s sill: %g range: %g\n", 
+			i, v_models[v->part[i].model].name_long, v->part[i].sill, v->part[i].range[0]);
 		if (v->part[i].tm_range != NULL) {
-			sprintf(tmp, "# range anisotropy, rotation matrix:\n");
-			strcat(s, tmp);
-			for (j = 0; j < 3; j++) {
-				for (k = 0; k < 3; k++) {
-					sprintf(tmp, "%s%8.4f", k == 0 ? "# " : " ",
-						v->part[i].tm_range->tm[j][k]);
-					strcat(s, tmp);
-				}
-				strcat(s, "\n");
+			Rprintf("# range anisotropy, rotation matrix:\n");
+			for (int j = 0; j < 3; j++) {
+				for (int k = 0; k < 3; k++)
+					Rprintf("%s%8.4f", k == 0 ? "# " : " ", v->part[i].tm_range->tm[j][k]);
+				Rprintf("\n");
 			}
 		}
 	}
-	sprintf(tmp, "# sum sills %g, max %g, min %g, flat at distance %g\n",
+	Rprintf( "# sum sills %g, max %g, min %g, flat at distance %g\n",
 		v->sum_sills, v->max_val, v->min_val, v->max_range);
-	strcat(s, tmp);
-	return s;
+	return;
 }
 
 void update_variogram(VARIOGRAM *vp) {
@@ -337,25 +207,20 @@ void update_variogram(VARIOGRAM *vp) {
  * assumes that models are not changed: they can only be changed through
  * read_variogram();
  */
-	char s[LENGTH_OF_MODEL], *cp;
 	VGM_MODEL *p;
-	int i;
 
-	vp->descr = (char *) erealloc(vp->descr,
-		vp->max_n_models * LENGTH_OF_MODEL * sizeof(char));
-	cp = vp->descr;
-	*cp = '\0';
-	/* update sum_sills: */
 	vp->sum_sills = vp->min_val = vp->max_val = 0.0;
+	vp->measurement_error = 0.0;
 	vp->n_fit = 0;
 	vp->max_range = DBL_MIN;
-	for (i = 0; i < vp->n_models; i++) {
+	for (int i = 0; i < vp->n_models; i++) {
 		p = &(vp->part[i]);
 		vp->sum_sills += p->sill;
 		if (p->sill < 0.0)
 			vp->min_val += p->sill;
-		else
-			vp->max_val += p->sill;
+		/* else */   /* up to gstat_1.1-1 else was there;  see https://stat.ethz.ch/pipermail/r-sig-geo/2015-December/023814.html */
+		vp->max_val += p->sill;
+
 		vp->max_range = MAX(p->range[0], vp->max_range);
 
 		if (p->model == BESSEL || p->model == GAUSSIAN ||
@@ -371,24 +236,9 @@ void update_variogram(VARIOGRAM *vp) {
 		else  /* transitive model: */
 			vp->max_range = MAX(p->range[0], vp->max_range);
 
-		if (p->fit_sill == 0)
-			strcat(cp, "@ ");
-		sprintf(s, gl_format, i == 0 ? p->sill : fabs(p->sill));
-		strcat(cp, s);
-		strcat(cp, " ");
-		sprintf(s, "%s(", v_models[p->model].name);
-		strcat(cp, s);
-		if ((p->model == LINEAR && p->range[0] == 0.0) || p->model == NUGGET || p->model == INTERCEPT)
+		if ((p->model == LINEAR && p->range[0] == 0.0) || p->model == NUGGET 
+				|| p->model == INTERCEPT)
 			p->fit_range = 0; /* 1 would lead to singularity */
-		else if (p->fit_range == 0)
-			strcat(cp, "@ ");
-		sprintf(s, gl_format, p->range[0]);
-		strcat(cp, s);
-		if (p->tm_range != NULL) 
-			strcat_tm(cp, p->tm_range);
-		strcat(cp, ")");
-		if (i != vp->n_models - 1)
-			strcat(cp, vp->part[i+1].sill < 0.0 ? " - " : " + ");
 		if (p->model == LOGARITHMIC || p->model == POWER || p->model == INTERCEPT
 				|| (p->model == LINEAR && p->range[0] == 0))
 		 	vp->is_valid_covariance = 0;
@@ -403,7 +253,7 @@ void update_variogram(VARIOGRAM *vp) {
 		vp->sum_sills = vp->table->values[0];
 		vp->max_val = vp->table->values[0];
 		vp->min_val = vp->table->values[0];
-		for (i = 1; i < vp->table->n; i++) {
+		for (int i = 1; i < vp->table->n; i++) {
 			vp->max_val = MAX(vp->max_val, vp->table->values[i]);
 			vp->min_val = MIN(vp->min_val, vp->table->values[i]);
 		}
@@ -411,26 +261,7 @@ void update_variogram(VARIOGRAM *vp) {
 	return;
 }
 
-static void strcat_tm(char *cp, ANIS_TM *tm) {
-	char s[100];
-
-	strcat(cp, ",");
-	sprintf(s, gl_format, tm->angle[0]);
-	if (TM_IS3D(tm)) {
-		strcat(cp, s); strcat(cp, ",");
-		sprintf(s, gl_format, tm->angle[1]);
-		strcat(cp, s); strcat(cp, ",");
-		sprintf(s, gl_format, tm->angle[2]);
-	}
-	strcat(cp, s); strcat(cp, ",");
-	sprintf(s, gl_format, tm->ratio[0]);
-	if (TM_IS3D(tm)) {
-		strcat(cp, s); strcat(cp, ",");
-		sprintf(s, gl_format, tm->ratio[1]);
-	}
-	strcat(cp, s);
-}
-
+/*
 double get_max_sill(int n) {
 	int i, j;
 	VARIOGRAM *vp;
@@ -446,6 +277,7 @@ double get_max_sill(int n) {
 	}
 	return max_sill;
 }
+*/
 
 double get_semivariance(const VARIOGRAM *vp, double dx, double dy, double dz) {
 /* returns gamma(dx,dy,dz) for variogram v: gamma(h) = cov(0) - cov(h) */
@@ -484,9 +316,7 @@ double get_covariance(const VARIOGRAM *vp, double dx, double dy, double dz) {
 	}
 
 	if (! vp->is_valid_covariance && !warning) {
-		pr_warning(
-			"%s: non-transitive variogram model not allowed as covariance function",
-			vp->descr);
+		pr_warning("non-transitive variogram model not allowed as covariance function");
 		warning = 1;
 	}
 	if (!vp->is_valid_covariance && !DEBUG_FORCE)
@@ -541,10 +371,9 @@ static int is_valid_cs(const VARIOGRAM *aa, const VARIOGRAM *bb,
 			sqrt(get_semivariance(aa, dx, dy, dz) * 
 			get_semivariance(bb, dx, dy, dz))) {
 			check_failed = 1; /* yes, the check failed */
-			pr_warning("%s %d %s %d %s %d\n%s\n%s\n%s\n%s\n%s %g %g %g",
+			pr_warning("%s %d %s %d %s %d\n%s %g %g %g\n",
 				"Cauchy-Schwartz violation: variogram",
 				aa->id,",",bb->id, "and cross variogram", ab->id,
-				"descriptors: ", aa->descr, bb->descr, ab->descr,
 				"first failure on dx, dy and dz:", dx, dy, dz);
 		}
 	} /* for */
@@ -616,16 +445,16 @@ void check_variography(const VARIOGRAM **v, int n_vars)
 		for (i = 0; i < n_vars; i++) {
 			for (j = 0; j < n_vars; j++) { /* for all variogram triplets: */
 				for (k = 0; k < v[0]->n_models; k++)
-					a[k]->me[i][j] = v[LTI(i,j)]->part[k].sill;
+					ME(a[k], i, j) = v[LTI(i,j)]->part[k].sill;
 			}
 		}
 		/* for ic: a's must be scaled versions of each other: */
 		ic = 1;
 		for (k = 1, ic = 1; ic && k < v[0]->n_models; k++) {
-			b = a[0]->me[0][0]/a[k]->me[0][0];
+			b = ME(a[0], 0, 0)/ME(a[k], 0, 0);
 			for (i = 0; ic && i < n_vars; i++)
 				for (j = 0; ic && j < n_vars; j++)
-					if (fabs(a[0]->me[i][j] / a[k]->me[i][j] - b) > EPSILON)
+					if (fabs(ME(a[0], i, j) / ME(a[k], i, j) - b) > EPSILON)
 						ic = 0;	
 		}
 		/* check posdef matrices */
@@ -662,7 +491,7 @@ void check_variography(const VARIOGRAM **v, int n_vars)
  */
 	pr_warning("No Intrinsic Correlation or Linear Model of Coregionalization found\nReason: %s", reason ? reason : "unknown");
 	if (gl_nocheck == 0) {
-		pr_warning("[add `set nocheck = 1;' to the command file to ignore the following error]\n");
+		pr_warning("[add `set = list(nocheck = 1)' to the gstat() or krige() to ignore the following error]\n");
 		ErrMsg(ER_IMPOSVAL, "variograms do not satisfy a legal model");
 	}
 	printlog("Now checking for Cauchy-Schwartz inequalities:\n");
@@ -678,36 +507,11 @@ void check_variography(const VARIOGRAM **v, int n_vars)
 }
 
 static int is_posdef(MAT *A) {
-	unsigned int	i, j, k;
-	double	sum, tmp;
-
-	for (k = 0; k < A->n; k++) {	
-		/* do diagonal element */
-		sum = A->me[k][k];
-		for (j = 0; j < k; j++) {
-			tmp = A->me[k][j];
-			sum -= tmp*tmp;
-		}
-		/*
-		if (sum <= 0.0)
-			return 0;
-		A->me[k][k] = sqrt(sum);
-		*/
-		if (sum < -gl_zero)
-			return 0;
-		if (sum < gl_zero)
-			A->me[k][k] = sqrt(gl_zero);
-		else
-			A->me[k][k] = sqrt(sum);
-
-		/* set values of column k */
-		for (i = k + 1; i < A->n; i++) {
-			sum = A->me[i][k];
-			sum -= __ip__(A->me[i],A->me[k],(int)k);
-			A->me[j][i] = A->me[i][j] = sum/A->me[k][k];
-		}
-	}
-	return 1;
+	MAT *b = m_copy(A, MNULL);
+	int info;
+	CHfactor(b, PNULL, &info);
+	m_free(b);
+	return (info == 0);
 }
 
 double transform_norm(const ANIS_TM *tm, double dx, double dy, double dz) {
@@ -723,12 +527,13 @@ double transform_norm(const ANIS_TM *tm, double dx, double dy, double dz) {
 			tmp = tm->tm[i][0] * dx + tm->tm[i][1] * dy + tm->tm[i][2] * dz;
 			dist += tmp * tmp;
 		}
-		return sqrt(dist);
+	    return sqrt(dist);
 	} 
 	return sqrt((dx * dx) + (dy * dy) + (dz * dz));
 }
 
-double da_general(VGM_MODEL *part, double h) {
+double da_general(VGM_MODEL *part, double h) { 
+/* numerical approximation of derivative: */
 	int i;
 	double low, high, range, r[NRANGEPARS];
 
@@ -814,15 +619,14 @@ int push_variogram_model(VARIOGRAM *v, VGM_MODEL part) {
 
 VGM_MODEL_TYPE which_variogram_model(const char *m) {
 	char s[4];
-	int i;
 
 	strncpy(s, m, 3);
 	s[0] = toupper(s[0]);
 	s[1] = tolower(s[1]);
 	s[2] = tolower(s[2]);
 	s[3] = '\0';
-	for (i = 1; v_models[i].name != NULL; i++)
-		if (almost_equals(s, v_models[i].name))
+	for (int i = 1; v_models[i].name != NULL; i++)
+		if (strcmp(s, v_models[i].name) == 0)
 			return v_models[i].model;
 	return NOT_SP;
 }
@@ -846,35 +650,6 @@ double relative_nugget(VARIOGRAM *v) {
 	return (nug/(nug+sill));
 }
 
-FIT_TYPE fit_int2enum(int fit) {
-	switch (fit) {
-		case 0: return NO_FIT;
-		case 1: return WLS_FIT; 
-		case 2: return WLS_FIT_MOD;
-		case 3: return WLS_GNUFIT;
-		case 4: return WLS_GNUFIT_MOD; 
-		case 5: return MIVQUE_FIT;
-		case 6: return OLS_FIT;
-		case 7: return WLS_NHH;
-	}
-	ErrMsg(ER_IMPOSVAL, "invalid value for fit");
-	return OLS_FIT; /* never reached */
-}
-
-FIT_TYPE fit_shift(FIT_TYPE now, int next) {
-	switch (now) {
-		case NO_FIT: return (next ? WLS_FIT : WLS_NHH);
-		case WLS_FIT: return (next ? WLS_FIT_MOD : NO_FIT); 
-		case WLS_FIT_MOD: return (next ? WLS_GNUFIT : WLS_FIT);
-		case WLS_GNUFIT: return (next ? WLS_GNUFIT_MOD : WLS_FIT_MOD);
-		case WLS_GNUFIT_MOD: return (next ? MIVQUE_FIT : WLS_GNUFIT); 
-		case MIVQUE_FIT: return (next ? OLS_FIT : WLS_GNUFIT_MOD);
-		case OLS_FIT: return (next ? WLS_NHH : MIVQUE_FIT);
-		case WLS_NHH: return (next ? NO_FIT : OLS_FIT);
-	}
-	return NO_FIT; /* never reached */
-}
-
 DO_AT_ZERO zero_int2enum(int zero) {
 	switch(zero) {
 		case 0: return ZERO_DEFAULT;
@@ -884,70 +659,6 @@ DO_AT_ZERO zero_int2enum(int zero) {
 	}
 	ErrMsg(ER_IMPOSVAL, "invalid value for zero");
 	return ZERO_DEFAULT; /* never reached */
-}
-
-DO_AT_ZERO zero_shift(DO_AT_ZERO now, int next) {
-	if (next) {
-		switch(now) {
-			case ZERO_DEFAULT: return ZERO_INCLUDE;
-			case ZERO_INCLUDE: return ZERO_AVOID;
-			case ZERO_AVOID: return ZERO_SPECIAL;
-			case ZERO_SPECIAL: return ZERO_DEFAULT;
-		}
-	} else {
-		switch(now) {
-			case ZERO_DEFAULT: return ZERO_SPECIAL;
-			case ZERO_INCLUDE: return ZERO_DEFAULT;
-			case ZERO_AVOID: return ZERO_INCLUDE;
-			case ZERO_SPECIAL: return ZERO_SPECIAL;
-		}
-	}
-	return ZERO_DEFAULT; /* never reached */
-}
-
-VGM_MODEL_TYPE model_shift(VGM_MODEL_TYPE now, int next) {
-	int i;
-
-	if (now == NOT_SP)
-		return NUGGET;
-
-	for (i = 1; v_models[i].model != NOT_SP; i++) {
-		if (v_models[i].model == now) {
-			if (next) {
-				if (v_models[i+1].model == NOT_SP)
-					return now;
-				else
-					return v_models[i+1].model;
-			} else {
-				if (v_models[i-1].model == NOT_SP)
-					return now;
-				else
-					return v_models[i-1].model;
-			}
-		}
-	}
-	return NUGGET; /* never reached */
-}
-
-double effective_range(const VARIOGRAM *v) {
-	int i;
-	double er = 0.0, range;
-	for (i = 0; i < v->n_models; i++) {
-		switch (v->part[i].model) {
-			case EXPONENTIAL: range = 3 * v->part[i].range[0]; break;
-			case GAUSSIAN: range = sqrt(3) * v->part[i].range[0]; break;
-			default: range = v->part[i].range[0]; break;
-		}
-		er = MAX(er, range);
-	}
-	return er;
-}
-
-int get_n_variogram_models(void) {
-	int i, n = 0;
-	for (i = 1; v_models[i].model != NOT_SP; i++)
-		n++;
-	return(n);
 }
 
 void push_to_v(VARIOGRAM *v, const char *mod, double sill, double *range, 
@@ -991,7 +702,7 @@ void push_to_v_table(VARIOGRAM *v, double maxdist, int length, double *values,
 }
 
 static ANIS_TM *get_tm(double anis[5]) {
-/* Part of this routine was taken from GSLIB, first edition:
+/* Part of this routine was inspired by FORTRAN code in GSLIB, first edition:
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C                                                                      %
 C Copyright (C) 1992 Stanford Center for Reservoir Forecasting.  All   %
