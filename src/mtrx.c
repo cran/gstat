@@ -119,12 +119,16 @@ VEC *v_zero(VEC *v) {
 }
 
 MAT *m_copy(MAT *in, MAT *out) {
+	if (in == out)
+		return(out);
 	out = m_resize(out, in->m, in->n);
 	memcpy(out->v, in->v, in->m * in->n * sizeof(double));
 	return(out);
 }
 
 VEC *v_copy(VEC *in, VEC *out) {
+	if (in == out)
+		return(out);
 	out = v_resize(out, in->dim);
 	memcpy(out->ve, in->ve, in->dim * sizeof(double));
 	return(out);
