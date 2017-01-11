@@ -3,7 +3,7 @@ VgmFillNA <- function(x, boundaries) {
 	n = length(boundaries) - 1
 	ix = rep(NA, n)
 	#ix[which(1:n %in% findInterval(x$dist, boundaries))] = 1:nrow(x)
-	ix[ findInterval(x$dist, boundaries)] = 1:nrow(x)
+	ix[ findInterval(x$dist, boundaries, rightmost.closed = TRUE) ] = 1:nrow(x)
 	# x$b = boundaries[-1]
 	x[ix,]
 }
@@ -34,10 +34,6 @@ StVgmLag = function(formula, data, dt, pseudo, ...) {
 	.ValidObs = function(formula, data)
 		!is.na(data[[as.character(as.list(formula)[[2]])]])
 	d = dim(data)
-	if (formula[[3]] != 1) { # there is a regression model:
-		data$resid = residuals(lm(formula, data, na.action = na.exclude))
-		formula = resid ~ 1
-	}
 	ret = vector("list", d[2] - dt)
 	if (dt == 0) {
 		for (i in 1:d[2]) {
@@ -90,6 +86,10 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
 		cutoff <- spDists(t(data@sp@bbox), longlat = ll)[1,2]/3
 	}
   
+	if (formula[[3]] != 1) { # there is a regression model:
+		data$resid = residuals(lm(formula, data, na.action = na.exclude))
+		formula = resid ~ 1
+	}
 	if(is(data, "STIDF"))
 		return(variogramST.STIDF(formula, data, tlags, cutoff, width, 
                              boundaries, progress, ...))
@@ -215,8 +215,8 @@ variogramST.STIDF <- function (formula, data, tlags, cutoff,
       distTp[j,i] <- mean(tmpInd[indSp,4])
       
       indSp <- cbind(ind[indSp] %% nData, (ind[indSp] %/% nData)+1)
-      np[j,i] <- length(indSp)
-      gamma[j,i] <- 0.5*mean((data[indSp[,1],,colnames(m)[1]]@data[[1]] - data[indSp[,1]+indSp[,2],,colnames(m)[1]]@data[[1]])^2,
+      np[j,i] <- nrow(indSp) # Issue #7, Thanks to Roelof.
+      gamma[j,i] <- 0.5*mean((data[,,colnames(m)[1]]@data[indSp[,1],1] - data[,,colnames(m)[1]]@data[indSp[,1]+indSp[,2],1])^2,
                              na.rm=TRUE)
     }
     if(progress)

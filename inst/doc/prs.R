@@ -1,4 +1,5 @@
 ### R code from vignette source 'prs.Rnw'
+### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: prs.Rnw:48-54

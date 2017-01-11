@@ -1,4 +1,5 @@
 ### R code from vignette source 'gstat.Rnw'
+### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: gstat.Rnw:74-84
