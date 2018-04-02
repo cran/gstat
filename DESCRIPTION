@@ -1,5 +1,5 @@
 Package: gstat
-Version: 1.1-5
+Version: 1.1-6
 Title: Spatial and Spatio-Temporal Geostatistical Modelling, Prediction
         and Simulation
 Authors@R: c(person("Edzer", "Pebesma", role = c("aut", "cre"), email = "edzer.pebesma@uni-muenster.de"),
@@ -14,9 +14,9 @@ URL: https://github.com/edzer/gstat/
 Encoding: UTF-8
 BugReports: https://github.com/edzer/gstat/issues/
 NeedsCompilation: yes
-Packaged: 2017-03-11 18:44:24 UTC; edzer
+Packaged: 2018-03-15 14:25:37 UTC; edzer
 Author: Edzer Pebesma [aut, cre],
   Benedikt Graeler [aut]
 Maintainer: Edzer Pebesma <edzer.pebesma@uni-muenster.de>
 Repository: CRAN
-Date/Publication: 2017-03-12 09:02:30
+Date/Publication: 2018-04-02 11:23:01 UTC

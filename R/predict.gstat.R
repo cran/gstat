@@ -198,8 +198,9 @@ function (object, newdata, block = numeric(0), nsim = 0, indicators = FALSE,
 				fullgrid(newdata) = FALSE
 				ret = new("SpatialPixelsDataFrame", 
 					new("SpatialPixels", as(ret, "SpatialPoints"),
-					grid = newdata@grid, grid.index = newdata@grid.index),
-        			data = ret@data, coords.nrs = ret@coords.nrs)
+					    grid = newdata@grid, grid.index = newdata@grid.index,
+					    bbox = newdata@bbox),
+					data = ret@data, coords.nrs = ret@coords.nrs)
 				fullgrid(ret) = returnFullGrid
 			}
 		}
@@ -232,9 +233,19 @@ create.gstat.names <- function(ids, names.sep = ".") {
 }
 
 getMaxDist = function(dataLst, newdata) {
-	d = apply(bbox(newdata), 1, diff)
+  
+  spBbox <- SpatialPoints(cbind(newdata@bbox[cbind(c(1,1,1,1), c(1,2,1,1))],
+                                newdata@bbox[cbind(c(2,2,2,2), c(1,1,1,2))]), 
+                          proj4string = newdata@proj4string)
+  d <- c(spDists(spBbox)[cbind(c(1,3),c(2,4))])
+  
+	# d = apply(bbox(newdata), 1, diff)
 	if (!is.null(dataLst[[1]]$data)) {
-		d2 = apply(bbox(dataLst[[1]]$data), 1, diff)
+	  spBbox2 <- SpatialPoints(cbind(dataLst[[1]]$data@bbox[cbind(c(1,1,1,1), c(1,2,1,1))],
+	                                 dataLst[[1]]$data@bbox[cbind(c(2,2,2,2), c(1,1,1,2))]), 
+	                          proj4string = dataLst[[1]]$data@proj4string)
+	  d2 <- c(spDists(spBbox2)[cbind(c(1,3),c(2,4))])
+		# d2 = apply(bbox(dataLst[[1]]$data), 1, diff)
 		d = apply(rbind(d,d2), 2, max) 
 		# there are pathetic cases where this would not be sufficient 
 	}
