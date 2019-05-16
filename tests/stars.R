@@ -79,3 +79,15 @@ stplot(s.stfdf, scales = list(draw = TRUE))
 (s2 = st_as_stars(s.stfdf))
 plot(s2, col = sf.colors(), axes = TRUE)
 all.equal(s, s2, check.attributes = FALSE)
+
+# multiple simulations:
+data(meuse, package = "sp")
+data(meuse.grid, package = "sp")
+coordinates(meuse.grid) <- ~x+y
+gridded(meuse.grid) <- TRUE
+meuse.grid = st_as_stars(meuse.grid)
+meuse_sf = st_as_sf(meuse, coords = c("x", "y"))
+g = gstat(NULL, "zinc", zinc~1, meuse_sf, model = vgm(1, "Exp", 300), nmax = 10)
+g = gstat(g, "lead", lead~1, meuse_sf, model = vgm(1, "Exp", 300), nmax = 10, fill.cross = TRUE)
+set.seed(123)
+(p = predict(g, meuse.grid, nsim = 5))

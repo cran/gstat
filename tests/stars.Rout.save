@@ -1,5 +1,5 @@
 
-R version 3.5.3 (2019-03-11) -- "Great Truth"
+R version 3.6.0 (2019-04-26) -- "Planting of a Tree"
 Copyright (C) 2019 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -473,6 +473,35 @@ time    1  4 2019-02-25 15:37:25 UTC 1 secs POSIXct    NA   NULL
 > all.equal(s, s2, check.attributes = FALSE)
 [1] TRUE
 > 
+> # multiple simulations:
+> data(meuse, package = "sp")
+> data(meuse.grid, package = "sp")
+> coordinates(meuse.grid) <- ~x+y
+> gridded(meuse.grid) <- TRUE
+> meuse.grid = st_as_stars(meuse.grid)
+> meuse_sf = st_as_sf(meuse, coords = c("x", "y"))
+> g = gstat(NULL, "zinc", zinc~1, meuse_sf, model = vgm(1, "Exp", 300), nmax = 10)
+> g = gstat(g, "lead", lead~1, meuse_sf, model = vgm(1, "Exp", 300), nmax = 10, fill.cross = TRUE)
+> set.seed(123)
+> (p = predict(g, meuse.grid, nsim = 5))
+drawing 5 multivariate GLS realisations of beta...
+[using conditional Gaussian simulation]
+stars object with 3 dimensions and 2 attributes
+attribute(s):
+     zinc             lead        
+ Min.   : 101.8   Min.   : 32.78  
+ 1st Qu.: 199.6   1st Qu.: 73.03  
+ Median : 300.2   Median :107.93  
+ Mean   : 399.8   Mean   :133.17  
+ 3rd Qu.: 544.0   3rd Qu.:178.82  
+ Max.   :1817.2   Max.   :638.94  
+ NA's   :25045    NA's   :25045   
+dimension(s):
+       from  to offset delta refsys point        values    
+x         1  78 178440    40     NA    NA          NULL [x]
+y         1 104 333760   -40     NA    NA          NULL [y]
+sample    1   5     NA    NA     NA    NA sim1,...,sim5    
+> 
 > proc.time()
    user  system elapsed 
-  2.106   0.032   2.129 
+  2.320   0.076   2.395 
