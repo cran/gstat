@@ -51,7 +51,7 @@ krige.sf <- function(formula, locations, newdata, ..., nsim = 0) {
 	if (!is.null(locations)) {
 		stopifnot(sf::st_crs(locations) == sf::st_crs(newdata))
 		crs = sf::st_crs(locations)
-		if (!sf::st_is_longlat(locations)) {
+		if (!isTRUE(sf::st_is_longlat(locations))) {
 			sf::st_crs(locations) = sf::NA_crs_
 			sf::st_crs(newdata) = sf::NA_crs_# to avoid problems not handled by sp...
 		}
@@ -125,7 +125,7 @@ idw.sf <- function (formula, locations,
 		stop("stars required: install that first") # nocov
 
 	ret = krige(formula, locations, newdata, ..., set = list(idp = idp), model = NULL)
-	if (inherits(newdata, "sf"))
+	if (inherits(newdata, c("sf", "sfc")))
 		sf::st_as_sf(ret)
 	else if (inherits(newdata, "stars"))
 		stars::st_as_stars(ret)
