@@ -65,7 +65,10 @@ krigeST <- function(formula, data, newdata, modelList, beta, y, ...,
   } else
     FALSE
   stopifnot(inherits(data, c("STF", "STS", "STI")) & inherits(newdata, c("STF", "STS", "STI"))) 
-  stopifnot(identical(proj4string(data@sp), proj4string(newdata@sp)))
+  if (!identical(proj4string(data@sp), proj4string(newdata@sp)))
+  	message(paste("please verify that the following two proj4strings indicate identical CRS", 
+	   "\n", "and in case they are not, reproject to a common CRS before proceeding:",
+    	proj4string(data@sp), "and", proj4string(newdata@sp)))
   stopifnot(class(data@time) == class(newdata@time))
   stopifnot(nmax > 0)
   
@@ -175,17 +178,20 @@ krigeST.df <- function(formula, data, newdata, modelList, beta, y, ...,
         corMat <- cov2cor(covfn.ST(newdata, newdata, modelList))
         var <- corMat*matrix(sqrt(var) %x% sqrt(var), nrow(corMat), ncol(corMat))
         # var = c0 - t(v0) %*% skwts + t(Q) %*% CHsolve(t(X) %*% ViX, Q)
-        return(list(pred=pred, var=var))
+        # return(list(pred=pred, var=var))
       }
     }
   }
   
   pred = x0 %*% beta + t(skwts) %*% (y - X %*% beta)
   
-  if(computeVar)
-    return(data.frame(var1.pred = pred, var1.var = var))
-  else
-    return(data.frame(var1.pred = pred))
+  if(computeVar) {
+    if (fullCovariance)
+      list(pred=pred, var=var)
+    else
+      data.frame(var1.pred = pred, var1.var = var)
+  } else
+    data.frame(var1.pred = pred)
 }
 
 # local spatio-temporal kriging
