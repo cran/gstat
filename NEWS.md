@@ -1,3 +1,13 @@
+# version 2.0-5
+
+* use multiple cores in `variogramST`, using pkg future; #63 by @sigmafelix
+
+* fix bug with conditional simulation using `stars` target grid and nsim=1, #58
+
+# version 2.0-4
+
+* fix CRAN warning issue
+
 # version 2.0-3
 
 * fix bug in support for `sf` objects; #46
