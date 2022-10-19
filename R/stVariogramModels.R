@@ -6,7 +6,7 @@ vgmST <- function(stModel, ..., space, time, joint, sill, k, nugget, stAni,
   old.stModel <- stModel
   stModel <- strsplit(stModel, "_")[[1]][1]
   
-  if (stModel == "productSum" & !missing(sill))
+  if (stModel == "productSum" && !missing(sill))
     stop("The sill argument for the product-sum model has been removed 
 due a change in notation of the spatio-temporal models. This 
 affects as well how the spatial and temporal variograms are parameterised. 
@@ -83,7 +83,7 @@ vgmSeparable <- function(model, dist_grid) {
 
 covSeparable <- function(x, y, model, separate) {  
   if(missing(separate))
-    separate <- inherits(x, "STF") & inherits(y, "STF") & length(x) > 1 & length(y) > 1
+    separate <- inherits(x, "STF") && inherits(y, "STF") && length(x) > 1 && length(y) > 1
   
   # the STF case
   if (inherits(x, "STF") && inherits(y, "STF")) {
@@ -110,7 +110,7 @@ covSeparable <- function(x, y, model, separate) {
     stop("An efficient inversion by separating the covarinace model is only possible if both of \"x\" and \"y\" inherit \"STF\"")
   
   # the STI case
-  if (inherits(x, "STI") || inherits(y, "STI")) {
+  if (inherits(x, c("STI", "sftime")) || inherits(y, c("STI", "sftime"))) {
     # make sure that now both are of type STI
     x <- as(x, "STI")
     y <- as(y, "STI")
@@ -182,7 +182,7 @@ vgmProdSumOld <- function(model, dist_grid) {
   
   k <- (sum(model$space$psill)+sum(model$time$psill)-(model$sill+model$nugget))/(sum(model$space$psill)*sum(model$time$psill))
   
-  if (k <= 0 | k > 1/max(rev(model$space$psill)[1], rev(model$time$psill)[1])) 
+  if (k <= 0 || k > 1/max(rev(model$space$psill)[1], rev(model$time$psill)[1])) 
     k <- 10^6*abs(k) # distorting the model to let optim "hopefully" find suitable parameters
   
   cbind(dist_grid, "gamma" = as.vector(vs+vt-k*vs*vt+vn))
@@ -193,16 +193,17 @@ covProdSumOld <- function(x, y, model) {
               msg="The former product-sum model is dprecited, consider to refit the new model specification",
               old = "covProdSumOld")
   
-  stopifnot(inherits(x, c("STF", "STS", "STI")) & inherits(y, c("STF", "STS", "STI")))
+  stopifnot(inherits(x, c("STF", "STS", "STI", "sftime")) &&
+			inherits(y, c("STF", "STS", "STI", "sftime")))
   
   # double check model for validity, i.e. k:
   k <- (sum(model$space$psill)+sum(model$time$psill)-model$sill)/(sum(model$space$psill)*sum(model$time$psill))
-  if (k <= 0 | k > 1/max(model$space$psill[model$space$model!="Nug"], 
+  if (k <= 0 || k > 1/max(model$space$psill[model$space$model!="Nug"], 
                          model$time$psill[model$time$model!="Nug"]))
     stop(paste("k (",k,") is non-positive or too large: no valid model!",sep=""))
   
   # the STF case
-  if (inherits(x, "STF") & inherits(y, "STF")) {
+  if (inherits(x, "STF") && inherits(y, "STF")) {
     # calculate all spatial and temporal distances
     ds = spDists(x@sp, y@sp)
     dt = abs(outer(index(x@time), index(y@time), "-"))
@@ -219,7 +220,7 @@ covProdSumOld <- function(x, y, model) {
   } 
   
   # the STI case
-  if(inherits(x, "STI") | inherits(y, "STI")) {
+  if(inherits(x, c("STI", "sftime")) || inherits(y, c("STI", "sftime"))) {
     # make sure that now both are of type STI
     x <- as(x, "STI")
     y <- as(y, "STI")
@@ -295,12 +296,13 @@ vgmProdSum <- function(model, dist_grid) {
 }
 
 covProdSum <- function(x, y, model) {
-  stopifnot(inherits(x, c("STF", "STS", "STI")) & inherits(y, c("STF", "STS", "STI")))
+  stopifnot(inherits(x, c("STF", "STS", "STI", "sftime")) &&
+			inherits(y, c("STF", "STS", "STI", "sftime")))
   if(!is.null(model$sill)) # backwards compatibility
     covProdSumOld(x, y, model)
   
   # the STF case
-  if (inherits(x, "STF") & inherits(y, "STF")) {
+  if (inherits(x, "STF") && inherits(y, "STF")) {
     # calculate all spatial and temporal distances
     ds = spDists(x@sp, y@sp)
     dt = abs(outer(index(x@time), index(y@time), "-"))
@@ -317,7 +319,7 @@ covProdSum <- function(x, y, model) {
   } 
   
   # the STI case
-  if(inherits(x, "STI") | inherits(y, "STI")) {
+  if(inherits(x, c("STI", "sftime")) || inherits(y, c("STI", "sftime"))) {
     # make sure that now both are of type STI
     x <- as(x, "STI")
     y <- as(y, "STI")
@@ -387,10 +389,11 @@ vgmSumMetric <- function(model, dist_grid) {
 }
 
 covSumMetric <- function(x, y, model) {
-  stopifnot(inherits(x, c("STF", "STS", "STI")) & inherits(y, c("STF", "STS", "STI")))
+  stopifnot(inherits(x, c("STF", "STS", "STI", "sftime")) &&
+			inherits(y, c("STF", "STS", "STI", "sftime")))
   
   # the STF case
-  if (inherits(x, "STF") & inherits(y, "STF")) {
+  if (inherits(x, "STF") && inherits(y, "STF")) {
     # calculate all spatial and temporal distances
     ds = spDists(x@sp, y@sp)
     dt = abs(outer(index(x@time), index(y@time), "-"))
@@ -411,7 +414,7 @@ covSumMetric <- function(x, y, model) {
   } 
   
   # the STI case
-  if(inherits(x, "STI") | inherits(y, "STI")) {
+  if(inherits(x, c("STI", "sftime")) || inherits(y, c("STI", "sftime"))) {
     # make sure that now both are of type STI
     x <- as(x, "STI")
     y <- as(y, "STI")
@@ -534,10 +537,11 @@ vgmMetric <- function(model, dist_grid) {
 }
 
 covMetric <- function(x, y, model) {
-  stopifnot(inherits(x, c("STF", "STS", "STI")) & inherits(y, c("STF", "STS", "STI")))
+  stopifnot(inherits(x, c("STF", "STS", "STI", "sftime")) &&
+			inherits(y, c("STF", "STS", "STI", "sftime")))
   
   # the STF case
-  if (inherits(x, "STF") & inherits(y, "STF")) {
+  if (inherits(x, "STF") && inherits(y, "STF")) {
     # calculate all spatial and temporal distances
     ds = spDists(x@sp, y@sp)
     dt = abs(outer(index(x@time), index(y@time), "-"))
@@ -555,7 +559,7 @@ covMetric <- function(x, y, model) {
   } 
   
   # the STI case
-  if(inherits(x, "STI") | inherits(y, "STI")) {
+  if (inherits(x, c("STI", "sftime")) || inherits(y, c("STI", "sftime"))) {
     # make sure that now both are of type STI
     x <- as(x, "STI")
     y <- as(y, "STI")
@@ -616,10 +620,8 @@ covSurfMetric <- function(model, dist_grid) {
 
 fit.StVariogram <- function(object, model, ..., method = "L-BFGS-B", lower, upper, fit.method = 6, 
                             stAni=NA, wles) {
-  if (!inherits(object, "StVariogram"))
-    stop("\"object\" must be of class \"StVariogram\"")
-  if (!inherits(model, "StVariogramModel"))
-    stop("\"model\" must be of class \"StVariogramModel\".")
+  stopifnot(inherits(object, "StVariogram"), 
+			inherits(model, "StVariogramModel"))
   
   sunit <- attr(object$spacelag, "units")
   tunit <- attr(object$timelag, "units")
@@ -649,7 +651,7 @@ fit.StVariogram <- function(object, model, ..., method = "L-BFGS-B", lower, uppe
     return(ret)
   }
   
-  if ((fit.method == 7 | fit.method == 11) & is.null(model$stAni) & is.na(stAni)) {
+  if ((fit.method == 7 || fit.method == 11) && is.null(model$stAni) && is.na(stAni)) {
     message("[An uninformed spatio-temporal anisotropy value of '1 (spatial unit)/(temporal unit)' is automatically selected. Consider providing a sensible estimate for stAni or using a different fit.method.]")
     stAni <- 1
   }

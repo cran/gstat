@@ -54,7 +54,8 @@ krigeST <- function(formula, data, newdata, modelList, beta, y, ...,
                     computeVar = FALSE, fullCovariance = FALSE,
                     bufferNmax=2, progress=TRUE) {
   stopifnot(inherits(modelList, "StVariogramModel") || is.function(modelList))
-  return_stars = if (inherits(data, "stars")) {
+  to_sftime = FALSE
+  return_stars = if (inherits(data, c("stars"))) {
     if (!requireNamespace("sf", quietly = TRUE))
       stop("sf required: install that first") # nocov
     if (!requireNamespace("stars", quietly = TRUE))
@@ -64,12 +65,31 @@ krigeST <- function(formula, data, newdata, modelList, beta, y, ...,
     data = as(data, "STFDF")
     newdata = as(newdata, "STFDF")
     TRUE
+  } else if (inherits(data, "sftime")) {
+    if (sf::st_crs(data) != sf::st_crs(newdata))
+      warning("CRS for data and newdata are not identical; assign CRS or use st_transform to correct")
+    data = as(data, "STIDF")
+    if (inherits(newdata, "stars")) {
+		if (length(newdata) == 0)
+			newdata$._dummy = 0.
+		newdata = as(newdata, "STFDF")
+	}
+	if (inherits(newdata, "sftime")) {
+  		to_sftime = TRUE
+		newdata = as(newdata, "STIDF")
+	}
+    TRUE
   } else {
     if (!identical(data@sp@proj4string@projargs, newdata@sp@proj4string@projargs))
   	  message("please verify that the CRSs of data and newdata are identical, or transform them first to make them identical")
     FALSE
   }
-  stopifnot(inherits(data, c("STF", "STS", "STI")) & inherits(newdata, c("STF", "STS", "STI"))) 
+  stopifnot(inherits(data, c("STF", "STS", "STI", "sftime")) && 
+			inherits(newdata, c("STF", "STS", "STI", "sftime"))) 
+  if (inherits(data, "sftime"))
+    data = as(data, "STIDF")
+  if (inherits(newdata, "sftime"))
+    data = as(data, "STI")
   stopifnot(class(data@time) == class(newdata@time))
   stopifnot(nmax > 0)
   
@@ -93,28 +113,36 @@ krigeST <- function(formula, data, newdata, modelList, beta, y, ...,
                          computeVar = computeVar, fullCovariance = fullCovariance, 
                          bufferNmax = bufferNmax, progress = progress)
 
-    if (return_stars)
-      return(stars::st_as_stars(as(ret, "STFDF")))
-    else
-      return(ret)
-  }
-  
-  df <- krigeST.df(formula = formula, data = data, newdata = newdata, 
+    if (return_stars) {
+	  ret$._dummy = NULL
+  	  if (to_sftime)
+		  sftime::st_as_sftime(ret)
+	  else 
+		  stars::st_as_stars(as(ret, "STFDF"))
+	} else
+      ret
+  } else {
+    df <- krigeST.df(formula = formula, data = data, newdata = newdata, 
                    modelList = modelList, beta = beta, y = y, 
                    ..., 
                    nmax=nmax, stAni=stAni,
                    computeVar = computeVar, fullCovariance = fullCovariance,
                    bufferNmax = bufferNmax, progress = progress)
   
-  # wrapping the predictions in ST*DF again
-  if (!fullCovariance) {
-    ret = addAttrToGeom(geometry(newdata), df)
-    if (return_stars)
-      stars::st_as_stars(as(ret, "STFDF"))
-    else
+    # wrapping the predictions in ST*DF again
+    if (!fullCovariance) {
+      ret = addAttrToGeom(geometry(newdata), df)
+      if (return_stars) {
+	    ret$._dummy = NULL
+  	  	if (to_sftime)
+		  ret = sftime::st_as_sftime(ret)
+  		else 
+		  ret = stars::st_as_stars(as(ret, "STFDF"))
+	  }
       ret
-  } else
-    df
+    } else
+      df
+  }
 }
 
 krigeST.df <- function(formula, data, newdata, modelList, beta, y, ...,
@@ -225,14 +253,14 @@ krigeST.local <- function(formula, data, newdata, modelList, beta, nmax, stAni=N
   if(!is.null(attr(modelList, "spatial unit")))
     stopifnot((is.projected(data) & (attr(modelList, "spatial unit") %in% c("km","m"))) | (!is.projected(data) & !(attr(modelList, "spatial unit") %in% c("km","m"))))
   
-  if(is(data, "STFDF") || is(data, "STSDF"))
+  if (inherits(data, c("STFDF", "STSDF", "sftime")))
     data <- as(data, "STIDF")
   
   clnd <- class(newdata)
   
-  if(is(newdata, "STFDF") || is(newdata, "STSDF"))
+  if(inherits(newdata, c("STFDF", "STSDF", "sftime")))
     newdata <- as(newdata, "STIDF")
-  if(is(newdata, "STF") || is(newdata, "STS"))
+  if(inherits(newdata, c("STF", "STS")))
     newdata <- as(newdata, "STI")
   
   # from here on every data set is assumed to be STI*

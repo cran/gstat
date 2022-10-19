@@ -64,6 +64,11 @@ krigeSTTg(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
  particular methods for ordinary spatio-temporal (ST) kriging. In particular,
  it does not support block kriging or kriging in a distance-based
  neighbourhood, and does not provide simulation.
+
+ If \code{data} is of class \code{sftime}, then \code{newdata} MUST be
+ of class \code{stars} or \code{sftime}, i.e. mixing form old-style
+ classes (package spacetime) and new-style classes (sf, stars, sftime)
+ is not supported.
 }
 
 \value{
@@ -73,8 +78,9 @@ krigeSTTg(formula, data, newdata, modelList, y, nmax=Inf, stAni=NULL,
 }
 
 \references{ 
-Spatio-Temporal Geostatistics using gstat.  Benedikt Graeler,
-Edzer Pebesma, Gerard Heuvelink.  The R Journal, accepted.
+Benedikt Graeler, Edzer Pebesma, Gerard Heuvelink.  Spatio-Temporal
+Geostatistics using gstat.  The R Journal 8(1), 204--218.
+\url{https://journal.r-project.org/archive/2016/RJ-2016-014/index.html}
 
 N.A.C. Cressie, 1993, Statistics for Spatial Data,
 Wiley. 
@@ -82,7 +88,7 @@ Wiley.
 \url{http://www.gstat.org/}
 
 Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
-Computers \& Geosciences, 30: 683-691.
+Computers and Geosciences, 30: 683-691.
 }
 \author{ Edzer Pebesma, Benedikt Graeler }
 
