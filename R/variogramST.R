@@ -117,7 +117,7 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
 	  pb = txtProgressBar(style = 3, max = length(tlags))
 	if (cores == 1) {
 		ret = vector("list", length(tlags))
-		for (dt in seq(along = tlags)) {
+		for (dt in seq(along.with = tlags)) {
 	  		ret[[dt]] = StVgmLag(formula, data, tlags[dt], pseudo = pseudo, 
 						  	boundaries = boundaries, ...)
 	  		ret[[dt]]$id = paste("lag", dt - 1, sep="")
@@ -130,7 +130,7 @@ variogramST = function(formula, locations, data, ..., tlags = 0:15, cutoff,
 	  		stop("For parallelization, future and future.apply packages are required")
 
 	  	future::plan('multicore', workers = cores)
-  		ret <- split(seq(along=tlags), seq(along=tlags))
+  		ret <- split(seq(along.with = tlags), seq(along.with = tlags))
 		ret <- future.apply::future_lapply(X = ret,
 				FUN = function(x){
 					xx <- StVgmLag(formula, data, tlags[x], pseudo = pseudo, 
@@ -189,18 +189,21 @@ variogramST.STIDF <- function (formula, data, tlags, cutoff,
   m = model.frame(terms(formula), as(data, "data.frame"))
   
   diffTime <- diff(index(data))
-  timeScale <- units(diffTime)
-  if(missing(tunit))
-    warning(paste("The argument 'tunit' is missing: tlags are assumed to be given in ", timeScale, ".",sep=""))
-  else {
-    stopifnot(tunit %in% c("secs", "mins", "hours", "days", "weeks"))
-    units(diffTime) <- tunit
-    timeScale <- tunit
-  }
-  diffTime <- as.numeric(diffTime)
-  if (missing(twindow)) {
-    twindow <- round(2 * max(tlags, na.rm=TRUE)/mean(diffTime,na.rm=TRUE),0)
-  }
+  if (inherits(diffTime, "difftime")) {
+    timeScale <- units(diffTime)
+    if(missing(tunit))
+      warning(paste("The argument 'tunit' is missing: tlags are assumed to be given in ", timeScale, ".",sep=""))
+    else {
+      stopifnot(tunit %in% c("secs", "mins", "hours", "days", "weeks"))
+      units(diffTime) <- tunit
+      timeScale <- tunit
+    }
+    diffTime <- as.numeric(diffTime)
+  } else if (!missing(tunit))
+    stop("'tunit' ignored, as time values are not of class POSIXct or Date")
+  
+  if (missing(twindow))
+    twindow <- round(2 * max(tlags, na.rm=TRUE) / mean(diffTime, na.rm = TRUE), 0)
     
   nData <- nrow(data)
   
