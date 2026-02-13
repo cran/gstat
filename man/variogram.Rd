@@ -157,17 +157,10 @@ Cressie, N.A.C., 1993, Statistics for Spatial Data, Wiley.
 
 Cressie, N., C. Wikle, 2011, Statistics for Spatio-temporal Data, Wiley.
 
-\url{http://www.gstat.org/}
-
 Pebesma, E.J., 2004. Multivariable geostatistics in S: the gstat package.
 Computers and Geosciences, 30: 683-691.
 }
 \author{ Edzer Pebesma }
-\note{
-\code{variogram.line} is DEPRECATED; it is and was never meant as a variogram
-method, but works automatically as such by the R dispatch system. Use
-variogramLine instead.
-}
 \seealso{
 \link{print.gstatVariogram},
 \link{plot.gstatVariogram},

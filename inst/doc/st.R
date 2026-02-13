@@ -28,72 +28,75 @@ rn
 
 
 ###################################################
-### code chunk number 4: st.Rnw:119-124 (eval = FALSE)
+### code chunk number 4: st.Rnw:119-125 (eval = FALSE)
 ###################################################
 ## par(mfrow=c(2,2))
 ## # select 4, 5, 6, 7
-## for(i in rn) 
-## 	acf(na.omit(r5to10[i,]), main = i)
+## for (i in rn) {
+##   acf(na.omit(r5to10[i,]$PM10), main = i)
+## }
 ## par(mfrow=c(1,1))
 
 
 ###################################################
-### code chunk number 5: st.Rnw:129-134
+### code chunk number 5: st.Rnw:130-137
 ###################################################
 par(mfrow=c(2,2))
 # select 4, 5, 6, 7
 rn = row.names(r5to10@sp)[4:7]
-for(i in rn) 
-	acf(na.omit(r5to10[i,]), main = i)
+for (i in rn) {
+  x <- as.numeric(na.omit(r5to10[i, ]))
+  acf(x, main = i)
+}
 
 
 ###################################################
-### code chunk number 6: st.Rnw:143-144 (eval = FALSE)
+### code chunk number 6: st.Rnw:146-147 (eval = FALSE)
 ###################################################
 ## acf(na.omit(as(r5to10[rn,], "xts")))
 
 
 ###################################################
-### code chunk number 7: st.Rnw:149-150
+### code chunk number 7: st.Rnw:152-153
 ###################################################
 acf(na.omit(as(r5to10[rn,], "xts")))
 
 
 ###################################################
-### code chunk number 8: st.Rnw:174-175 (eval = FALSE)
+### code chunk number 8: st.Rnw:177-178 (eval = FALSE)
 ###################################################
 ## acf(na.omit(as(r5to10[4:10,], "xts")))
 
 
 ###################################################
-### code chunk number 9: st.Rnw:180-182
+### code chunk number 9: st.Rnw:183-185
 ###################################################
 library(sp)
 print(spDists(r5to10[4:10,]@sp), digits=3)
 
 
 ###################################################
-### code chunk number 10: st.Rnw:189-190
+### code chunk number 10: st.Rnw:192-193
 ###################################################
 rs = sample(dim(r5to10)[2], 100)
 
 
 ###################################################
-### code chunk number 11: st.Rnw:195-197
+### code chunk number 11: st.Rnw:198-200
 ###################################################
 lst = lapply(rs, function(i) { x = r5to10[,i]; x$ti = i; rownames(x@coords) = NULL; x} )
 pts = do.call(rbind, lst)
 
 
 ###################################################
-### code chunk number 12: st.Rnw:200-202
+### code chunk number 12: st.Rnw:203-205
 ###################################################
 library(gstat)
 v = variogram(PM10~ti, pts[!is.na(pts$PM10),], dX=0)
 
 
 ###################################################
-### code chunk number 13: st.Rnw:205-208 (eval = FALSE)
+### code chunk number 13: st.Rnw:208-211 (eval = FALSE)
 ###################################################
 ## # plot(v, fit.variogram(v, vgm(1, "Exp", 200, 1)))
 ## vmod = fit.variogram(v, vgm(100, "Exp", 200))
@@ -101,7 +104,7 @@ v = variogram(PM10~ti, pts[!is.na(pts$PM10),], dX=0)
 
 
 ###################################################
-### code chunk number 14: st.Rnw:212-215
+### code chunk number 14: st.Rnw:215-218
 ###################################################
 # plot(v, fit.variogram(v, vgm(1, "Exp", 200, 1)))
 vmod = fit.variogram(v, vgm(100, "Exp", 200))
@@ -109,57 +112,57 @@ print(plot(v, vmod))
 
 
 ###################################################
-### code chunk number 15: st.Rnw:223-224
+### code chunk number 15: st.Rnw:226-227
 ###################################################
 vmod
 
 
 ###################################################
-### code chunk number 16: st.Rnw:229-230
+### code chunk number 16: st.Rnw:232-233
 ###################################################
 dim(r5to10)
 
 
 ###################################################
-### code chunk number 17: st.Rnw:235-236 (eval = FALSE)
+### code chunk number 17: st.Rnw:238-239 (eval = FALSE)
 ###################################################
 ## vv = variogram(PM10~1, r5to10, width=20, cutoff = 200, tlags=0:5)
 
 
 ###################################################
-### code chunk number 18: st.Rnw:241-242 (eval = FALSE)
+### code chunk number 18: st.Rnw:244-245 (eval = FALSE)
 ###################################################
 ## vv = variogram(PM10~1, r5to10, width=20, cutoff = 200, tlags=0:5)
 
 
 ###################################################
-### code chunk number 19: st.Rnw:248-249
+### code chunk number 19: st.Rnw:251-252
 ###################################################
 data(vv)
 
 
 ###################################################
-### code chunk number 20: st.Rnw:252-253
+### code chunk number 20: st.Rnw:255-256
 ###################################################
 vv <- vv[c("np", "dist", "gamma", "id", "timelag", "spacelag")]
 
 
 ###################################################
-### code chunk number 21: st.Rnw:258-260 (eval = FALSE)
+### code chunk number 21: st.Rnw:261-263 (eval = FALSE)
 ###################################################
 ## plot(vv)
 ## plot(vv, map = FALSE)
 
 
 ###################################################
-### code chunk number 22: st.Rnw:264-266
+### code chunk number 22: st.Rnw:267-269
 ###################################################
 print(plot(vv), split = c(1,1,1,2), more = TRUE)
 print(plot(vv, map = FALSE), split = c(1,2,1,2))
 
 
 ###################################################
-### code chunk number 23: st.Rnw:278-283
+### code chunk number 23: st.Rnw:281-286
 ###################################################
 metricVgm <- vgmST("metric",
                    joint=vgm(50,"Exp",100,0),
@@ -169,25 +172,25 @@ metricVgm <- fit.StVariogram(vv, metricVgm)
 
 
 ###################################################
-### code chunk number 24: st.Rnw:288-289
+### code chunk number 24: st.Rnw:291-292
 ###################################################
 attr(metricVgm, "optim")$value
 
 
 ###################################################
-### code chunk number 25: st.Rnw:294-295 (eval = FALSE)
+### code chunk number 25: st.Rnw:297-298 (eval = FALSE)
 ###################################################
 ## plot(vv, metricVgm)
 
 
 ###################################################
-### code chunk number 26: st.Rnw:300-301
+### code chunk number 26: st.Rnw:303-304
 ###################################################
 print(plot(vv, metricVgm))
 
 
 ###################################################
-### code chunk number 27: st.Rnw:311-319
+### code chunk number 27: st.Rnw:314-322
 ###################################################
 sepVgm <- vgmST("separable",
                 space=vgm(0.9,"Exp", 123, 0.1),
@@ -200,20 +203,20 @@ sepVgm <- fit.StVariogram(vv, sepVgm, method = "L-BFGS-B",
 
 
 ###################################################
-### code chunk number 28: st.Rnw:325-327
+### code chunk number 28: st.Rnw:328-330
 ###################################################
 attr(sepVgm, "optim")$value
 plot(vv, list(sepVgm, metricVgm))
 
 
 ###################################################
-### code chunk number 29: st.Rnw:332-333
+### code chunk number 29: st.Rnw:335-336
 ###################################################
 print(plot(vv, list(sepVgm, metricVgm)))
 
 
 ###################################################
-### code chunk number 30: st.Rnw:341-347 (eval = FALSE)
+### code chunk number 30: st.Rnw:344-350 (eval = FALSE)
 ###################################################
 ## library(lattice)
 ## plot(vv, list(sepVgm, metricVgm), all=T, wireframe=T, zlim=c(0,120),
@@ -224,7 +227,7 @@ print(plot(vv, list(sepVgm, metricVgm)))
 
 
 ###################################################
-### code chunk number 31: st.Rnw:358-364
+### code chunk number 31: st.Rnw:359-365
 ###################################################
 library(lattice)
 print(plot(vv, list(sepVgm, metricVgm), all=T, wireframe=T, zlim=c(0,120),
@@ -235,7 +238,7 @@ print(plot(vv, list(sepVgm, metricVgm), all=T, wireframe=T, zlim=c(0,120),
 
 
 ###################################################
-### code chunk number 32: st.Rnw:385-386 (eval = FALSE)
+### code chunk number 32: st.Rnw:386-387 (eval = FALSE)
 ###################################################
 ## demo(gstat3D)
 
